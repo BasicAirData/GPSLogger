@@ -3,6 +3,7 @@ BasicAirData (c) 2014 JLJ
 This repository is fo the GPSLogger project, a logger for Android mobile devices
 
 Application is freely downloadable from Google Play(tm).
+https://play.google.com/store/apps/details?id=eu.basicairdata.graziano.gpslogger&hl=en
 
 BasicAirData is devoted to Open and free DIY air data instrumentation and telemetry.
 Downloadable description http://www.basicairdata.eu/attachments/others/BAD%20Brochure.pdf
@@ -18,7 +19,7 @@ ON LINE REFERENCES :
 
 Main site http://www.basicairdata.eu
 
-Forum http://basicairdata.freeforums.org/front-mounting-flange-for-8mm-pitot-f18.html
+Forum http://basicairdata.freeforums.org/
 
 Facebook page
 
