@@ -19,8 +19,6 @@ ON LINE REFERENCES :
 
 Main site http://www.basicairdata.eu
 
-Forum http://basicairdata.freeforums.org/
-
 Facebook page
 
 https://www.facebook.com/BasicAirData
