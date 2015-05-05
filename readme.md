@@ -15,7 +15,7 @@ BasicAirData is free software licensed under [GNU GPL v3.0](http://www.gnu.org/l
 [License information](http://www.basicairdata.eu/copyright.html)
 
 ##Info##
-[Online](http://www.basicairdata.eu/social.html)
+[Contact information](http://www.basicairdata.eu/social.html)
 
 ##Acknowledgements##
 [Current members](http://www.basicairdata.eu/about.html)
