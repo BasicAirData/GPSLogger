@@ -1,28 +1,21 @@
-BasicAirData (c) 2014 JLJ
+#BasicAirData-01-GPSLogger
 
-This repository is fo the GPSLogger project, a logger for Android mobile devices
+[BasicAirData](http://www.basicairdata.eu) Open and free DIY air data instrumentation and telemetry 
 
-Application is freely downloadable from Google Play(tm).
-https://play.google.com/store/apps/details?id=eu.basicairdata.graziano.gpslogger&hl=en
+![Shoot](https://cloud.githubusercontent.com/assets/7497614/7475969/ffdbda0c-f34a-11e4-9456-9863c58156eb.png)
 
-BasicAirData is devoted to Open and free DIY air data instrumentation and telemetry.
-Downloadable description http://www.basicairdata.eu/attachments/others/BAD%20Brochure.pdf
-Every feedback and feature proposal is welcome
+##Description##
 
-JLJ
+A GPS logger for Android mobile devices
 
-CURRENT MEMBERS :
+[Application is freely downloadable from Google Play(tm)](https://play.google.com/store/apps/details?id=eu.basicairdata.graziano.gpslogger&hl=en)
 
-http://www.basicairdata.eu/about.html
+##License##
+BasicAirData is free software licensed under [GNU GPL v3.0](http://www.gnu.org/licenses/gpl-3.0.txt) General Public License
+[License information](http://www.basicairdata.eu/copyright.html)
 
-ON LINE REFERENCES :
+##Info##
+[Online](http://www.basicairdata.eu/social.html)
 
-Main site http://www.basicairdata.eu
-
-Facebook page
-
-https://www.facebook.com/BasicAirData
-
-Google+
-
-https://plus.google.com/+basicairdataeu
+##Acknowledgements##
+[Current menbers](http://www.basicairdata.eu/about.html)
