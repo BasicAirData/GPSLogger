@@ -1,4 +1,4 @@
-#BasicAirData - GPS Logger
+#BasicAirData GPS Logger
 
 [BasicAirData](http://www.basicairdata.eu) Open and free DIY air data instrumentation and telemetry 
 
