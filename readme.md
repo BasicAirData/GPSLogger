@@ -2,7 +2,7 @@
 
 [BasicAirData](http://www.basicairdata.eu) Open and free DIY air data instrumentation and telemetry 
 
-![Shoot](https://cloud.githubusercontent.com/assets/7497614/7475969/ffdbda0c-f34a-11e4-9456-9863c58156eb.png)
+![alt tag](https://github.com/BasicAirData/GPSLogger/blob/master/screenshots/Image_01.png)
 
 ##Description##
 
