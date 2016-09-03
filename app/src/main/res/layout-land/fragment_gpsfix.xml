@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ fragment_gpsfix.xml (land)
+  ~ Created by G.Capelli (BasicAirData) on 8/6/2016
+  ~ v.2.0.0
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/id_fragmentgpsfixFrameLayout"
+    tools:context=".FragmentGPSFix"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/id_fragmentgpsfix"
+    android:background="@color/colorBackground"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:paddingTop="6dp"
+    android:weightSum="4">
+
+    <TableLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_dark"
+        android:layout_margin="3dp"
+        android:id="@+id/id_TableLayout_Coordinates"
+        android:layout_weight="2">
+
+        <TableLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_TableLayout_Latitude"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_marginBottom="6dp">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeNumbers"
+                    android:id="@+id/id_textView_Latitude"
+                    android:freezesText="true"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeUM"
+                    android:text="@string/north"
+                    android:id="@+id/id_textView_LatitudeUM"
+                    android:layout_weight="0"
+                    android:layout_marginLeft="7dp" />
+            </TableRow>
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/latitude"
+                android:id="@+id/id_textView_LatitudeLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:gravity="center_horizontal" />
+
+        </TableLayout>
+
+        <TableLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_TableLayout_Longitude"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeNumbers"
+                    android:id="@+id/id_textView_Longitude"
+                    android:freezesText="true"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeUM"
+                    android:text="@string/east"
+                    android:id="@+id/id_textView_LongitudeUM"
+                    android:layout_weight="0"
+                    android:layout_marginLeft="7dp" />
+
+            </TableRow>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/longitude"
+                android:id="@+id/id_textView_LongitudeLabel"
+                android:textSize="13sp"
+                android:gravity="center_horizontal" />
+
+        </TableLayout>
+
+    </TableLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:baselineAligned="false">
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_TableLayout_Altitude"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="@drawable/rounded_corner_dark"
+            android:layout_margin="3dp">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeNumbers"
+                    android:id="@+id/id_textView_Altitude"
+                    android:freezesText="true"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeUM"
+                    android:text="m"
+                    android:id="@+id/id_textView_AltitudeUM"
+                    android:layout_weight="0"
+                    android:layout_marginLeft="7dp" />
+            </TableRow>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/altitude"
+                android:id="@+id/id_textView_AltitudeLabel"
+                android:textSize="13sp"
+                android:gravity="center_horizontal" />
+
+        </TableLayout>
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_TableLayout_Accuracy"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="@drawable/rounded_corner_dark"
+            android:layout_margin="3dp">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeNumbers"
+                    android:id="@+id/id_textView_Accuracy"
+                    android:freezesText="true"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeUM"
+                    android:text="m"
+                    android:id="@+id/id_textView_AccuracyUM"
+                    android:layout_weight="0"
+                    android:layout_marginLeft="7dp" />
+            </TableRow>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/accuracy"
+                android:id="@+id/id_textView_AccuracyLabel"
+                android:textSize="13sp"
+                android:gravity="center_horizontal" />
+
+        </TableLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:baselineAligned="false">
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_TableLayout_Speed"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_margin="3dp"
+            android:background="@drawable/rounded_corner_dark">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeNumbers"
+                    android:id="@+id/id_textView_Speed"
+                    android:freezesText="true"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeUM"
+                    android:text="km/h"
+                    android:id="@+id/id_textView_SpeedUM"
+                    android:layout_weight="0"
+                    android:layout_marginLeft="7dp" />
+            </TableRow>
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/speed"
+                android:id="@+id/id_textView_SpeedLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:gravity="center_horizontal" />
+
+        </TableLayout>
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_TableLayout_Bearing"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="@drawable/rounded_corner_dark"
+            android:layout_margin="3dp">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeNumbers"
+                    android:id="@+id/id_textView_Bearing"
+                    android:freezesText="true"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearanceLargeUM"
+                    android:text="@string/north"
+                    android:id="@+id/id_textView_BearingUM"
+                    android:layout_weight="0"
+                    android:layout_marginLeft="7dp" />
+            </TableRow>
+
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/direction"
+                android:id="@+id/id_textView_BearingLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:gravity="center_horizontal" />
+
+        </TableLayout>
+    </LinearLayout>
+
+</LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/id_textView_GPSFixStatus"
+        android:paddingTop="30dp"
+        android:gravity="center_horizontal" />
+
+</FrameLayout>

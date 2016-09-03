@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ styles.xml
+  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ v.2.0.0
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+
+    </style>
+
+    <style name="StyledDialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MyPreferenceCategory" parent="@style/Preference.Category">
+        <item name="android:textColor">@color/preference_accent</item>
+    </style>
+
+    <style name="MyPreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
+        <item name="android:listSeparatorTextViewStyle">@style/ListSeparatorTextView</item>
+        <item name="preferenceCategoryStyle">@style/MyPreferenceCategory</item>
+        <item name="colorAccent">@color/preference_accent</item>
+        <item name="divider">@color/colorAccent</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="preferenceTheme">@style/MyPreferenceThemeOverlay</item>
+    </style>
+
+    <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="ProgressBarCard" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:minHeight">1.7dp</item>
+        <item name="android:maxHeight">1.7dp</item>
+        <item name="android:progressDrawable">@drawable/progress</item>
+    </style>
+
+
+    <style name="TextAppearanceLargeNumbers" parent="@android:style/TextAppearance.Large">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textSize">@dimen/TextAppearanceLargeNumbersSize</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearanceLargeUM" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textSize">@dimen/TextAppearanceTextUMSize</item>
+    </style>
+
+    <style name="TextAppearanceCardSmall" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">@dimen/TextAppearanceSmallTextSize</item>
+    </style>
+
+    <style name="ListSeparatorTextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/preference_accent</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+</resources>

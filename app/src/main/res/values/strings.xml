@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ strings.xml
+  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ v.2.0.0
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">GPS Logger</string>
+
+    <!-- Tabs -->
+    <string name="tab_gpsfix">GPS Fix</string>
+    <string name="tab_track">Track</string>
+    <string name="tab_tracklist">Tracklist</string>
+
+    <!-- GPS Fix -->
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="altitude">Altitude</string>
+    <string name="speed">Speed</string>
+    <string name="direction">Direction</string>
+    <string name="accuracy">Accuracy</string>
+
+    <string name="north">N</string>
+    <string name="south">S</string>
+    <string name="east">E</string>
+    <string name="west">W</string>
+
+
+    <!-- GPS Status messages -->
+    <string name="gps_disabled">GPS disabled</string>
+    <string name="gps_out_of_service">GPS out of service</string>
+    <string name="gps_temporary_unavailable">GPS temporary unavailable</string>
+    <string name="gps_searching">Looking for GPS</string>
+    <string name="gps_stabilizing">Stabilizing signal</string>
+
+    <!-- Track -->
+    <string name="track_id">Track</string>
+    <string name="duration">Duration</string>
+    <string name="max_speed">Max Speed</string>
+    <string name="average_speed">Avg Speed</string>
+    <string name="distance">Distance</string>
+    <string name="overall_direction">Overall Dir</string>
+    <string name="altitude_gap">Altitude Gap</string>
+
+    <!-- Track Status message -->
+    <string name="track_empty">New Track\n\nStart recording Trackpoints\nor add a Placemark\nusing one of the buttons below</string>
+
+    <!-- Recording buttons (bottom side) -->
+    <string name="placemarks">Placemarks</string>
+    <string name="trackpoints">TrackPoints</string>
+
+    <!-- Main menu -->
+    <string name="menu_settings">Settings</string>
+    <string name="menu_track_finished">Track finished</string>
+    <string name="menu_about">About</string>
+
+    <!-- Placemark Creation dialog -->
+    <string name="dlg_add_placemark">Add Placemark</string>
+    <string name="dlg_placemark_description">Enter the description</string>
+    <string name="dlg_button_add">Add</string>
+    <string name="dlg_button_cancel">Cancel</string>
+
+    <!-- Tracklist -->
+    <string name="tracklist_empty">Tracklist Empty</string>
+
+    <string name="card_trackinfo_length">Length</string>
+    <string name="card_trackinfo_duration">Duration</string>
+    <string name="card_trackinfo_altitude_gap">Alt gap</string>
+    <string name="card_trackinfo_max_speed">Max spd</string>
+    <string name="card_trackinfo_average_speed">Avg spd</string>
+    <string name="card_trackinfo_geopoints">Points</string>
+    <string name="card_trackinfo_placemarks">Places</string>
+
+    <!-- Context menu of Tracklist -->
+    <string name="card_menu_export">Export</string>
+    <string name="card_menu_view">View in Google Earth</string>
+    <string name="card_menu_delete">Delete</string>
+    <string name="card_menu_share">Share with ...</string>
+
+    <!-- Tracklist toasts and messagebox -->
+    <string name="card_message_delete_also_exported">Do you also want to delete KML and GPX files exported from this track?</string>
+    <string name="card_message_delete_confirmation">Do you really want to delete this track?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Preferences -->
+    <string name="pref_category_interface">INTERFACE</string>
+    <string name="pref_keep_screen_on">Keep Screen On</string>
+    <string name="pref_keep_screen_on_summary">Battery drains faster</string>
+    <string name="pref_show_decimal_coordinates">Show Decimal Coords</string>
+    <string name="pref_show_decimal_coordinates_summary">Fractional part in decimal notation</string>
+    <string name="pref_show_directions">Show Directions using</string>
+    <string name="pref_show_directions_angle">Degrees East of North</string>
+    <string name="pref_show_directions_cardinal">Cardinal Points</string>
+    <string name="pref_unit_of_measurement">System of Measurement</string>
+    <string name="pref_unit_of_measurement_metric">Metric</string>
+    <string name="pref_unit_of_measurement_imperial">Imperial</string>
+    <string name="pref_unit_of_measurement_speed">Show Speeds in</string>
+
+    <string name="pref_category_tracking">TRACKING</string>
+    <string name="pref_GPS_distance">Collecting Density</string>
+    <string name="pref_GPS_distance_max">Maximum</string>
+    <string name="pref_GPS_distance_1m">1 meter</string>
+    <string name="pref_GPS_distance_2m">2 meters</string>
+    <string name="pref_GPS_distance_5m">5 meters</string>
+    <string name="pref_GPS_distance_10m">10 meters</string>
+    <string name="pref_GPS_distance_20m">20 meters</string>
+    <string name="pref_GPS_distance_3ft">3 feet</string>
+    <string name="pref_GPS_distance_6ft">6 feet</string>
+    <string name="pref_GPS_distance_16ft">16 feet</string>
+    <string name="pref_GPS_distance_33ft">33 feet</string>
+    <string name="pref_GPS_distance_66ft">66 feet</string>
+
+    <string name="pref_GPS_update_frequency">GPS Update Frequency</string>
+    <string name="pref_GPS_update_frequency_1s">1 second (best accuracy)</string>
+    <string name="pref_GPS_update_frequency_2s">2 seconds</string>
+    <string name="pref_GPS_update_frequency_3s">3 seconds (less accurate)</string>
+
+    <string name="pref_category_altitude_corrections">ALTITUDE CORRECTIONS</string>
+    <string name="pref_EGM96AltitudeCorrection">EGM96 Correction</string>
+    <string name="pref_EGM96AltitudeCorrection_summary">Automatic altitude correction, Based on NGA Earth Geoid Model</string>
+    <string name="pref_EGM96AltitudeCorrection_download_progress">Downloading 2028kB file:\nEGM96 Geoid Heights..</string>
+    <string name="pref_AltitudeCorrection">Manual Correction</string>
+    <string name="pref_AltitudeCorrection_summary_offset">Offset</string>
+    <string name="pref_AltitudeCorrection_summary_not_defined">No offset defined</string>
+
+
+    <string name="pref_category_exporting">EXPORTING</string>
+    <string name="pref_export_KML">Export Tracks in KML</string>
+    <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
+    <string name="pref_export_GPX">Export Tracks in GPX</string>
+    <string name="pref_export_GPX_summary">Standard GPS eXchange Format (v.1.0)</string>
+    <string name="pref_KML_altitude_mode">KML Altitude mode</string>
+    <string name="pref_KML_altitude_mode_absolute">Absolute</string>
+    <string name="pref_KML_altitude_mode_projected">Projected to Ground</string>
+    <string name="pref_track_stats">Track Stats based on</string>
+    <string name="pref_track_stats_totaltime">Total time</string>
+    <string name="pref_track_stats_movingtime">Moving time</string>
+
+
+    <!-- Preferences toasts -->
+    <string name="toast_download_error">Download error</string>
+    <string name="toast_download_completed">Download completed</string>
+    <string name="toast_download_failed">Download failed. Try again later</string>
+
+    <!-- About Dialog -->
+    <string name="about_version">ver.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger records your tracks using GPS. You can view them in Google Earth, share and export them in GPSLogger folder of your device in KML and GPX format.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt\n\nFor EGM96 geoid file disclaimer see: http://earth-info.nga.mil/GandG/disclaim.html\n\nIf You enjoy using this app, please take a moment to rate GPS Logger in the Google Store.</string>
+    <string name="about_ok">Close</string>
+    <string name="about_rate_this_app">Rate this App</string>
+    <string name="about_unable_to_rate">Unable to reach the Google Store</string>
+
+</resources>
