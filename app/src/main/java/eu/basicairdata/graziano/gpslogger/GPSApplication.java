@@ -1,7 +1,6 @@
 /*
  * GPSApplication - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 20/5/2016
- * v.2.0.0
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -267,13 +266,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     @Override
     public void onCreate() {
+
+        // ---------------------------------------------------------------- Initialize the Database
+        GPSDataBase = new DatabaseHandler(this);
+        GPSDataBase.CreateDBifNeeded();
+
         super.onCreate();
         singleton = this;
 
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);       // Location Manager
 
-        // ---------------------------------------------------------------- Initialize the Database
-        GPSDataBase = new DatabaseHandler(this);
 
         // ---------------------------------------------------- Create the Directories if not exist
         File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");

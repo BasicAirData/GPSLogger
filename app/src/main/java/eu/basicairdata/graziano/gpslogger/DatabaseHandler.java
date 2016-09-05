@@ -1,7 +1,6 @@
 /*
  * DatabaseHandler - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 1/5/2016
- * v.2.0.0
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,6 +208,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        // Use this function in case of DB version upgrade.
+        // not used for now !!!
+
         // Drop older table if existed
         //db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATIONS);
         //db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLACEMARKS);
@@ -218,6 +221,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Ensure DB creation!
+    public boolean CreateDBifNeeded() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return (db != null);
+    }
 
 // ----------------------------------------------------------------------- LOCATIONS AND PLACEMARKS
 
@@ -392,7 +400,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Get single Location
     public LocationExtended getLocation(long id) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         LocationExtended extdloc = null;
 
         Cursor cursor = db.query(TABLE_LOCATIONS, new String[] {KEY_ID,
@@ -428,7 +436,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Get single Location
     public LocationExtended getLocation(long TrackID, long locationNumber) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         LocationExtended extdloc = null;
 
         String selectQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE "
@@ -577,7 +585,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Get the total amount of Locations stored in the DB
     public long getLocationsTotalCount() {
         String countQuery = "SELECT  * FROM " + TABLE_LOCATIONS;
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
         return cursor.getCount();
@@ -587,7 +595,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Get the number of Locations of a Track
     public long getLocationsCount(long TrackID) {
         String countQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE " + KEY_TRACK_ID + " = " + TrackID;
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
         return cursor.getCount();
@@ -596,7 +604,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Get last Location ID
     public long getLastLocationID(long TrackID) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Track trk = null;
         long result = 0;
 
@@ -792,7 +800,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Get last TrackID
     public long getLastTrackID() {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Track trk = null;
         long result = 0;
 

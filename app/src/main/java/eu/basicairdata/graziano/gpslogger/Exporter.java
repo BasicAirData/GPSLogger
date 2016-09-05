@@ -1,7 +1,6 @@
 /*
  * Exporter - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 16/7/2016
- * v.2.0.0
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 
 public class Exporter extends Thread {
@@ -94,8 +94,9 @@ public class Exporter extends Thread {
             }
         }
 
-        SimpleDateFormat dfdate = new SimpleDateFormat("yyyy-MM-dd");          // date formatter for GPX timestamp
-        SimpleDateFormat dftime = new SimpleDateFormat("HH:mm:ss");            // time formatter for GPX timestamp
+        SimpleDateFormat dfdt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");  // date and time formatter for GPX timestamp
+        dfdt.setTimeZone(TimeZone.getTimeZone("GMT"));
+
         File KMLfile = null;
         File GPXfile = null;
         final String newLine = System.getProperty("line.separator");
@@ -242,7 +243,7 @@ public class Exporter extends Thread {
                                     GPXbw.write("</speed>" + newLine);
                                 }
                                 GPXbw.write("   <time>");     // Time
-                                GPXbw.write(dfdate.format(loc.getLocation().getTime()) + "T" + dftime.format(loc.getLocation().getTime()) + "Z");
+                                GPXbw.write(dfdt.format(loc.getLocation().getTime()));
                                 GPXbw.write("</time>" + newLine);
                                 GPXbw.write("  </trkpt>" + newLine);
                             }
@@ -327,7 +328,7 @@ public class Exporter extends Thread {
                                 }
 
                                 GPXbw.write(" <time>");     // Time
-                                GPXbw.write(dfdate.format(loc.getLocation().getTime()) + "T" + dftime.format(loc.getLocation().getTime()) + "Z");
+                                GPXbw.write(dfdt.format(loc.getLocation().getTime()));
                                 GPXbw.write("</time>" + newLine);
 
                                 GPXbw.write(" <name>");     // Name
