@@ -297,7 +297,7 @@ public class Exporter extends Thread {
                                 KMLbw.write("</name>" + newLine);
                                 KMLbw.write("   <styleUrl>#Bookmark_Style</styleUrl>" + newLine);
                                 KMLbw.write("   <Point>" + newLine);
-                                KMLbw.write("    <altitudeMode>absolute</altitudeMode>" + newLine);
+                                KMLbw.write("    <altitudeMode>" + (getPrefKMLAltitudeMode == 1 ? "clampToGround" : "absolute") + "</altitudeMode>" + newLine);
                                 KMLbw.write("    <coordinates>");
                                 if (loc.getLocation().hasAltitude()) {
                                     KMLbw.write(String.format(Locale.US, "%.8f", loc.getLocation().getLongitude()) + "," +

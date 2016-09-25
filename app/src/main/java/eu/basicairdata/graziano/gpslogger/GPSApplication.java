@@ -64,8 +64,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public static final int UM_IMPERIAL_FPS = 8;
     public static final int UM_IMPERIAL_MPH = 9;
 
-    public static final int STABILIZERVALUE = 3000; // The application discards fixes for 3000 ms min
-    private static final int DEFAULHANDLERTIMER = 4000;
+    public static final int STABILIZERVALUE = 3000;                 // The application discards fixes for 3000 ms (minimum)
+    private static final int DEFAULTHANDLERTIMER = 5000;            // The timer for turning off GPS on exit
+    private static final int GPSUNAVAILABLEHANDLERTIMER = 7000;     // The "GPS temporary unavailable" timer
     public int StabilizingSamples = 3;
 
     public static final int GPS_DISABLED = 0;
@@ -77,7 +78,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
 
     // Preferences Variables
-    //private boolean prefKeepScreenOn = true;                  // DONE in GPSActivity
+    // private boolean prefKeepScreenOn = true;                  // DONE in GPSActivity
     private boolean prefShowDecimalCoordinates = false;
     private int prefUM = UM_METRIC_KMH;
     private float prefGPSdistance = 0f;
@@ -122,7 +123,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int _NumberOfSatellites = 0;
 
     private int _Stabilizer = StabilizingSamples;
-    private int HandlerTimer = DEFAULHANDLERTIMER;
+    private int HandlerTimer = DEFAULTHANDLERTIMER;
 
     private LocationExtended _currentLocationExtended = null;
     private LocationExtended _currentPlacemark = null;
@@ -396,7 +397,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         if (msg.equals("APP_RESUME")) {
             handler.removeCallbacks(r);     // Cancel the switch-off handler
-            setHandlerTimer(DEFAULHANDLERTIMER);
+            setHandlerTimer(DEFAULTHANDLERTIMER);
             setGPSLocationUpdates(true);
             if (MustUpdatePrefs) {
                 MustUpdatePrefs = false;
@@ -440,15 +441,18 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     }
 
     public void updateSats() {
-        final GpsStatus gs = this.mlocManager.getGpsStatus(null);
-        int i = 0;
-        final Iterator<GpsSatellite> it = gs.getSatellites().iterator();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            final GpsStatus gs = this.mlocManager.getGpsStatus(null);
+            int i = 0;
+            final Iterator<GpsSatellite> it = gs.getSatellites().iterator();
 
-        while (it.hasNext()) {
-            it.next();
-            i += 1;
-        }
-        this._NumberOfSatellites = i;
+            while (it.hasNext()) {
+                it.next();
+                i += 1;
+            }
+            _NumberOfSatellites = i;
+        } else _NumberOfSatellites = 0;
     }
 
     // ------------------------------------------------------------------------- GpsStatus.Listener
@@ -469,8 +473,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             eloc.setNumberOfSatellites(getNumberOfSatellites());
             boolean ForceRecord = false;
 
-            gpsunavailablehandler.removeCallbacks(unavailr);            // Cancel the previous unavail countdown handler
-            gpsunavailablehandler.postDelayed(unavailr, 6000);          // starts the unavailability timeout (in 6 sec.)
+            gpsunavailablehandler.removeCallbacks(unavailr);                            // Cancel the previous unavail countdown handler
+            gpsunavailablehandler.postDelayed(unavailr, GPSUNAVAILABLEHANDLERTIMER);    // starts the unavailability timeout (in 7 sec.)
 
             if (GPSStatus != GPS_OK) {
                 if (GPSStatus != GPS_STABILIZING) {

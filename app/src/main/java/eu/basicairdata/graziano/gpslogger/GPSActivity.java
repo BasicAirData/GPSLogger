@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -47,10 +48,18 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GPSActivity extends AppCompatActivity {
 
+    String[] permissions= new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.INTERNET};
+
+    private static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     private static final int RESULT_SETTINGS = 1;
 
     private Toolbar toolbar;
@@ -248,70 +257,80 @@ public class GPSActivity extends AppCompatActivity {
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
+
     public void CheckPermissions () {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-        } else Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_GRANTED");
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.INTERNET}, 1);
-        } else Log.w("myApp", "[#] GPSActivity.java - INTERNET = PERMISSION_GRANTED");
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
-        } else Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+        for (String p:permissions) {
+            int result = ContextCompat.checkSelfPermission(this,p);
+            Log.w("myApp", "[#] GPSActivity.java - " + p + " = PERMISSION_" + (result == PackageManager.PERMISSION_GRANTED ? "GRANTED" : "DENIED"));
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+        }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
-            case 0: {       // ACCESS_FINE_LOCATION
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_GRANTED");
-                } else {
-                    Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_DENIED");
-                }
-                return;
-            }
-            case 1: {       // INTERNET
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.w("myApp", "[#] GPSActivity.java - INTERNET = PERMISSION_GRANTED");
-                } else {
-                    Log.w("myApp", "[#] GPSActivity.java - INTERNET = PERMISSION_DENIED");
-                }
-                return;
-            }
-            case 2: {       // WRITE_EXTERNAL_STORAGE
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
-                    // ---------------------------------------------------- Create the Directories if not exist
-                    File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
-                    if (!sd.exists()) {
-                        sd.mkdir();
-                    }
-                    sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-                    if (!sd.exists()) {
-                        sd.mkdir();
-                    }
-                    sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
-                    if (!sd.exists()) {
-                        sd.mkdir();
-                    }
-                    EGM96 egm96 = EGM96.getInstance();
-                    if (egm96 != null) {
-                        if (!egm96.isEGMGridLoaded()) {
-                            //Log.w("myApp", "[#] GPSApplication.java - Loading EGM Grid...");
-                            egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+            case REQUEST_ID_MULTIPLE_PERMISSIONS: {
+                Map<String, Integer> perms = new HashMap<>();
+
+                if (grantResults.length > 0) {
+                    // Fill with actual results from user
+                    for (int i = 0; i < permissions.length; i++) perms.put(permissions[i], grantResults[i]);
+                    // Check for permissions
+                    if (perms.containsKey(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_GRANTED");
+                        } else {
+                            Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_DENIED");
                         }
                     }
-                } else {
-                    Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
+
+                    if (perms.containsKey(Manifest.permission.INTERNET)) {
+                        if (perms.get(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+                            Log.w("myApp", "[#] GPSActivity.java - INTERNET = PERMISSION_GRANTED");
+                        } else {
+                            Log.w("myApp", "[#] GPSActivity.java - INTERNET = PERMISSION_DENIED");
+                        }
+                    }
+
+                    if (perms.containsKey(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
+                            // ---------------------------------------------------- Create the Directories if not exist
+                            File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
+                            if (!sd.exists()) {
+                                sd.mkdir();
+                            }
+                            sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                            if (!sd.exists()) {
+                                sd.mkdir();
+                            }
+                            sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
+                            if (!sd.exists()) {
+                                sd.mkdir();
+                            }
+                            EGM96 egm96 = EGM96.getInstance();
+                            if (egm96 != null) {
+                                if (!egm96.isEGMGridLoaded()) {
+                                    //Log.w("myApp", "[#] GPSApplication.java - Loading EGM Grid...");
+                                    egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                                }
+                            }
+                        } else {
+                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
+                        }
+                    }
                 }
+                break;
+            }
+            default: {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
         }
     }

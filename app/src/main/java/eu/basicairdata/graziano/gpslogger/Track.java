@@ -48,7 +48,7 @@ public class Track {
     public static final int TRACK_TYPE_FLIGHT   = 6;
     public static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
 
-
+    // Variables
     private long   id;                                              // Saved in DB
     private String Name                         = "";               // Saved in DB
 
@@ -110,6 +110,11 @@ public class Track {
     // The value of the progressbar in card view
     private int Progress = 0;
 
+    // The altitude validator (the anti spikes filter):
+    // - Max Acceleration = 12 m/s^2
+    // - Stabilization time = 4 s
+    private SpikesChecker AltitudeFilter = new SpikesChecker(12, 4);
+
     public void add(LocationExtended location) {
         if (NumberOfLocations == 0) {
             // Init "Start" variables
@@ -164,6 +169,9 @@ public class Track {
 
         if (End_EGMAltitudeCorrection == NOT_AVAILABLE) getEnd_EGMAltitudeCorrection();
         if (Start_EGMAltitudeCorrection == NOT_AVAILABLE) getStart_EGMAltitudeCorrection();
+
+        // ---------------------------------------------- Load the new value into antispikes filter
+        if (End_Altitude != NOT_AVAILABLE) AltitudeFilter.load(End_Time, End_Altitude);
 
         // ------------------------------------------------------------- Coords for thumb and stats
 
@@ -233,7 +241,7 @@ public class Track {
                 //Log.w("myApp", "[#] Track.java - LastStepAltitude_Accuracy updated to " + LastStepAltitude_Accuracy );
             }
             // Evaluate the altitude step convalidation:
-            if ((Math.abs(Altitude_InProgress) > MIN_ALTITUDE_STEP)
+            if ((Math.abs(Altitude_InProgress) > MIN_ALTITUDE_STEP) && AltitudeFilter.isValid()
                     && ((float) Math.abs(Altitude_InProgress) > (SECURITY_COEFF * (LastStepAltitude_Accuracy + End_Accuracy)))) {
                 // Altitude step:
                 // increment distance only if the inclination is relevant (assume deltah=20m in max 5000m)
@@ -550,6 +558,10 @@ public class Track {
     }
 
     // --------------------------------------------------------------------------------------------
+
+    public boolean isValidAltitude() {
+        return AltitudeFilter.isValid();
+    }
 
     public long addPlacemark(LocationExtended location) {
         this.NumberOfPlacemarks++ ;
