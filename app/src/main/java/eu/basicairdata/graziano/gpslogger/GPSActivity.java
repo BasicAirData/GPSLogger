@@ -20,6 +20,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -34,14 +35,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -72,6 +76,9 @@ public class GPSActivity extends AppCompatActivity {
     private boolean prefKeepScreenOn = true;
 
     private BottomSheetBehavior mBottomSheetBehavior;
+
+    Toast ToastClickAgain;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +120,8 @@ public class GPSActivity extends AppCompatActivity {
             CheckPermissions();
         }
 
+        ToastClickAgain = Toast.makeText(this, getString(R.string.toast_track_finished_click_again), Toast.LENGTH_SHORT);
+
         LoadPreferences();
     }
 
@@ -131,6 +140,11 @@ public class GPSActivity extends AppCompatActivity {
         Log.w("myApp", "[#] GPSActivity.java - onPause()");
         EventBus.getDefault().unregister(this);
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     @Override
@@ -163,8 +177,18 @@ public class GPSActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.action_track_finished) {
-            GPSApplication.getInstance().setRecording(false);
-            EventBus.getDefault().post("NEW_TRACK");
+            if (GPSApplication.getInstance().getNewTrackFlag()) {
+                // This is the second click
+                GPSApplication.getInstance().setNewTrackFlag(false);
+                GPSApplication.getInstance().setRecording(false);
+                EventBus.getDefault().post("NEW_TRACK");
+                ToastClickAgain.cancel();
+                Toast.makeText(this, getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
+            } else {
+                // This is the first click
+                GPSApplication.getInstance().setNewTrackFlag(true); // Start the timer
+                ToastClickAgain.show();
+            }
             return true;
         }
         if (id == R.id.action_about) {

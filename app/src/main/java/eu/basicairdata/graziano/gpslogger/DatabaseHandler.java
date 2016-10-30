@@ -203,6 +203,71 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_LOCATION_TYPE + " INTEGER,"                   // 11
                 + KEY_LOCATION_NAME + " TEXT" + ")";                // 12
         db.execSQL(CREATE_PLACEMARKS_TABLE);
+
+        // -------------------------------------- Insert the first empty track
+        /*
+        Track track = new Track();
+
+        ContentValues trkvalues = new ContentValues();
+        trkvalues.put(KEY_TRACK_NAME, track.getName());
+        trkvalues.put(KEY_TRACK_FROM, "");
+        trkvalues.put(KEY_TRACK_TO, "");
+
+        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getStart_Latitude());
+        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getStart_Longitude());
+        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getStart_Altitude());
+        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getStart_Accuracy());
+        trkvalues.put(KEY_TRACK_START_SPEED, track.getStart_Speed());
+        trkvalues.put(KEY_TRACK_START_TIME, track.getStart_Time());
+
+        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getLastFix_Time());
+
+        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getEnd_Latitude());
+        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getEnd_Longitude());
+        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getEnd_Altitude());
+        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getEnd_Accuracy());
+        trkvalues.put(KEY_TRACK_END_SPEED, track.getEnd_Speed());
+        trkvalues.put(KEY_TRACK_END_TIME, track.getEnd_Time());
+
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLastStepDistance_Latitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLastStepDistance_Longitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getLastStepDistance_Accuracy());
+
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getLastStepAltitude_Altitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getLastStepAltitude_Accuracy());
+
+        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getMin_Latitude());
+        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getMin_Longitude());
+
+        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getMax_Latitude());
+        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getMax_Longitude());
+
+        trkvalues.put(KEY_TRACK_DURATION, track.getDuration());
+        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDuration_Moving());
+
+        trkvalues.put(KEY_TRACK_DISTANCE, track.getDistance());
+        trkvalues.put(KEY_TRACK_DISTANCE_INPROGRESS, track.getDistanceInProgress());
+        trkvalues.put(KEY_TRACK_DISTANCE_LASTALTITUDE, track.getDistanceLastAltitude());
+
+        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitude_Up());
+        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitude_Down());
+        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitude_InProgress());
+
+        trkvalues.put(KEY_TRACK_SPEED_MAX, track.getSpeedMax());
+        trkvalues.put(KEY_TRACK_SPEED_AVERAGE, track.getSpeedAverage());
+        trkvalues.put(KEY_TRACK_SPEED_AVERAGEMOVING, track.getSpeedAverageMoving());
+
+        trkvalues.put(KEY_TRACK_NUMBEROFLOCATIONS, track.getNumberOfLocations());
+        trkvalues.put(KEY_TRACK_NUMBEROFPLACEMARKS, track.getNumberOfPlacemarks());
+        trkvalues.put(KEY_TRACK_TYPE, track.getType());
+
+        trkvalues.put(KEY_TRACK_VALIDMAP, track.getValidMap());
+
+        db.insert(TABLE_TRACKS, null, trkvalues);
+        */
+
+        //Track track = new Track();
+        //addTrack(track);
     }
 
     // Upgrading database
@@ -219,12 +284,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Create tables again
         onCreate(db);
-    }
-
-    // Ensure DB creation!
-    public boolean CreateDBifNeeded() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return (db != null);
     }
 
 // ----------------------------------------------------------------------- LOCATIONS AND PLACEMARKS
@@ -801,7 +860,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Get last TrackID
     public long getLastTrackID() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Track trk = null;
         long result = 0;
 
         String query = "SELECT " + KEY_ID + " FROM " + TABLE_TRACKS + " ORDER BY " + KEY_ID + " DESC LIMIT 1";
@@ -912,6 +970,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     // Getting the list of all Tracks in the DB
+    /* NOT USED, COMMENTED OUT !!
     public List<Track> getTracksList() {
 
         List<Track> trackList = new ArrayList<Track>();
@@ -988,5 +1047,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.close();
         }
         return trackList;
-    }
+    } */
 }

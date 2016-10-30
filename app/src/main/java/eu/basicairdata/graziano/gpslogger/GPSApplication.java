@@ -76,7 +76,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public static final int GPS_STABILIZING = 4;
     public static final int GPS_OK = 5;
 
-
     // Preferences Variables
     // private boolean prefKeepScreenOn = true;                  // DONE in GPSActivity
     private boolean prefShowDecimalCoordinates = false;
@@ -119,6 +118,15 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean isGPSLoggerFolder = false;
     private int GPSStatus = GPS_SEARCHING;
 
+    private boolean NewTrackFlag = false;                   // The variable that handle the double-click on "Track Finished"
+    final Handler newtrackhandler = new Handler();
+    Runnable newtrackr = new Runnable() {
+        @Override
+        public void run() {
+            NewTrackFlag = false;
+        }
+    };
+
     private LocationManager mlocManager = null;             // GPS LocationManager
     private int _NumberOfSatellites = 0;
 
@@ -157,6 +165,21 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     // ------------------------------------------------------------------------ Getters and Setters
 
+
+    public boolean getNewTrackFlag() {
+        return NewTrackFlag;
+    }
+
+    public void setNewTrackFlag(boolean newTrackFlag) {
+        if (newTrackFlag) {
+            NewTrackFlag = true;
+            newtrackhandler.removeCallbacks(newtrackr);         // Cancel the previous newtrackr handler
+            newtrackhandler.postDelayed(newtrackr, 1500);       // starts the new handler
+        } else {
+            NewTrackFlag = false;
+            newtrackhandler.removeCallbacks(newtrackr);         // Cancel the previous newtrackr handler
+        }
+    }
 
     public boolean isPermissionsChecked() {
         return PermissionsChecked;
@@ -264,22 +287,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     // --------------------------------------------------------------------------------------------
 
-
     @Override
     public void onCreate() {
-
-        // ---------------------------------------------------------------- Initialize the Database
-        GPSDataBase = new DatabaseHandler(this);
-        GPSDataBase.CreateDBifNeeded();
-
         super.onCreate();
         singleton = this;
 
-        mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);       // Location Manager
+        EventBus.getDefault().register(this);
 
+        mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
 
-        // ---------------------------------------------------- Create the Directories if not exist
-        File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
+        File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");   // Create the Directories if not exist
         isGPSLoggerFolder = true;
         if (!sd.exists()) {
             isGPSLoggerFolder = sd.mkdir();
@@ -294,28 +311,28 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             sd.mkdir();
         }
 
-        // -------------------------------------------------------------------------- Load EGM Grid
-        EGM96 egm96 = EGM96.getInstance();
+        EGM96 egm96 = EGM96.getInstance();                                              // Load EGM Grid
         if (egm96 != null) {
             if (!egm96.isEGMGridLoaded()) {
-                //Log.w("myApp", "[#] GPSApplication.java - Loading EGM Grid...");
                 egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
             }
         }
 
-        // -------------------------------------------------------------------------- Load Settings
-        LoadPreferences();
+        GPSDataBase = new DatabaseHandler(this);                                        // Initialize the Database
+
+        // Prepare the current track
+        if (GPSDataBase.getLastTrackID() == 0) GPSDataBase.addTrack(new Track());       // Creation of the first track if the DB is empty
+        _currentTrack = GPSDataBase.getLastTrack();                                     // Get the last track
+
+        LoadPreferences();                                                              // Load Settings
 
         // ----------------------------------------------------------------------------------------
-        EventBus.getDefault().register(this);
 
         asyncUpdateThread.start();
         AsyncTODO ast = new AsyncTODO();
         ast.TaskType = "TASK_NEWTRACK";
         ast.location = null;
         AsyncTODOQueue.add(ast);
-
-        //Log.w("myApp", "[#] GPSApplication.java - " + getResources().getDimension(R.dimen.thumbLineWidth));
     }
 
     @Override
@@ -393,10 +410,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             AsyncTODOQueue.add(ast);
         }
         if (msg.equals("APP_PAUSE")) {
-            handler.postDelayed(r, getHandlerTimer());   // starts the switch-off handler (delayed by HandlerTimer)
+            handler.postDelayed(r, getHandlerTimer());  // Starts the switch-off handler (delayed by HandlerTimer)
         }
         if (msg.equals("APP_RESUME")) {
-            handler.removeCallbacks(r);     // Cancel the switch-off handler
+            handler.removeCallbacks(r);                 // Cancel the switch-off handler
             setHandlerTimer(DEFAULTHANDLERTIMER);
             setGPSLocationUpdates(true);
             if (MustUpdatePrefs) {
@@ -625,7 +642,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
             if (!egm96.isEGMGridLoaded()) {
-                //Log.w("myApp", "[#] GPSApplication.java - Loading EGM Grid...");
                 egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
             }
         }
@@ -657,19 +673,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
         public void run() {
 
-            if (track == null) track = new Track();
-            if (GPSDataBase.getLastTrackID() == 0)
-                track.setId(GPSDataBase.addTrack(track));
-            Track trk = GPSDataBase.getLastTrack();
-            Log.w("myApp", "[#] GPSApplication.java - _trk.getNumberOfLocations() = " + trk.getNumberOfLocations());
-            Log.w("myApp", "[#] GPSApplication.java - _trk.getNumberOfPlacemarks() = " + trk.getNumberOfPlacemarks());
-            if ((trk.getNumberOfLocations() == 0) && (trk.getNumberOfPlacemarks() == 0)) {
-                Log.w("myApp", "[#] GPSApplication.java - Set _currentTrack.setID(" + GPSDataBase.getLastTrackID() + ")");
-                track.setId(GPSDataBase.getLastTrackID());
-            } else track.setId(GPSDataBase.addTrack(track));
-            _currentTrack = track;
+            track = _currentTrack;
             EventBus.getDefault().post("UPDATE_TRACK");
-
             UpdateTrackList();
 
             while (true) {
@@ -697,7 +702,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         Log.w("myApp", "[#] GPSApplication.java - TASK_NEWTRACK: " + track.getId());
                         _currentTrack = track;
                         UpdateTrackList();
-                    } else Log.w("myApp", "[#] GPSApplication.java - TASK_NEWTRACK: Track already empty, new track not created");
+                    } else Log.w("myApp", "[#] GPSApplication.java - TASK_NEWTRACK: Track " + track.getId() + " already empty (New track not created)");
                     _currentTrack = track;
                     EventBus.getDefault().post("UPDATE_TRACK");
                 }

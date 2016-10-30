@@ -67,8 +67,8 @@ public class SpikesChecker {
 
         if (Math.abs(VerticalAcceleration) >= MAX_ACCELERATION) Good_Time = New_Time ;
 
-        Log.w("myApp", "[#] SpikesChecker.java - Vertical Acceleration = " + VerticalAcceleration);
-        Log.w("myApp", "[#] SpikesChecker.java - Validation window = " + (New_Time - Good_Time) / 1000);
+        //Log.w("myApp", "[#] SpikesChecker.java - Vertical Acceleration = " + VerticalAcceleration);
+        //Log.w("myApp", "[#] SpikesChecker.java - Validation window = " + (New_Time - Good_Time) / 1000);
     }
 
     public boolean isValid() {

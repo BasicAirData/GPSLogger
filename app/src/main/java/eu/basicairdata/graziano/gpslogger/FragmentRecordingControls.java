@@ -90,22 +90,20 @@ public class FragmentRecordingControls extends Fragment{
 
     public void ontoggleRecordGeoPoint(View view) {
         if (isAdded()) {
-            final GPSApplication GlobalVariables = (GPSApplication) getActivity().getApplicationContext();
-            final Boolean grs = GlobalVariables.getRecording();
+            GPSApplication gpsApplication = GPSApplication.getInstance();
+            final Boolean grs = gpsApplication.getRecording();
             boolean newRecordingState = !grs;
-
-            GlobalVariables.setRecording(newRecordingState);
+            gpsApplication.setRecording(newRecordingState);
             tableLayoutGeoPoints.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
         }
     }
 
     public void onPlacemarkRequest(View view) {
         if (isAdded()) {
-            final GPSApplication GlobalVariables = (GPSApplication) getActivity().getApplicationContext();
-            final Boolean pr = GlobalVariables.getPlacemarkRequest();
+            GPSApplication gpsApplication = GPSApplication.getInstance();
+            final Boolean pr = gpsApplication.getPlacemarkRequest();
             boolean newPlacemarkRequestState = !pr;
-
-            GlobalVariables.setPlacemarkRequest(newPlacemarkRequestState);
+            gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
             tableLayoutPlacemarks.setBackgroundColor(newPlacemarkRequestState ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
         }
     }
@@ -124,10 +122,10 @@ public class FragmentRecordingControls extends Fragment{
 
     public void Update() {
         if (isAdded()) {
-            final GPSApplication GlobalVariables = (GPSApplication) getActivity().getApplicationContext();
-            final Track track = GlobalVariables.getCurrentTrack();
-            final Boolean grs = GlobalVariables.getRecording();
-            final Boolean pr = GlobalVariables.getPlacemarkRequest();
+            GPSApplication gpsApplication = GPSApplication.getInstance();
+            final Track track = gpsApplication.getCurrentTrack();
+            final Boolean grs = gpsApplication.getRecording();
+            final Boolean pr = gpsApplication.getPlacemarkRequest();
             if (track != null) {
                 if (TVGeoPoints != null)
                     TVGeoPoints.setText(String.valueOf(track.getNumberOfLocations()));

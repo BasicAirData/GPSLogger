@@ -135,7 +135,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         /* new AlertDialog.Builder(this)                         // Confirmation dialog for file download
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle("Question")
-                            .setMessage("Download 2MBz EGM96 coefficients (2 MB)?")
+                            .setMessage("Download EGM96 coefficients (file size 2 MB)?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

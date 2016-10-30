@@ -139,15 +139,13 @@ public class FragmentTrack extends Fragment {
     }
 
     public void Update() {
+        GPSApplication gpsApplication = GPSApplication.getInstance();
+        final Track track = gpsApplication.getCurrentTrack();
+        final int prefDirections = gpsApplication.getPrefShowDirections();
+        final boolean EGMAltitudeCorrection = gpsApplication.getPrefEGM96AltitudeCorrection();
+
         if (isAdded()) {
-            final GPSApplication GlobalVariables = (GPSApplication) getActivity().getApplicationContext();
-            final Track track = GlobalVariables.getCurrentTrack();
-            int prefDirections = GlobalVariables.getPrefShowDirections();
-            final boolean EGMAltitudeCorrection = GlobalVariables.getPrefEGM96AltitudeCorrection();
-            final boolean isValidAltitude = track.isValidAltitude();
             if ((track != null) && (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0)) {
-                //Log.w("myApp", "[#] FragmentTrack.java - Update(Track track)");
-                //Log.w("myApp", "[#] FragmentTrack.java - duration = " + track.getDuration());
 
                 FTrackID = getString(R.string.track_id) + " " + String.valueOf(track.getId());
                 FTrackName = track.getName();
@@ -178,6 +176,7 @@ public class FragmentTrack extends Fragment {
                 TVAltitudeGapUM.setText(FAltitudeUM);
 
                 // Colorize the Altitude Gap textview depending on the altitude filter
+                final boolean isValidAltitude = track.isValidAltitude();
                 TVAltitudeGap.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
                 TVAltitudeGapUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
 

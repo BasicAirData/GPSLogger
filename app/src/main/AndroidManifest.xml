@@ -36,6 +36,8 @@
         android:icon="@mipmap/gps_logger"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:alwaysRetainTaskState="true"
+        android:launchMode="singleTask"
         android:theme="@style/MyMaterialTheme">
         <activity android:name=".GPSActivity">
             <intent-filter>
