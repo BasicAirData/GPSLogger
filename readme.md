@@ -29,14 +29,14 @@ BasicAirData is free software licensed under [GNU GPL v3.0](http://www.gnu.org/l
 [Current members](http://www.basicairdata.eu/about.html)
 
 ##FAQ##
-Q - I've just installed the app, but it doesn't read the GPS signal.
-A - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
+<b>Q</b> - I've just installed the app, but it doesn't read the GPS signal.<br>
+<b>A</b> - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
 
-Q - My track is shown broken in many points in Google Earth.
-A - The application is set by default to show the track in 3D. Thus the track may be partially hidden under the terrain. Please go in the Exporting section of settings and switch the Altitude Mode to "Projected to ground"; your tracks should return fully visible.
+<b>Q</b> - My track is shown broken in many points in Google Earth.<br>
+<b>A</b> - The application is set by default to show the track in 3D. Thus the track may be partially hidden under the terrain. Please go in the Exporting section of settings and switch the Altitude Mode to "Projected to ground"; your tracks should return fully visible.
 
-Q - How can I see my recorded tracks?
-A - You can see your tracks clicking on it, using the "View in Google Earth" contextual menu. Google Earth must be installed on your device; if not, please install it. Google Earth is the best application to view a track, GPS Logger choose to use it instead of an internal viewer.
+<b>Q</b> - How can I see my recorded tracks?<br>
+<b>A</b> - You can see your tracks clicking on it, using the "View in Google Earth" contextual menu. Google Earth must be installed on your device; if not, please install it. Google Earth is the best application to view a track, GPS Logger choose to use it instead of an internal viewer.
 
-Q - My Google Earth occasionally shows a black screen instead of my track.
-A - It is a Google Earth problem. When the problem occurs, please click on the small bearing located in the upper-right corner of the Earth map.
+<b>Q</b> - My Google Earth occasionally shows a black screen instead of my track.<br>
+<b>A</b> - It is a Google Earth problem. When the problem occurs, please click on the small bearing located in the upper-right corner of the Earth map.
