@@ -167,4 +167,10 @@
     <string name="about_rate_this_app">Rate this App</string>
     <string name="about_unable_to_rate">Unable to reach the Google Store</string>
 
+    <!-- Notification icon -->
+    <string name="notification_contenttext">is active</string>
+
+    <!-- Exit confirmation -->
+    <string name="message_exit_confirmation">Do you really want to finish this track and close the app?</string>
+
 </resources>

@@ -144,6 +144,8 @@ public class Exporter extends Thread {
 
                 KMLbw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newLine);
                 KMLbw.write("<!-- Created with BasicAirData GPS Logger for Android - ver. " + versionName + " -->" + newLine);
+                KMLbw.write("<!-- Track " + String.valueOf(track.getId()) + " = " + String.valueOf(track.getNumberOfLocations())
+                        + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
                 KMLbw.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\">" + newLine);
                 KMLbw.write(" <Document>" + newLine);
                 KMLbw.write("  <name>Paths</name>" + newLine);
@@ -172,6 +174,8 @@ public class Exporter extends Thread {
 
                 GPXbw.write("<?xml version=\"1.0\"?>" + newLine);
                 GPXbw.write("<!-- Created with BasicAirData GPS Logger for Android - ver. " + versionName + " -->" + newLine);
+                GPXbw.write("<!-- Track " + String.valueOf(track.getId()) + " = " + String.valueOf(track.getNumberOfLocations())
+                        + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
                 GPXbw.write("<gpx creator=\"BasicAirData GPS Logger\" version=\"" + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine + newLine);
             }
 
@@ -245,9 +249,9 @@ public class Exporter extends Thread {
                                 GPXbw.write("<time>");     // Time
                                 GPXbw.write(dfdt.format(loc.getLocation().getTime()));
                                 GPXbw.write("</time>");
-                                //if (loc.getNumberOfSatellites() > 0) {
-                                //    GPXbw.write("<sat>");
-                                //    GPXbw.write(String.valueOf(loc.getNumberOfSatellites()));
+                                //if (loc.getNumberOfSatellites() > 0) {                            // NOT YET IMPLEMENTED: GPX standards requires sats used for FIX.
+                                //    GPXbw.write("<sat>");                                         // but those are the number of satellites in view!!!
+                                //    GPXbw.write(String.valueOf(loc.getNumberOfSatellites()));     // TODO: Save the satellites used in FIX
                                 //    GPXbw.write("</sat>");
                                 //}
                                 GPXbw.write("</trkpt>" + newLine);

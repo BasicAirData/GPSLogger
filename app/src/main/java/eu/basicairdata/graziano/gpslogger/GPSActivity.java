@@ -144,7 +144,35 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        //moveTaskToBack(true);
+        if ((GPSApplication.getInstance().getCurrentTrack().getNumberOfLocations() > 0)
+                || (GPSApplication.getInstance().getCurrentTrack().getNumberOfPlacemarks() > 0)) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.StyledDialog));
+            builder.setMessage(getResources().getString(R.string.message_exit_confirmation));
+            builder.setIcon(android.R.drawable.ic_menu_info_details);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    GPSApplication.getInstance().setRecording(false);
+                    EventBus.getDefault().post("NEW_TRACK");
+                    GPSApplication.getInstance().StopAndUnbindGPSService();
+                    //super.onBackPressed();
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            GPSApplication.getInstance().StopAndUnbindGPSService();
+            //super.onBackPressed();
+            finish();
+        }
     }
 
     @Override

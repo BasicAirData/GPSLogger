@@ -42,13 +42,16 @@
         <activity android:name=".GPSActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity"
             android:configChanges="orientation|screenSize">
         </activity>
+        <service
+            android:name=".GPSService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

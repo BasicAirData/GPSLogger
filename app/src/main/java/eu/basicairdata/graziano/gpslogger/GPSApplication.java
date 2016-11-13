@@ -21,8 +21,10 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -40,6 +42,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -129,6 +132,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     private LocationManager mlocManager = null;             // GPS LocationManager
     private int _NumberOfSatellites = 0;
+    private int _NumberOfSatellitesUsedInFix = 0;
 
     private int _Stabilizer = StabilizingSamples;
     private int HandlerTimer = DEFAULTHANDLERTIMER;
@@ -145,6 +149,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     // The handler that switches off the location updates after a time delay:
     final Handler handler = new Handler();
     Runnable r = new Runnable() {
+
         @Override
         public void run() {
             setGPSLocationUpdates(false);
@@ -153,6 +158,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     final Handler gpsunavailablehandler = new Handler();
     Runnable unavailr = new Runnable() {
+
         @Override
         public void run() {
             if (GPSStatus == GPS_OK) {
@@ -163,9 +169,62 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     };
 
 
+    // ------------------------------------------------------------------------------------ Service
+    Intent GPSServiceIntent;
+    GPSService GPSLoggerService;
+    boolean isGPSServiceBound = false;
+
+    private ServiceConnection GPSServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            GPSService.LocalBinder binder = (GPSService.LocalBinder) service;
+            GPSLoggerService = binder.getServiceInstance();                     //Get instance of your service!
+            Log.w("myApp", "[#] GPSApplication.java - GPSSERVICE CONNECTED - onServiceConnected event");
+            isGPSServiceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            Log.w("myApp", "[#] GPSApplication.java - GPSSERVICE DISCONNECTED - onServiceDisconnected event");
+            isGPSServiceBound = false;
+        }
+    };
+
+    private void StartAndBindGPSService() {
+        GPSServiceIntent = new Intent(GPSApplication.this, GPSService.class);
+        startService(GPSServiceIntent);                                                    //Starting the service
+        bindService(GPSServiceIntent, GPSServiceConnection, Context.BIND_AUTO_CREATE);     //Binding to the service!
+        Log.w("myApp", "[#] GPSApplication.java - StartAndBindGPSService");
+    }
+
+    private void UnbindGPSService() {
+        try {
+            unbindService(GPSServiceConnection);                                        //Unbind to the service
+            Log.w("myApp", "[#] GPSApplication.java - Service unbound");
+        } catch (Exception e) {
+            Log.w("myApp", "[#] GPSApplication.java - Unable to unbind the GPSService");
+        }
+    }
+
+    public void StopAndUnbindGPSService() {
+        try {
+            unbindService(GPSServiceConnection);                                        //Unbind to the service
+            Log.w("myApp", "[#] GPSApplication.java - Service unbound");
+        } catch (Exception e) {
+            Log.w("myApp", "[#] GPSApplication.java - Unable to unbind the GPSService");
+        }
+        try {
+            stopService(GPSServiceIntent);                                                  //Stop the service
+            Log.w("myApp", "[#] GPSApplication.java - Service stopped");
+        } catch (Exception e) {
+            Log.w("myApp", "[#] GPSApplication.java - Unable to stop GPSService");
+        }
+    }
+
+
     // ------------------------------------------------------------------------ Getters and Setters
-
-
     public boolean getNewTrackFlag() {
         return NewTrackFlag;
     }
@@ -292,6 +351,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         super.onCreate();
         singleton = this;
 
+        StartAndBindGPSService();
+
         EventBus.getDefault().register(this);
 
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
@@ -335,9 +396,12 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         AsyncTODOQueue.add(ast);
     }
 
+
     @Override
     public void onTerminate() {
+        Log.w("myApp", "[#] GPSApplication.java - onTerminate");
         EventBus.getDefault().unregister(this);
+        StopAndUnbindGPSService();
         super.onTerminate();
     }
 
@@ -411,6 +475,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         if (msg.equals("APP_PAUSE")) {
             handler.postDelayed(r, getHandlerTimer());  // Starts the switch-off handler (delayed by HandlerTimer)
+            //UnbindGPSService();
         }
         if (msg.equals("APP_RESUME")) {
             handler.removeCallbacks(r);                 // Cancel the switch-off handler
@@ -420,6 +485,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 MustUpdatePrefs = false;
                 LoadPreferences();
             }
+            StartAndBindGPSService();
         }
         if (msg.equals("UPDATE_SETTINGS")) {
             MustUpdatePrefs = true;
@@ -461,15 +527,22 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         {
             final GpsStatus gs = this.mlocManager.getGpsStatus(null);
-            int i = 0;
+            int i = 0;          // In-view satellites;
+            //int i_used = 0;   // TODO: Satellites used in fix; uncomment the following commented out lines to count them
             final Iterator<GpsSatellite> it = gs.getSatellites().iterator();
 
             while (it.hasNext()) {
+                //GpsSatellite sat = it.next();
+                //if (sat.usedInFix()) i_used += 1;
                 it.next();
                 i += 1;
             }
             _NumberOfSatellites = i;
-        } else _NumberOfSatellites = 0;
+            //_NumberOfSatellitesUsedInFix = i_used;
+        } else {
+            _NumberOfSatellites = 0;
+            //_NumberOfSatellitesUsedInFix = 0;
+        }
     }
 
     // ------------------------------------------------------------------------- GpsStatus.Listener
