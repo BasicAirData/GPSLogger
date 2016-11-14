@@ -20,8 +20,11 @@
 package eu.basicairdata.graziano.gpslogger;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,11 +93,31 @@ public class FragmentRecordingControls extends Fragment{
 
     public void ontoggleRecordGeoPoint(View view) {
         if (isAdded()) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            final Boolean grs = gpsApplication.getRecording();
-            boolean newRecordingState = !grs;
-            gpsApplication.setRecording(newRecordingState);
-            tableLayoutGeoPoints.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
+            boolean grs = GPSApplication.getInstance().getRecording();
+            if(grs) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                builder.setMessage(getResources().getString(R.string.tracking_message_stop_confirmation));
+                builder.setIcon(android.R.drawable.ic_menu_info_details);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        GPSApplication gpsApp = GPSApplication.getInstance();
+                        gpsApp.setRecording(!gpsApp.getRecording());
+                        tableLayoutGeoPoints.setBackgroundColor(gpsApp.getRecording() ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+            else {
+                GPSApplication.getInstance().setRecording(!grs);
+                tableLayoutGeoPoints.setBackgroundColor(GPSApplication.getInstance().getRecording() ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
+            }
         }
     }
 
