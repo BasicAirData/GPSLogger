@@ -173,4 +173,6 @@
     <!-- Exit confirmation -->
     <string name="message_exit_confirmation">Do you really want to finish this track and close the app?</string>
 
+    <!--Stop Tracking confirmation -->
+    <string name="tracking_message_stop_confirmation">Do you really want to stop tracking?</string>
 </resources>

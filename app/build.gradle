@@ -33,3 +33,17 @@ dependencies {
     compile 'com.android.support:preference-v7:23.4.0'
     compile 'com.android.support:preference-v14:23.4.0'
 }
+
+buildscript {
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+    }
+    repositories {
+        jcenter()
+    }
+}
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
