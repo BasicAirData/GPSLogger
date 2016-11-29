@@ -17,16 +17,8 @@ For further information about this app you can read [this article](http://www.ba
 
 The application is freely downloadable from [Google Play(tm)](https://play.google.com/store/apps/details?id=eu.basicairdata.graziano.gpslogger) or directly here in this repository in /apk folder.
 
-##License##
-BasicAirData is free software licensed under [GNU GPL v3.0](http://www.gnu.org/licenses/gpl-3.0.txt) General Public License
-
-[License information](http://www.basicairdata.eu/copyright.html)
-
-##Info##
-[Contact information](http://www.basicairdata.eu/social.html)
-
-##Acknowledgements##
-[Current members](http://www.basicairdata.eu/about.html)
+##License and General Information
+[License and general info](https://github.com/BasicAirData/Document-Templates/blob/master/general-info.md)
 
 ##FAQ##
 <b>Q</b> - I've just installed the app, but it doesn't read the GPS signal.<br>
