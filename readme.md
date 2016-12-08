@@ -9,7 +9,7 @@
 A GPS logger for Android mobile devices.
 
 BasicAirData GPS Logger is a simple App for record your position and your path.
-It's a lightweight GPS tracker focused on accuracy, with an eye to power saving.
+It's a basic and lightweight GPS tracker focused on accuracy, with an eye to power saving.
 This app is very accurate in determining your altitude. Enable EGM96 automatic altitude correction on settings!!
 You can record all your trips, view them in Google Earth (if installed) directly from the in-app tracklist, share the tracks in KML and GPX format in many ways and load your logged tracks in Google Earth or in OpenStreetMap.
 
