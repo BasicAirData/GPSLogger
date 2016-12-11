@@ -1,17 +1,18 @@
 #BasicAirData GPS Logger
 
+A GPS logger for Android mobile devices.<br>
 [BasicAirData](http://www.basicairdata.eu) Open and free DIY air data instrumentation and telemetry 
 
 ![alt tag](https://github.com/BasicAirData/GPSLogger/blob/master/screenshots/Image_01.png)
 
 ##Description##
 
-A GPS logger for Android mobile devices.
+BasicAirData GPS Logger is a simple App to record your position and your path.<br>
+It's a basic and lightweight GPS tracker focused on accuracy, with an eye to power saving.<br>
+This app is very accurate in determining your altitude: enable EGM96 automatic altitude correction on settings!<br>
+You can record all your trips, view them in Google Earth (if installed) directly from the in-app tracklist, and share them in KML and GPX format in many ways.
 
-BasicAirData GPS Logger is a simple App for record your position and your path.
-It's a basic and lightweight GPS tracker focused on accuracy, with an eye to power saving.
-This app is very accurate in determining your altitude. Enable EGM96 automatic altitude correction on settings!!
-You can record all your trips, view them in Google Earth (if installed) directly from the in-app tracklist, share the tracks in KML and GPX format in many ways and load your logged tracks in Google Earth or in OpenStreetMap.
+The app is 100% Free and Open Source.
 
 For further information about this app you can read [this article](http://www.basicairdata.eu/projects/android/android-gps-logger/).
 
