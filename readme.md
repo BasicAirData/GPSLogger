@@ -1,7 +1,7 @@
 #BasicAirData GPS Logger
 
 A GPS logger for Android mobile devices.<br>
-[BasicAirData](http://www.basicairdata.eu) Open and free DIY air data instrumentation and telemetry 
+Offered by [BasicAirData](http://www.basicairdata.eu) - Open and free DIY air data instrumentation and telemetry 
 
 ![alt tag](https://github.com/BasicAirData/GPSLogger/blob/master/screenshots/Image_01.png)
 
@@ -21,7 +21,7 @@ The application is freely downloadable from [Google Play(tm)](https://play.googl
 ##License and General Information
 [License and general info](https://github.com/BasicAirData/Document-Templates/blob/master/general-info.md)
 
-##FAQ##
+##Mini FAQ##
 <b>Q</b> - I've just installed the app, but it doesn't read the GPS signal.<br>
 <b>A</b> - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
 
