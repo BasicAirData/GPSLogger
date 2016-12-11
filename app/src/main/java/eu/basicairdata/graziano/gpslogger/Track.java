@@ -950,7 +950,7 @@ public class Track {
                 if ((Altitude_Up != NOT_AVAILABLE) && (Altitude_Down != NOT_AVAILABLE))
                     if ((Altitude_Down + Altitude_Up > (0.1f * Distance)) && (Distance > 500.0f))
                         return TRACK_TYPE_MOUNTAIN;
-                else return TRACK_TYPE_RUN;
+                else return TRACK_TYPE_WALK;
             }
         }
         if ((Altitude_Up != NOT_AVAILABLE) && (Altitude_Down != NOT_AVAILABLE))

@@ -33,6 +33,11 @@
         android:orderInCategory="101"
         android:title="@string/menu_about"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_shutdown"
+        android:orderInCategory="102"
+        android:title="@string/menu_shutdown"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_track_finished"

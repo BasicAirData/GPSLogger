@@ -69,6 +69,7 @@
     <string name="toast_track_finished_click_again">Double click to finish this track</string>
     <string name="toast_track_saved_into_tracklist">Track saved into the Tracklist</string>
     <string name="menu_about">About</string>
+    <string name="menu_shutdown">Shutdown</string>
 
     <!-- Placemark Creation dialog -->
     <string name="dlg_add_placemark">Add Placemark</string>
@@ -141,7 +142,6 @@
     <string name="pref_AltitudeCorrection_summary_offset">Offset</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">No offset defined</string>
 
-
     <string name="pref_category_exporting">EXPORTING</string>
     <string name="pref_export_KML">Export Tracks in KML</string>
     <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
@@ -154,6 +154,8 @@
     <string name="pref_track_stats_totaltime">Total time</string>
     <string name="pref_track_stats_movingtime">Moving time</string>
 
+    <!-- Preferences messages -->
+    <string name="pref_message_switch_to_absolute_altitude_mode">We suggest to switch to Absolute Altitude Mode, to view your tracks in 3D in Google Earth. \n\nYou can switch anytime between Absolute and Projected to ground in the Exporting section of Settings.</string>
 
     <!-- Preferences toasts -->
     <string name="toast_download_error">Download error</string>

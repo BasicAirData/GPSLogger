@@ -53,8 +53,9 @@ public class GPSService extends Service {
         final Intent startIntent = new Intent(getApplicationContext(), GPSActivity.class);
         startIntent.setAction(Intent.ACTION_MAIN);
         startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 1, startIntent, 0);
+        //startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 1, startIntent, 0);
         builder.setContentIntent(contentIntent);
         Notification notification = builder.build();
         return notification;
@@ -79,6 +80,7 @@ public class GPSService extends Service {
     public void onCreate() {
         super.onCreate();
         singleton = this;
+        // THREAD FOR DEBUG PURPOSE
         //if (!t.isAlive()) {
         //    t.start();
         //}
@@ -102,6 +104,7 @@ public class GPSService extends Service {
     @Override
     public void onDestroy() {
         Log.w("myApp", "[#] GPSService.java - DESTROY = onDestroy");
+        // THREAD FOR DEBUG PURPOSE
         //if (t.isAlive()) t.interrupt();
         super.onDestroy();
     }

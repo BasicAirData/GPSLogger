@@ -36,19 +36,22 @@
         android:icon="@mipmap/gps_logger"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:alwaysRetainTaskState="true"
-        android:launchMode="singleInstance"
         android:theme="@style/MyMaterialTheme">
-        <activity android:name=".GPSActivity">
+        <activity android:name=".GPSActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"
-                    android:launchMode="singleInstance"/>
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity"
-            android:launchMode="singleInstance"
+            android:label="@string/menu_settings"
+            android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GPSActivity" />
         </activity>
         <service
             android:name=".GPSService"

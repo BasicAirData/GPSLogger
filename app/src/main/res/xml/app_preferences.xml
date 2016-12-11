@@ -130,7 +130,7 @@
         android:summary=" "
         android:entries="@array/KMLAltitudeMode"
         android:entryValues="@array/KMLAltitudeModeValues"
-        android:defaultValue="0" />
+        android:defaultValue="1" />
 
     </android.support.v7.preference.PreferenceCategory>
 
