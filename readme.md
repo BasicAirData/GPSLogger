@@ -26,7 +26,7 @@ The application is freely downloadable from [Google Play(tm)](https://play.googl
 <b>A</b> - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
 
 <b>Q</b> - My track is shown broken in many points in Google Earth.<br>
-<b>A</b> - The application is set by default to show the track in 3D. Thus the track may be partially hidden under the terrain. Please go in the Exporting section of settings and switch the Altitude Mode to "Projected to ground"; your tracks should return fully visible.
+<b>A</b> - The application might be set to show the track in 3D. Thus the track may be partially hidden under the terrain. Please go in the Exporting section of settings and switch the Altitude Mode to "Projected to ground"; your tracks should return fully visible.
 
 <b>Q</b> - How can I see my recorded tracks?<br>
 <b>A</b> - You can see your tracks clicking on it, using the "View in Google Earth" contextual menu. Google Earth must be installed on your device; if not, please install it. Google Earth is the best application to view a track, GPS Logger choose to use it instead of an internal viewer.
