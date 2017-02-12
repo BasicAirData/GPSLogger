@@ -8,8 +8,8 @@ android {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 13
-        versionName '2.1.2'
+        versionCode 14
+        versionName '2.1.3'
     }
     buildTypes {
         release {

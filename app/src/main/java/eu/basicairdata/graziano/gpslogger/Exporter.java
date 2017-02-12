@@ -99,7 +99,8 @@ public class Exporter extends Thread {
 
         File KMLfile = null;
         File GPXfile = null;
-        final String newLine = System.getProperty("line.separator");
+        //final String newLine = System.getProperty("line.separator"); //\n\r
+        final String newLine = "\r\n";
 
         // Verify if Folder exists
         sd = new File(SaveIntoFolder);
@@ -172,7 +173,7 @@ public class Exporter extends Thread {
             if (ExportGPX) {
                 // Writing head of GPX file
 
-                GPXbw.write("<?xml version=\"1.0\"?>" + newLine);
+                GPXbw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newLine);
                 GPXbw.write("<!-- Created with BasicAirData GPS Logger for Android - ver. " + versionName + " -->" + newLine);
                 GPXbw.write("<!-- Track " + String.valueOf(track.getId()) + " = " + String.valueOf(track.getNumberOfLocations())
                         + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
@@ -249,11 +250,11 @@ public class Exporter extends Thread {
                                 GPXbw.write("<time>");     // Time
                                 GPXbw.write(dfdt.format(loc.getLocation().getTime()));
                                 GPXbw.write("</time>");
-                                //if (loc.getNumberOfSatellites() > 0) {                            // NOT YET IMPLEMENTED: GPX standards requires sats used for FIX.
-                                //    GPXbw.write("<sat>");                                         // but those are the number of satellites in view!!!
-                                //    GPXbw.write(String.valueOf(loc.getNumberOfSatellites()));     // TODO: Save the satellites used in FIX
-                                //    GPXbw.write("</sat>");
-                                //}
+                                if (loc.getNumberOfSatellitesUsedInFix() > 0) {                   // GPX standards requires sats used for FIX.
+                                    GPXbw.write("<sat>");                                         // and NOT the number of satellites in view!!!
+                                    GPXbw.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
+                                    GPXbw.write("</sat>");
+                                }
                                 GPXbw.write("</trkpt>" + newLine);
                             }
                         }
@@ -340,12 +341,11 @@ public class Exporter extends Thread {
                                 GPXbw.write(dfdt.format(loc.getLocation().getTime()));
                                 GPXbw.write("</time>");
 
-
-                                //if (loc.getNumberOfSatellites() > 0) {
-                                //    GPXbw.write("<sat>");
-                                //    GPXbw.write(String.valueOf(loc.getNumberOfSatellites()));
-                                //    GPXbw.write("</sat>");
-                                ///
+                                if (loc.getNumberOfSatellitesUsedInFix() > 0) {     // Satellites used in fix
+                                    GPXbw.write("<sat>");
+                                    GPXbw.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
+                                    GPXbw.write("</sat>");
+                                }
 
                                 GPXbw.write("<name>");     // Name
                                 GPXbw.write(loc.getDescription()

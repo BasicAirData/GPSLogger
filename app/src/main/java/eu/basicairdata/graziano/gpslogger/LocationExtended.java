@@ -36,6 +36,7 @@ public class LocationExtended {
     private String _Description = "";
     private double _AltitudeEGM96Correction = NOT_AVAILABLE;
     private int _NumberOfSatellites = NOT_AVAILABLE;
+    private int _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
 
 
     // Constructor
@@ -47,12 +48,11 @@ public class LocationExtended {
         }
     }
 
+    // Getters and Setters -------------------------------------------------------------------------
+
     public Location getLocation() {
         return _Location;
     }
-
-
-    // Getters and Setters -------------------------------------------------------------------------
 
     public String getDescription() {
         return _Description;
@@ -70,6 +70,13 @@ public class LocationExtended {
         return _NumberOfSatellites;
     }
 
+    public void setNumberOfSatellitesUsedInFix(int numberOfSatellites) {
+        _NumberOfSatellitesUsedInFix = numberOfSatellites;
+    }
+
+    public int getNumberOfSatellitesUsedInFix() {
+        return _NumberOfSatellitesUsedInFix;
+    }
 
     public double getAltitudeEGM96Correction(){
         if (_AltitudeEGM96Correction == NOT_AVAILABLE) {
@@ -81,7 +88,6 @@ public class LocationExtended {
         }
         return this._AltitudeEGM96Correction;
     }
-
 
     // ---------------------------------------------------------------------------------------------
 

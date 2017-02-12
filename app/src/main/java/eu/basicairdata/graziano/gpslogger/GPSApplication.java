@@ -53,19 +53,19 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class GPSApplication extends Application implements GpsStatus.Listener, LocationListener {
 
-    public static final float M_TO_FT = 3.280839895f;
+    //public static final float M_TO_FT = 3.280839895f;
+    public static final int NOT_AVAILABLE = -100000;
 
-    public static final int UM_METRIC_MS = 0;
+    //public static final int UM_METRIC_MS = 0;
     public static final int UM_METRIC_KMH = 1;
-    public static final int UM_IMPERIAL_FPS = 8;
-    public static final int UM_IMPERIAL_MPH = 9;
+    //public static final int UM_IMPERIAL_FPS = 8;
+    //public static final int UM_IMPERIAL_MPH = 9;
 
     public static final int STABILIZERVALUE = 3000;                 // The application discards fixes for 3000 ms (minimum)
     private static final int DEFAULTHANDLERTIMER = 5000;            // The timer for turning off GPS on exit
@@ -328,14 +328,21 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return _NumberOfSatellites;
     }
 
+    public int getNumberOfSatellitesUsedInFix() {
+        return _NumberOfSatellitesUsedInFix;
+    }
+
     public boolean getRecording() {
         return Recording;
     }
+
     public void setRecording(boolean recordingState) {
         PrevRecordedFix = null;
         Recording = recordingState;
     }
+
     public boolean getPlacemarkRequest() { return PlacemarkRequest; }
+
     public void setPlacemarkRequest(boolean placemarkRequest) { PlacemarkRequest = placemarkRequest; }
 
     public List<Track> getTrackList() {
@@ -527,22 +534,22 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         {
             final GpsStatus gs = this.mlocManager.getGpsStatus(null);
-            int i = 0;          // In-view satellites;
-            //int i_used = 0;   // TODO: Satellites used in fix; uncomment the following commented out lines to count them
-            final Iterator<GpsSatellite> it = gs.getSatellites().iterator();
+            int sats_inview = 0;    // Satellites in view;
+            int sats_used = 0;      // Satellites used in fix;
 
-            while (it.hasNext()) {
-                //GpsSatellite sat = it.next();
-                //if (sat.usedInFix()) i_used += 1;
-                it.next();
-                i += 1;
+            Iterable<GpsSatellite> sats = gs.getSatellites();
+            for (GpsSatellite sat : sats) {
+                sats_inview++;
+                if (sat.usedInFix()) sats_used++;
+                //Log.w("myApp", "[#] GPSApplication.java - updateSats: i=" + i);
             }
-            _NumberOfSatellites = i;
-            //_NumberOfSatellitesUsedInFix = i_used;
+            _NumberOfSatellites = sats_inview;
+            _NumberOfSatellitesUsedInFix = sats_used;
         } else {
-            _NumberOfSatellites = 0;
-            //_NumberOfSatellitesUsedInFix = 0;
+            _NumberOfSatellites = NOT_AVAILABLE;
+            _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
         }
+        //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
     }
 
     // ------------------------------------------------------------------------- GpsStatus.Listener
@@ -550,6 +557,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void onGpsStatusChanged(final int event) {
         switch (event) {
             case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+                // TODO: get here the status of the GPS, and save into a GpsStatus to be used for satellites visualization;
+                // Use GpsStatus getGpsStatus (GpsStatus status)
+                // https://developer.android.com/reference/android/location/LocationManager.html#getGpsStatus(android.location.GpsStatus)
                 updateSats();
                 break;
         }
@@ -558,9 +568,12 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     // --------------------------------------------------------------------------- LocationListener
     @Override
     public void onLocationChanged(Location loc) {
+        //if ((loc != null) && (loc.getProvider().equals(LocationManager.GPS_PROVIDER)) {
         if (loc != null) {      // Location data is valid
+            //Log.w("myApp", "[#] GPSApplication.java - onLocationChanged: provider=" + loc.getProvider());
             LocationExtended eloc = new LocationExtended(loc);
             eloc.setNumberOfSatellites(getNumberOfSatellites());
+            eloc.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
             boolean ForceRecord = false;
 
             gpsunavailablehandler.removeCallbacks(unavailr);                            // Cancel the previous unavail countdown handler
@@ -612,6 +625,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 if (PlacemarkRequest) {
                     _currentPlacemark = new LocationExtended(loc);
                     _currentPlacemark.setNumberOfSatellites(getNumberOfSatellites());
+                    _currentPlacemark.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
                     PlacemarkRequest = false;
                     EventBus.getDefault().post("UPDATE_TRACK");
                     EventBus.getDefault().post("REQUEST_ADD_PLACEMARK");
@@ -784,6 +798,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 if (asyncTODO.TaskType.equals("TASK_ADDLOCATION")) {
                     locationExtended = new LocationExtended(asyncTODO.location.getLocation());
                     locationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
+                    locationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
                     _currentLocationExtended = locationExtended;
                     EventBus.getDefault().post("UPDATE_FIX");
                     track.add(locationExtended);
@@ -797,6 +812,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     locationExtended = new LocationExtended(asyncTODO.location.getLocation());
                     locationExtended.setDescription(asyncTODO.location.getDescription());
                     locationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
+                    locationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
                     track.addPlacemark(locationExtended);
                     GPSDataBase.addPlacemarkToTrack(locationExtended, track);
                     _currentTrack = track;
@@ -807,6 +823,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 if (asyncTODO.TaskType.equals("TASK_UPDATEFIX")) {
                     _currentLocationExtended = new LocationExtended(asyncTODO.location.getLocation());
                     _currentLocationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
+                    _currentLocationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
                     EventBus.getDefault().post("UPDATE_FIX");
                 }
 
