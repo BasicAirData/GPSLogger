@@ -59,25 +59,25 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class GPSApplication extends Application implements GpsStatus.Listener, LocationListener {
 
-    //public static final float M_TO_FT = 3.280839895f;
-    public static final int NOT_AVAILABLE = -100000;
+    //private static final float M_TO_FT = 3.280839895f;
+    private static final int NOT_AVAILABLE = -100000;
 
-    //public static final int UM_METRIC_MS = 0;
-    public static final int UM_METRIC_KMH = 1;
-    //public static final int UM_IMPERIAL_FPS = 8;
-    //public static final int UM_IMPERIAL_MPH = 9;
+    //private static final int UM_METRIC_MS = 0;
+    private static final int UM_METRIC_KMH = 1;
+    //private static final int UM_IMPERIAL_FPS = 8;
+    //private static final int UM_IMPERIAL_MPH = 9;
 
-    public static final int STABILIZERVALUE = 3000;                 // The application discards fixes for 3000 ms (minimum)
+    private static final int STABILIZERVALUE = 3000;                 // The application discards fixes for 3000 ms (minimum)
     private static final int DEFAULTHANDLERTIMER = 5000;            // The timer for turning off GPS on exit
     private static final int GPSUNAVAILABLEHANDLERTIMER = 7000;     // The "GPS temporary unavailable" timer
-    public int StabilizingSamples = 3;
+    private int StabilizingSamples = 3;
 
-    public static final int GPS_DISABLED = 0;
-    public static final int GPS_OUTOFSERVICE = 1;
-    public static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    public static final int GPS_SEARCHING = 3;
-    public static final int GPS_STABILIZING = 4;
-    public static final int GPS_OK = 5;
+    private static final int GPS_DISABLED = 0;
+    private static final int GPS_OUTOFSERVICE = 1;
+    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
+    private static final int GPS_SEARCHING = 3;
+    private static final int GPS_STABILIZING = 4;
+    private static final int GPS_OK = 5;
 
     // Preferences Variables
     // private boolean prefKeepScreenOn = true;                  // DONE in GPSActivity
@@ -89,6 +89,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private double prefAltitudeCorrection = 0d;
     private boolean prefExportKML = true;
     private boolean prefExportGPX = true;
+    private boolean prefExportTXT = false;
     private int prefKMLAltitudeMode = 0;
     private int prefShowTrackStatsType = 0;
     private int prefShowDirections = 0;
@@ -300,6 +301,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return prefExportGPX;
     }
 
+    public boolean getPrefExportTXT() {
+        return prefExportTXT;
+    }
+
     public int getPrefUM() {
         return prefUM;
     }
@@ -448,17 +453,17 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         if (msg.contains("EXPORT_TRACK")) {
             long trackid = Long.valueOf(msg.split(" ")[1]);
-            Ex = new Exporter(trackid, prefExportKML, prefExportGPX, Environment.getExternalStorageDirectory() + "/GPSLogger");
+            Ex = new Exporter(trackid, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger");
             Ex.start();
         }
         if (msg.contains("SHARE_TRACK")) {
             setShare(Long.valueOf(msg.split(" ")[1]));
-            Ex = new Exporter(Share, prefExportKML, prefExportGPX, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+            Ex = new Exporter(Share, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
             Ex.start();
         }
         if (msg.contains("VIEW_TRACK")) {
             setOpenInGoogleEarth(Long.valueOf(msg.split(" ")[1]));
-            Ex = new Exporter(OpenInGoogleEarth, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+            Ex = new Exporter(OpenInGoogleEarth, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
             Ex.start();
         }
         if (msg.equals("NEW_TRACK")) {
@@ -715,6 +720,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             Log.w("myApp", "[#] GPSApplication.java - Manual Correction set to " + prefAltitudeCorrection + " m");
         prefExportKML = preferences.getBoolean("prefExportKML", true);
         prefExportGPX = preferences.getBoolean("prefExportGPX", true);
+        prefExportTXT = preferences.getBoolean("prefExportTXT", false);
         prefKMLAltitudeMode = Integer.valueOf(preferences.getString("prefKMLAltitudeMode", "1"));
         prefShowTrackStatsType = Integer.valueOf(preferences.getString("prefShowTrackStatsType", "0"));
         prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));

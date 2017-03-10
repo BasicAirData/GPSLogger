@@ -18,7 +18,6 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,7 +28,6 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
 
 public class FragmentTrack extends Fragment {
 

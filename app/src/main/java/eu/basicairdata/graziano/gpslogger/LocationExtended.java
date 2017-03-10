@@ -22,15 +22,15 @@ import android.location.Location;
 
 public class LocationExtended {
 
-    public static final int NOT_AVAILABLE = -100000;
+    private static final int NOT_AVAILABLE = -100000;
 
-    public static final int UM_METRIC_MS = 0;
-    public static final int UM_METRIC_KMH = 1;
-    public static final int UM_IMPERIAL_FPS = 8;
-    public static final int UM_IMPERIAL_MPH = 9;
+    private static final int UM_METRIC_MS = 0;
+    private static final int UM_METRIC_KMH = 1;
+    private static final int UM_IMPERIAL_FPS = 8;
+    private static final int UM_IMPERIAL_MPH = 9;
 
-    public static final float M_TO_FT = 3.280839895f;
-    public static final float MS_TO_MPH = 2.2369363f;
+    private static final float M_TO_FT = 3.280839895f;
+    private static final float MS_TO_MPH = 2.2369363f;
 
     private Location _Location;
     private String _Description = "";

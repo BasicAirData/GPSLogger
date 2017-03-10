@@ -260,10 +260,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         locvalues.put(KEY_LOCATION_NUMBER, track.getNumberOfLocations());
         locvalues.put(KEY_LOCATION_LATITUDE, loc.getLatitude());
         locvalues.put(KEY_LOCATION_LONGITUDE, loc.getLongitude());
-        locvalues.put(KEY_LOCATION_ALTITUDE, loc.getAltitude());
-        locvalues.put(KEY_LOCATION_SPEED, loc.getSpeed());
-        locvalues.put(KEY_LOCATION_ACCURACY, loc.getAccuracy());
-        locvalues.put(KEY_LOCATION_BEARING, loc.getBearing());
+        locvalues.put(KEY_LOCATION_ALTITUDE, loc.hasAltitude() ? loc.getAltitude() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_SPEED, loc.hasSpeed() ? loc.getSpeed() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_ACCURACY, loc.hasAccuracy() ? loc.getAccuracy() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_BEARING, loc.hasBearing() ? loc.getBearing() : NOT_AVAILABLE);
         locvalues.put(KEY_LOCATION_TIME, loc.getTime());
         locvalues.put(KEY_LOCATION_NUMBEROFSATELLITES, location.getNumberOfSatellites());
         locvalues.put(KEY_LOCATION_TYPE, LOCATION_TYPE_LOCATION);
@@ -330,6 +330,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
         db.setTransactionSuccessful();
         db.endTransaction();
+
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
 
@@ -345,10 +346,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         locvalues.put(KEY_LOCATION_NUMBER, track.getNumberOfPlacemarks());
         locvalues.put(KEY_LOCATION_LATITUDE, loc.getLatitude());
         locvalues.put(KEY_LOCATION_LONGITUDE, loc.getLongitude());
-        locvalues.put(KEY_LOCATION_ALTITUDE, loc.getAltitude());
-        locvalues.put(KEY_LOCATION_SPEED, loc.getSpeed());
-        locvalues.put(KEY_LOCATION_ACCURACY, loc.getAccuracy());
-        locvalues.put(KEY_LOCATION_BEARING, loc.getBearing());
+        locvalues.put(KEY_LOCATION_ALTITUDE, loc.hasAltitude() ? loc.getAltitude() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_SPEED, loc.hasSpeed() ? loc.getSpeed() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_ACCURACY, loc.hasAccuracy() ? loc.getAccuracy() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_BEARING, loc.hasBearing() ? loc.getBearing() : NOT_AVAILABLE);
         locvalues.put(KEY_LOCATION_TIME, loc.getTime());
         locvalues.put(KEY_LOCATION_NUMBEROFSATELLITES, placemark.getNumberOfSatellites());
         locvalues.put(KEY_LOCATION_TYPE, LOCATION_TYPE_PLACEMARK);
@@ -416,6 +417,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
         db.setTransactionSuccessful();
         db.endTransaction();
+
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
 
@@ -424,6 +426,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public LocationExtended getLocation(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         LocationExtended extdloc = null;
+        double lcdata_double;
+        float lcdata_float;
 
         Cursor cursor = db.query(TABLE_LOCATIONS, new String[] {KEY_ID,
                         KEY_LOCATION_LATITUDE,
@@ -442,11 +446,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             Location lc = new Location("DB");
             lc.setLatitude(cursor.getDouble(1));
             lc.setLongitude(cursor.getDouble(2));
-            lc.setAltitude(cursor.getDouble(3));
-            lc.setSpeed(cursor.getFloat(4));
-            lc.setAccuracy(cursor.getFloat(5));
-            lc.setBearing(cursor.getFloat(6));
+
+            lcdata_double = cursor.getDouble(3);
+            if (lcdata_double != NOT_AVAILABLE) lc.setAltitude(lcdata_double);
+            //else lc.removeAltitude();
+
+            lcdata_float = cursor.getFloat(4);
+            if (lcdata_float != NOT_AVAILABLE) lc.setSpeed(lcdata_float);
+            //else lc.removeSpeed();
+
+            lcdata_float = cursor.getFloat(5);
+            if (lcdata_float != NOT_AVAILABLE) lc.setAccuracy(lcdata_float);
+            //else lc.removeAccuracy();
+
+            lcdata_float = cursor.getFloat(6);
+            if (lcdata_float != NOT_AVAILABLE) lc.setBearing(lcdata_float);
+            //else lc.removeBearing();
+
             lc.setTime(cursor.getLong(7));
+
 
             extdloc = new LocationExtended(lc);
             extdloc.setNumberOfSatellites(cursor.getInt(8));
@@ -457,38 +475,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return extdloc != null ? extdloc : null;
     }
 
-
-    // Get single Location: NOT USED, TO BE REVIEWED WHEN USEFUL
-    /*
-    public LocationExtended getLocation(long TrackID, long locationNumber) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        LocationExtended extdloc = null;
-
-        String selectQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE "
-                + KEY_TRACK_ID + " = " + TrackID + " AND "
-                + KEY_LOCATION_NUMBER + " = " + locationNumber;
-
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-
-            Location lc = new Location("DB");
-            lc.setLatitude(cursor.getDouble(1));
-            lc.setLongitude(cursor.getDouble(2));
-            lc.setAltitude(cursor.getDouble(3));
-            lc.setSpeed(cursor.getFloat(4));
-            lc.setAccuracy(cursor.getFloat(5));
-            lc.setBearing(cursor.getFloat(6));
-            lc.setTime(cursor.getLong(7));
-
-            extdloc = new LocationExtended(lc);
-            extdloc.setNumberOfSatellites(cursor.getInt(8));
-
-            cursor.close();
-        }
-        return extdloc != null ? extdloc : null;
-    } */
 
 
     // Getting a list of Locations associated to a specified track, with number between startNumber and endNumber
@@ -506,6 +492,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        double lcdata_double;
+        float lcdata_float;
 
         if (cursor != null) {
             // looping through all rows and adding to list
@@ -514,10 +502,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     Location lc = new Location("DB");
                     lc.setLatitude(cursor.getDouble(3));
                     lc.setLongitude(cursor.getDouble(4));
-                    lc.setAltitude(cursor.getDouble(5));
-                    lc.setSpeed(cursor.getFloat(6));
-                    lc.setAccuracy(cursor.getFloat(7));
-                    lc.setBearing(cursor.getFloat(8));
+
+                    lcdata_double = cursor.getDouble(5);
+                    if (lcdata_double != NOT_AVAILABLE) lc.setAltitude(lcdata_double);
+                    //else lc.removeAltitude();
+
+                    lcdata_float = cursor.getFloat(6);
+                    if (lcdata_float != NOT_AVAILABLE) lc.setSpeed(lcdata_float);
+                    //else lc.removeSpeed();
+
+                    lcdata_float = cursor.getFloat(7);
+                    if (lcdata_float != NOT_AVAILABLE) lc.setAccuracy(lcdata_float);
+                    //else lc.removeAccuracy();
+
+                    lcdata_float = cursor.getFloat(8);
+                    if (lcdata_float != NOT_AVAILABLE) lc.setBearing(lcdata_float);
+                    //else lc.removeBearing();
+
                     lc.setTime(cursor.getLong(9));
 
                     LocationExtended extdloc = new LocationExtended(lc);
@@ -547,6 +548,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        double lcdata_double;
+        float lcdata_float;
 
         if (cursor != null) {
             // looping through all rows and adding to list
@@ -555,10 +558,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     Location lc = new Location("DB");
                     lc.setLatitude(cursor.getDouble(3));
                     lc.setLongitude(cursor.getDouble(4));
-                    lc.setAltitude(cursor.getDouble(5));
-                    lc.setSpeed(cursor.getFloat(6));
-                    lc.setAccuracy(cursor.getFloat(7));
-                    lc.setBearing(cursor.getFloat(8));
+
+                    lcdata_double = cursor.getDouble(5);
+                    if (lcdata_double != NOT_AVAILABLE) lc.setAltitude(lcdata_double);
+                    //else lc.removeAltitude();
+
+                    lcdata_float = cursor.getFloat(6);
+                    if (lcdata_float != NOT_AVAILABLE) lc.setSpeed(lcdata_float);
+                    //else lc.removeSpeed();
+
+                    lcdata_float = cursor.getFloat(7);
+                    if (lcdata_float != NOT_AVAILABLE) lc.setAccuracy(lcdata_float);
+                    //else lc.removeAccuracy();
+
+                    lcdata_float = cursor.getFloat(8);
+                    if (lcdata_float != NOT_AVAILABLE) lc.setBearing(lcdata_float);
+                    //else lc.removeBearing();
+
                     lc.setTime(cursor.getLong(9));
 
                     LocationExtended extdloc = new LocationExtended(lc);
@@ -671,7 +687,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[] { String.valueOf(TrackID) });    // Delete track
         db.setTransactionSuccessful();
         db.endTransaction();
-        //db.close(); // Closing database connection
+
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
 
@@ -739,7 +755,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long TrackID;
         // Inserting Row
         TrackID = (db.insert(TABLE_TRACKS, null, trkvalues));
-        //db.close(); // Closing database connection
 
         //Log.w("myApp", "[#] DatabaseHandler.java - addTrack " + TrackID);
 
@@ -847,6 +862,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //Log.w("myApp", "[#] DatabaseHandler.java - LastTrackID = " + result);
         return result;
     }
+
 
     // Get last TrackID
     public Track getLastTrack() {

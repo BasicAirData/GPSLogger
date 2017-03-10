@@ -25,28 +25,28 @@ import java.text.SimpleDateFormat;
 public class Track {
 
     // Constants
-    public static final int NOT_AVAILABLE = -100000;
-    public static final double MIN_ALTITUDE_STEP = 8.0;
-    public static final float STANDARD_ACCURACY = 10.0f;
-    public static final float SECURITY_COEFF = 1.7f;
+    private static final int NOT_AVAILABLE = -100000;
+    private static final double MIN_ALTITUDE_STEP = 8.0;
+    private static final float STANDARD_ACCURACY = 10.0f;
+    private static final float SECURITY_COEFF = 1.7f;
 
-    public static final int UM_METRIC_MS = 0;
-    public static final int UM_METRIC_KMH = 1;
-    public static final int UM_IMPERIAL_FPS = 8;
-    public static final int UM_IMPERIAL_MPH = 9;
+    private static final int UM_METRIC_MS = 0;
+    private static final int UM_METRIC_KMH = 1;
+    private static final int UM_IMPERIAL_FPS = 8;
+    private static final int UM_IMPERIAL_MPH = 9;
 
-    public static final float M_TO_FT = 3.280839895f;
-    public static final float MS_TO_MPH = 2.2369363f;
-    public static final float KM_TO_MI = 0.621371192237f;
+    private static final float M_TO_FT = 3.280839895f;
+    private static final float MS_TO_MPH = 2.2369363f;
+    private static final float KM_TO_MI = 0.621371192237f;
 
-    public static final int TRACK_TYPE_STEADY   = 0;
-    public static final int TRACK_TYPE_WALK     = 1;
-    public static final int TRACK_TYPE_MOUNTAIN = 2;
-    public static final int TRACK_TYPE_RUN      = 3;
-    public static final int TRACK_TYPE_BICYCLE  = 4;
-    public static final int TRACK_TYPE_CAR      = 5;
-    public static final int TRACK_TYPE_FLIGHT   = 6;
-    public static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
+    private static final int TRACK_TYPE_STEADY   = 0;
+    private static final int TRACK_TYPE_WALK     = 1;
+    private static final int TRACK_TYPE_MOUNTAIN = 2;
+    private static final int TRACK_TYPE_RUN      = 3;
+    private static final int TRACK_TYPE_BICYCLE  = 4;
+    private static final int TRACK_TYPE_CAR      = 5;
+    private static final int TRACK_TYPE_FLIGHT   = 6;
+    private static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
 
     // Variables
     private long   id;                                              // Saved in DB

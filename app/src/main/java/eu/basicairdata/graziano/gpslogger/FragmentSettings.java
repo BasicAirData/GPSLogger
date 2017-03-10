@@ -346,45 +346,47 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         @Override
         protected void onPostExecute(String result) {
-            //mWakeLock.release();
-            mProgressDialog.dismiss();
-            if (result != null)
-                Toast.makeText(context, getString(R.string.toast_download_error) + ": " + result, Toast.LENGTH_LONG).show();
-            else {
-                File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
-                if (sd.exists() && (sd.length() == 2076480)) {
-                    Downloaded = true;
-                    Toast.makeText(context, getString(R.string.toast_download_completed), Toast.LENGTH_SHORT).show();
-                    PrefEGM96SetToTrue();
+            if (getActivity() != null) {
+                //mWakeLock.release();
+                mProgressDialog.dismiss();
+                if (result != null)
+                    Toast.makeText(context, getString(R.string.toast_download_error) + ": " + result, Toast.LENGTH_LONG).show();
+                else {
+                    File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                    if (sd.exists() && (sd.length() == 2076480)) {
+                        Downloaded = true;
+                        Toast.makeText(context, getString(R.string.toast_download_completed), Toast.LENGTH_SHORT).show();
+                        PrefEGM96SetToTrue();
 
-                    // Ask to switch to Absolute Altitude Mode if not already active.
-                    ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
-                    if (!(pKMLAltitudeMode.getValue().equals("0"))) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.StyledDialog));
-                        builder.setMessage(getResources().getString(R.string.pref_message_switch_to_absolute_altitude_mode));
-                        builder.setIcon(android.R.drawable.ic_menu_info_details);
-                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
-                                SharedPreferences.Editor editor1 = settings.edit();
-                                editor1.putString("prefKMLAltitudeMode", "0");
-                                editor1.commit();
-                                ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
-                                pKMLAltitudeMode.setValue("0");
-                                pKMLAltitudeMode.setSummary(R.string.pref_KML_altitude_mode_absolute);
-                            }
-                        });
-                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                        // Ask to switch to Absolute Altitude Mode if not already active.
+                        ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
+                        if (!(pKMLAltitudeMode.getValue().equals("0"))) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.StyledDialog));
+                            builder.setMessage(getResources().getString(R.string.pref_message_switch_to_absolute_altitude_mode));
+                            builder.setIcon(android.R.drawable.ic_menu_info_details);
+                            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                    SharedPreferences.Editor editor1 = settings.edit();
+                                    editor1.putString("prefKMLAltitudeMode", "0");
+                                    editor1.commit();
+                                    ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
+                                    pKMLAltitudeMode.setValue("0");
+                                    pKMLAltitudeMode.setSummary(R.string.pref_KML_altitude_mode_absolute);
+                                }
+                            });
+                            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }
+
+                    } else {
+                        Toast.makeText(context, getString(R.string.toast_download_failed), Toast.LENGTH_SHORT).show();
                     }
-
-                } else {
-                    Toast.makeText(context, getString(R.string.toast_download_failed), Toast.LENGTH_SHORT).show();
                 }
             }
         }

@@ -30,15 +30,16 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-
 public class FragmentGPSFix extends Fragment {
 
-    public static final int GPS_DISABLED = 0;
-    public static final int GPS_OUTOFSERVICE = 1;
-    public static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    public static final int GPS_SEARCHING = 3;
-    public static final int GPS_STABILIZING = 4;
-    public static final int GPS_OK = 5;
+    private static final int NOT_AVAILABLE = -100000;
+
+    private static final int GPS_DISABLED = 0;
+    private static final int GPS_OUTOFSERVICE = 1;
+    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
+    private static final int GPS_SEARCHING = 3;
+    private static final int GPS_STABILIZING = 4;
+    private static final int GPS_OK = 5;
 
     private TextView TVLatitude;
     private TextView TVLongitude;
@@ -172,6 +173,12 @@ public class FragmentGPSFix extends Fragment {
                 TVBearing.setText(FBearing);
                 TVAccuracy.setText(FAccuracy);
                 TVAccuracyUM.setText(FAltitudeUM);
+
+                // Colorize the Altitude textview depending on the altitude EGM Correction
+                final boolean isValidAltitude = EGMAltitudeCorrection && (location.getAltitudeEGM96Correction() != NOT_AVAILABLE);
+                TVAltitude.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
+                TVAltitudeUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
+
 
                 TVGPSFixStatus.setVisibility(View.GONE);
 

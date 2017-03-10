@@ -59,6 +59,16 @@ public class FragmentTracklist extends Fragment {
         // Required empty public constructor
     }
 
+    private void DeleteFile(String filename) {
+        File file = new File(filename);
+        if (file.exists ()) file.delete();
+    }
+
+    private boolean FileExists(String filename) {
+        File file = new File(filename);
+        return file.exists ();
+    }
+
     private boolean isPackageInstalled(String uri) {
         PackageManager pm = getContext().getPackageManager();
         boolean app_installed;
@@ -95,13 +105,14 @@ public class FragmentTracklist extends Fragment {
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         GPSApplication gpsApplication = GPSApplication.getInstance();
+        final boolean expTXT = gpsApplication.getPrefExportTXT();
         final boolean expGPX = gpsApplication.getPrefExportGPX();
         final boolean expKML = gpsApplication.getPrefExportKML();
         final long OpenInGoogleEarth = gpsApplication.getOpenInGoogleEarth();
         final long Share = gpsApplication.getShare();
         PackageManager pm = getContext().getPackageManager();
         //menu.setHeaderTitle("Track " + data.get(selectedtrackID).getName());
-        if ((expGPX || expKML) && (Share == -1)) {
+        if ((expGPX || expKML || expTXT) && (Share == -1)) {
             int i = 0;
             for (Track T : data) {
                 if (T.getId() == selectedtrackID) {
@@ -134,7 +145,7 @@ public class FragmentTracklist extends Fragment {
             }
         }
         if ((isPackageInstalled("com.google.earth") && (OpenInGoogleEarth == -1))) menu.add(0, v.getId(), 0, R.string.card_menu_view);
-        if (expGPX || expKML) menu.add(0, v.getId(), 0, R.string.card_menu_export);
+        if (expGPX || expKML || expTXT) menu.add(0, v.getId(), 0, R.string.card_menu_export);
         menu.add(0, v.getId(), 0, R.string.card_menu_delete);
     }
 
@@ -149,13 +160,9 @@ public class FragmentTracklist extends Fragment {
                         final int ii = i;
                         found = true;
 
-                        boolean fileexist = false;
-                        String fname = data.get(i).getName() +".kml";
-                        File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/", fname);
-                        if (file.exists ()) fileexist = true;
-                        fname = data.get(i).getName() +".gpx";
-                        file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/", fname);
-                        if (file.exists ()) fileexist = true;
+                        boolean fileexist = FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() +".kml")
+                                         || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() +".gpx")
+                                         || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() +".txt");
 
                         if (fileexist) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
@@ -168,19 +175,15 @@ public class FragmentTracklist extends Fragment {
 
                                     EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
                                     data.remove(ii);
-
-                                    String fname = name + ".kml";
-                                    File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/", fname);
-                                    if (file.exists ()) file.delete();
-                                    fname = name + ".gpx";
-                                    file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/", fname);
-                                    if (file.exists ()) file.delete();
-                                    fname = name + ".kml";
-                                    file = new File(getContext().getFilesDir() + "/Thumbnails/", fname);
-                                    if (file.exists ()) file.delete();
-                                    fname = nameID + ".png";
-                                    file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
-                                    if (file.exists ()) file.delete();
+                                    // Delete exported files
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".kml");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".gpx");
+                                    // Delete track files
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                    DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
 
                                     dialog.dismiss();
                                 }
@@ -192,13 +195,11 @@ public class FragmentTracklist extends Fragment {
 
                                     EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
                                     data.remove(ii);
-
-                                    String fname = name + ".kml";
-                                    File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
-                                    if (file.exists ()) file.delete();
-                                    fname = nameID + ".png";
-                                    file = new File(getContext().getFilesDir() + "/Thumbnails/", fname);
-                                    if (file.exists ()) file.delete();
+                                    // Delete track files
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                    DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
 
                                     dialog.dismiss();
                                 }
@@ -221,13 +222,11 @@ public class FragmentTracklist extends Fragment {
 
                                     EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
                                     data.remove(ii);
-
-                                    String fname = name + ".kml";
-                                    File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
-                                    if (file.exists ()) file.delete();
-                                    fname = nameID + ".png";
-                                    file = new File(getContext().getFilesDir() + "/Thumbnails/", fname);
-                                    if (file.exists ()) file.delete();
+                                    // Delete track files
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                    DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
 
                                     dialog.dismiss();
                                 }
@@ -383,6 +382,12 @@ public class FragmentTracklist extends Fragment {
                         fname = T.getName() + ".gpx";
                         file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
                         if (file.exists ()  && GPSApplication.getInstance().getPrefExportGPX()) {
+                            Uri uri = Uri.fromFile(file);
+                            files.add(uri);
+                        }
+                        fname = T.getName() + ".txt";
+                        file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                        if (file.exists ()  && GPSApplication.getInstance().getPrefExportTXT()) {
                             Uri uri = Uri.fromFile(file);
                             files.add(uri);
                         }

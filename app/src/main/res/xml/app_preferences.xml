@@ -112,25 +112,31 @@
     <android.support.v7.preference.PreferenceCategory
         android:title="@string/pref_category_exporting">
 
-    <android.support.v7.preference.SwitchPreferenceCompat
-        android:key="prefExportGPX"
-        android:title="@string/pref_export_GPX"
-        android:summary="@string/pref_export_GPX_summary"
-        android:defaultValue="true"/>
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="prefExportTXT"
+            android:title="@string/pref_export_TXT"
+            android:summary="@string/pref_export_TXT_summary"
+            android:defaultValue="false"/>
 
-    <android.support.v7.preference.SwitchPreferenceCompat
-        android:key="prefExportKML"
-        android:title="@string/pref_export_KML"
-        android:summary="@string/pref_export_KML_summary"
-        android:defaultValue="true"/>
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="prefExportGPX"
+            android:title="@string/pref_export_GPX"
+            android:summary="@string/pref_export_GPX_summary"
+            android:defaultValue="true"/>
 
-    <android.support.v7.preference.ListPreference
-        android:key="prefKMLAltitudeMode"
-        android:title="@string/pref_KML_altitude_mode"
-        android:summary=" "
-        android:entries="@array/KMLAltitudeMode"
-        android:entryValues="@array/KMLAltitudeModeValues"
-        android:defaultValue="1" />
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="prefExportKML"
+            android:title="@string/pref_export_KML"
+            android:summary="@string/pref_export_KML_summary"
+            android:defaultValue="true"/>
+
+        <android.support.v7.preference.ListPreference
+            android:key="prefKMLAltitudeMode"
+            android:title="@string/pref_KML_altitude_mode"
+            android:summary=" "
+            android:entries="@array/KMLAltitudeMode"
+            android:entryValues="@array/KMLAltitudeModeValues"
+            android:defaultValue="1" />
 
     </android.support.v7.preference.PreferenceCategory>
 

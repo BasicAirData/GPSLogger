@@ -95,7 +95,7 @@
     <string name="card_menu_share">Share with ...</string>
 
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">Do you also want to delete KML and GPX files exported from this track?</string>
+    <string name="card_message_delete_also_exported">Do you also want to delete all exported files of this track?</string>
     <string name="card_message_delete_confirmation">Do you really want to delete this track?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -143,6 +143,8 @@
     <string name="pref_AltitudeCorrection_summary_not_defined">No offset defined</string>
 
     <string name="pref_category_exporting">EXPORTING</string>
+    <string name="pref_export_TXT">Export Tracks in TXT</string>
+    <string name="pref_export_TXT_summary">Plain text, comma-separated values</string>
     <string name="pref_export_KML">Export Tracks in KML</string>
     <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
     <string name="pref_export_GPX">Export Tracks in GPX</string>
@@ -164,7 +166,7 @@
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger records your tracks using GPS. You can view them in Google Earth, share and export them in GPSLogger folder of your device in KML and GPX format.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt\n\nFor EGM96 geoid file disclaimer see: http://earth-info.nga.mil/GandG/disclaim.html\n\nIf You enjoy using this app, please take a moment to rate GPS Logger in the Google Store.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger records your tracks using GPS. You can view them in Google Earth, share and export them in GPSLogger folder of your device in KML, GPX and TXT format.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt\n\nFor EGM96 geoid file disclaimer see: http://earth-info.nga.mil/GandG/disclaim.html\n\nIf You enjoy using this app, please take a moment to rate GPS Logger in the Google Store.</string>
     <string name="about_ok">Close</string>
     <string name="about_rate_this_app">Rate this App</string>
     <string name="about_unable_to_rate">Unable to reach the Google Store</string>
@@ -174,5 +176,15 @@
 
     <!-- Exit confirmation -->
     <string name="message_exit_confirmation">Do you really want to finish this track and close the app?</string>
+
+    <!-- Units of Measurement -->
+    <string name="UM_m">m</string>
+    <string name="UM_km">km</string>
+    <string name="UM_m_s">m/s</string>
+    <string name="UM_km_h">km/h</string>
+    <string name="UM_ft">ft</string>
+    <string name="UM_mi">mi</string>
+    <string name="UM_fps">fps</string>
+    <string name="UM_mph">mph</string>
 
 </resources>
