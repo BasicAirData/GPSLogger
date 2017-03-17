@@ -4,7 +4,7 @@ Offered by [BasicAirData](http://www.basicairdata.eu) - Open and free DIY air da
 
 ![alt tag](https://github.com/BasicAirData/GPSLogger/blob/master/screenshots/Image_01.png)
 
-##Description##
+## Description
 
 BasicAirData GPS Logger is a simple App to record your position and your path.<br>
 It's a basic and lightweight GPS tracker focused on accuracy, with an eye to power saving.<br>
@@ -17,10 +17,10 @@ For further information about this app you can read [this article](http://www.ba
 
 The application is freely downloadable from [Google Play(tm)](https://play.google.com/store/apps/details?id=eu.basicairdata.graziano.gpslogger) or directly here in this repository in /apk folder.
 
-##License and General Information
+## License and General Information
 [License and general info](https://github.com/BasicAirData/Document-Templates/blob/master/general-info.md)
 
-##Mini FAQ##
+## Mini FAQ
 <b>Q</b> - I've just installed the app, but it doesn't read the GPS signal.<br>
 <b>A</b> - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
 
