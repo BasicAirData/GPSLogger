@@ -1,5 +1,5 @@
-#BasicAirData GPS Logger
-
+#BasicAirData GPS Logger<br>
+#[![Crowdin](https://d322cqt584bo4o.cloudfront.net/gpslogger/localized.svg)](https://crowdin.com/project/gpslogger)<br>
 A GPS logger for Android mobile devices.<br>
 Offered by [BasicAirData](http://www.basicairdata.eu) - Open and free DIY air data instrumentation and telemetry 
 
