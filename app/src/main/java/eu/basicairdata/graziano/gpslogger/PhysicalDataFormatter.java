@@ -21,12 +21,28 @@ package eu.basicairdata.graziano.gpslogger;
 import android.location.Location;
 
 public class PhysicalDataFormatter {
-    public static final int UM_METRIC_MS    = 0;
-    public static final int UM_METRIC_KMH   = 1;
-    public static final int UM_IMPERIAL_FPS = 8;
-    public static final int UM_IMPERIAL_MPH = 9;
+	private static final int UM_METRIC_MS    = 0;
+	private static final int UM_METRIC_KMH   = 1;
+	private static final int UM_IMPERIAL_FPS = 8;
+	private static final int UM_IMPERIAL_MPH = 9;
+
+	public static final byte FORMAT_LATITUDE  = 1;
+	public static final byte FORMAT_LONGITUDE = 2;
+	public static final byte FORMAT_ALTITUDE  = 3;
+
+	private static final float M_TO_FT = 3.280839895f;
+	private static final float MS_TO_MPH = 2.2369363f;
+
+	private PhysicalData _PhysicalData;
+	
+			
+	public PhysicalData format(long Number, byte Format) {
+		switch (Format) {
+			case FORMAT_LATITUDE:
+				
+		}
+	}
+}
     
-    private static final float M_TO_FT = 3.280839895f;
-    private static final float MS_TO_MPH = 2.2369363f;
     
-    public PhysicalData format(long Number, byte ... TODO)
+    
