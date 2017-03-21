@@ -21,28 +21,61 @@ package eu.basicairdata.graziano.gpslogger;
 import android.location.Location;
 
 public class PhysicalDataFormatter {
-	private static final int UM_METRIC_MS    = 0;
-	private static final int UM_METRIC_KMH   = 1;
-	private static final int UM_IMPERIAL_FPS = 8;
-	private static final int UM_IMPERIAL_MPH = 9;
+    private static final int NOT_AVAILABLE = -100000;
+    
+    private static final int UM_METRIC_MS    = 0;
+    private static final int UM_METRIC_KMH   = 1;
+    private static final int UM_IMPERIAL_FPS = 8;
+    private static final int UM_IMPERIAL_MPH = 9;
 
-	public static final byte FORMAT_LATITUDE  = 1;
-	public static final byte FORMAT_LONGITUDE = 2;
-	public static final byte FORMAT_ALTITUDE  = 3;
+    public static final byte FORMAT_LATITUDE  = 1;
+    public static final byte FORMAT_LONGITUDE = 2;
+    public static final byte FORMAT_ALTITUDE  = 3;
+    
+    private static final float M_TO_FT = 3.280839895f;
+    private static final float MS_TO_MPH = 2.2369363f;
 
-	private static final float M_TO_FT = 3.280839895f;
-	private static final float MS_TO_MPH = 2.2369363f;
-
-	private PhysicalData _PhysicalData;
-	
-			
-	public PhysicalData format(long Number, byte Format) {
-		switch (Format) {
-			case FORMAT_LATITUDE:
-				
-		}
-	}
+    private PhysicalData _PhysicalData;
+    private GPSApplication gpsApplication = GPSApplication.getInstance();
+        
+    public PhysicalData format(double Number, byte Format) {
+        _PhysicalData.Value = "";
+        _PhysicalData.UM = "";
+        
+        if (Number == NOT_AVAILABLE) return(_PhysicalData);     // Returns empty fields if the data is not available
+        
+        switch (Format) {
+            case FORMAT_LATITUDE:   // Latitude
+                _PhysicalData.Value = gpsApplication.getPrefShowDecimalCoordinates() ? 
+                    String.format("%.9f", Math.abs(Number)) :
+                    Location.convert(Math.abs(Number), Location.FORMAT_SECONDS);
+                _PhysicalData.UM = Number >= 0 ?
+                    gpsApplication.getString(R.string.north) :
+                    gpsApplication.getString(R.string.south);
+                break;
+                
+            case FORMAT_LONGITUDE:  // Longitude
+                _PhysicalData.Value = gpsApplication.getPrefShowDecimalCoordinates() ?
+                    String.format("%.9f", Math.abs(Number)) :
+                    Location.convert(Math.abs(Number), Location.FORMAT_SECONDS);
+                _PhysicalData.UM = Number >= 0 ?
+                    gpsApplication.getString(R.string.east) :
+                    gpsApplication.getString(R.string.west);
+                break;
+                
+            case FORMAT_ALTITUDE:   // Altitude
+                switch (gpsApplication.getPrefUM()) {
+                    case UM_METRIC_KMH:
+                    case UM_METRIC_MS:
+                        _PhysicalData.Value = String.valueOf(Math.round(Number));
+                        ...
+                    case UM_IMPERIAL_MPH:
+                        
+                    case UM_IMPERIAL_FPS:
+                }
+                break;
+            }
+            return(_PhysicalData);
+        }
+    }
 }
-    
-    
-    
