@@ -21,6 +21,7 @@ package eu.basicairdata.graziano.gpslogger;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -46,9 +47,10 @@ import java.util.List;
 
 public class FragmentTracklist extends Fragment {
 
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
+
     private static RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private static RecyclerView recyclerView;
     private static ArrayList<Track> data;
 
     private View view;
@@ -82,10 +84,20 @@ public class FragmentTracklist extends Fragment {
         return app_installed;
     }
 
+
+    public void setProgress(int listPosition, int progress) {
+        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(listPosition);
+        if (holder != null) {
+            ((TrackAdapter.TrackHolder)holder).SetProgress(progress);
+        }
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         view = inflater.inflate(R.layout.fragment_tracklist, container, false);
         TVTracklistEmpty = (TextView) view.findViewById(R.id.id_textView_TracklistEmpty);
         recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
@@ -94,7 +106,7 @@ public class FragmentTracklist extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.getItemAnimator().setChangeDuration(0);
-        data = new ArrayList<Track>();
+        data = new ArrayList<>();
         adapter = new TrackAdapter(data);
         recyclerView.setAdapter(adapter);
         return view;
@@ -108,9 +120,9 @@ public class FragmentTracklist extends Fragment {
         final boolean expTXT = gpsApplication.getPrefExportTXT();
         final boolean expGPX = gpsApplication.getPrefExportGPX();
         final boolean expKML = gpsApplication.getPrefExportKML();
-        final long OpenInGoogleEarth = gpsApplication.getOpenInGoogleEarth();
+        final long OpenInViewer = gpsApplication.getOpenInViewer();
         final long Share = gpsApplication.getShare();
-        PackageManager pm = getContext().getPackageManager();
+        //PackageManager pm = getContext().getPackageManager();
         //menu.setHeaderTitle("Track " + data.get(selectedtrackID).getName());
         if ((expGPX || expKML || expTXT) && (Share == -1)) {
             int i = 0;
@@ -132,9 +144,9 @@ public class FragmentTracklist extends Fragment {
                     intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) ("GPS Logger"));
                     intent.setType("text/xml");
 
-                    String title = getString(R.string.card_menu_share);
+                    //String title = getString(R.string.card_menu_share);
                     // Create intent to show chooser
-                    Intent chooser = Intent.createChooser(intent, title);
+                    //Intent chooser = Intent.createChooser(intent, title);
 
                     // Verify the intent will resolve to at least one activity
                     if ((intent.resolveActivity(getContext().getPackageManager()) != null)) {
@@ -144,7 +156,31 @@ public class FragmentTracklist extends Fragment {
                 i++;
             }
         }
-        if ((isPackageInstalled("com.google.earth") && (OpenInGoogleEarth == -1))) menu.add(0, v.getId(), 0, R.string.card_menu_view);
+        // TODO: Finish implementation of "View in..."
+        //if ((isPackageInstalled("com.google.earth") && (OpenInViewer == -1))) menu.add(0, v.getId(), 0, R.string.card_menu_view);
+        if (OpenInViewer == -1){
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setType("application/vnd.google-earth.kml+xml");
+            // Find default app
+            ResolveInfo ri = getContext().getPackageManager().resolveActivity(intent, 0);
+            if (ri != null) {
+                //Log.w("myApp", "[#] FragmentTracklist.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                List<ResolveInfo> lri = getContext().getPackageManager().queryIntentActivities(intent, 0);
+                //Log.w("myApp", "[#] FragmentTracklist.java - Found " + lri.size() + " viewers:");
+                boolean founddefaultapp = false;
+                for (ResolveInfo tmpri : lri) {
+                    //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
+                    if (ri.activityInfo.applicationInfo.packageName.equals(tmpri.activityInfo.applicationInfo.packageName)) {
+                        founddefaultapp = true;
+                        //Log.w("myApp", "[#]                              DEFAULT --> " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                    } //else Log.w("myApp", "[#]                                          " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                }
+                menu.add(0, 100, 0, founddefaultapp ? getResources().getString(R.string.card_menu_view, ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager())) :
+                        getResources().getString(R.string.card_menu_view_selector));
+            }
+        }
+
         if (expGPX || expKML || expTXT) menu.add(0, v.getId(), 0, R.string.card_menu_export);
         menu.add(0, v.getId(), 0, R.string.card_menu_delete);
     }
@@ -255,7 +291,8 @@ public class FragmentTracklist extends Fragment {
                     i++;
                 } while ((i < data.size()) && !found);
             }
-        } else if (item.getTitle().equals(getResources().getString(R.string.card_menu_view))) {
+        } else if (item.getItemId() == 100) {
+            // TODO: Set ID in xml !!!!!!
             if (!data.isEmpty() && (selectedtrackID >= 0)) {
                 int i = 0;
                 boolean found = false;
@@ -326,27 +363,27 @@ public class FragmentTracklist extends Fragment {
             final long trackid = Long.valueOf(msg.split(" ")[1]);
             final int progress = Integer.valueOf(msg.split(" ")[2]);
             if ((trackid > 0) && (progress >= 0)) {
-                int i = 0;
-                for (Track T : data) {
-                    if (T.getId() == trackid) {
-                        final int ii = i;
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.notifyItemChanged(ii);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int i = 0;
+                        for (Track T : data) {
+                            if (T.getId() == trackid) {
+                                setProgress(i, T.getProgress());
+                                //adapter.notifyItemChanged(i);
                             }
-                        });
+                            i++;
+                        }
                     }
-                    i++;
-                }
+                });
             }
         }
         if (msg.contains("INTENT_SEND")) {
             final long trackid = Long.valueOf(msg.split(" ")[1]);
             if (trackid > 0) {
                 int i = 0;
-                for (Track T : data) {
-                    if (T.getId() == trackid) {
+                for (Track track : data) {
+                    if (track.getId() == trackid) {
                         final int ii = i;
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -358,34 +395,49 @@ public class FragmentTracklist extends Fragment {
                         Intent intent = new Intent();
                         intent.setAction(Intent.ACTION_SEND_MULTIPLE);
                         //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra(Intent.EXTRA_SUBJECT, "GPS Logger - Track " + T.getName());
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "GPS Logger - Track " + track.getName());
 
-                        intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) ("GPS Logger - Track " + T.getName()
-                                + "\n" + T.getNumberOfLocations() + " " + getString(R.string.trackpoints)
-                                + "\n" + T.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)
+                        PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+                        PhysicalData phdDuration;
+                        PhysicalData phdSpeedMax;
+                        PhysicalData phdSpeedAvg;
+                        PhysicalData phdDistance;
+                        PhysicalData phdAltitudeGap;
+                        PhysicalData phdOverallDirection;
+                        phdDuration = phdformatter.format(track.getPrefTime(),PhysicalDataFormatter.FORMAT_DURATION);
+                        phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
+                        phdSpeedAvg = phdformatter.format(track.getPrefSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                        phdDistance = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
+                        phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(GPSApplication.getInstance().getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
+                        phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
+
+                        intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) ("GPS Logger - Track " + track.getName()
+                                + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
+                                + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)
                                 + "\n"
                                 + "\n" + getString(R.string.pref_track_stats) + " " + (GPSApplication.getInstance().getPrefShowTrackStatsType() == 0 ? getString(R.string.pref_track_stats_totaltime) : getString(R.string.pref_track_stats_movingtime)) + ":"
-                                + "\n" + getString(R.string.distance) + " = " + T.getFormattedDistance() + " " + T.getFormattedDistanceUM()
-                                + "\n" + getString(R.string.duration) + " = " + T.getFormattedPrefTime()
-                                + "\n" + getString(R.string.altitude_gap) + " = " + T.getFormattedAltitudeGap(GPSApplication.getInstance().getPrefEGM96AltitudeCorrection()) + " " + T.getFormattedAltitudeUM()
-                                + "\n" + getString(R.string.max_speed) + " = " + T.getFormattedSpeedMax() + " " + T.getFormattedSpeedUM()
-                                + "\n" + getString(R.string.average_speed) + " = " + T.getFormattedSpeedAverage() + " " + T.getFormattedSpeedUM()));
+                                + "\n" + getString(R.string.distance) + " = " + phdDistance.Value + " " + phdDistance.UM
+                                + "\n" + getString(R.string.duration) + " = " + phdDuration.Value
+                                + "\n" + getString(R.string.altitude_gap) + " = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM
+                                + "\n" + getString(R.string.max_speed) + " = " + phdSpeedMax.Value + " " + phdSpeedMax.UM
+                                + "\n" + getString(R.string.average_speed) + " = " + phdSpeedAvg.Value + " " + phdSpeedAvg.UM
+                                + "\n" + getString(R.string.overall_direction) + " = " + phdOverallDirection.Value + " " + phdOverallDirection.UM));
                         intent.setType("text/xml");
 
-                        ArrayList<Uri> files = new ArrayList<Uri>();
-                        String fname = T.getName() + ".kml";
+                        ArrayList<Uri> files = new ArrayList<>();
+                        String fname = track.getName() + ".kml";
                         File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
                         if (file.exists () && GPSApplication.getInstance().getPrefExportKML()) {
                             Uri uri = Uri.fromFile(file);
                             files.add(uri);
                         }
-                        fname = T.getName() + ".gpx";
+                        fname = track.getName() + ".gpx";
                         file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
                         if (file.exists ()  && GPSApplication.getInstance().getPrefExportGPX()) {
                             Uri uri = Uri.fromFile(file);
                             files.add(uri);
                         }
-                        fname = T.getName() + ".txt";
+                        fname = track.getName() + ".txt";
                         file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
                         if (file.exists ()  && GPSApplication.getInstance().getPrefExportTXT()) {
                             Uri uri = Uri.fromFile(file);

@@ -102,7 +102,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private LocationExtended PrevRecordedFix = null;
 
     private boolean MustUpdatePrefs = true;                     // True if preferences needs to be updated
-    private long oldGPSupdatefrequency = 1000l;
 
 
 
@@ -116,7 +115,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private String PlacemarkDescription = "";
     private boolean Recording = false;
     private boolean PlacemarkRequest = false;
-    private long OpenInGoogleEarth = -1;                    // The index to be opened with Google Earth
+    private long OpenInViewer = -1;                    // The index to be opened in viewer
     private long Share = -1;                                // The index to be Shared
     private boolean isGPSLocationUpdatesActive = false;
     private boolean isGPSLoggerFolder = false;
@@ -200,14 +199,15 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         Log.w("myApp", "[#] GPSApplication.java - StartAndBindGPSService");
     }
 
-    private void UnbindGPSService() {
+
+    /* private void UnbindGPSService() {                                                //UNUSED
         try {
             unbindService(GPSServiceConnection);                                        //Unbind to the service
             Log.w("myApp", "[#] GPSApplication.java - Service unbound");
         } catch (Exception e) {
             Log.w("myApp", "[#] GPSApplication.java - Unable to unbind the GPSService");
         }
-    }
+    } */
 
     public void StopAndUnbindGPSService() {
         try {
@@ -265,12 +265,12 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return prefKMLAltitudeMode;
     }
 
-    public void setOpenInGoogleEarth(long openInGoogleEarth) {
-        OpenInGoogleEarth = openInGoogleEarth;
+    public void setOpenInViewer(long openInViewer) {
+        OpenInViewer = openInViewer;
     }
 
-    public long getOpenInGoogleEarth() {
-        return OpenInGoogleEarth;
+    public long getOpenInViewer() {
+        return OpenInViewer;
     }
 
     public long getShare() {
@@ -351,7 +351,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void setPlacemarkRequest(boolean placemarkRequest) { PlacemarkRequest = placemarkRequest; }
 
     public List<Track> getTrackList() {
-        List<Track> tl = new ArrayList<Track>();
+        List<Track> tl = new ArrayList<>();
         tl.addAll(_ArrayListTracks);
         return tl;
     }
@@ -435,8 +435,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     if (T.getId() == trackid) {
                         T.setProgress(0);
                         EventBus.getDefault().post("UPDATE_TRACKLIST");
-                        if (trackid == OpenInGoogleEarth) {
-                            OpenInGoogleEarth = -1;
+                        if (trackid == OpenInViewer) {
+                            OpenInViewer = -1;
                             File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", T.getName() + ".kml");
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -462,8 +462,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             Ex.start();
         }
         if (msg.contains("VIEW_TRACK")) {
-            setOpenInGoogleEarth(Long.valueOf(msg.split(" ")[1]));
-            Ex = new Exporter(OpenInGoogleEarth, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+            setOpenInViewer(Long.valueOf(msg.split(" ")[1]));
+            Ex = new Exporter(OpenInViewer, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
             Ex.start();
         }
         if (msg.equals("NEW_TRACK")) {
@@ -725,7 +725,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         prefShowTrackStatsType = Integer.valueOf(preferences.getString("prefShowTrackStatsType", "0"));
         prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));
 
-        oldGPSupdatefrequency = prefGPSupdatefrequency;
+        long oldGPSupdatefrequency = prefGPSupdatefrequency;
         prefGPSupdatefrequency = Long.valueOf(preferences.getString("prefGPSupdatefrequency", "1000"));
 
         // ---------------------------------------------- Update the GPS Update Frequency if needed
@@ -959,7 +959,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 if (DrawScale > 0) {
                     int GroupOfLocations = 50;
                     Path path = new Path();
-                    List<LatLng> latlngList = new ArrayList<LatLng>();
+                    List<LatLng> latlngList = new ArrayList<>();
 
                     //Log.w("myApp", "[#] GPSApplication.java - Thumbnailer Thread started");
                     for (int i = 0; i < NumberOfLocations; i += GroupOfLocations) {
@@ -988,7 +988,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         try {
                             FileOutputStream out = new FileOutputStream(file);
                             //Log.w("myApp", "[#] GPSApplication.java - FileOutputStream out = new FileOutputStream(file)");
-                            boolean res = ThumbBitmap.compress(Bitmap.CompressFormat.PNG, 60, out);
+                            //boolean res = ThumbBitmap.compress(Bitmap.CompressFormat.PNG, 60, out);
+                            ThumbBitmap.compress(Bitmap.CompressFormat.PNG, 60, out);
                             //Log.w("myApp", "[#] GPSApplication.java - ThumbBitmap.compress(Bitmap.CompressFormat.PNG, 60, out): " + res);
                             out.flush();
                             //Log.w("myApp", "[#] GPSApplication.java - out.flush();");

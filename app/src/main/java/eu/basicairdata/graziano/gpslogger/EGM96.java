@@ -31,7 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class EGM96 {
+class EGM96 {
 
     // ---------------------------------------------------------------------------- Singleton Class
     private static EGM96 instance = new EGM96();
@@ -120,11 +120,11 @@ public class EGM96 {
             double hc1 = hc11 + (hc12 - hc11) * (Lat % 0.25) / 0.25;
             double hc2 = hc21 + (hc22 - hc21) * (Lat % 0.25) / 0.25;
             // Longitude
-            double hc = (hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100;
+            //double hc = (hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100;
 
             //Log.w("myApp", "[#] EGM96.java - getEGMCorrection(" + Latitude + ", " + Longitude + ") = " + hc);
 
-            return hc;
+            return ((hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100);
         }
         else return EGM96_VALUE_INVALID;
     }
@@ -133,7 +133,7 @@ public class EGM96 {
 
     // The Thread that loads the grid in background ------------------------------------------------
 
-    class LoadEGM96Grid implements Runnable {
+    private class LoadEGM96Grid implements Runnable {
         // Thread: Load EGM grid
 
         @Override

@@ -30,23 +30,14 @@ public class Track {
     private static final float STANDARD_ACCURACY = 10.0f;
     private static final float SECURITY_COEFF = 1.7f;
 
-    private static final int UM_METRIC_MS = 0;
-    private static final int UM_METRIC_KMH = 1;
-    private static final int UM_IMPERIAL_FPS = 8;
-    private static final int UM_IMPERIAL_MPH = 9;
-
-    private static final float M_TO_FT = 3.280839895f;
-    private static final float MS_TO_MPH = 2.2369363f;
-    private static final float KM_TO_MI = 0.621371192237f;
-
-    private static final int TRACK_TYPE_STEADY   = 0;
-    private static final int TRACK_TYPE_WALK     = 1;
-    private static final int TRACK_TYPE_MOUNTAIN = 2;
-    private static final int TRACK_TYPE_RUN      = 3;
-    private static final int TRACK_TYPE_BICYCLE  = 4;
-    private static final int TRACK_TYPE_CAR      = 5;
-    private static final int TRACK_TYPE_FLIGHT   = 6;
-    private static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
+    private final int TRACK_TYPE_STEADY   = 0;
+    private final int TRACK_TYPE_WALK     = 1;
+    private final int TRACK_TYPE_MOUNTAIN = 2;
+    private final int TRACK_TYPE_RUN      = 3;
+    private final int TRACK_TYPE_BICYCLE  = 4;
+    private final int TRACK_TYPE_CAR      = 5;
+    private final int TRACK_TYPE_FLIGHT   = 6;
+    private final int TRACK_TYPE_ND       = NOT_AVAILABLE;
 
     // Variables
     private long   id;                                              // Saved in DB
@@ -603,7 +594,7 @@ public class Track {
         }
         if (dresultDown < 0) {
             dresultUp -= dresultDown;
-            dresultDown = 0;
+            //dresultDown = 0;
         }
         return dresultUp;
     }
@@ -634,7 +625,7 @@ public class Track {
             dresultUp = 0;
         }
         if (dresultDown < 0) {
-            dresultUp -= dresultDown;
+            //dresultUp -= dresultDown;
             dresultDown = 0;
         }
         return dresultDown;
@@ -644,11 +635,11 @@ public class Track {
         return getEstimatedAltitudeUp(EGMCorrection) - getEstimatedAltitudeDown(EGMCorrection);
     }
 
-    // ---------------------------------------------- Strings functions, returning formatted values
 
-    public String getFormattedBearing() {
+    public float getBearing() {
         if (End_Latitude != NOT_AVAILABLE) {
-            if (((Start_Latitude == End_Latitude) && (Start_Longitude == End_Longitude)) || (Distance == 0)) return "";
+            if (((Start_Latitude == End_Latitude) && (Start_Longitude == End_Longitude)) || (Distance == 0))
+                return NOT_AVAILABLE;
             Location EndLoc = new Location("TEMP");
             EndLoc.setLatitude(End_Latitude);
             EndLoc.setLongitude(End_Longitude);
@@ -657,268 +648,41 @@ public class Track {
             StartLoc.setLongitude(Start_Longitude);
             float BTo = StartLoc.bearingTo(EndLoc);
             if (BTo < 0) BTo += 360f;
-
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int pDir = gpsApplication.getPrefShowDirections();
-
-            switch (pDir) {
-                case 0:         // NSWE
-                    final String N = gpsApplication.getString(R.string.north);
-                    final String S = gpsApplication.getString(R.string.south);
-                    final String W = gpsApplication.getString(R.string.west);
-                    final String E = gpsApplication.getString(R.string.east);
-                    int dr = (int) Math.round(BTo / 22.5);
-                    switch (dr) {
-                        case 0:     return N;
-                        case 1:     return N + N + E;
-                        case 2:     return N + E;
-                        case 3:     return E + N + E;
-                        case 4:     return E;
-                        case 5:     return E + S + E;
-                        case 6:     return S + E;
-                        case 7:     return S + S + E;
-                        case 8:     return S;
-                        case 9:     return S + S + W;
-                        case 10:    return S + W;
-                        case 11:    return W + S + W;
-                        case 12:    return W;
-                        case 13:    return W + N + W;
-                        case 14:    return N + W;
-                        case 15:    return N + N + W;
-                        case 16:    return N;
-                        default:    return "";
-                    }
-                case 1:         // Angle
-                    return String.valueOf(Math.round(BTo));
-                default:
-                    return String.valueOf(Math.round(BTo));
-            }
+            return BTo;
         }
-        return "";
+        return NOT_AVAILABLE;
     }
 
-    public String getFormattedDuration() {
-        if (Duration != NOT_AVAILABLE) {
-            long time = Duration / 1000;
-            String seconds = Integer.toString((int) (time % 60));
-            String minutes = Integer.toString((int) ((time % 3600) / 60));
-            String hours = Integer.toString((int) (time / 3600));
-            for (int i = 0; i < 2; i++) {
-                if (seconds.length() < 2) {
-                    seconds = "0" + seconds;
-                }
-                if (minutes.length() < 2) {
-                    minutes = "0" + minutes;
-                }
-                if (hours.length() < 2) {
-                    hours = "0" + hours;
-                }
-            }
-            return hours.equals("00") ? minutes + ":" + seconds : hours + ":" + minutes + ":" + seconds;
-        }
-        return "";
-    }
-
-    public String getFormattedTimeMoving() {
-        if (Duration_Moving != NOT_AVAILABLE) {
-            long time = Duration_Moving / 1000;
-            String seconds = Integer.toString((int) (time % 60));
-            String minutes = Integer.toString((int) ((time % 3600) / 60));
-            String hours = Integer.toString((int) (time / 3600));
-            for (int i = 0; i < 2; i++) {
-                if (seconds.length() < 2) {
-                    seconds = "0" + seconds;
-                }
-                if (minutes.length() < 2) {
-                    minutes = "0" + minutes;
-                }
-                if (hours.length() < 2) {
-                    hours = "0" + hours;
-                }
-            }
-            return hours.equals("00") ? minutes + ":" + seconds : hours + ":" + minutes + ":" + seconds;
-        }
-        return "";
-    }
 
     // Returns the time, based on preferences (Total or Moving)
-    public  String getFormattedPrefTime() {
+    public long getPrefTime() {
         GPSApplication gpsApplication = GPSApplication.getInstance();
         int pTime = gpsApplication.getPrefShowTrackStatsType();
         switch (pTime) {
             case 0:         // Total based
-                return this.getFormattedDuration();
+                return Duration;
             case 1:         // Moving based
-                return this.getFormattedTimeMoving();
+                return Duration_Moving;
             default:
-                return this.getFormattedDuration();
+                return Duration;
         }
-    }
-
-    public String getFormattedSpeedMax() {
-        if ((SpeedMax != NOT_AVAILABLE) && (Duration > 0)) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int UM = gpsApplication.getPrefUM();
-            switch (UM) {
-                case UM_METRIC_KMH:     return String.valueOf(Math.round(SpeedMax * 3.6f));
-                case UM_METRIC_MS:      return String.valueOf(Math.round(SpeedMax));
-                case UM_IMPERIAL_MPH:   return String.valueOf(Math.round(SpeedMax * MS_TO_MPH));
-                case UM_IMPERIAL_FPS:   return String.valueOf(Math.round(SpeedMax * M_TO_FT));
-            }
-        }
-        return "";
-    }
-
-    public String getFormattedSpeedAverage() {
-        if ((SpeedAverage != NOT_AVAILABLE) && (Duration > 0)) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int UM = gpsApplication.getPrefUM();
-            switch (UM) {
-                case UM_METRIC_KMH:     return String.format("%.1f", (SpeedAverage * 3.6f));
-                case UM_METRIC_MS:      return String.format("%.1f", (SpeedAverage));
-                case UM_IMPERIAL_MPH:   return String.format("%.1f", (SpeedAverage * MS_TO_MPH));
-                case UM_IMPERIAL_FPS:   return String.format("%.1f", (SpeedAverage * M_TO_FT));
-            }
-        }
-        return "";
-    }
-
-    public String getFormattedSpeedAverageMoving() {
-        if ((SpeedAverageMoving != NOT_AVAILABLE) && (Duration_Moving > 0)) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int UM = gpsApplication.getPrefUM();
-            switch (UM) {
-                case UM_METRIC_KMH:     return String.format("%.1f", (SpeedAverageMoving * 3.6f));
-                case UM_METRIC_MS:      return String.format("%.1f", (SpeedAverageMoving));
-                case UM_IMPERIAL_MPH:   return String.format("%.1f", (SpeedAverageMoving * MS_TO_MPH));
-                case UM_IMPERIAL_FPS:   return String.format("%.1f", (SpeedAverageMoving * M_TO_FT));
-            }
-        }
-        return "";
     }
 
 
     // Returns the average speed, based on preferences (Total or Moving)
-    public String getFormattedPrefSpeedAverage() {
+    public float getPrefSpeedAverage() {
         GPSApplication gpsApplication = GPSApplication.getInstance();
         int pTime = gpsApplication.getPrefShowTrackStatsType();
         switch (pTime) {
             case 0:         // Total based
-                return this.getFormattedSpeedAverage();
+                return SpeedAverage;
             case 1:         // Moving based
-                return this.getFormattedSpeedAverageMoving();
+                return SpeedAverageMoving;
             default:
-                return this.getFormattedSpeedAverage();
+                return SpeedAverage;
         }
     }
 
-
-    public String getFormattedDistance() {
-        if (Duration > 0) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int UM = gpsApplication.getPrefUM();
-            switch (UM) {
-                case UM_METRIC_KMH:
-                    if (Distance < 1000) return String.format("%.0f", (Math.floor(getEstimatedDistance())));
-                    else return String.format("%.1f", ((Math.floor(getEstimatedDistance() / 100.0)))/10.0);
-                case UM_METRIC_MS:
-                    if (Distance < 1000) return String.format("%.0f", (Math.floor(getEstimatedDistance())));
-                    else return String.format("%.1f", ((Math.floor(getEstimatedDistance() / 100.0)))/10.0);
-                case UM_IMPERIAL_MPH:
-                    if ((Distance * M_TO_FT) < 1000) return String.format("%.0f", (Math.floor(getEstimatedDistance() * M_TO_FT)));
-                    else return String.format("%.1f", ((Math.floor((getEstimatedDistance() * KM_TO_MI) / 100.0)))/10.0);
-                case UM_IMPERIAL_FPS:
-                    if ((Distance * M_TO_FT) < 1000) return String.format("%.0f", (Math.floor(getEstimatedDistance() * M_TO_FT)));
-                    else return String.format("%.1f", ((Math.floor((getEstimatedDistance() * KM_TO_MI) / 100.0)))/10.0);
-            }
-        }
-        return "";
-    }
-
-    public String getFormattedAltitudeGap(boolean EGMCorrection) {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int UM = gpsApplication.getPrefUM();
-        switch (UM) {
-            case UM_METRIC_KMH:     return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeGap(EGMCorrection))) : "";
-            case UM_METRIC_MS:      return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeGap(EGMCorrection))) : "";
-            case UM_IMPERIAL_MPH:   return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeGap(EGMCorrection) * M_TO_FT)) : "";
-            case UM_IMPERIAL_FPS:   return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeGap(EGMCorrection) * M_TO_FT)) : "";
-            default:                return "";
-        }
-    }
-
-    // Functions not used in current version are commented out
-    /*
-    public String getFormattedAltitudeUp(boolean EGMCorrection) {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int UM = gpsApplication.getPrefUM();
-        switch (UM) {
-            case UM_METRIC_KMH:     return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeUp(EGMCorrection))) : "";
-            case UM_METRIC_MS:      return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeUp(EGMCorrection))) : "";
-            case UM_IMPERIAL_MPH:   return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeUp(EGMCorrection) * M_TO_FT)) : "";
-            case UM_IMPERIAL_FPS:   return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeUp(EGMCorrection) * M_TO_FT)) : "";
-            default:                return "";
-        }
-    }
-
-    public String getFormattedAltitudeDown(boolean EGMCorrection) {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int UM = gpsApplication.getPrefUM();
-        switch (UM) {
-            case UM_METRIC_KMH:     return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeDown(EGMCorrection))) : "";
-            case UM_METRIC_MS:      return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeDown(EGMCorrection))) : "";
-            case UM_IMPERIAL_MPH:   return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeDown(EGMCorrection) * M_TO_FT)) : "";
-            case UM_IMPERIAL_FPS:   return Duration > 0 ? String.valueOf(Math.round(getEstimatedAltitudeDown(EGMCorrection) * M_TO_FT)) : "";
-            default:                return "";
-        }
-    }
-    */
-
-    public String getFormattedSpeedUM() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int UM = gpsApplication.getPrefUM();
-        switch (UM) {
-            case UM_METRIC_KMH:     return "km/h";
-            case UM_METRIC_MS:      return "m/s";
-            case UM_IMPERIAL_MPH:   return "mph";
-            case UM_IMPERIAL_FPS:   return "fps";
-            default:                return "";
-        }
-    }
-
-    public String getFormattedAltitudeUM() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int UM = gpsApplication.getPrefUM();
-        switch (UM) {
-            case UM_METRIC_KMH:     return "m";
-            case UM_METRIC_MS:      return "m";
-            case UM_IMPERIAL_MPH:   return "ft";
-            case UM_IMPERIAL_FPS:   return "ft";
-            default:                return "";
-        }
-    }
-
-    public String getFormattedDistanceUM() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int UM = gpsApplication.getPrefUM();
-        switch (UM) {
-            case UM_METRIC_KMH:     return Distance < 1000 ? "m" : "km";
-            case UM_METRIC_MS:      return Distance < 1000 ? "m" : "km";
-            case UM_IMPERIAL_MPH:   return (Distance * M_TO_FT) < 1000 ? "ft" : "mi";
-            case UM_IMPERIAL_FPS:   return (Distance * M_TO_FT) < 1000 ? "ft" : "mi";
-        }
-        return "";
-    }
-
-    /*
-    public String getFormattedStartTime() {
-        if (Start_Time != NOT_AVAILABLE) {
-            SimpleDateFormat df2 = new SimpleDateFormat("EEE d MMM yyyy HH:mm:ss");
-            return df2.format(Start_Time);
-        }
-        return "";
-    }
-    */
 
     public int getTrackType() {
 

@@ -90,7 +90,8 @@
 
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">Export</string>
-    <string name="card_menu_view">View in Google Earth</string>
+    <string name="card_menu_view_selector">View in ...</string>
+    <string name="card_menu_view">View in %1$s</string>
     <string name="card_menu_delete">Delete</string>
     <string name="card_menu_share">Share with ...</string>
 
@@ -142,7 +143,7 @@
     <string name="pref_AltitudeCorrection_summary_offset">Offset</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">No offset defined</string>
 
-    <string name="pref_category_exporting">EXPORTING</string>
+    <string name="pref_category_exporting">EXPORTATION</string>
     <string name="pref_export_TXT">Export Tracks in TXT</string>
     <string name="pref_export_TXT_summary">Plain text, comma-separated values</string>
     <string name="pref_export_KML">Export Tracks in KML</string>

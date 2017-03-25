@@ -18,7 +18,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-public class LatLng {
+class LatLng {
     public double Latitude;
     public double Longitude;
 }

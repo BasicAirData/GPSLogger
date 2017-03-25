@@ -33,12 +33,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class Exporter extends Thread {
+class Exporter extends Thread {
 
     private static final int NOT_AVAILABLE = -100000;
 
     private Track track = null;
-    private int GroupOfLocations = 200; // Reads and writes location grouped by 200;
     private boolean ExportKML = true;
     private boolean ExportGPX = true;
     private boolean ExportTXT = true;
@@ -48,7 +47,6 @@ public class Exporter extends Thread {
     private int getPrefKMLAltitudeMode = 0;
     private boolean TXTFirstTrackpointFlag = true;
 
-    String versionName = BuildConfig.VERSION_NAME;
 
     public Exporter(long ID, boolean ExportKML, boolean ExportGPX, boolean ExportTXT, String SaveIntoFolder) {
         track = GPSApplication.getInstance().GPSDataBase.getTrack(ID);
@@ -64,6 +62,13 @@ public class Exporter extends Thread {
 
     public void run() {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+        int GroupOfLocations = 200; // Reads and writes location grouped by 200;
+        long elements_total;
+        String versionName = BuildConfig.VERSION_NAME;
+
+        elements_total = track.getNumberOfLocations() + track.getNumberOfPlacemarks();
+        long start_Time = System.currentTimeMillis();
 
         // ------------------------------------------------- Create the Directory tree if not exist
         File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
@@ -211,7 +216,7 @@ public class Exporter extends Thread {
             if (track.getNumberOfPlacemarks() > 0) {
                 // Writes track headings
 
-                List<LocationExtended> placemarkList = new ArrayList<LocationExtended>();
+                List<LocationExtended> placemarkList = new ArrayList<>();
 
                 for (int i = 0; i <= track.getNumberOfPlacemarks(); i += GroupOfLocations) {
                     //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
@@ -350,7 +355,7 @@ public class Exporter extends Thread {
                     GPXbw.write(" <trkseg>" + newLine);
                 }
 
-                List<LocationExtended> locationList = new ArrayList<LocationExtended>();
+                List<LocationExtended> locationList = new ArrayList<>();
 
                 for (int i = 0; i <= track.getNumberOfLocations(); i += GroupOfLocations) {
                     //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
@@ -474,7 +479,7 @@ public class Exporter extends Thread {
                 TXTfw.close();
             }
 
-            Log.w("myApp", "[#] Exporter.java - Files exported!");
+            Log.w("myApp", "[#] Exporter.java - Track "+ track.getId() +" exported in " + (System.currentTimeMillis() - start_Time) + " ms (" + elements_total + " pts @ " + ((1000L * elements_total) / (System.currentTimeMillis() - start_Time)) + " pts/s)");
 
             EventBus.getDefault().post("TRACK_SETPROGRESS " + track.getId() + " 100");
             try {

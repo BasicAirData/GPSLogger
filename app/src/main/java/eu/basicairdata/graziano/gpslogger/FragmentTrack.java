@@ -31,6 +31,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class FragmentTrack extends Fragment {
 
+    private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+
     private TextView TVDuration;
     private TextView TVTrackName;
     private TextView TVTrackID;
@@ -54,17 +56,15 @@ public class FragmentTrack extends Fragment {
     private TableLayout TLAltitudeGap;
     private TableLayout TLOverallDirection;
 
+    private PhysicalData phdDuration;
+    private PhysicalData phdSpeedMax;
+    private PhysicalData phdSpeedAvg;
+    private PhysicalData phdDistance;
+    private PhysicalData phdAltitudeGap;
+    private PhysicalData phdOverallDirection;
+
     private String FTrackID = "";
     private String FTrackName = "";
-    private String FDuration = "";
-    private String FSpeedMax = "";
-    private String FSpeedUM = "";
-    private String FSpeedAvg = "";
-    private String FDistance = "";
-    private String FDistanceUM = "";
-    private String FAltitudeGap = "";
-    private String FAltitudeUM = "";
-    private String FOverallDirection = "";
 
 
     public FragmentTrack() {
@@ -147,31 +147,26 @@ public class FragmentTrack extends Fragment {
 
                 FTrackID = getString(R.string.track_id) + " " + String.valueOf(track.getId());
                 FTrackName = track.getName();
-                FDuration = track.getFormattedPrefTime();
-                FSpeedMax = track.getFormattedSpeedMax();
-                FSpeedUM = track.getFormattedSpeedUM();
-                FSpeedAvg = track.getFormattedPrefSpeedAverage();
-                FDistance = track.getFormattedDistance();
-                FDistanceUM = track.getFormattedDistanceUM();
-                FAltitudeGap = track.getFormattedAltitudeGap(EGMAltitudeCorrection);
-                FOverallDirection = track.getFormattedBearing();
-                FAltitudeUM = track.getFormattedAltitudeUM();
-
-                //Log.w("myApp", "[#] FragmentTrack.java - duration = " + FDuration);
+                phdDuration = phdformatter.format(track.getPrefTime(),PhysicalDataFormatter.FORMAT_DURATION);
+                phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
+                phdSpeedAvg = phdformatter.format(track.getPrefSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                phdDistance = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
+                phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(EGMAltitudeCorrection),PhysicalDataFormatter.FORMAT_ALTITUDE);
+                phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
 
                 TVTrackID.setText(FTrackID);
                 TVTrackName.setText(FTrackName);
-                TVDuration.setText(FDuration);
-                TVMaxSpeed.setText(FSpeedMax);
-                TVAverageSpeed.setText(FSpeedAvg);
-                TVDistance.setText(FDistance);
-                TVAltitudeGap.setText(FAltitudeGap);
-                TVOverallDirection.setText(FOverallDirection);
+                TVDuration.setText(phdDuration.Value);
+                TVMaxSpeed.setText(phdSpeedMax.Value);
+                TVAverageSpeed.setText(phdSpeedAvg.Value);
+                TVDistance.setText(phdDistance.Value);
+                TVAltitudeGap.setText(phdAltitudeGap.Value);
+                TVOverallDirection.setText(phdOverallDirection.Value);
 
-                TVMaxSpeedUM.setText(FSpeedUM);
-                TVAverageSpeedUM.setText(FSpeedUM);
-                TVDistanceUM.setText(FDistanceUM);
-                TVAltitudeGapUM.setText(FAltitudeUM);
+                TVMaxSpeedUM.setText(phdSpeedMax.UM);
+                TVAverageSpeedUM.setText(phdSpeedAvg.UM);
+                TVDistanceUM.setText(phdDistance.UM);
+                TVAltitudeGapUM.setText(phdAltitudeGap.UM);
 
                 // Colorize the Altitude Gap textview depending on the altitude filter
                 final boolean isValidAltitude = track.isValidAltitude();
@@ -183,12 +178,12 @@ public class FragmentTrack extends Fragment {
                 TVDirectionUM.setVisibility(prefDirections == 0 ? View.GONE : View.VISIBLE);
 
                 TLTrack.setVisibility(FTrackName.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLDuration.setVisibility(FDuration.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLSpeedMax.setVisibility(FSpeedMax.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLSpeedAvg.setVisibility(FSpeedAvg.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLDistance.setVisibility(FDistance.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLOverallDirection.setVisibility(FOverallDirection.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLAltitudeGap.setVisibility(FAltitudeGap.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLDuration.setVisibility(phdDuration.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLSpeedMax.setVisibility(phdSpeedMax.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLSpeedAvg.setVisibility(phdSpeedAvg.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLDistance.setVisibility(phdDistance.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLOverallDirection.setVisibility(phdOverallDirection.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLAltitudeGap.setVisibility(phdAltitudeGap.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
 
             } else {
                 TVTrackStatus.setVisibility(View.VISIBLE);

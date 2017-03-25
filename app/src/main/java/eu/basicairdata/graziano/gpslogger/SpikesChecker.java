@@ -18,10 +18,9 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-import android.util.Log;
 
-public class SpikesChecker {
-    public static final int NOT_AVAILABLE = -100000;
+class SpikesChecker {
+    private static final int NOT_AVAILABLE = -100000;
 
     private long    Good_Time               = NOT_AVAILABLE;   // The time of the last good value
 
@@ -40,12 +39,12 @@ public class SpikesChecker {
     private int STABILIZATION_TIME = 4;  // Stabilization window, in seconds. It must be > 0
 
     // Constructor
-    public SpikesChecker(float max_acceleration, int Stabilization_Time) {
+    SpikesChecker(float max_acceleration, int Stabilization_Time) {
         MAX_ACCELERATION = max_acceleration;
         STABILIZATION_TIME = Stabilization_Time;
     }
 
-    public void load(long Time, double Altitude) {
+    void load(long Time, double Altitude) {
         if (Time > New_Time) {
             Prev_Time = New_Time;
             New_Time = Time;
@@ -71,7 +70,7 @@ public class SpikesChecker {
         //Log.w("myApp", "[#] SpikesChecker.java - Validation window = " + (New_Time - Good_Time) / 1000);
     }
 
-    public boolean isValid() {
+    boolean isValid() {
         return (New_Time - Good_Time) / 1000 >= STABILIZATION_TIME;
     }
 }

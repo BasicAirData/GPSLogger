@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DatabaseHandler extends SQLiteOpenHelper {
+class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
@@ -209,7 +209,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public static final int NOT_AVAILABLE = -100000;
+    private static final int NOT_AVAILABLE = -100000;
 
     private static final String DATABASE_ALTER_TABLE_LOCATIONS_TO_V2 = "ALTER TABLE "
             + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";
@@ -481,7 +481,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Please note that limits both are inclusive!
     public List<LocationExtended> getLocationsList(long TrackID, long startNumber, long endNumber) {
 
-        List<LocationExtended> locationList = new ArrayList<LocationExtended>();
+        List<LocationExtended> locationList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE "
                 + KEY_TRACK_ID + " = " + TrackID + " AND "
@@ -537,7 +537,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Please note that limits both are inclusive!
     public List<LocationExtended> getPlacemarksList(long TrackID, long startNumber, long endNumber) {
 
-        List<LocationExtended> placemarkList = new ArrayList<LocationExtended>();
+        List<LocationExtended> placemarkList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_PLACEMARKS + " WHERE "
                 + KEY_TRACK_ID + " = " + TrackID + " AND "
@@ -595,7 +595,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Please note that limits both are inclusive!
     public List<LatLng> getLatLngList(long TrackID, long startNumber, long endNumber) {
 
-        List<LatLng> latlngList = new ArrayList<LatLng>();
+        List<LatLng> latlngList = new ArrayList<>();
 
         String selectQuery = "SELECT " + KEY_TRACK_ID + "," + KEY_LOCATION_LATITUDE + "," + KEY_LOCATION_LONGITUDE + "," + KEY_LOCATION_NUMBER
                 + " FROM " + TABLE_LOCATIONS + " WHERE "
@@ -648,7 +648,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Get last Location ID
     public long getLastLocationID(long TrackID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Track trk = null;
         long result = 0;
 
         String query = "SELECT " + KEY_ID + " FROM " + TABLE_LOCATIONS +
@@ -874,7 +873,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Please note that limits both are inclusive!
     public List<Track> getTracksList(long startNumber, long endNumber) {
 
-        List<Track> trackList = new ArrayList<Track>();
+        List<Track> trackList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_TRACKS + " WHERE "
                 + KEY_ID + " BETWEEN " + startNumber + " AND " + endNumber

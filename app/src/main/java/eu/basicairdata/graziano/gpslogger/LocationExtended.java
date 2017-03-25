@@ -22,15 +22,7 @@ import android.location.Location;
 
 public class LocationExtended {
 
-    private static final int NOT_AVAILABLE = -100000;
-
-    private static final int UM_METRIC_MS = 0;
-    private static final int UM_METRIC_KMH = 1;
-    private static final int UM_IMPERIAL_FPS = 8;
-    private static final int UM_IMPERIAL_MPH = 9;
-
-    private static final float M_TO_FT = 3.280839895f;
-    private static final float MS_TO_MPH = 2.2369363f;
+    private final int NOT_AVAILABLE = -100000;
 
     private Location _Location;
     private String _Description = "";
@@ -53,6 +45,14 @@ public class LocationExtended {
     public Location getLocation() {
         return _Location;
     }
+
+    public double getLatitude() { return _Location.getLatitude(); }
+    public double getLongitude() { return _Location.getLongitude(); }
+    public double getAltitude() { return _Location.hasAltitude() ? _Location.getAltitude() : NOT_AVAILABLE; }
+    public float getSpeed() { return _Location.hasSpeed() ? _Location.getSpeed() : NOT_AVAILABLE; }
+    public float getAccuracy() { return _Location.hasAccuracy() ? _Location.getAccuracy() : NOT_AVAILABLE; }
+    public float getBearing() { return _Location.hasBearing() ? _Location.getBearing() : NOT_AVAILABLE; }
+    public long getTime() { return _Location.getTime(); }
 
     public String getDescription() {
         return _Description;
@@ -89,172 +89,15 @@ public class LocationExtended {
         return this._AltitudeEGM96Correction;
     }
 
-    // ---------------------------------------------------------------------------------------------
-
-    public String getFormattedLatitude() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        boolean prefShowDecimalCoordinates = gpsApplication.getPrefShowDecimalCoordinates();
+    public double getAltitudeCorrected(double AltitudeManualCorrection, boolean EGMCorrection) {
         if (_Location != null) {
-            if (prefShowDecimalCoordinates) return String.format("%.9f", Math.abs(_Location.getLatitude()));
-            else return Location.convert(Math.abs(_Location.getLatitude()), Location.FORMAT_SECONDS);
-        }
-        return "";
-    }
-
-    public String getFormattedLongitude() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        boolean prefShowDecimalCoordinates = gpsApplication.getPrefShowDecimalCoordinates();
-        if (_Location != null) {
-            if (prefShowDecimalCoordinates) return String.format("%.9f", Math.abs(_Location.getLongitude()));
-            else return Location.convert(Math.abs(_Location.getLongitude()), Location.FORMAT_SECONDS);
-        }
-        return "";
-    }
-
-    // NOT USED
-    /*
-    public String getFormattedAltitude() {
-        if (_Location != null) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int UM = gpsApplication.getPrefUM();
-            switch (UM) {
-                case UM_METRIC_KMH:     return _Location.hasAltitude() ? String.valueOf(Math.round(_Location.getAltitude())) : "";
-                case UM_METRIC_MS:      return _Location.hasAltitude() ? String.valueOf(Math.round(_Location.getAltitude())) : "";
-                case UM_IMPERIAL_MPH:   return _Location.hasAltitude() ? String.valueOf(Math.round(_Location.getAltitude() * M_TO_FT)) : "";
-                case UM_IMPERIAL_FPS:   return _Location.hasAltitude() ? String.valueOf(Math.round(_Location.getAltitude() * M_TO_FT)) : "";
-            }
-        }
-        return "";
-    }
-    */
-
-    public String getFormattedSpeed() {
-        if (_Location != null) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int UM = gpsApplication.getPrefUM();
-            switch (UM) {
-                case UM_METRIC_KMH:     return _Location.hasSpeed() ? String.valueOf(Math.round(_Location.getSpeed() * 3.6)) : "";
-                case UM_METRIC_MS:      return _Location.hasSpeed() ? String.valueOf(Math.round(_Location.getSpeed())) : "";
-                case UM_IMPERIAL_MPH:   return _Location.hasSpeed() ? String.valueOf(Math.round(_Location.getSpeed() * MS_TO_MPH)) : "";
-                case UM_IMPERIAL_FPS:   return _Location.hasSpeed() ? String.valueOf(Math.round(_Location.getSpeed() * M_TO_FT)) : "";
-            }
-        }
-        return "";
-    }
-
-    public String getFormattedBearing() {
-        if (_Location != null) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int pDir = gpsApplication.getPrefShowDirections();
-            if (_Location.hasBearing()) {
-
-                switch (pDir) {
-                    case 0:         // NSWE
-                        final String N = gpsApplication.getString(R.string.north);
-                        final String S = gpsApplication.getString(R.string.south);
-                        final String W = gpsApplication.getString(R.string.west);
-                        final String E = gpsApplication.getString(R.string.east);
-                        int dr = (int) Math.round(_Location.getBearing() / 22.5);
-                        switch (dr) {
-                            case 0:     return N;
-                            case 1:     return N + N + E;
-                            case 2:     return N + E;
-                            case 3:     return E + N + E;
-                            case 4:     return E;
-                            case 5:     return E + S + E;
-                            case 6:     return S + E;
-                            case 7:     return S + S + E;
-                            case 8:     return S;
-                            case 9:     return S + S + W;
-                            case 10:    return S + W;
-                            case 11:    return W + S + W;
-                            case 12:    return W;
-                            case 13:    return W + N + W;
-                            case 14:    return N + W;
-                            case 15:    return N + N + W;
-                            case 16:    return N;
-                            default:    return "";
-                        }
-                    case 1:         // Angle
-                        return String.valueOf(Math.round(_Location.getBearing()));
-                    default:
-                        return String.valueOf(Math.round(_Location.getBearing()));
-                }
-            }
-        }
-        return "";
-    }
-
-    public String getFormattedAccuracy() {
-        if (_Location != null) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int UM = gpsApplication.getPrefUM();
-            switch (UM) {
-                case UM_METRIC_KMH:     return _Location.hasAccuracy() ? String.valueOf(Math.round(_Location.getAccuracy())) : "";
-                case UM_METRIC_MS:      return _Location.hasAccuracy() ? String.valueOf(Math.round(_Location.getAccuracy())) : "";
-                case UM_IMPERIAL_MPH:   return _Location.hasAccuracy() ? String.valueOf(Math.round(_Location.getAccuracy() * M_TO_FT)) : "";
-                case UM_IMPERIAL_FPS:   return _Location.hasAccuracy() ? String.valueOf(Math.round(_Location.getAccuracy() * M_TO_FT)) : "";
-            }
-        }
-        return "";
-    }
-
-    public String getFormattedAltitudeCorrected(double AltitudeManualCorrection, boolean EGMCorrection) {
-        if (_Location != null) {
+            if (!_Location.hasAltitude()) return NOT_AVAILABLE;
             double correctedaltitude = _Location.getAltitude();
             if ((EGMCorrection) && (getAltitudeEGM96Correction() != NOT_AVAILABLE)) correctedaltitude -= getAltitudeEGM96Correction();
             correctedaltitude += AltitudeManualCorrection;
-            GPSApplication gpsApplication = GPSApplication.getInstance();
-            int UM = gpsApplication.getPrefUM();
-            switch (UM) {
-                case UM_METRIC_KMH:     return _Location.hasAltitude() ? String.valueOf(Math.round(correctedaltitude)) : "";
-                case UM_METRIC_MS:      return _Location.hasAltitude() ? String.valueOf(Math.round(correctedaltitude)) : "";
-                case UM_IMPERIAL_MPH:   return _Location.hasAltitude() ? String.valueOf(Math.round(correctedaltitude * M_TO_FT)) : "";
-                case UM_IMPERIAL_FPS:   return _Location.hasAltitude() ? String.valueOf(Math.round(correctedaltitude * M_TO_FT)) : "";
-            }
+            return correctedaltitude;
         }
-        return "";
+        return NOT_AVAILABLE;
     }
-
-    public String getFormattedSpeedUM() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int UM = gpsApplication.getPrefUM();
-        switch (UM) {
-            case UM_METRIC_KMH:     return "km/h";
-            case UM_METRIC_MS:      return "m/s";
-            case UM_IMPERIAL_MPH:   return "mph";
-            case UM_IMPERIAL_FPS:   return "fps";
-            default:                return "";
-        }
-    }
-
-    public String getFormattedAltitudeUM() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int UM = gpsApplication.getPrefUM();
-        switch (UM) {
-            case UM_METRIC_KMH:     return "m";
-            case UM_METRIC_MS:      return "m";
-            case UM_IMPERIAL_MPH:   return "ft";
-            case UM_IMPERIAL_FPS:   return "ft";
-            default:                return "";
-        }
-    }
-
-    public String getFormattedLatitudeUM() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        final String N = gpsApplication.getString(R.string.north);
-        final String S = gpsApplication.getString(R.string.south);
-        if (_Location.getLatitude() >= 0) return N;
-        else return S;
-    }
-
-    public String getFormattedLongitudeUM() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        final String E = gpsApplication.getString(R.string.east);
-        final String W = gpsApplication.getString(R.string.west);
-        if (_Location.getLongitude() >= 0) return E;
-        else return W;
-    }
-
 }
 

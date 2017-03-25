@@ -34,12 +34,14 @@ public class FragmentGPSFix extends Fragment {
 
     private static final int NOT_AVAILABLE = -100000;
 
-    private static final int GPS_DISABLED = 0;
-    private static final int GPS_OUTOFSERVICE = 1;
-    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    private static final int GPS_SEARCHING = 3;
-    private static final int GPS_STABILIZING = 4;
-    private static final int GPS_OK = 5;
+    private final int GPS_DISABLED = 0;
+    private final int GPS_OUTOFSERVICE = 1;
+    private final int GPS_TEMPORARYUNAVAILABLE = 2;
+    private final int GPS_SEARCHING = 3;
+    private final int GPS_STABILIZING = 4;
+    private final int GPS_OK = 5;
+
+    private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
     private TextView TVLatitude;
     private TextView TVLongitude;
@@ -61,18 +63,12 @@ public class FragmentGPSFix extends Fragment {
     private TableLayout TLBearing;
     private TableLayout TLAccuracy;
 
-    private String FLatitude = "";
-    private String FLongitude = "";
-    private String FLatitudeUM = "";
-    private String FLongitudeUM = "";
-    private String FAltitude = "";
-    private String FAltitudeUM = "";
-    private String FSpeed = "";
-    private String FSpeedUM = "";
-    private String FBearing = "";
-    private String FAccuracy = "";
-
-
+    private PhysicalData phdLatitude;
+    private PhysicalData phdLongitude;
+    private PhysicalData phdAltitude;
+    private PhysicalData phdSpeed;
+    private PhysicalData phdBearing;
+    private PhysicalData phdAccuracy;
 
     public FragmentGPSFix() {
         // Required empty public constructor
@@ -151,28 +147,24 @@ public class FragmentGPSFix extends Fragment {
         if (isAdded()) {
             if ((location != null) && (GPSStatus == GPS_OK)) {
 
-                FLatitude = location.getFormattedLatitude();
-                FLongitude = location.getFormattedLongitude();
-                FLatitudeUM = location.getFormattedLatitudeUM();
-                FLongitudeUM = location.getFormattedLongitudeUM();
-                FAltitude = location.getFormattedAltitudeCorrected(AltitudeManualCorrection, EGMAltitudeCorrection);
-                FAltitudeUM = location.getFormattedAltitudeUM();
-                FSpeed = location.getFormattedSpeed();
-                FSpeedUM = location.getFormattedSpeedUM();
-                FBearing = location.getFormattedBearing();
-                FAccuracy = location.getFormattedAccuracy();
+                phdLatitude = phdformatter.format(location.getLatitude(), PhysicalDataFormatter.FORMAT_LATITUDE);
+                phdLongitude = phdformatter.format(location.getLongitude(), PhysicalDataFormatter.FORMAT_LONGITUDE);
+                phdAltitude = phdformatter.format(location.getAltitudeCorrected(AltitudeManualCorrection, EGMAltitudeCorrection), PhysicalDataFormatter.FORMAT_ALTITUDE);
+                phdSpeed = phdformatter.format(location.getSpeed(), PhysicalDataFormatter.FORMAT_SPEED);
+                phdBearing = phdformatter.format(location.getBearing(), PhysicalDataFormatter.FORMAT_BEARING);
+                phdAccuracy = phdformatter.format(location.getAccuracy(), PhysicalDataFormatter.FORMAT_ACCURACY);
 
-                TVLatitude.setText(FLatitude);
-                TVLongitude.setText(FLongitude);
-                TVLatitudeUM.setText(FLatitudeUM);
-                TVLongitudeUM.setText(FLongitudeUM);
-                TVAltitude.setText(FAltitude);
-                TVAltitudeUM.setText(FAltitudeUM);
-                TVSpeed.setText(FSpeed);
-                TVSpeedUM.setText(FSpeedUM);
-                TVBearing.setText(FBearing);
-                TVAccuracy.setText(FAccuracy);
-                TVAccuracyUM.setText(FAltitudeUM);
+                TVLatitude.setText(phdLatitude.Value);
+                TVLongitude.setText(phdLongitude.Value);
+                TVLatitudeUM.setText(phdLatitude.UM);
+                TVLongitudeUM.setText(phdLongitude.UM);
+                TVAltitude.setText(phdAltitude.Value);
+                TVAltitudeUM.setText(phdAltitude.UM);
+                TVSpeed.setText(phdSpeed.Value);
+                TVSpeedUM.setText(phdSpeed.UM);
+                TVBearing.setText(phdBearing.Value);
+                TVAccuracy.setText(phdAccuracy.Value);
+                TVAccuracyUM.setText(phdAccuracy.UM);
 
                 // Colorize the Altitude textview depending on the altitude EGM Correction
                 final boolean isValidAltitude = EGMAltitudeCorrection && (location.getAltitudeEGM96Correction() != NOT_AVAILABLE);
@@ -184,11 +176,11 @@ public class FragmentGPSFix extends Fragment {
 
                 TVDirectionUM.setVisibility(prefDirections == 0 ? View.GONE : View.VISIBLE);
 
-                TLCoordinates.setVisibility(FLatitude.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLAltitude.setVisibility(FAltitude.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLSpeed.setVisibility(FSpeed.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLBearing.setVisibility(FBearing.equals("") ? View.INVISIBLE : View.VISIBLE);
-                TLAccuracy.setVisibility(FAccuracy.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLCoordinates.setVisibility(phdLatitude.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLAltitude.setVisibility(phdAltitude.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLSpeed.setVisibility(phdSpeed.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLBearing.setVisibility(phdBearing.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                TLAccuracy.setVisibility(phdAccuracy.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
 
             } else {
                 TLCoordinates.setVisibility(View.INVISIBLE);

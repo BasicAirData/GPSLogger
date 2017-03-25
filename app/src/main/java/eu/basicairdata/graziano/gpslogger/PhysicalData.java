@@ -18,7 +18,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-public class PhysicalData {
-    public String Value;       //The string of the Numerical value of the Physical Quantity
-    public String UM;          //The string of the Unit of Measurement
+class PhysicalData {
+    String Value;       //The string of the Numerical value of the Physical Quantity
+    String UM;          //The string of the Unit of Measurement
 }
