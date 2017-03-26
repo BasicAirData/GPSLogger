@@ -21,5 +21,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="eu.basicairdata.graziano.gpslogger.GPSActivity">
-    <item android:id="@+id/delete" android:title="@string/card_menu_delete" />
+    <item android:id="@+id/cardmenu_share" android:visible="false" android:title="@string/card_menu_share" />
+    <item android:id="@+id/cardmenu_view" android:visible="false" android:title="@string/card_menu_view_selector" />
+    <item android:id="@+id/cardmenu_export" android:visible="false" android:title="@string/card_menu_export" />
+    <item android:id="@+id/cardmenu_delete" android:visible="true" android:title="@string/card_menu_delete" />
 </menu>

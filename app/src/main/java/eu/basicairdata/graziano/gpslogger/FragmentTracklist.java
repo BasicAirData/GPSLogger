@@ -33,6 +33,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,38 +51,28 @@ public class FragmentTracklist extends Fragment {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
-    private static RecyclerView.Adapter adapter;
-    private static ArrayList<Track> data;
+    private RecyclerView.Adapter adapter;
+    private ArrayList<Track> data;
 
     private View view;
     private TextView TVTracklistEmpty;
     private long selectedtrackID = -1;
 
+
     public FragmentTracklist() {
         // Required empty public constructor
     }
+
 
     private void DeleteFile(String filename) {
         File file = new File(filename);
         if (file.exists ()) file.delete();
     }
 
+
     private boolean FileExists(String filename) {
         File file = new File(filename);
         return file.exists ();
-    }
-
-    private boolean isPackageInstalled(String uri) {
-        PackageManager pm = getContext().getPackageManager();
-        boolean app_installed;
-        try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
-            app_installed = true;
-        }
-        catch (PackageManager.NameNotFoundException e) {
-            app_installed = false;
-        }
-        return app_installed;
     }
 
 
@@ -97,7 +88,6 @@ public class FragmentTracklist extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         view = inflater.inflate(R.layout.fragment_tracklist, container, false);
         TVTracklistEmpty = (TextView) view.findViewById(R.id.id_textView_TracklistEmpty);
         recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
@@ -112,215 +102,201 @@ public class FragmentTracklist extends Fragment {
         return view;
     }
 
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.card_menu, menu);
+
         GPSApplication gpsApplication = GPSApplication.getInstance();
         final boolean expTXT = gpsApplication.getPrefExportTXT();
         final boolean expGPX = gpsApplication.getPrefExportGPX();
         final boolean expKML = gpsApplication.getPrefExportKML();
         final long OpenInViewer = gpsApplication.getOpenInViewer();
         final long Share = gpsApplication.getShare();
-        //PackageManager pm = getContext().getPackageManager();
+        PackageManager pm = getContext().getPackageManager();
+
         //menu.setHeaderTitle("Track " + data.get(selectedtrackID).getName());
-        if ((expGPX || expKML || expTXT) && (Share == -1)) {
-            int i = 0;
-            for (Track T : data) {
-                if (T.getId() == selectedtrackID) {
-                    final int ii = i;
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyItemChanged(ii);
-                        }
-                    });
-
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "GPS Logger - Track " + T.getName());
-
-                    intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) ("GPS Logger"));
-                    intent.setType("text/xml");
-
-                    //String title = getString(R.string.card_menu_share);
-                    // Create intent to show chooser
-                    //Intent chooser = Intent.createChooser(intent, title);
-
-                    // Verify the intent will resolve to at least one activity
-                    if ((intent.resolveActivity(getContext().getPackageManager()) != null)) {
-                        menu.add(0, v.getId(), 0, R.string.card_menu_share);
-                    }
+        if (expGPX || expKML || expTXT) {
+            menu.findItem(R.id.cardmenu_export).setVisible(true);   // menu export
+            if (Share == -1){                                       // menu share
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                intent.setType("text/xml");
+                // Verify the intent will resolve to at least one activity
+                if ((intent.resolveActivity(pm) != null)) {
+                    menu.findItem(R.id.cardmenu_share).setVisible(true);
                 }
-                i++;
             }
         }
-        // TODO: Finish implementation of "View in..."
-        //if ((isPackageInstalled("com.google.earth") && (OpenInViewer == -1))) menu.add(0, v.getId(), 0, R.string.card_menu_view);
-        if (OpenInViewer == -1){
+        if (OpenInViewer == -1){                                    // menu view
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setType("application/vnd.google-earth.kml+xml");
             // Find default app
-            ResolveInfo ri = getContext().getPackageManager().resolveActivity(intent, 0);
+            ResolveInfo ri = pm.resolveActivity(intent, 0);
             if (ri != null) {
                 //Log.w("myApp", "[#] FragmentTracklist.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-                List<ResolveInfo> lri = getContext().getPackageManager().queryIntentActivities(intent, 0);
+                List<ResolveInfo> lri = pm.queryIntentActivities(intent, 0);
                 //Log.w("myApp", "[#] FragmentTracklist.java - Found " + lri.size() + " viewers:");
                 boolean founddefaultapp = false;
                 for (ResolveInfo tmpri : lri) {
                     //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
                     if (ri.activityInfo.applicationInfo.packageName.equals(tmpri.activityInfo.applicationInfo.packageName)) {
                         founddefaultapp = true;
-                        //Log.w("myApp", "[#]                              DEFAULT --> " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-                    } //else Log.w("myApp", "[#]                                          " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                             //Log.w("myApp", "[#]                              DEFAULT --> " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                    }   //else Log.w("myApp", "[#]                                          " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
                 }
-                menu.add(0, 100, 0, founddefaultapp ? getResources().getString(R.string.card_menu_view, ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager())) :
-                        getResources().getString(R.string.card_menu_view_selector));
+                menu.findItem(R.id.cardmenu_view).setVisible(true);
+                if (founddefaultapp) menu.findItem(R.id.cardmenu_view).setTitle(getResources().getString(R.string.card_menu_view, ri.activityInfo.applicationInfo.loadLabel(pm)));
             }
         }
-
-        if (expGPX || expKML || expTXT) menu.add(0, v.getId(), 0, R.string.card_menu_export);
-        menu.add(0, v.getId(), 0, R.string.card_menu_delete);
     }
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle().equals(getResources().getString(R.string.card_menu_delete))) {
-            if (!data.isEmpty() && (selectedtrackID >= 0)) {
-                int i = 0;
-                boolean found = false;
-                do {
-                    if (data.get(i).getId() == selectedtrackID) {
-                        final int ii = i;
-                        found = true;
+        switch(item.getItemId()){
+            case R.id.cardmenu_delete:
+                if (!data.isEmpty() && (selectedtrackID >= 0)) {
+                    int i = 0;
+                    boolean found = false;
+                    do {
+                        if (data.get(i).getId() == selectedtrackID) {
+                            final int ii = i;
+                            found = true;
 
-                        boolean fileexist = FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() +".kml")
-                                         || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() +".gpx")
-                                         || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() +".txt");
+                            boolean fileexist = FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() + ".kml")
+                                    || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() + ".gpx")
+                                    || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() + ".txt");
 
-                        if (fileexist) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
-                            builder.setMessage(getResources().getString(R.string.card_message_delete_also_exported));
-                            builder.setIcon(android.R.drawable.ic_menu_info_details);
-                            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    String name = data.get(ii).getName();
-                                    String nameID = String.valueOf(data.get(ii).getId());
+                            if (fileexist) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                                builder.setMessage(getResources().getString(R.string.card_message_delete_also_exported));
+                                builder.setIcon(android.R.drawable.ic_menu_info_details);
+                                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        String name = data.get(ii).getName();
+                                        String nameID = String.valueOf(data.get(ii).getId());
 
-                                    EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
-                                    data.remove(ii);
-                                    // Delete exported files
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".kml");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".gpx");
-                                    // Delete track files
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                                    DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
+                                        EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
+                                        data.remove(ii);
+                                        // Delete exported files
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".kml");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".gpx");
+                                        // Delete track files
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                        DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
 
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    String name = data.get(ii).getName();
-                                    String nameID = String.valueOf(data.get(ii).getId());
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        String name = data.get(ii).getName();
+                                        String nameID = String.valueOf(data.get(ii).getId());
 
-                                    EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
-                                    data.remove(ii);
-                                    // Delete track files
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                                    DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
+                                        EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
+                                        data.remove(ii);
+                                        // Delete track files
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                        DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
 
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
-                        } else {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
-                            builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
-                            builder.setIcon(android.R.drawable.ic_menu_info_details);
-                            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    String name = data.get(ii).getName();
-                                    String nameID = String.valueOf(data.get(ii).getId());
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                                builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
+                                builder.setIcon(android.R.drawable.ic_menu_info_details);
+                                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        String name = data.get(ii).getName();
+                                        String nameID = String.valueOf(data.get(ii).getId());
 
-                                    EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
-                                    data.remove(ii);
-                                    // Delete track files
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                                    DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
+                                        EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
+                                        data.remove(ii);
+                                        // Delete track files
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                        DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
 
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            }
                         }
-                    }
-                    i++;
-                } while ((i < data.size()) && !found);
-            }
-        } else if (item.getTitle().equals(getResources().getString(R.string.card_menu_export))) {
-            if (!data.isEmpty() && (selectedtrackID >= 0)) {
-                int i = 0;
-                boolean found = false;
-                do {
-                    if (data.get(i).getId() == selectedtrackID) {
-                        found = true;
-                        EventBus.getDefault().post("EXPORT_TRACK " + data.get(i).getId());
-                    }
-                    i++;
-                } while ((i < data.size()) && !found);
-            }
-        } else if (item.getItemId() == 100) {
-            // TODO: Set ID in xml !!!!!!
-            if (!data.isEmpty() && (selectedtrackID >= 0)) {
-                int i = 0;
-                boolean found = false;
-                do {
-                    if (data.get(i).getId() == selectedtrackID) {
-                        found = true;
-                        EventBus.getDefault().post("VIEW_TRACK " + data.get(i).getId());
-                    }
-                    i++;
-                } while ((i < data.size()) && !found);
-            }
-        } else if (item.getTitle().equals(getResources().getString(R.string.card_menu_share))) {
-            if (!data.isEmpty() && (selectedtrackID >= 0)) {
-                int i = 0;
-                boolean found = false;
-                do {
-                    if (data.get(i).getId() == selectedtrackID) {
-                        found = true;
-                        EventBus.getDefault().post("SHARE_TRACK " + data.get(i).getId());
-                    }
-                    i++;
-                } while ((i < data.size()) && !found);
-            }
-        } else {
-            return false;
+                        i++;
+                    } while ((i < data.size()) && !found);
+                }
+                break;
+            case R.id.cardmenu_export:
+                if (!data.isEmpty() && (selectedtrackID >= 0)) {
+                    int i = 0;
+                    boolean found = false;
+                    do {
+                        if (data.get(i).getId() == selectedtrackID) {
+                            found = true;
+                            EventBus.getDefault().post("EXPORT_TRACK " + data.get(i).getId());
+                        }
+                        i++;
+                    } while ((i < data.size()) && !found);
+                }
+                break;
+            case R.id.cardmenu_view:
+                if (!data.isEmpty() && (selectedtrackID >= 0)) {
+                    int i = 0;
+                    boolean found = false;
+                    do {
+                        if (data.get(i).getId() == selectedtrackID) {
+                            found = true;
+                            EventBus.getDefault().post("VIEW_TRACK " + data.get(i).getId());
+                        }
+                        i++;
+                    } while ((i < data.size()) && !found);
+                }
+                break;
+            case R.id.cardmenu_share:
+                if (!data.isEmpty() && (selectedtrackID >= 0)) {
+                    int i = 0;
+                    boolean found = false;
+                    do {
+                        if (data.get(i).getId() == selectedtrackID) {
+                            found = true;
+                            EventBus.getDefault().post("SHARE_TRACK " + data.get(i).getId());
+                        }
+                        i++;
+                    } while ((i < data.size()) && !found);
+                }
+                break;
+            default:
+                return false;
         }
         return true;
     }
+
 
     @Override
     public void onResume() {
@@ -329,11 +305,13 @@ public class FragmentTracklist extends Fragment {
         super.onResume();
     }
 
+
     @Override
     public void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
+
 
     @Subscribe
     public void onEvent(String msg) {
@@ -460,6 +438,7 @@ public class FragmentTracklist extends Fragment {
             }
         }
     }
+
 
     public void Update() {
         if (isAdded()) {
