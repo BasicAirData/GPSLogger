@@ -33,6 +33,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,52 +108,59 @@ public class FragmentTracklist extends Fragment {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.card_menu, menu);
+        final Menu _menu = menu;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                MenuInflater inflater = getActivity().getMenuInflater();
+                inflater.inflate(R.menu.card_menu, _menu);
 
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        final boolean expTXT = gpsApplication.getPrefExportTXT();
-        final boolean expGPX = gpsApplication.getPrefExportGPX();
-        final boolean expKML = gpsApplication.getPrefExportKML();
-        final long OpenInViewer = gpsApplication.getOpenInViewer();
-        final long Share = gpsApplication.getShare();
-        PackageManager pm = getContext().getPackageManager();
+                GPSApplication gpsApplication = GPSApplication.getInstance();
+                final boolean expTXT = gpsApplication.getPrefExportTXT();
+                final boolean expGPX = gpsApplication.getPrefExportGPX();
+                final boolean expKML = gpsApplication.getPrefExportKML();
+                final long OpenInViewer = gpsApplication.getOpenInViewer();
+                final long Share = gpsApplication.getShare();
+                PackageManager pm = getContext().getPackageManager();
 
-        //menu.setHeaderTitle("Track " + data.get(selectedtrackID).getName());
-        if (expGPX || expKML || expTXT) {
-            menu.findItem(R.id.cardmenu_export).setVisible(true);   // menu export
-            if (Share == -1){                                       // menu share
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                intent.setType("text/xml");
-                // Verify the intent will resolve to at least one activity
-                if ((intent.resolveActivity(pm) != null)) {
-                    menu.findItem(R.id.cardmenu_share).setVisible(true);
+                //menu.setHeaderTitle("Track " + data.get(selectedtrackID).getName());
+                if (expGPX || expKML || expTXT) {
+                    _menu.findItem(R.id.cardmenu_export).setVisible(true);   // menu export
+                    if (Share == -1) {                                       // menu share
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                        intent.setType("text/xml");
+                        // Verify the intent will resolve to at least one activity
+                        if ((intent.resolveActivity(pm) != null)) {
+                            _menu.findItem(R.id.cardmenu_share).setVisible(true);
+                        }
+                    }
+                }
+                if (OpenInViewer == -1) {                                    // menu view
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setType("application/vnd.google-earth.kml+xml");
+                    // Find default app
+                    ResolveInfo ri = pm.resolveActivity(intent, 0);
+                    if (ri != null) {
+                        //Log.w("myApp", "[#] FragmentTracklist.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                        List<ResolveInfo> lri = pm.queryIntentActivities(intent, 0);
+                        //Log.w("myApp", "[#] FragmentTracklist.java - Found " + lri.size() + " viewers:");
+                        boolean founddefaultapp = false;
+                        for (ResolveInfo tmpri : lri) {
+                            //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
+                            if (ri.activityInfo.applicationInfo.packageName.equals(tmpri.activityInfo.applicationInfo.packageName)) {
+                                founddefaultapp = true;
+                                //Log.w("myApp", "[#]                              DEFAULT --> " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                            }   //else Log.w("myApp", "[#]                                          " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                        }
+                        _menu.findItem(R.id.cardmenu_view).setVisible(true);
+                        if (founddefaultapp)
+                            _menu.findItem(R.id.cardmenu_view).setTitle(getResources().getString(R.string.card_menu_view, ri.activityInfo.applicationInfo.loadLabel(pm)));
+                    }
                 }
             }
-        }
-        if (OpenInViewer == -1){                                    // menu view
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setType("application/vnd.google-earth.kml+xml");
-            // Find default app
-            ResolveInfo ri = pm.resolveActivity(intent, 0);
-            if (ri != null) {
-                //Log.w("myApp", "[#] FragmentTracklist.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-                List<ResolveInfo> lri = pm.queryIntentActivities(intent, 0);
-                //Log.w("myApp", "[#] FragmentTracklist.java - Found " + lri.size() + " viewers:");
-                boolean founddefaultapp = false;
-                for (ResolveInfo tmpri : lri) {
-                    //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
-                    if (ri.activityInfo.applicationInfo.packageName.equals(tmpri.activityInfo.applicationInfo.packageName)) {
-                        founddefaultapp = true;
-                             //Log.w("myApp", "[#]                              DEFAULT --> " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-                    }   //else Log.w("myApp", "[#]                                          " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-                }
-                menu.findItem(R.id.cardmenu_view).setVisible(true);
-                if (founddefaultapp) menu.findItem(R.id.cardmenu_view).setTitle(getResources().getString(R.string.card_menu_view, ri.activityInfo.applicationInfo.loadLabel(pm)));
-            }
-        }
+        });
     }
 
 
