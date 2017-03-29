@@ -39,13 +39,25 @@ import java.util.ArrayList;
 
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
+    private final static int NOT_AVAILABLE = -100000;
+    private final static String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString();
+
     private ArrayList<Track> dataSet;
     private int selectedItem = -1;
 
-    private final int[] Icons = {R.mipmap.ic_place_white_24dp, R.mipmap.ic_directions_walk_white_24dp, R.mipmap.ic_terrain_white_24dp,
-            R.mipmap.ic_directions_run_white_24dp, R.mipmap.ic_directions_bike_white_24dp, R.mipmap.ic_directions_car_white_24dp,
-            R.mipmap.ic_flight_white_24dp};
+    //private final int[] Icons = {R.mipmap.ic_place_white_24dp, R.mipmap.ic_directions_walk_white_24dp, R.mipmap.ic_terrain_white_24dp,
+    //        R.mipmap.ic_directions_run_white_24dp, R.mipmap.ic_directions_bike_white_24dp, R.mipmap.ic_directions_car_white_24dp,
+    //        R.mipmap.ic_flight_white_24dp};
 
+    private static final Bitmap[] bmpTrackType = {
+            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_place_white_24dp),
+            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_walk_white_24dp),
+            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_terrain_white_24dp),
+            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_run_white_24dp),
+            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_bike_white_24dp),
+            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_car_white_24dp),
+            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_flight_white_24dp)
+    };
 
     class TrackHolder extends RecyclerView.ViewHolder {
 
@@ -89,19 +101,19 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
                     }
                 }
             });
-            itemView.setClickable(true);
+            //itemView.setClickable(true);
 
-            this.textViewTrackName = (TextView) itemView.findViewById(R.id.id_textView_card_TrackName);
-            this.textViewTrackLength = (TextView) itemView.findViewById(R.id.id_textView_card_length);
-            this.textViewTrackDuration = (TextView) itemView.findViewById(R.id.id_textView_card_duration);
-            this.textViewTrackAltitudeGap = (TextView) itemView.findViewById(R.id.id_textView_card_altitudegap);
-            this.textViewTrackMaxSpeed = (TextView) itemView.findViewById(R.id.id_textView_card_maxspeed);
-            this.textViewTrackAverageSpeed = (TextView) itemView.findViewById(R.id.id_textView_card_averagespeed);
-            this.textViewTrackGeopoints = (TextView) itemView.findViewById(R.id.id_textView_card_geopoints);
-            this.textViewTrackPlacemarks = (TextView) itemView.findViewById(R.id.id_textView_card_placemarks);
-            this.imageViewThumbnail = (ImageView) itemView.findViewById(R.id.id_imageView_card_minimap);
-            this.imageViewIcon = (ImageView) itemView.findViewById(R.id.id_imageView_card_tracktype);
-            this.progressBar = (ProgressBar) itemView.findViewById(R.id.id_progressBar_card);
+            textViewTrackName           = (TextView) itemView.findViewById(R.id.id_textView_card_TrackName);
+            textViewTrackLength         = (TextView) itemView.findViewById(R.id.id_textView_card_length);
+            textViewTrackDuration       = (TextView) itemView.findViewById(R.id.id_textView_card_duration);
+            textViewTrackAltitudeGap    = (TextView) itemView.findViewById(R.id.id_textView_card_altitudegap);
+            textViewTrackMaxSpeed       = (TextView) itemView.findViewById(R.id.id_textView_card_maxspeed);
+            textViewTrackAverageSpeed   = (TextView) itemView.findViewById(R.id.id_textView_card_averagespeed);
+            textViewTrackGeopoints      = (TextView) itemView.findViewById(R.id.id_textView_card_geopoints);
+            textViewTrackPlacemarks     = (TextView) itemView.findViewById(R.id.id_textView_card_placemarks);
+            imageViewThumbnail          = (ImageView) itemView.findViewById(R.id.id_imageView_card_minimap);
+            imageViewIcon               = (ImageView) itemView.findViewById(R.id.id_imageView_card_tracktype);
+            progressBar                 = (ProgressBar) itemView.findViewById(R.id.id_progressBar_card);
         }
 
         void SetProgress(int newprogress) {
@@ -110,8 +122,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         }
 
         void BindTrack(Track trk) {
-
-            final int NOT_AVAILABLE = -100000;
 
             track = trk;
             numberOfPoints = track.getNumberOfLocations();
@@ -140,10 +150,10 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             TT = track.getTrackType();
             if (TT != NOT_AVAILABLE) {
                 imageViewIcon.setVisibility(View.VISIBLE);
-                imageViewIcon.setImageResource(Icons[TT]);
+                imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             }
             else imageViewIcon.setVisibility(View.INVISIBLE);
-            String Filename = GPSApplication.getInstance().getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png";
+            String Filename = FilesDir + "/Thumbnails/" + track.getId() + ".png";
             File file = new File(Filename);
             if (file.exists ()) {
                 bmp = BitmapFactory.decodeFile(Filename);
