@@ -450,8 +450,7 @@ public class FragmentTracklist extends Fragment {
 
     public void Update() {
         if (isAdded()) {
-            final GPSApplication GlobalVariables = (GPSApplication) getActivity().getApplicationContext();
-            final List<Track> TI = GlobalVariables.getTrackList();
+            final List<Track> TI = GPSApplication.getInstance().getTrackList();
             if (data != null) data.clear();
             if (!TI.isEmpty()) {
                 TVTracklistEmpty.setVisibility(View.GONE);
