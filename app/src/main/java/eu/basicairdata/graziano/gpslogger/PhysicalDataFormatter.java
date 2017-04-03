@@ -151,7 +151,7 @@ class PhysicalDataFormatter {
                             _PhysicalData.UM = gpsApplication.getString(R.string.UM_m);
                         }
                         else {
-                            _PhysicalData.Value = String.format("%.1f", ((Math.floor(Number / 100.0)))/10.0);
+                            _PhysicalData.Value = String.format((Number < 10000 ? "%.2f" : "%.1f"), ((Math.floor(Number / 100.0)))/10.0);
                             _PhysicalData.UM = gpsApplication.getString(R.string.UM_km);
                         }
                         return(_PhysicalData);
@@ -162,7 +162,7 @@ class PhysicalDataFormatter {
                             _PhysicalData.UM = gpsApplication.getString(R.string.UM_ft);
                         }
                         else {
-                            _PhysicalData.Value = String.format("%.1f", ((Math.floor((Number * KM_TO_MI) / 100.0)))/10.0);
+                            _PhysicalData.Value = String.format(((Number * KM_TO_MI) < 10000 ? "%.2f" : "%.1f"), ((Math.floor((Number * KM_TO_MI) / 100.0)))/10.0);
                             _PhysicalData.UM = gpsApplication.getString(R.string.UM_mi);
                         }
                         return(_PhysicalData);
