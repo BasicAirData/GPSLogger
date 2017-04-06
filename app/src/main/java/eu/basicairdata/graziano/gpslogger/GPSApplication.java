@@ -849,7 +849,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                                 }
                                 i++;
                             } while ((i < _ArrayListTracks.size()) && !found);
-                            if (found) UpdateTrackList();
+                            //if (found) UpdateTrackList();
                         }
                     }
                 }
