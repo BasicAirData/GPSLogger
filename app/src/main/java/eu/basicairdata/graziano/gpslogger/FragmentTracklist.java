@@ -390,18 +390,23 @@ public class FragmentTracklist extends Fragment {
                 phdDistance = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
                 phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(GPSApplication.getInstance().getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
                 phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
-
-                intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) ("GPS Logger - Track " + track.getName()
-                        + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
-                        + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)
-                        + "\n"
-                        + "\n" + getString(R.string.pref_track_stats) + " " + (GPSApplication.getInstance().getPrefShowTrackStatsType() == 0 ? getString(R.string.pref_track_stats_totaltime) : getString(R.string.pref_track_stats_movingtime)) + ":"
-                        + "\n" + getString(R.string.distance) + " = " + phdDistance.Value + " " + phdDistance.UM
-                        + "\n" + getString(R.string.duration) + " = " + phdDuration.Value
-                        + "\n" + getString(R.string.altitude_gap) + " = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM
-                        + "\n" + getString(R.string.max_speed) + " = " + phdSpeedMax.Value + " " + phdSpeedMax.UM
-                        + "\n" + getString(R.string.average_speed) + " = " + phdSpeedAvg.Value + " " + phdSpeedAvg.UM
-                        + "\n" + getString(R.string.overall_direction) + " = " + phdOverallDirection.Value + " " + phdOverallDirection.UM));
+                if (track.getNumberOfLocations() <= 1) {
+                    intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) ("GPS Logger - Track " + track.getName()
+                            + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
+                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)));
+                } else {
+                    intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) ("GPS Logger - Track " + track.getName()
+                            + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
+                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)
+                            + "\n"
+                            + "\n" + getString(R.string.pref_track_stats) + " " + (GPSApplication.getInstance().getPrefShowTrackStatsType() == 0 ? getString(R.string.pref_track_stats_totaltime) : getString(R.string.pref_track_stats_movingtime)) + ":"
+                            + "\n" + getString(R.string.distance) + " = " + phdDistance.Value + " " + phdDistance.UM
+                            + "\n" + getString(R.string.duration) + " = " + phdDuration.Value
+                            + "\n" + getString(R.string.altitude_gap) + " = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM
+                            + "\n" + getString(R.string.max_speed) + " = " + phdSpeedMax.Value + " " + phdSpeedMax.UM
+                            + "\n" + getString(R.string.average_speed) + " = " + phdSpeedAvg.Value + " " + phdSpeedAvg.UM
+                            + "\n" + getString(R.string.overall_direction) + " = " + phdOverallDirection.Value + " " + phdOverallDirection.UM));
+                }
                 intent.setType("text/xml");
 
                 ArrayList<Uri> files = new ArrayList<>();
