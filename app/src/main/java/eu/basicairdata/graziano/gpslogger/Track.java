@@ -565,7 +565,11 @@ public class Track {
         return NumberOfPlacemarks;
     }
 
-    public float getEstimatedDistance(){ return Distance + DistanceInProgress; }
+    public float getEstimatedDistance(){
+        if (NumberOfLocations == 0) return NOT_AVAILABLE;
+        if (NumberOfLocations == 1) return 0;
+        return Distance + DistanceInProgress;
+    }
 
 
     public double getEstimatedAltitudeUp(boolean EGMCorrection){
@@ -671,6 +675,7 @@ public class Track {
 
     // Returns the average speed, based on preferences (Total or Moving)
     public float getPrefSpeedAverage() {
+        if (NumberOfLocations == 0) return NOT_AVAILABLE;
         GPSApplication gpsApplication = GPSApplication.getInstance();
         int pTime = gpsApplication.getPrefShowTrackStatsType();
         switch (pTime) {
