@@ -191,6 +191,7 @@ public class FragmentTracklist extends Fragment {
 
                                         EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
                                         data.remove(ii);
+                                        if (data.isEmpty()) TVTracklistEmpty.setVisibility(View.VISIBLE);
                                         adapter.notifyItemRemoved(ii);
                                         // Delete exported files
                                         DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
@@ -212,6 +213,7 @@ public class FragmentTracklist extends Fragment {
 
                                         EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
                                         data.remove(ii);
+                                        if (data.isEmpty()) TVTracklistEmpty.setVisibility(View.VISIBLE);
                                         adapter.notifyItemRemoved(ii);
                                         // Delete track files
                                         DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -240,6 +242,7 @@ public class FragmentTracklist extends Fragment {
 
                                         EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
                                         data.remove(ii);
+                                        if (data.isEmpty()) TVTracklistEmpty.setVisibility(View.VISIBLE);
                                         adapter.notifyItemRemoved(ii);
                                         // Delete track files
                                         DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
