@@ -61,7 +61,7 @@
 
     <!-- Recording buttons (bottom side) -->
     <string name="placemarks">Placemarks</string>
-    <string name="trackpoints">TrackPoints</string>
+    <string name="trackpoints">Trackpoints</string>
 
     <!-- Main menu -->
     <string name="menu_settings">Settings</string>

@@ -144,7 +144,7 @@
   <string name="toast_download_failed">No se pudo descargar. Inténtalo más tarde</string>
   <!-- About Dialog -->
   <string name="about_version">ver.</string>
-  <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra itinerarios usando la posicion GPS. El itinerario se puede visualizar en Google Earth, compartir y exportar a una carpeta de su dispositivo en formatos KML, GPX y TXT.\n\nEs un software libre, publicado bajo los términos de la licencia GNU General Public.\nMás detalles en enlace: http://www.gnu.org/licenses/gpl.txt\n\nEl aviso legal del archivo EGM96: http://earth-info.nga.mil/GandG/disclaim.html\n\nIf Disfrute de esta aplicación, por favor tome un momento para votar GPS Logger en el Google Store.</string>
+  <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra itinerarios usando la posicion GPS. El itinerario se puede visualizar en Google Earth, compartir y exportar a una carpeta de su dispositivo en formatos KML, GPX y TXT.\n\nEs un software libre, publicado bajo los términos de la licencia GNU General Public.\nMás detalles en el enlace: http://www.gnu.org/licenses/gpl.txt\n\nEl aviso legal del archivo EGM96: http://earth-info.nga.mil/GandG/disclaim.html\n\n Disfrute de esta aplicación, por favor tome un momento para votar GPS Logger en el Google Store.</string>
   <string name="about_ok">Cerrar</string>
   <string name="about_rate_this_app">¡Comenta app!</string>
   <string name="about_unable_to_rate">Imposible conectar con Google Store</string>

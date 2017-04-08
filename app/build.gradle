@@ -9,7 +9,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 23
         versionCode 15
-        versionName '2.1.5a_20170407'
+        versionName '2.1.5a_20170408'
     }
     buildTypes {
         release {
