@@ -502,6 +502,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         if (msg.equals("UPDATE_SETTINGS")) {
             MustUpdatePrefs = true;
         }
+        if (msg.equals("UPDATE_TRACK")) {
+            _ArrayListTracks.set(0, _currentTrack);
+        }
     }
 
     public void setGPSLocationUpdates (boolean state) {
@@ -683,7 +686,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         long ID = GPSDataBase.getLastTrackID();
         if (ID > 0) {
             _ArrayListTracks.clear();
-            _ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID - 1));
+            _ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID));
             if ((ID > 1) && (GPSDataBase.getTrack(ID - 1) != null)) {
                 String fname = (ID - 1) +".png";
                 File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/", fname);

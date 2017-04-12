@@ -329,6 +329,10 @@ public class FragmentTracklist extends Fragment {
 
     @Subscribe
     public void onEvent(String msg) {
+        if (msg.equals("UPDATE_TRACK")) {
+            data.set(0, GPSApplication.getInstance().getCurrentTrack());
+            adapter.notifyItemChanged(0);
+        }
         if (msg.equals("UPDATE_TRACKLIST")) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
