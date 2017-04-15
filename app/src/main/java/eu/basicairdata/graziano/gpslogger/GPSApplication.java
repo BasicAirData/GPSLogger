@@ -103,6 +103,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     private boolean MustUpdatePrefs = true;                     // True if preferences needs to be updated
 
+    private boolean isCurrentTrackVisible = false;
+
 
 
     // Singleton instance
@@ -351,9 +353,15 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void setPlacemarkRequest(boolean placemarkRequest) { PlacemarkRequest = placemarkRequest; }
 
     public List<Track> getTrackList() {
-        List<Track> tl = new ArrayList<>();
-        tl.addAll(_ArrayListTracks);
-        return tl;
+        return _ArrayListTracks;
+    }
+
+    public boolean isCurrentTrackVisible() {
+        return isCurrentTrackVisible;
+    }
+
+    public void setisCurrentTrackVisible(boolean currentTrackVisible) {
+        isCurrentTrackVisible = currentTrackVisible;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -501,9 +509,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         if (msg.equals("UPDATE_SETTINGS")) {
             MustUpdatePrefs = true;
-        }
-        if (msg.equals("UPDATE_TRACK")) {
-            _ArrayListTracks.set(0, _currentTrack);
         }
     }
 
@@ -686,12 +691,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         long ID = GPSDataBase.getLastTrackID();
         if (ID > 0) {
             _ArrayListTracks.clear();
-            _ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID));
+            _ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID - 1));
             if ((ID > 1) && (GPSDataBase.getTrack(ID - 1) != null)) {
                 String fname = (ID - 1) +".png";
                 File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/", fname);
                 if (!file.exists ()) Th = new Thumbnailer(ID - 1);
             }
+            if (_currentTrack.getNumberOfLocations() + _currentTrack.getNumberOfPlacemarks() > 0) {
+                Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: current track (" + _currentTrack.getId() + ") visible into the tracklist");
+                _ArrayListTracks.add(0, _currentTrack);
+            } else Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: current track not visible into the tracklist");
             EventBus.getDefault().post("UPDATE_TRACKLIST");
             //Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: Added " + _ArrayListTracks.size() + " tracks");
         }
@@ -814,6 +823,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     GPSDataBase.addLocationToTrack(locationExtended, track);
                     _currentTrack = track;
                     EventBus.getDefault().post("UPDATE_TRACK");
+                    if (_currentTrack.getNumberOfLocations() + _currentTrack.getNumberOfPlacemarks() == 1) UpdateTrackList();
                 }
 
                 // Task: Add a placemark to current track
@@ -826,6 +836,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     GPSDataBase.addPlacemarkToTrack(locationExtended, track);
                     _currentTrack = track;
                     EventBus.getDefault().post("UPDATE_TRACK");
+                    if (_currentTrack.getNumberOfLocations() + _currentTrack.getNumberOfPlacemarks() == 1) UpdateTrackList();
                 }
 
                 // Task: Update current Fix

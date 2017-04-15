@@ -31,6 +31,7 @@
     <color name="colorRoundedCornerDarkBottom">#161616</color>
     <color name="colorRoundedCornerDarkBorder">#707070</color>
 
+    <color name="colorCurrentTrackCardBackground">#202020</color>
     <color name="colorCardBackground">#3b3b3b</color>
     <color name="colorCardTrackBackground">#2f2f2f</color>
     <color name="colorThumbnailLineColor">#d7d7d7</color>

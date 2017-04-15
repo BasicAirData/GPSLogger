@@ -31,9 +31,9 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,11 +107,11 @@ public class FragmentTracklist extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        final Menu _menu = menu;
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        final ContextMenu _menu = menu;
+        super.onCreateContextMenu(_menu, v, menuInfo);
+        //getActivity().runOnUiThread(new Runnable() {
+        //    @Override
+        //    public void run() {
                 MenuInflater inflater = getActivity().getMenuInflater();
                 inflater.inflate(R.menu.card_menu, _menu);
 
@@ -159,8 +159,9 @@ public class FragmentTracklist extends Fragment {
                             _menu.findItem(R.id.cardmenu_view).setTitle(getResources().getString(R.string.card_menu_view, ri.activityInfo.applicationInfo.loadLabel(pm)));
                     }
                 }
-            }
-        });
+                if (selectedtrackID == gpsApplication.getCurrentTrack().getId()) _menu.findItem(R.id.cardmenu_delete).setVisible(false);
+        //    }
+        //});
     }
 
 
@@ -169,101 +170,126 @@ public class FragmentTracklist extends Fragment {
         switch(item.getItemId()){
             case R.id.cardmenu_delete:
                 if (!data.isEmpty() && (selectedtrackID >= 0)) {
-                    int i = 0;
-                    boolean found = false;
-                    do {
-                        if (data.get(i).getId() == selectedtrackID) {
-                            final int ii = i;
-                            found = true;
+                    final Track track = GPSApplication.getInstance().GPSDataBase.getTrack(selectedtrackID);
 
-                            boolean fileexist = FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() + ".kml")
-                                    || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() + ".gpx")
-                                    || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + data.get(i).getName() + ".txt");
+                    boolean fileexist = FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml")
+                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx")
+                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
 
-                            if (fileexist) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
-                                builder.setMessage(getResources().getString(R.string.card_message_delete_also_exported));
-                                builder.setIcon(android.R.drawable.ic_menu_info_details);
-                                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        String name = data.get(ii).getName();
-                                        String nameID = String.valueOf(data.get(ii).getId());
+                    if (fileexist) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                        builder.setMessage(getResources().getString(R.string.card_message_delete_also_exported));
+                        builder.setIcon(android.R.drawable.ic_menu_info_details);
+                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String name = track.getName();
+                                String nameID = String.valueOf(track.getId());
 
-                                        EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
-                                        data.remove(ii);
-                                        if (data.isEmpty()) TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                        adapter.notifyItemRemoved(ii);
-                                        // Delete exported files
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".kml");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".gpx");
-                                        // Delete track files
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                                        DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
+                                EventBus.getDefault().post("DELETE_TRACK " + track.getId());
 
-                                        dialog.dismiss();
+                                int i = 0;
+                                boolean found = false;
+                                do {
+                                    if (data.get(i).getId() == selectedtrackID) {
+                                        found = true;
+                                        data.remove(i);
+                                        adapter.notifyItemRemoved(i);
+                                        if (data.isEmpty())
+                                            TVTracklistEmpty.setVisibility(View.VISIBLE);
                                     }
-                                });
-                                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        String name = data.get(ii).getName();
-                                        String nameID = String.valueOf(data.get(ii).getId());
+                                    i++;
+                                } while ((i < data.size()) && !found);
 
-                                        EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
-                                        data.remove(ii);
-                                        if (data.isEmpty()) TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                        adapter.notifyItemRemoved(ii);
-                                        // Delete track files
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                                        DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
+                                // Delete exported files
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".kml");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".gpx");
+                                // Delete track files
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
 
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                dialog.show();
-                            } else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
-                                builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
-                                builder.setIcon(android.R.drawable.ic_menu_info_details);
-                                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        String name = data.get(ii).getName();
-                                        String nameID = String.valueOf(data.get(ii).getId());
-
-                                        EventBus.getDefault().post("DELETE_TRACK " + data.get(ii).getId());
-                                        data.remove(ii);
-                                        if (data.isEmpty()) TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                        adapter.notifyItemRemoved(ii);
-                                        // Delete track files
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                                        DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
-
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                dialog.show();
+                                dialog.dismiss();
                             }
-                        }
-                        i++;
-                    } while ((i < data.size()) && !found);
+                        });
+                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String name = track.getName();
+                                String nameID = String.valueOf(track.getId());
+
+                                EventBus.getDefault().post("DELETE_TRACK " + track.getId());
+
+                                int i = 0;
+                                boolean found = false;
+                                do {
+                                    if (data.get(i).getId() == selectedtrackID) {
+                                        found = true;
+                                        data.remove(i);
+                                        adapter.notifyItemRemoved(i);
+                                        if (data.isEmpty())
+                                            TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                    }
+                                    i++;
+                                } while ((i < data.size()) && !found);
+
+                                // Delete track files
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
+
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                        builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
+                        builder.setIcon(android.R.drawable.ic_menu_info_details);
+                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String name = track.getName();
+                                String nameID = String.valueOf(track.getId());
+
+                                EventBus.getDefault().post("DELETE_TRACK " + track.getId());
+
+                                int i = 0;
+                                boolean found = false;
+                                do {
+                                    if (data.get(i).getId() == selectedtrackID) {
+                                        found = true;
+                                        data.remove(i);
+                                        adapter.notifyItemRemoved(i);
+                                        if (data.isEmpty())
+                                            TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                    }
+                                    i++;
+                                } while ((i < data.size()) && !found);
+
+                                // Delete track files
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
+                                DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
+
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
                 }
                 break;
             case R.id.cardmenu_export:
@@ -330,16 +356,22 @@ public class FragmentTracklist extends Fragment {
     @Subscribe
     public void onEvent(String msg) {
         if (msg.equals("UPDATE_TRACK")) {
-            data.set(0, GPSApplication.getInstance().getCurrentTrack());
-            adapter.notifyItemChanged(0);
+            if (!data.isEmpty() && GPSApplication.getInstance().isCurrentTrackVisible()) {
+                final Track trk = GPSApplication.getInstance().getCurrentTrack();
+                if (data.get(0).getId() == trk.getId()) {
+                    data.set(0, trk);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Log.w("myApp", "[#] FragmentTracklist.java - update track");
+                            adapter.notifyItemChanged(0);
+                        }
+                    });
+                }
+            }
         }
         if (msg.equals("UPDATE_TRACKLIST")) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Update();
-                }
-            });
+            Update();
         }
         if (msg.contains("TRACKLIST_SELECTION")) {
             final int selID = Integer.valueOf(msg.split(" ")[1]);
@@ -453,15 +485,30 @@ public class FragmentTracklist extends Fragment {
 
     public void Update() {
         if (isAdded()) {
+            //Log.w("myApp", "[#] FragmentTracklist.java - Updating Tracklist");
             final List<Track> TI = GPSApplication.getInstance().getTrackList();
+            //Log.w("myApp", "[#] FragmentTracklist.java - The element 0 has id = " + TI.get(0).getId());
             if (data != null) data.clear();
             if (!TI.isEmpty()) {
-                TVTracklistEmpty.setVisibility(View.GONE);
                 data.addAll(TI);
+                if (data.get(0).getId() == GPSApplication.getInstance().getCurrentTrack().getId()) {
+                    GPSApplication.getInstance().setisCurrentTrackVisible(true);
+                    //Log.w("myApp", "[#] FragmentTracklist.java - current track, VISIBLE into the tracklist ("
+                    //    + GPSApplication.getInstance().getCurrentTrack().getId() + ")");
+                } else  {
+                    GPSApplication.getInstance().setisCurrentTrackVisible(false);
+                    //Log.w("myApp", "[#] FragmentTracklist.java - current track empty, NOT VISIBLE into the tracklist");
+                }
             } else {
-                TVTracklistEmpty.setVisibility(View.VISIBLE);
+                GPSApplication.getInstance().setisCurrentTrackVisible(false);
             }
-            adapter.notifyDataSetChanged();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 }

@@ -42,6 +42,9 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     private final static int NOT_AVAILABLE = -100000;
     private final static String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString();
 
+    private final static int CARDTYPE_CURRENTTRACK = 0;
+    private final static int CARDTYPE_TRACK = 1;
+
     private ArrayList<Track> dataSet;
     private int selectedItem = -1;
 
@@ -126,6 +129,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             track = trk;
             numberOfPoints = track.getNumberOfLocations();
             textViewTrackName.setText(track.getName());
+            //textViewTrackName.setText(track.getId() + " - " + track.getName());
             if (numberOfPoints > 1) {
                 phdDistance = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
                 textViewTrackLength.setText(phdDistance.Value + " " + phdDistance.UM);
@@ -171,8 +175,15 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     @Override
     public TrackHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_trackinfo, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(
+                viewType == 0 ? R.layout.card_currenttrackinfo : R.layout.card_trackinfo, parent, false);
         return new TrackHolder(view);
+    }
+
+    public int getItemViewType (int position) {
+        //Some logic to know which type will come next;
+        //return (position == 0) && (dataSet.get(0).getId() == GPSApplication.getInstance().getCurrentTrack().getId()) ? CARDTYPE_CURRENTTRACK : CARDTYPE_TRACK;
+        return (position == 0) && GPSApplication.getInstance().isCurrentTrackVisible() ? CARDTYPE_CURRENTTRACK : CARDTYPE_TRACK;
     }
 
 
