@@ -42,6 +42,10 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     private final static int NOT_AVAILABLE = -100000;
     private final static String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString();
 
+    private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+    private PhysicalData phd;
+    private Bitmap bmp;
+
     private final static int CARDTYPE_CURRENTTRACK = 0;
     private final static int CARDTYPE_TRACK = 1;
 
@@ -64,9 +68,9 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     class TrackHolder extends RecyclerView.ViewHolder {
 
-        private Bitmap bmp;
-        private long numberOfPoints;
+        private long id;
         private int TT;
+        private int progress;
 
         private final TextView textViewTrackName;
         private final TextView textViewTrackLength;
@@ -80,15 +84,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private final ImageView imageViewIcon;
         private final ProgressBar progressBar;
 
-        private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
-        private PhysicalData phdDuration;
-        private PhysicalData phdSpeedMax;
-        private PhysicalData phdSpeedAvg;
-        private PhysicalData phdDistance;
-        private PhysicalData phdAltitudeGap;
-
-        private Track track;
-
 
         TrackHolder(View itemView) {
             super(itemView);
@@ -96,10 +91,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
                 @Override
                 public void onClick(View v) {
                     selectedItem = getLayoutPosition();
+                    //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
                     if (selectedItem >= 0) {
-                        if (track.getProgress() == 0) {
-                            EventBus.getDefault().post("TRACKLIST_SELECTION " + track.getId());
-                            Log.w("myApp", "[#] TrackAdapter.java - Selected track: " + track.getName() + " (id = " + track.getId() + ")");
+                        //Log.w("myApp", "[#] TrackAdapter.java - Progress = " + progress);
+                        if (progress == 0) {
+                            EventBus.getDefault().post("TRACKLIST_SELECTION " + id);
+                            //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
                         }
                     }
                 }
@@ -120,27 +117,25 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         }
 
         void SetProgress(int newprogress) {
-            track.setProgress(newprogress);
+            progress = newprogress;
             progressBar.setProgress(newprogress);
         }
 
         void BindTrack(Track trk) {
-
-            track = trk;
-            numberOfPoints = track.getNumberOfLocations();
-            textViewTrackName.setText(track.getName());
+            id = trk.getId();
+            textViewTrackName.setText(trk.getName());
             //textViewTrackName.setText(track.getId() + " - " + track.getName());
-            if (numberOfPoints > 1) {
-                phdDistance = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
-                textViewTrackLength.setText(phdDistance.Value + " " + phdDistance.UM);
-                phdDuration = phdformatter.format(track.getPrefTime(),PhysicalDataFormatter.FORMAT_DURATION);
-                textViewTrackDuration.setText(phdDuration.Value);
-                phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(GPSApplication.getInstance().getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
-                textViewTrackAltitudeGap.setText(phdAltitudeGap.Value + " " + phdAltitudeGap.UM);
-                phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
-                textViewTrackMaxSpeed.setText(phdSpeedMax.Value + " " + phdSpeedMax.UM);
-                phdSpeedAvg = phdformatter.format(track.getPrefSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
-                textViewTrackAverageSpeed.setText(phdSpeedAvg.Value + " " + phdSpeedAvg.UM);
+            if (trk.getNumberOfLocations() > 1) {
+                phd = phdformatter.format(trk.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
+                textViewTrackLength.setText(phd.Value + " " + phd.UM);
+                phd = phdformatter.format(trk.getPrefTime(),PhysicalDataFormatter.FORMAT_DURATION);
+                textViewTrackDuration.setText(phd.Value);
+                phd = phdformatter.format(trk.getEstimatedAltitudeGap(GPSApplication.getInstance().getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
+                textViewTrackAltitudeGap.setText(phd.Value + " " + phd.UM);
+                phd = phdformatter.format(trk.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
+                textViewTrackMaxSpeed.setText(phd.Value + " " + phd.UM);
+                phd = phdformatter.format(trk.getPrefSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                textViewTrackAverageSpeed.setText(phd.Value + " " + phd.UM);
             } else {
                 textViewTrackLength.setText("");
                 textViewTrackDuration.setText("");
@@ -148,16 +143,17 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
                 textViewTrackMaxSpeed.setText("");
                 textViewTrackAverageSpeed.setText("");
             }
-            textViewTrackGeopoints.setText(String.valueOf(numberOfPoints));
-            textViewTrackPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
-            progressBar.setProgress(track.getProgress());
-            TT = track.getTrackType();
+            textViewTrackGeopoints.setText(String.valueOf(trk.getNumberOfLocations()));
+            textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
+            progress = trk.getProgress();
+            progressBar.setProgress(progress);
+            TT = trk.getTrackType();
             if (TT != NOT_AVAILABLE) {
-                imageViewIcon.setVisibility(View.VISIBLE);
+                //imageViewIcon.setVisibility(View.VISIBLE);
                 imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             }
-            else imageViewIcon.setVisibility(View.INVISIBLE);
-            String Filename = FilesDir + "/Thumbnails/" + track.getId() + ".png";
+            else imageViewIcon.setImageBitmap(null); //imageViewIcon.setVisibility(View.INVISIBLE);
+            String Filename = FilesDir + "/Thumbnails/" + id + ".png";
             File file = new File(Filename);
             if (file.exists ()) {
                 bmp = BitmapFactory.decodeFile(Filename);
@@ -175,14 +171,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     @Override
     public TrackHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(
-                viewType == 0 ? R.layout.card_currenttrackinfo : R.layout.card_trackinfo, parent, false);
-        return new TrackHolder(view);
+        return new TrackHolder(LayoutInflater.from(parent.getContext()).inflate(
+                viewType == 0 ? R.layout.card_currenttrackinfo : R.layout.card_trackinfo, parent, false));
     }
 
     public int getItemViewType (int position) {
         //Some logic to know which type will come next;
-        //return (position == 0) && (dataSet.get(0).getId() == GPSApplication.getInstance().getCurrentTrack().getId()) ? CARDTYPE_CURRENTTRACK : CARDTYPE_TRACK;
         return (position == 0) && GPSApplication.getInstance().isCurrentTrackVisible() ? CARDTYPE_CURRENTTRACK : CARDTYPE_TRACK;
     }
 

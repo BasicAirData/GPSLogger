@@ -107,26 +107,21 @@ public class FragmentTracklist extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
         final ContextMenu _menu = menu;
-        super.onCreateContextMenu(_menu, v, menuInfo);
         //getActivity().runOnUiThread(new Runnable() {
-        //    @Override
-        //    public void run() {
+            //@Override
+            //public void run() {
                 MenuInflater inflater = getActivity().getMenuInflater();
                 inflater.inflate(R.menu.card_menu, _menu);
 
-                GPSApplication gpsApplication = GPSApplication.getInstance();
-                final boolean expTXT = gpsApplication.getPrefExportTXT();
-                final boolean expGPX = gpsApplication.getPrefExportGPX();
-                final boolean expKML = gpsApplication.getPrefExportKML();
-                final long OpenInViewer = gpsApplication.getOpenInViewer();
-                final long Share = gpsApplication.getShare();
-                PackageManager pm = getContext().getPackageManager();
+                final GPSApplication gpsApplication = GPSApplication.getInstance();
+                final PackageManager pm = getContext().getPackageManager();
 
                 //menu.setHeaderTitle("Track " + data.get(selectedtrackID).getName());
-                if (expGPX || expKML || expTXT) {
+                if (gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT()) {
                     _menu.findItem(R.id.cardmenu_export).setVisible(true);   // menu export
-                    if (Share == -1) {                                       // menu share
+                    if (gpsApplication.getShare() == -1) {                                       // menu share
                         Intent intent = new Intent();
                         intent.setAction(Intent.ACTION_SEND_MULTIPLE);
                         intent.setType("text/xml");
@@ -136,31 +131,27 @@ public class FragmentTracklist extends Fragment {
                         }
                     }
                 }
-                if (OpenInViewer == -1) {                                    // menu view
+                if (gpsApplication.getOpenInViewer() == -1) {                                    // menu view
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setType("application/vnd.google-earth.kml+xml");
-                    // Find default app
-                    ResolveInfo ri = pm.resolveActivity(intent, 0);
+                    ResolveInfo ri = pm.resolveActivity(intent, 0); // Find default app
                     if (ri != null) {
                         //Log.w("myApp", "[#] FragmentTracklist.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
                         List<ResolveInfo> lri = pm.queryIntentActivities(intent, 0);
                         //Log.w("myApp", "[#] FragmentTracklist.java - Found " + lri.size() + " viewers:");
-                        boolean founddefaultapp = false;
                         for (ResolveInfo tmpri : lri) {
                             //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
                             if (ri.activityInfo.applicationInfo.packageName.equals(tmpri.activityInfo.applicationInfo.packageName)) {
-                                founddefaultapp = true;
+                                _menu.findItem(R.id.cardmenu_view).setTitle(getResources().getString(R.string.card_menu_view, ri.activityInfo.applicationInfo.loadLabel(pm)));
                                 //Log.w("myApp", "[#]                              DEFAULT --> " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
                             }   //else Log.w("myApp", "[#]                                          " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
                         }
                         _menu.findItem(R.id.cardmenu_view).setVisible(true);
-                        if (founddefaultapp)
-                            _menu.findItem(R.id.cardmenu_view).setTitle(getResources().getString(R.string.card_menu_view, ri.activityInfo.applicationInfo.loadLabel(pm)));
-                    }
+                        }
                 }
                 if (selectedtrackID == gpsApplication.getCurrentTrack().getId()) _menu.findItem(R.id.cardmenu_delete).setVisible(false);
-        //    }
+            //}
         //});
     }
 
