@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -104,7 +105,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean MustUpdatePrefs = true;                     // True if preferences needs to be updated
 
     private boolean isCurrentTrackVisible = false;
-
+    private boolean isContextMenuShareVisible = false;          // True if "Share with ..." menu is visible
+    private boolean isContextMenuViewVisible = false;           // True if "View in *" menu is visible
+    private String ViewInApp = "";                              // The string of default app name for "View"
+                                                                // "" in case of selector
 
 
     // Singleton instance
@@ -241,6 +245,18 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             NewTrackFlag = false;
             newtrackhandler.removeCallbacks(newtrackr);         // Cancel the previous newtrackr handler
         }
+    }
+
+    public boolean isContextMenuShareVisible() {
+        return isContextMenuShareVisible;
+    }
+
+    public boolean isContextMenuViewVisible() {
+        return isContextMenuViewVisible;
+    }
+
+    public String getViewInApp() {
+        return ViewInApp;
     }
 
     public boolean isPermissionsChecked() {
@@ -498,6 +514,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             //UnbindGPSService();
         }
         if (msg.equals("APP_RESUME")) {
+            AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
+            asyncPrepareTracklistContextMenu.start();
             handler.removeCallbacks(r);                 // Cancel the switch-off handler
             setHandlerTimer(DEFAULTHANDLERTIMER);
             setGPSLocationUpdates(true);
@@ -563,6 +581,47 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
         }
         //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
+    }
+
+
+    private class AsyncPrepareTracklistContextMenu extends Thread {
+
+        public AsyncPrepareTracklistContextMenu() {
+        }
+
+        public void run() {
+            isContextMenuShareVisible = false;
+            isContextMenuViewVisible = false;
+            ViewInApp = "";
+
+            final PackageManager pm = getPackageManager();
+            // ----- menu share
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+            intent.setType("text/xml");
+            // Verify the intent will resolve to at least one activity
+            if ((intent.resolveActivity(pm) != null)) isContextMenuShareVisible = true;
+
+            // ----- menu view
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setType("application/vnd.google-earth.kml+xml");
+            ResolveInfo ri = pm.resolveActivity(intent, 0); // Find default app
+            if (ri != null) {
+                //Log.w("myApp", "[#] FragmentTracklist.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                List<ResolveInfo> lri = pm.queryIntentActivities(intent, 0);
+                //Log.w("myApp", "[#] FragmentTracklist.java - Found " + lri.size() + " viewers:");
+                for (ResolveInfo tmpri : lri) {
+                    //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
+                    if (ri.activityInfo.applicationInfo.packageName.equals(tmpri.activityInfo.applicationInfo.packageName)) {
+                        ViewInApp = ri.activityInfo.applicationInfo.loadLabel(pm).toString();
+                        //Log.w("myApp", "[#]                              DEFAULT --> " + tmpri.activityInfo.applicationInfo.loadLabel(getPackageManager()));
+                    }   //else Log.w("myApp", "[#]                                          " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                }
+                isContextMenuViewVisible = true;
+            }
+            Log.w("myApp", "[#] GPSApplication.java - Tracklist ContextMenu prepared");
+        }
     }
 
     // ------------------------------------------------------------------------- GpsStatus.Listener
