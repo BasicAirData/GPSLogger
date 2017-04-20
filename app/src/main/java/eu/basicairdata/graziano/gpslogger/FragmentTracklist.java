@@ -81,6 +81,13 @@ public class FragmentTracklist extends Fragment {
         }
     }
 
+    public void UpdateCurrentTrackStats() {
+        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(0);
+        if (holder != null) {
+            ((TrackAdapter.TrackHolder)holder).UpdateTrackStats(data.get(0));
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -330,7 +337,8 @@ public class FragmentTracklist extends Fragment {
                         @Override
                         public void run() {
                             //Log.w("myApp", "[#] FragmentTracklist.java - update track");
-                            adapter.notifyItemChanged(0);
+                            UpdateCurrentTrackStats();
+                            //adapter.notifyItemChanged(0);
                         }
                     });
                 }
@@ -364,7 +372,7 @@ public class FragmentTracklist extends Fragment {
                         for (Track T : data) {
                             if (T.getId() == trackid) {
                                 setProgress(i, T.getProgress());
-                                //adapter.notifyItemChanged(i);
+                                //adapter.notifyItemChanged(i, progress);
                             }
                             i++;
                         }
