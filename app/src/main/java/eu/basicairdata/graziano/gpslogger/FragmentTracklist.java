@@ -29,6 +29,7 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -477,6 +478,11 @@ public class FragmentTracklist extends Fragment {
                     adapter.notifyDataSetChanged();
                 }
             });
+            if (!data.isEmpty()) {
+                for (Track DS : data) {
+                    DS.loadThumbnail();
+                }
+            }
         }
     }
 }

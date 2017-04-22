@@ -28,8 +28,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-//import com.squareup.picasso.Picasso;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
@@ -61,7 +59,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
         private final PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
         private PhysicalData phd;
-        private Bitmap bmp;
 
         private long id;
         private int progress;
@@ -175,13 +172,15 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
-            String Filename = FilesDir + "/Thumbnails/" + id + ".png";
-            File file = new File(Filename);
-            if (file.exists ()) {
-                bmp = BitmapFactory.decodeFile(Filename);
-                imageViewThumbnail.setImageBitmap(bmp);
-            } else imageViewThumbnail.setImageDrawable(null);
-            //Picasso.with(GPSApplication.getInstance().getApplicationContext()).load(file).into(imageViewThumbnail);
+            if (trk.hasThumbnail()) imageViewThumbnail.setImageBitmap(trk.getThumbnail());
+            else {  // load thumbnail from disk
+                String Filename = FilesDir + "/Thumbnails/" + id + ".png";
+                File file = new File(Filename);
+                if (file.exists()) {
+                    Bitmap bmp = BitmapFactory.decodeFile(Filename);
+                    imageViewThumbnail.setImageBitmap(bmp);
+                } else imageViewThumbnail.setImageDrawable(null);
+            }
         }
     }
 

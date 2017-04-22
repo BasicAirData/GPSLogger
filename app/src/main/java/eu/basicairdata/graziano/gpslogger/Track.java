@@ -18,8 +18,12 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.AsyncTask;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 
 public class Track {
@@ -100,6 +104,9 @@ public class Track {
 
     // The value of the progressbar in card view
     private int Progress = 0;
+    // The thumbnail
+    private boolean hasThumbnail = false;
+    private Bitmap Thumbnail = null;
 
     // The altitude validator (the anti spikes filter):
     // - Max Acceleration = 12 m/s^2
@@ -546,6 +553,55 @@ public class Track {
 
     public void setProgress(int progress) {
         Progress = progress;
+    }
+
+    public Bitmap getThumbnail() {
+        return hasThumbnail ? Thumbnail : null;
+    }
+
+    /*
+    public void setThumbnail(Bitmap thumbnail) {
+        if (thumbnail != null) Thumbnail = thumbnail;
+        hasThumbnail = true;
+    }
+
+    public void removeThumbnail() {
+        Thumbnail = null;
+        hasThumbnail = false;
+    }
+    */
+
+    public void loadThumbnail() {
+
+        class LoadThumb extends AsyncTask<String, Void, String> {
+
+            private Bitmap bmp;
+
+            @Override
+            protected String doInBackground(String... params) {
+                String Filename = GPSApplication.getInstance().getApplicationContext().getFilesDir() + "/Thumbnails/" + id + ".png";
+                File file = new File(Filename);
+                if (file.exists()) bmp = BitmapFactory.decodeFile(Filename);
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                if (bmp != null) {
+                    Thumbnail = bmp;
+                    hasThumbnail = true;
+                    //Log.w("myApp", "[#] Track.java - Thumbnail " + id + " loaded");
+                }
+            }
+        }
+
+        hasThumbnail = false;
+        LoadThumb LT = new LoadThumb();
+        LT.execute();
+    }
+
+    public boolean hasThumbnail() {
+        return hasThumbnail;
     }
 
     // --------------------------------------------------------------------------------------------
