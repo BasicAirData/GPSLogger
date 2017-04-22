@@ -1,5 +1,5 @@
 /*
- * TrackInfoAdapter - Java Class for Android
+ * TrackAdapter - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 19/6/2016
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ package eu.basicairdata.graziano.gpslogger;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,15 +40,11 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     private final static int NOT_AVAILABLE = -100000;
     private final static String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString();
-
     private final static int CARDTYPE_CURRENTTRACK = 0;
     private final static int CARDTYPE_TRACK = 1;
 
     private ArrayList<Track> dataSet;
 
-    //private final int[] Icons = {R.mipmap.ic_place_white_24dp, R.mipmap.ic_directions_walk_white_24dp, R.mipmap.ic_terrain_white_24dp,
-    //        R.mipmap.ic_directions_run_white_24dp, R.mipmap.ic_directions_bike_white_24dp, R.mipmap.ic_directions_car_white_24dp,
-    //        R.mipmap.ic_flight_white_24dp};
 
     private static final Bitmap[] bmpTrackType = {
             BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_place_white_24dp),
@@ -60,6 +55,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_car_white_24dp),
             BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_flight_white_24dp)
     };
+
 
     static class TrackHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -85,15 +81,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
         @Override
         public void onClick(View v) {
-            //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
-            //if (getLayoutPosition() >= 0) {
-                //Log.w("myApp", "[#] TrackAdapter.java - Progress = " + progress);
-                if (progress == 0) {
-                    EventBus.getDefault().post("TRACKLIST_SELECTION " + id);
-                    //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
-                }
-            //}
+            if (progress == 0) {
+                EventBus.getDefault().post("TRACKLIST_SELECTION " + id);
+                //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
+            }
         }
+
 
         TrackHolder(View itemView) {
             super(itemView);
@@ -114,10 +107,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             progressBar                 = (ProgressBar) itemView.findViewById(R.id.id_progressBar_card);
         }
 
+
         void SetProgress(int newprogress) {
             progress = newprogress;
             progressBar.setProgress(newprogress);
         }
+
 
         void UpdateTrackStats(final Track trk) {
             textViewTrackName.setText(trk.getName());
@@ -144,12 +139,10 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
 
             int TT = trk.getTrackType();
-            if (TT != NOT_AVAILABLE) {
-                //imageViewIcon.setVisibility(View.VISIBLE);
-                imageViewIcon.setImageBitmap(bmpTrackType[TT]);
-            }
-            else imageViewIcon.setImageBitmap(null); //imageViewIcon.setVisibility(View.INVISIBLE);
+            if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
+            else imageViewIcon.setImageBitmap(null);
         }
+
 
         void BindTrack(Track trk) {
             id = trk.getId();
@@ -177,12 +170,11 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
             progress = trk.getProgress();
             progressBar.setProgress(progress);
+
             int TT = trk.getTrackType();
-            if (TT != NOT_AVAILABLE) {
-                //imageViewIcon.setVisibility(View.VISIBLE);
-                imageViewIcon.setImageBitmap(bmpTrackType[TT]);
-            }
-            else imageViewIcon.setImageBitmap(null); //imageViewIcon.setVisibility(View.INVISIBLE);
+            if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
+            else imageViewIcon.setImageBitmap(null);
+
             String Filename = FilesDir + "/Thumbnails/" + id + ".png";
             File file = new File(Filename);
             if (file.exists ()) {
@@ -205,8 +197,8 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
                 viewType == 0 ? R.layout.card_currenttrackinfo : R.layout.card_trackinfo, parent, false));
     }
 
+
     public int getItemViewType (int position) {
-        //Some logic to know which type will come next;
         return (position == 0) && GPSApplication.getInstance().isCurrentTrackVisible() ? CARDTYPE_CURRENTTRACK : CARDTYPE_TRACK;
     }
 

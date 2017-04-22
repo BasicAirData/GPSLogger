@@ -111,7 +111,7 @@ public class FragmentTracklist extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
-        //Log.w("myApp", "[#] FragmentTracklist.java - start onCreateContextMenu");
+
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.card_menu, menu);
@@ -133,8 +133,6 @@ public class FragmentTracklist extends Fragment {
         }
         //Log.w("myApp", "[#] FragmentTracklist.java - delete");
         if (selectedtrackID == gpsApplication.getCurrentTrack().getId()) menu.findItem(R.id.cardmenu_delete).setVisible(false);
-
-        //Log.w("myApp", "[#] FragmentTracklist.java - end onCreateContextMenu");
     }
 
 
@@ -338,16 +336,31 @@ public class FragmentTracklist extends Fragment {
                         public void run() {
                             //Log.w("myApp", "[#] FragmentTracklist.java - update track");
                             UpdateCurrentTrackStats();
-                            //adapter.notifyItemChanged(0);
                         }
                     });
                 }
             }
         }
+        if (msg.startsWith("TRACK_SETPROGRESS")) {
+            final long trackid = Long.valueOf(msg.split(" ")[1]);
+            final int progress = Integer.valueOf(msg.split(" ")[2]);
+            if ((trackid > 0) && (progress >= 0)) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int i = 0;
+                        for (Track T : data) {
+                            if (T.getId() == trackid) setProgress(i, T.getProgress());
+                            i++;
+                        }
+                    }
+                });
+            }
+        }
         if (msg.equals("UPDATE_TRACKLIST")) {
             Update();
         }
-        if (msg.contains("TRACKLIST_SELECTION")) {
+        if (msg.startsWith("TRACKLIST_SELECTION")) {
             final int selID = Integer.valueOf(msg.split(" ")[1]);
             if (selID >= 0) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -361,26 +374,7 @@ public class FragmentTracklist extends Fragment {
                 });
             }
         }
-        if (msg.contains("TRACK_SETPROGRESS")) {
-            final long trackid = Long.valueOf(msg.split(" ")[1]);
-            final int progress = Integer.valueOf(msg.split(" ")[2]);
-            if ((trackid > 0) && (progress >= 0)) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int i = 0;
-                        for (Track T : data) {
-                            if (T.getId() == trackid) {
-                                setProgress(i, T.getProgress());
-                                //adapter.notifyItemChanged(i, progress);
-                            }
-                            i++;
-                        }
-                    }
-                });
-            }
-        }
-        if (msg.contains("INTENT_SEND")) {
+        if (msg.startsWith("INTENT_SEND")) {
             final long trackid = Long.valueOf(msg.split(" ")[1]);
             if (trackid > 0) {
                 Track track = GPSApplication.getInstance().GPSDataBase.getTrack(trackid);
