@@ -443,7 +443,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     @Subscribe
     public void onEvent(String msg) {
-        if (msg.contains("TRACK_SETPROGRESS")) {
+        if (msg.startsWith("TRACK_SETPROGRESS")) {
             long trackid = Long.valueOf(msg.split(" ")[1]);
             int progress = Integer.valueOf(msg.split(" ")[2]);
             if ((trackid > 0) && (progress >= 0)) {
@@ -452,7 +452,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 }
             }
         }
-        if (msg.contains("TRACK_EXPORTED")) {
+        if (msg.startsWith("TRACK_EXPORTED")) {
             long trackid = Long.valueOf(msg.split(" ")[1]);
             if (trackid > 0) {
                 for (Track T : _ArrayListTracks) {
@@ -475,17 +475,17 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 }
             }
         }
-        if (msg.contains("EXPORT_TRACK")) {
+        if (msg.startsWith("EXPORT_TRACK")) {
             long trackid = Long.valueOf(msg.split(" ")[1]);
             Ex = new Exporter(trackid, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger");
             Ex.start();
         }
-        if (msg.contains("SHARE_TRACK")) {
+        if (msg.startsWith("SHARE_TRACK")) {
             setShare(Long.valueOf(msg.split(" ")[1]));
             Ex = new Exporter(Share, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
             Ex.start();
         }
-        if (msg.contains("VIEW_TRACK")) {
+        if (msg.startsWith("VIEW_TRACK")) {
             setOpenInViewer(Long.valueOf(msg.split(" ")[1]));
             Ex = new Exporter(OpenInViewer, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
             Ex.start();
@@ -496,7 +496,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             ast.location = null;
             AsyncTODOQueue.add(ast);
         }
-        if (msg.contains("DELETE_TRACK")) {
+        if (msg.startsWith("DELETE_TRACK")) {
             AsyncTODO ast = new AsyncTODO();
             ast.TaskType = "TASK_" + msg;
             ast.location = null;
