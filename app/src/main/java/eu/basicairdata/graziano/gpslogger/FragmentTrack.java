@@ -66,6 +66,8 @@ public class FragmentTrack extends Fragment {
     private String FTrackID = "";
     private String FTrackName = "";
 
+    final GPSApplication gpsApplication = GPSApplication.getInstance();
+
 
     public FragmentTrack() {
         // Required empty public constructor
@@ -137,7 +139,6 @@ public class FragmentTrack extends Fragment {
     }
 
     public void Update() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
         final Track track = gpsApplication.getCurrentTrack();
         final int prefDirections = gpsApplication.getPrefShowDirections();
         final boolean EGMAltitudeCorrection = gpsApplication.getPrefEGM96AltitudeCorrection();
@@ -173,7 +174,7 @@ public class FragmentTrack extends Fragment {
                 TVAltitudeGap.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
                 TVAltitudeGapUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
 
-                TVTrackStatus.setVisibility(View.GONE);
+                TVTrackStatus.setVisibility(View.INVISIBLE);
 
                 TVDirectionUM.setVisibility(prefDirections == 0 ? View.GONE : View.VISIBLE);
 

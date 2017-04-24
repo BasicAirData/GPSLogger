@@ -43,6 +43,9 @@ public class FragmentRecordingControls extends Fragment{
     private TextView TVGeoPoints;
     private TextView TVPlacemarks;
 
+    final GPSApplication gpsApplication = GPSApplication.getInstance();
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +93,6 @@ public class FragmentRecordingControls extends Fragment{
 
     public void ontoggleRecordGeoPoint(View view) {
         if (isAdded()) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
             final Boolean grs = gpsApplication.getRecording();
             boolean newRecordingState = !grs;
             gpsApplication.setRecording(newRecordingState);
@@ -100,7 +102,6 @@ public class FragmentRecordingControls extends Fragment{
 
     public void onPlacemarkRequest(View view) {
         if (isAdded()) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
             final Boolean pr = gpsApplication.getPlacemarkRequest();
             boolean newPlacemarkRequestState = !pr;
             gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
@@ -122,7 +123,6 @@ public class FragmentRecordingControls extends Fragment{
 
     public void Update() {
         if (isAdded()) {
-            GPSApplication gpsApplication = GPSApplication.getInstance();
             final Track track = gpsApplication.getCurrentTrack();
             final Boolean grs = gpsApplication.getRecording();
             final Boolean pr = gpsApplication.getPlacemarkRequest();

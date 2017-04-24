@@ -39,7 +39,7 @@ import java.util.ArrayList;
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     private final static int NOT_AVAILABLE = -100000;
-    private final static String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString();
+    private final static String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString() + "/Thumbnails/";
     private final static int CARDTYPE_CURRENTTRACK = 0;
     private final static int CARDTYPE_TRACK = 1;
 
@@ -64,7 +64,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private Bitmap bmp;
 
         private long id;
-        private int progress;
 
         private final TextView textViewTrackName;
         private final TextView textViewTrackLength;
@@ -81,7 +80,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
         @Override
         public void onClick(View v) {
-            if (progress == 0) {
+            if (progressBar.getProgress() == 0) {
                 EventBus.getDefault().post("TRACKLIST_SELECTION " + id);
                 //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
             }
@@ -109,7 +108,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
 
         void SetProgress(int newprogress) {
-            progress = newprogress;
             progressBar.setProgress(newprogress);
         }
 
@@ -168,20 +166,20 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             }
             textViewTrackGeopoints.setText(String.valueOf(trk.getNumberOfLocations()));
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
-            progress = trk.getProgress();
-            progressBar.setProgress(progress);
+            progressBar.setProgress(trk.getProgress());
 
             int TT = trk.getTrackType();
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
-            String Filename = FilesDir + "/Thumbnails/" + id + ".png";
+            String Filename = FilesDir + id + ".png";
             File file = new File(Filename);
             if (file.exists ()) {
                 bmp = BitmapFactory.decodeFile(Filename);
                 imageViewThumbnail.setImageBitmap(bmp);
-            } else imageViewThumbnail.setImageDrawable(null);
-            //Picasso.with(GPSApplication.getInstance().getApplicationContext()).load(file).into(imageViewThumbnail);
+            }
+            else imageViewThumbnail.setImageDrawable(null);
+            //Picasso.with(GPSApplication.getInstance().getApplicationContext()).load(file).noFade().into(imageViewThumbnail);
         }
     }
 

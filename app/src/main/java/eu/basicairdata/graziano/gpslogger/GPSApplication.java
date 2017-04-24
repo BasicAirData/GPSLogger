@@ -167,7 +167,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
         @Override
         public void run() {
-            if (GPSStatus == GPS_OK) {
+            if ((GPSStatus == GPS_OK) || (GPSStatus == GPS_STABILIZING)) {
                 GPSStatus = GPS_TEMPORARYUNAVAILABLE;
                 EventBus.getDefault().post("UPDATE_FIX");
             }
@@ -511,6 +511,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         if (msg.equals("APP_PAUSE")) {
             handler.postDelayed(r, getHandlerTimer());  // Starts the switch-off handler (delayed by HandlerTimer)
+            System.gc();                                // Clear mem from released objects with Garbage Collector
             //UnbindGPSService();
         }
         if (msg.equals("APP_RESUME")) {

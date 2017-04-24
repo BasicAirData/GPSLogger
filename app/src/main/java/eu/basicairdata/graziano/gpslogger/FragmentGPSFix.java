@@ -70,6 +70,8 @@ public class FragmentGPSFix extends Fragment {
     private PhysicalData phdBearing;
     private PhysicalData phdAccuracy;
 
+    final GPSApplication gpsApplication = GPSApplication.getInstance();
+
     public FragmentGPSFix() {
         // Required empty public constructor
     }
@@ -138,7 +140,6 @@ public class FragmentGPSFix extends Fragment {
 
     public void Update() {
         //Log.w("myApp", "[#] FragmentGPSFix.java - Update(Location location)");
-        GPSApplication gpsApplication = GPSApplication.getInstance();
         final LocationExtended location = gpsApplication.getCurrentLocationExtended();
         final double AltitudeManualCorrection = gpsApplication.getPrefAltitudeCorrection();
         int prefDirections = gpsApplication.getPrefShowDirections();

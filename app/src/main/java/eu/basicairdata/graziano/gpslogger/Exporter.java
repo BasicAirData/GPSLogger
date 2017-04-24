@@ -216,11 +216,10 @@ class Exporter extends Thread {
             if (track.getNumberOfPlacemarks() > 0) {
                 // Writes track headings
 
-                List<LocationExtended> placemarkList = new ArrayList<>();
+                List<LocationExtended> placemarkList = new ArrayList<>(GroupOfLocations);
 
                 for (int i = 0; i <= track.getNumberOfPlacemarks(); i += GroupOfLocations) {
                     //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
-                    if (!placemarkList.isEmpty()) placemarkList.clear();
                     placemarkList.addAll(GPSApplication.getInstance().GPSDataBase.getPlacemarksList(track.getId(), i, i + GroupOfLocations - 1));
 
                     if (!placemarkList.isEmpty()) {
@@ -317,6 +316,7 @@ class Exporter extends Thread {
                                 TXTbw.write(newLine);
                             }
                         }
+                        placemarkList.clear();
                     }
 
                     //long progress = 100L * (i + GroupOfLocations) / (track.getNumberOfLocations() + track.getNumberOfPlacemarks());
@@ -355,12 +355,10 @@ class Exporter extends Thread {
                     GPXbw.write(" <trkseg>" + newLine);
                 }
 
-                List<LocationExtended> locationList = new ArrayList<>();
+                List<LocationExtended> locationList = new ArrayList<>(GroupOfLocations);
 
                 for (int i = 0; i <= track.getNumberOfLocations(); i += GroupOfLocations) {
                     //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
-                    if (!locationList.isEmpty()) locationList.clear();
-                    //Log.w("myApp", "[#] Exporter.java - DB query + list.addall(...)");
                     locationList.addAll(GPSApplication.getInstance().GPSDataBase.getLocationsList(track.getId(), i, i + GroupOfLocations - 1));
                     //Log.w("myApp", "[#] Exporter.java - Write files");
 
@@ -437,6 +435,7 @@ class Exporter extends Thread {
                                 TXTbw.write(newLine);
                             }
                         }
+                        locationList.clear();
                     }
 
                     long progress = 100L * (track.getNumberOfPlacemarks() + i + GroupOfLocations) / (track.getNumberOfLocations() + track.getNumberOfPlacemarks());
