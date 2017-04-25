@@ -86,16 +86,14 @@ public class LocationExtended {
                 if (egm96.isEGMGridLoaded()) _AltitudeEGM96Correction = egm96.getEGMCorrection(_Location.getLatitude(), _Location.getLongitude());
             }
         }
-        return this._AltitudeEGM96Correction;
+        return _AltitudeEGM96Correction;
     }
 
     public double getAltitudeCorrected(double AltitudeManualCorrection, boolean EGMCorrection) {
         if (_Location != null) {
             if (!_Location.hasAltitude()) return NOT_AVAILABLE;
-            double correctedaltitude = _Location.getAltitude();
-            if ((EGMCorrection) && (getAltitudeEGM96Correction() != NOT_AVAILABLE)) correctedaltitude -= getAltitudeEGM96Correction();
-            correctedaltitude += AltitudeManualCorrection;
-            return correctedaltitude;
+            if ((EGMCorrection) && (getAltitudeEGM96Correction() != NOT_AVAILABLE)) return _Location.getAltitude() - getAltitudeEGM96Correction() + AltitudeManualCorrection;
+            else return _Location.getAltitude() + AltitudeManualCorrection;
         }
         return NOT_AVAILABLE;
     }
