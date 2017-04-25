@@ -18,12 +18,15 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -133,6 +136,12 @@ public class FragmentTracklist extends Fragment {
         }
         //Log.w("myApp", "[#] FragmentTracklist.java - delete");
         if (selectedtrackID == gpsApplication.getCurrentTrack().getId()) menu.findItem(R.id.cardmenu_delete).setVisible(false);
+
+        if (!gpsApplication.isContextMenuEnabled()) {
+            menu.findItem(R.id.cardmenu_share).setEnabled(false);
+            menu.findItem(R.id.cardmenu_view).setEnabled(false);
+            menu.findItem(R.id.cardmenu_export).setEnabled(false);
+        }
     }
 
 

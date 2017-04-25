@@ -111,6 +111,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean isCurrentTrackVisible = false;
     private boolean isContextMenuShareVisible = false;          // True if "Share with ..." menu is visible
     private boolean isContextMenuViewVisible = false;           // True if "View in *" menu is visible
+    private boolean isContextMenuEnabled = false;               // True if the Share + View + Export menus are enabled (Permission to write storage)
     private String ViewInApp = "";                              // The string of default app name for "View"
                                                                 // "" in case of selector
 
@@ -384,6 +385,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         isCurrentTrackVisible = currentTrackVisible;
     }
 
+    public boolean isContextMenuEnabled() {
+        return isContextMenuEnabled;
+    }
+
     // --------------------------------------------------------------------------------------------
 
     @Override
@@ -637,9 +642,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         public void run() {
             isContextMenuShareVisible = false;
             isContextMenuViewVisible = false;
+            isContextMenuEnabled = false;
             ViewInApp = "";
 
             final PackageManager pm = getPackageManager();
+
+            // Check permissions
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                isContextMenuEnabled = true;
+
+
             // ----- menu share
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
