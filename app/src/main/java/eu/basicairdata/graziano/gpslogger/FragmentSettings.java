@@ -1,5 +1,5 @@
 /*
- * SettingsFragment - Java Class for Android
+ * FragmentSettings - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 23/7/2016
  *
  * This program is free software: you can redistribute it and/or modify
