@@ -101,7 +101,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
-<!--<string name="export_unable_to_write_file">Unable to write the file</string> -->
+    <string name="export_unable_to_write_file">Unable to write the file</string>
 
     <!-- Preferences -->
     <string name="pref_category_interface">INTERFACE</string>
@@ -115,7 +115,7 @@
     <string name="pref_unit_of_measurement">System of Measurement</string>
     <string name="pref_unit_of_measurement_metric">Metric</string>
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
-<!--<string name="pref_unit_of_measurement_aerial_nautical">Aerial / Nautical</string> -->
+    <string name="pref_unit_of_measurement_aerial_nautical">Aerial / Nautical</string>
     <string name="pref_unit_of_measurement_speed">Show Speeds in</string>
 
     <string name="pref_category_tracking">TRACKING</string>
@@ -148,8 +148,8 @@
     <string name="pref_category_exporting">EXPORTATION</string>
     <string name="pref_export_TXT">Export Tracks in TXT</string>
     <string name="pref_export_TXT_summary">Plain text, comma-separated values</string>
-<!--<string name="pref_TXT_system_of_measurement">TXT System of Measurement</string>
-    <string name="pref_TXT_system_of_measurement_follows_app_settings">Follows app settings</string> -->
+    <string name="pref_TXT_system_of_measurement">TXT System of Measurement</string>
+    <string name="pref_TXT_system_of_measurement_follows_app_settings">Follows app settings</string>
     <string name="pref_export_KML">Export Tracks in KML</string>
     <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
     <string name="pref_export_GPX">Export Tracks in GPX</string>
@@ -191,7 +191,7 @@
     <string name="UM_mi">mi</string>
     <string name="UM_fps">fps</string>
     <string name="UM_mph">mph</string>
-<!--<string name="UM_nm">NM</string>
-    <string name="UM_kn">kn</string> -->
+    <string name="UM_nm">NM</string>
+    <string name="UM_kn">kn</string>
 
 </resources>

@@ -219,6 +219,11 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             pGPSDistance.setEntries(R.array.GPSDistance_Imperial);
             pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor*1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
+        if (prefs.getString("prefUM", "0").equals("16")) {       // Aerial / Nautical
+            pUMSpeed.setEntries(R.array.UMSpeed_AerialNautical);
+            pGPSDistance.setEntries(R.array.GPSDistance_Imperial);
+            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor*1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+        }
 
         Log.w("myApp", "[#] FragmentSettings.java - prefAltitudeCorrectionRaw = " + prefs.getString("prefAltitudeCorrectionRaw", "0")) ;
         Log.w("myApp", "[#] FragmentSettings.java - prefAltitudeCorrection = " + prefs.getString("prefAltitudeCorrection", "0")) ;

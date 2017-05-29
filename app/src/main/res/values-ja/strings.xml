@@ -86,6 +86,7 @@
   <string name="yes">はい</string>
   <string name="no">いいえ</string>
   <string name="cancel">キャンセル</string>
+  <string name="export_unable_to_write_file">ファイルを書き込みできません</string>
   <!-- Preferences -->
   <string name="pref_category_interface">インターフェイス</string>
   <string name="pref_keep_screen_on">画面をオンのままにする</string>
@@ -98,6 +99,7 @@
   <string name="pref_unit_of_measurement">測定系</string>
   <string name="pref_unit_of_measurement_metric">メートル法</string>
   <string name="pref_unit_of_measurement_imperial">ヤード・ポンド法</string>
+  <string name="pref_unit_of_measurement_aerial_nautical">航空 / 航海</string>
   <string name="pref_unit_of_measurement_speed">速度の表示</string>
   <string name="pref_category_tracking">追跡</string>
   <string name="pref_GPS_distance">収集密度</string>
@@ -126,6 +128,8 @@
   <string name="pref_category_exporting">エクスポート</string>
   <string name="pref_export_TXT">TXT で追跡をエクスポート</string>
   <string name="pref_export_TXT_summary">テキスト形式、カンマ区切りの値</string>
+  <string name="pref_TXT_system_of_measurement">TXT 測定系</string>
+  <string name="pref_TXT_system_of_measurement_follows_app_settings">アプリの設定に従う</string>
   <string name="pref_export_KML">KML で追跡をエクスポート</string>
   <string name="pref_export_KML_summary">Google キーホール マークアップ言語 (v.2.2)</string>
   <string name="pref_export_GPX">GPX で追跡をエクスポート</string>
@@ -161,4 +165,6 @@
   <string name="UM_mi">mi</string>
   <string name="UM_fps">fps</string>
   <string name="UM_mph">mph</string>
+  <string name="UM_nm">NM</string>
+  <string name="UM_kn">kn</string>
 </resources>

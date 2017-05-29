@@ -86,6 +86,7 @@
   <string name="yes">Sì</string>
   <string name="no">No</string>
   <string name="cancel">Annulla</string>
+  <string name="export_unable_to_write_file">Impossibile scrivere il file</string>
   <!-- Preferences -->
   <string name="pref_category_interface">INTERFACCIA</string>
   <string name="pref_keep_screen_on">Mantieni lo schermo attivo</string>
@@ -98,6 +99,7 @@
   <string name="pref_unit_of_measurement">Sistema di Misura</string>
   <string name="pref_unit_of_measurement_metric">Metrico</string>
   <string name="pref_unit_of_measurement_imperial">Imperiale</string>
+  <string name="pref_unit_of_measurement_aerial_nautical">Aereo / Nautico</string>
   <string name="pref_unit_of_measurement_speed">Visualizza le velocità in</string>
   <string name="pref_category_tracking">REGISTRAZIONE</string>
   <string name="pref_GPS_distance">Densità registrazione punti</string>
@@ -126,6 +128,8 @@
   <string name="pref_category_exporting">ESPORTAZIONE</string>
   <string name="pref_export_TXT">Esporta itinerari in TXT</string>
   <string name="pref_export_TXT_summary">Testo normale, valori separati da virgole</string>
+  <string name="pref_TXT_system_of_measurement">Sistema di misura TXT</string>
+  <string name="pref_TXT_system_of_measurement_follows_app_settings">Segue le impostazioni dell\'app</string>
   <string name="pref_export_KML">Esporta itinerari in KML</string>
   <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
   <string name="pref_export_GPX">Esporta itinerari in GPX</string>
@@ -161,4 +165,6 @@
   <string name="UM_mi">mi</string>
   <string name="UM_fps">fps</string>
   <string name="UM_mph">mph</string>
+  <string name="UM_nm">NM</string>
+  <string name="UM_kn">kn</string>
 </resources>

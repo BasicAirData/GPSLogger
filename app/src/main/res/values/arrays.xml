@@ -61,20 +61,26 @@
     <string-array name="UM">
         <item>@string/pref_unit_of_measurement_metric</item>
         <item>@string/pref_unit_of_measurement_imperial</item>
+        <item>@string/pref_unit_of_measurement_aerial_nautical</item>
     </string-array>
     <string-array name="UMValues">
         <item>0</item>
         <item>8</item>
+        <item>16</item>
     </string-array>
 
     <!-- Show Speeds in -->
     <string-array name="UMSpeed_Metric">
-        <item>m/s</item>
-        <item>km/h</item>
+        <item>@string/UM_m_s</item>
+        <item>@string/UM_km_h</item>
     </string-array>
     <string-array name="UMSpeed_Imperial">
-        <item>fps</item>
-        <item>mph</item>
+        <item>@string/UM_fps</item>
+        <item>@string/UM_mph</item>
+    </string-array>
+    <string-array name="UMSpeed_AerialNautical">
+        <item>@string/UM_kn</item>
+        <item>@string/UM_mph</item>
     </string-array>
     <string-array name="UMSpeedValues">
         <item>0</item>
