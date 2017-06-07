@@ -39,6 +39,7 @@
         android:theme="@style/MyMaterialTheme">
         <activity android:name=".GPSActivity"
             android:label="@string/app_name"
+            android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,7 +56,10 @@
         </activity>
         <service
             android:name=".GPSService"
-            android:exported="false">
+            android:exported="true">
+            <intent-filter>
+                <action android:name="eu.basicairdata.graziano.gpslogger.GPSService" />
+            </intent-filter>
         </service>
     </application>
 
