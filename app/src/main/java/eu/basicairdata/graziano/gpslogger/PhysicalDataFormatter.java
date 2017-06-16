@@ -186,7 +186,7 @@ class PhysicalDataFormatter {
                         return(_PhysicalData);
                     case UM_NAUTICAL_KN:
                     case UM_NAUTICAL_MPH:
-                        if ((Number * M_TO_NM) < 10) _PhysicalData.Value = String.format("%.2f", ((Math.floor((Number * M_TO_NM) * 100.0))) / 100.0);
+                        if ((Number * M_TO_NM) < 100) _PhysicalData.Value = String.format("%.2f", ((Math.floor((Number * M_TO_NM) * 100.0))) / 100.0);
                         else _PhysicalData.Value = String.format("%.1f", ((Math.floor((Number * M_TO_NM) * 10.0))) / 10.0);
                         _PhysicalData.UM = gpsApplication.getString(R.string.UM_nm);
                         return(_PhysicalData);
