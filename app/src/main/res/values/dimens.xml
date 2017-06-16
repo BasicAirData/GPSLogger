@@ -32,5 +32,5 @@
     <dimen name="thumbLineWidth">1.5dp</dimen>
     <dimen name="TextAppearanceLargeNumbersSize">26sp</dimen>
     <dimen name="TextAppearanceTextUMSize">14sp</dimen>
-    <dimen name="TextAppearanceSmallTextSize">12sp</dimen>
+    <dimen name="TextAppearanceSmallTextSize">11sp</dimen>
 </resources>
