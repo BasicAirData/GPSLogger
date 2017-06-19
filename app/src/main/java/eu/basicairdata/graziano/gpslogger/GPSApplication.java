@@ -52,11 +52,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-//import java.io.FileInputStream;
 import java.io.FileOutputStream;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -406,46 +402,24 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         isGPSLoggerFolder = true;
         if (!sd.exists()) {
             isGPSLoggerFolder = sd.mkdir();
+            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
         sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
         if (!sd.exists()) {
             isGPSLoggerFolder = sd.mkdir();
+            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
 
         sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
         if (!sd.exists()) {
             sd.mkdir();
+            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
-
-        /* COPY EGM FILE INTO FilesDir. Commented out, operation too long to do on start without feedback!
-
-        sd = new File(getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-        if (!sd.exists()) {
-            File sd_old = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
-            if (sd_old.exists()) {
-                InputStream in = null;
-                OutputStream out = null;
-                try {
-                    in = new FileInputStream(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
-                    out = new FileOutputStream(getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-                    copyFile(in, out);
-                    in.close();
-                    in = null;
-                    out.flush();
-                    out.close();
-                    out = null;
-                    // DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
-                } catch(Exception e) {
-                    Log.w("MyApp", "[#] GPSApplication.java - Unable to copy file: " + e.getMessage());
-                }
-            }
-        }
-        */
 
         EGM96 egm96 = EGM96.getInstance();                                              // Load EGM Grid
         if (egm96 != null) {
             if (!egm96.isEGMGridLoaded()) {
-                egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
             }
         }
 
@@ -465,22 +439,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         ast.location = null;
         AsyncTODOQueue.add(ast);
     }
-
-    /* COPY EGM FILE INTO FilesDir
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while((read = in.read(buffer)) != -1){
-            out.write(buffer, 0, read);
-        }
-    }
-
-    private void DeleteFile(String filename) {
-        File file = new File(filename);
-        if (file.exists ()) file.delete();
-    }
-    */
-
 
     @Override
     public void onTerminate() {
@@ -863,7 +821,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
             if (!egm96.isEGMGridLoaded()) {
-                egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
             }
         }
 

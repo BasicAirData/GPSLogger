@@ -81,8 +81,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         // Chech if EGM96 file is downloaded and complete;
-        File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
-        if ((sd.exists()) && ((sd.length() == 2076480))) {
+        File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+        File sd_old = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+        if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
             Downloaded = true;
         } else {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -294,7 +295,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
                 // download the file
                 input = connection.getInputStream();
-                output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                output = new FileOutputStream(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
 
                 byte data[] = new byte[4096];
                 long total = 0;
@@ -357,8 +358,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (result != null)
                     Toast.makeText(context, getString(R.string.toast_download_error) + ": " + result, Toast.LENGTH_LONG).show();
                 else {
-                    File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
-                    if (sd.exists() && (sd.length() == 2076480)) {
+                    File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+                    File sd_old = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                    if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
                         Downloaded = true;
                         Toast.makeText(context, getString(R.string.toast_download_completed), Toast.LENGTH_SHORT).show();
                         PrefEGM96SetToTrue();

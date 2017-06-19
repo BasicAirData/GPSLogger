@@ -385,7 +385,7 @@ public class GPSActivity extends AppCompatActivity {
                             if (egm96 != null) {
                                 if (!egm96.isEGMGridLoaded()) {
                                     //Log.w("myApp", "[#] GPSApplication.java - Loading EGM Grid...");
-                                    egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                                    egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
                                 }
                             }
                         } else {

@@ -29,7 +29,10 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 class EGM96 {
 
@@ -66,14 +69,17 @@ class EGM96 {
     private short[][] EGMGrid = new short[BOUNDARY + 1440 + BOUNDARY][BOUNDARY + 721 + BOUNDARY];
     private boolean isEGMGridLoaded = false;
     private boolean isEGMGridLoading = false;
+    private boolean isEGMFileCopying = false;
     private String EGMFileName;
+    private String EGMFileNameLocalCopy;
 
     public double EGM96_VALUE_INVALID = -100000;
 
-    public void LoadGridFromFile(String FileName) {
+    public void LoadGridFromFile(String FileName, String FileNameLocalCopy) {
         if (!isEGMGridLoaded && !isEGMGridLoading) {
             isEGMGridLoading = true;
             EGMFileName = FileName;
+            EGMFileNameLocalCopy = FileNameLocalCopy;
             new Thread(new LoadEGM96Grid()).start();
         } else {
             if (isEGMGridLoading) Log.w("myApp", "[#] EGM96.java - Grid is already loading, please wait");
@@ -129,6 +135,18 @@ class EGM96 {
         else return EGM96_VALUE_INVALID;
     }
 
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+    }
+
+    private void DeleteFile(String filename) {
+        File file = new File(filename);
+        if (file.exists ()) file.delete();
+    }
 
 
     // The Thread that loads the grid in background ------------------------------------------------
@@ -140,10 +158,20 @@ class EGM96 {
         public void run() {
             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
             Log.w("myApp", "[#] EGM96.java - Start loading grid");
-            File file = new File(EGMFileName);
-            Log.w("myApp", "[#] EGM96.java - From file: " + file.getAbsolutePath());
-            if (file.exists() && (file.length() == 2076480)) {
-                Log.w("myApp", "[#] EGM96.java - Valid file");
+
+            boolean islocalcopypresent = false;
+            boolean issharedcopypresent = false;
+
+            File localfile = new File(EGMFileNameLocalCopy);
+            if (localfile.exists() && (localfile.length() == 2076480)) islocalcopypresent = true;
+
+            File sharedfile = new File(EGMFileName);
+            if (sharedfile.exists() && (sharedfile.length() == 2076480)) issharedcopypresent = true;
+
+            File file = new File(islocalcopypresent ? EGMFileNameLocalCopy : EGMFileName);
+            if (islocalcopypresent || issharedcopypresent) {
+                Log.w("myApp", "[#] EGM96.java - From file: " + file.getAbsolutePath());
+
                 FileInputStream fin;
                 try {
                     fin = new FileInputStream(file);
@@ -208,8 +236,16 @@ class EGM96 {
 
                 isEGMGridLoading = false;
                 isEGMGridLoaded = true;
-                Log.w("myApp", "[#] EGM96.java - Grid Successfully Loaded");
+                Log.w("myApp", "[#] EGM96.java - Grid Successfully Loaded: " + file.getAbsolutePath());
                 //Toast.makeText(getApplicationContext(), "EGM96 correction grid loaded", Toast.LENGTH_SHORT).show();
+
+                if (issharedcopypresent) {
+                    if (!islocalcopypresent) new Thread(new CopyEGM96Grid()).start();
+                    else {
+                        DeleteFile(EGMFileName);    // Delete the EGM file from the shared folder
+                        Log.w("myApp", "[#] EGM96.java - EGM File already present into FilesDir. File deleted from shared folder");
+                    }
+                }
 
             } else {
                 isEGMGridLoading = false;
@@ -223,6 +259,49 @@ class EGM96 {
             EventBus.getDefault().post("UPDATE_TRACK");
             EventBus.getDefault().post("UPDATE_TRACKLIST");
             //listener.onEGMGridLoaded(isEGMGridLoaded);
+        }
+    }
+
+    // The Thread that loads the grid in background ------------------------------------------------
+
+    private class CopyEGM96Grid implements Runnable {
+        // Thread: Copy the EGM grid in FilesDir
+
+        @Override
+        public void run() {
+            Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+            Log.w("myApp", "[#] EGM96.java - Copy EGM96 Grid into FilesDir");
+
+            if (isEGMFileCopying) return;
+
+            isEGMFileCopying = true;
+
+            File sd_cpy = new File(EGMFileNameLocalCopy);
+            if (sd_cpy.exists()) sd_cpy.delete();
+
+            File sd_old = new File(EGMFileName);
+            if (sd_old.exists()) {
+                InputStream in = null;
+                OutputStream out = null;
+                try {
+                    in = new FileInputStream(EGMFileName);
+                    out = new FileOutputStream(EGMFileNameLocalCopy);
+                    copyFile(in, out);
+                    in.close();
+                    in = null;
+                    out.flush();
+                    out.close();
+                    out = null;
+                    Log.w("myApp", "[#] EGM96.java - EGM File copy completed");
+                    DeleteFile(EGMFileName);    // Delete the EGM file from the shared folder
+                    Log.w("myApp", "[#] EGM96.java - EGM File deleted from shared folder");
+
+                } catch(Exception e) {
+                    Log.w("MyApp", "[#] EGM96.java - Unable to make local copy of EGM file: " + e.getMessage());
+                }
+            }
+
+            isEGMFileCopying = false;
         }
     }
 }
