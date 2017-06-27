@@ -48,7 +48,7 @@
   <string name="overall_direction">Gesamtrichtung</string>
   <string name="altitude_gap">Abweichung Höhe</string>
   <!-- Track Status message -->
-  <string name="track_empty">Neuer Track\n\nAufnahme von Wegpunkten\noder hinzufügen von Ortsmarken.\nVerwenden Sie eine der Schaltflächen unten</string>
+  <string name="track_empty">Neuer Track\n\nAufnahme von Wegpunkten\noder hinzufügen von Ortsmarkern.\nVerwenden Sie eine der Schaltflächen unten</string>
   <!-- Recording buttons (bottom side) -->
   <string name="placemarks">Ortsmarker</string>
   <string name="trackpoints">Wegpunkte</string>
@@ -129,7 +129,7 @@
   <string name="pref_export_TXT_summary">Klartext, durch Komma getrennte Werte</string>
   <string name="pref_TXT_system_of_measurement">Bevorzugtes Format im TXT</string>
   <string name="pref_TXT_system_of_measurement_follows_app_settings">Wie in den Einstellungen</string>
-  <string name="pref_export_KML">Track in KML exportieren</string>
+  <string name="pref_export_KML">Tracks in KML exportieren</string>
   <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
   <string name="pref_export_GPX">Tracks in GPX exportieren</string>
   <string name="pref_export_GPX_summary">Standard GPS eXchange Format (v.1.0)</string>
