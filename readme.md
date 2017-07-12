@@ -18,8 +18,13 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help us to trans
 The application is freely downloadable from [Google Play(tm)](https://play.google.com/store/apps/details?id=eu.basicairdata.graziano.gpslogger) or directly here in this repository in /apk folder.<br>
 You can install GPS Logger on your smartphone in one step, using the Google Store [QR-Code](https://github.com/BasicAirData/GPSLogger/blob/master/screenshots/qrcode%20-%20Google%20Store.png) or the Latest APK [QR-Code](https://github.com/BasicAirData/GPSLogger/blob/master/screenshots/qrcode.png);
 
-## License and General Information
-[License and general info](https://github.com/BasicAirData/Document-Templates/blob/master/general-info.md)
+## Reference documents
+
+[Code of conduct](CODE_OF_CONDUCT.md)
+
+[Contributing Information](CONTRIBUTING.md)
+
+[Genearal Repository License](LICENSE)
 
 ## Mini FAQ
 <b>Q</b> - <i>I've just installed the app, but it doesn't read the GPS signal.</i><br>
