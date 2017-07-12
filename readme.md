@@ -24,7 +24,7 @@ You can install GPS Logger on your smartphone in one step, using the Google Stor
 
 [Contributing Information](CONTRIBUTING.md)
 
-[Genearal Repository License](LICENSE)
+[Repository License](LICENSE)
 
 ## Mini FAQ
 <b>Q</b> - <i>I've just installed the app, but it doesn't read the GPS signal.</i><br>
