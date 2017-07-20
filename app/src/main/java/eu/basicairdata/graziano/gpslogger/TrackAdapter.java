@@ -33,7 +33,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
@@ -43,7 +43,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     private final static int CARDTYPE_CURRENTTRACK = 0;
     private final static int CARDTYPE_TRACK = 1;
 
-    private ArrayList<Track> dataSet;
+    private List<Track> dataSet;
 
 
     private static final Bitmap[] bmpTrackType = {
@@ -184,8 +184,10 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     }
 
 
-    TrackAdapter(ArrayList<Track> data) {
-        this.dataSet = data;
+    TrackAdapter(List<Track> data) {
+        synchronized(data) {
+            this.dataSet = data;
+        }
     }
 
 
