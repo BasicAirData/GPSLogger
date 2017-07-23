@@ -54,6 +54,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -85,7 +86,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean prefShowDecimalCoordinates = false;
     private int prefUM = UM_METRIC_KMH;
     private float prefGPSdistance = 0f;
-    private long prefGPSupdatefrequency = 1000l;
+    private long prefGPSupdatefrequency = 1000L;
     private boolean prefEGM96AltitudeCorrection = false;
     private double prefAltitudeCorrection = 0d;
     private boolean prefExportKML = true;
@@ -125,7 +126,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private long OpenInViewer = -1;                    // The index to be opened in viewer
     private long Share = -1;                                // The index to be Shared
     private boolean isGPSLocationUpdatesActive = false;
-    private boolean isGPSLoggerFolder = false;
     private int GPSStatus = GPS_SEARCHING;
 
     private boolean NewTrackFlag = false;                   // The variable that handle the double-click on "Track Finished"
@@ -147,7 +147,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private LocationExtended _currentLocationExtended = null;
     private LocationExtended _currentPlacemark = null;
     private Track _currentTrack = null;
-    private List<Track> _ArrayListTracks = new ArrayList<>();
+    private List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
 
     Thumbnailer Th;
     Exporter Ex;
@@ -399,14 +399,13 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
 
         File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");   // Create the Directories if not exist
-        isGPSLoggerFolder = true;
         if (!sd.exists()) {
-            isGPSLoggerFolder = sd.mkdir();
+            sd.mkdir();
             Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
         sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
         if (!sd.exists()) {
-            isGPSLoggerFolder = sd.mkdir();
+            sd.mkdir();
             Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
 
@@ -454,29 +453,33 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             long trackid = Long.valueOf(msg.split(" ")[1]);
             int progress = Integer.valueOf(msg.split(" ")[2]);
             if ((trackid > 0) && (progress >= 0)) {
-                for (Track T : _ArrayListTracks) {
-                    if (T.getId() == trackid) T.setProgress(progress);
+                synchronized(_ArrayListTracks) {
+                    for (Track T : _ArrayListTracks) {
+                        if (T.getId() == trackid) T.setProgress(progress);
+                    }
                 }
             }
         }
         if (msg.startsWith("TRACK_EXPORTED")) {
             long trackid = Long.valueOf(msg.split(" ")[1]);
             if (trackid > 0) {
-                for (Track T : _ArrayListTracks) {
-                    if (T.getId() == trackid) {
-                        T.setProgress(0);
-                        EventBus.getDefault().post("UPDATE_TRACKLIST");
-                        if (trackid == OpenInViewer) {
-                            OpenInViewer = -1;
-                            File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", T.getName() + ".kml");
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.setDataAndType(Uri.fromFile(file), "application/vnd.google-earth.kml+xml");
-                            startActivity(intent);
-                        }
-                        if (trackid == Share) {
-                            Share = -1;
-                            EventBus.getDefault().post("INTENT_SEND " + trackid);
+                synchronized(_ArrayListTracks) {
+                    for (Track T : _ArrayListTracks) {
+                        if (T.getId() == trackid) {
+                            T.setProgress(0);
+                            EventBus.getDefault().post("UPDATE_TRACKLIST");
+                            if (trackid == OpenInViewer) {
+                                OpenInViewer = -1;
+                                File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", T.getName() + ".kml");
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.setDataAndType(Uri.fromFile(file), "application/vnd.google-earth.kml+xml");
+                                startActivity(intent);
+                            }
+                            if (trackid == Share) {
+                                Share = -1;
+                                EventBus.getDefault().post("INTENT_SEND " + trackid);
+                            }
                         }
                     }
                 }
@@ -764,17 +767,20 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void UpdateTrackList() {
         long ID = GPSDataBase.getLastTrackID();
         if (ID > 0) {
-            _ArrayListTracks.clear();
-            _ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID - 1));
-            if ((ID > 1) && (GPSDataBase.getTrack(ID - 1) != null)) {
-                String fname = (ID - 1) +".png";
-                File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/", fname);
-                if (!file.exists ()) Th = new Thumbnailer(ID - 1);
+            synchronized(_ArrayListTracks) {
+                _ArrayListTracks.clear();
+                _ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID - 1));
+                if ((ID > 1) && (GPSDataBase.getTrack(ID - 1) != null)) {
+                    String fname = (ID - 1) + ".png";
+                    File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/", fname);
+                    if (!file.exists()) Th = new Thumbnailer(ID - 1);
+                }
+                if (_currentTrack.getNumberOfLocations() + _currentTrack.getNumberOfPlacemarks() > 0) {
+                    Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: current track (" + _currentTrack.getId() + ") visible into the tracklist");
+                    _ArrayListTracks.add(0, _currentTrack);
+                } else
+                    Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: current track not visible into the tracklist");
             }
-            if (_currentTrack.getNumberOfLocations() + _currentTrack.getNumberOfPlacemarks() > 0) {
-                Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: current track (" + _currentTrack.getId() + ") visible into the tracklist");
-                _ArrayListTracks.add(0, _currentTrack);
-            } else Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: current track not visible into the tracklist");
             EventBus.getDefault().post("UPDATE_TRACKLIST");
             //Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: Added " + _ArrayListTracks.size() + " tracks");
         }
@@ -841,7 +847,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         LocationExtended location;
     }
 
-    private BlockingQueue<AsyncTODO> AsyncTODOQueue = new LinkedBlockingQueue<AsyncTODO>();
+    private BlockingQueue<AsyncTODO> AsyncTODOQueue = new LinkedBlockingQueue<>();
 
     private class AsyncUpdateThreadClass extends Thread {
 
@@ -925,19 +931,21 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     Log.w("myApp", "[#] GPSApplication.java - Deleting Track ID = " + asyncTODO.TaskType.split(" ")[1]);
                     if (Integer.valueOf(asyncTODO.TaskType.split(" ")[1]) >= 0) {
                         long selectedtrackID = Integer.valueOf(asyncTODO.TaskType.split(" ")[1]);
-                        if (!_ArrayListTracks.isEmpty() && (selectedtrackID >= 0)) {
-                            int i = 0;
-                            boolean found = false;
-                            do {
-                                if (_ArrayListTracks.get(i).getId() == selectedtrackID) {
-                                    found = true;
-                                    GPSDataBase.DeleteTrack(_ArrayListTracks.get(i).getId());
-                                    Log.w("myApp", "[#] GPSApplication.java - Track " + _ArrayListTracks.get(i).getId() + " deleted.");
-                                    _ArrayListTracks.remove(i);
-                                }
-                                i++;
-                            } while ((i < _ArrayListTracks.size()) && !found);
-                            //if (found) UpdateTrackList();
+                        synchronized(_ArrayListTracks) {
+                            if (!_ArrayListTracks.isEmpty() && (selectedtrackID >= 0)) {
+                                int i = 0;
+                                boolean found = false;
+                                do {
+                                    if (_ArrayListTracks.get(i).getId() == selectedtrackID) {
+                                        found = true;
+                                        GPSDataBase.DeleteTrack(_ArrayListTracks.get(i).getId());
+                                        Log.w("myApp", "[#] GPSApplication.java - Track " + _ArrayListTracks.get(i).getId() + " deleted.");
+                                        _ArrayListTracks.remove(i);
+                                    }
+                                    i++;
+                                } while ((i < _ArrayListTracks.size()) && !found);
+                                //if (found) UpdateTrackList();
+                            }
                         }
                     }
                 }

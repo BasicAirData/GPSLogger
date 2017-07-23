@@ -42,6 +42,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FragmentTracklist extends Fragment {
@@ -50,7 +51,7 @@ public class FragmentTracklist extends Fragment {
     RecyclerView.LayoutManager layoutManager;
 
     private RecyclerView.Adapter adapter;
-    private ArrayList<Track> data;
+    private List<Track> data = Collections.synchronizedList(new ArrayList<Track>());
 
     private View view;
     private TextView TVTracklistEmpty;
@@ -81,13 +82,6 @@ public class FragmentTracklist extends Fragment {
         }
     }
 
-    public void UpdateCurrentTrackStats() {
-        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(0);
-        if (holder != null) {
-            ((TrackAdapter.TrackHolder)holder).UpdateTrackStats(data.get(0));
-        }
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,7 +95,6 @@ public class FragmentTracklist extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.getItemAnimator().setChangeDuration(0);
-        data = new ArrayList<>();
         adapter = new TrackAdapter(data);
         recyclerView.setAdapter(adapter);
         return view;
@@ -166,16 +159,18 @@ public class FragmentTracklist extends Fragment {
 
                                 int i = 0;
                                 boolean found = false;
-                                do {
-                                    if (data.get(i).getId() == selectedtrackID) {
-                                        found = true;
-                                        data.remove(i);
-                                        adapter.notifyItemRemoved(i);
-                                        if (data.isEmpty())
-                                            TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                    }
-                                    i++;
-                                } while ((i < data.size()) && !found);
+                                synchronized(data) {
+                                    do {
+                                        if (data.get(i).getId() == selectedtrackID) {
+                                            found = true;
+                                            data.remove(i);
+                                            adapter.notifyItemRemoved(i);
+                                            if (data.isEmpty())
+                                                TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                        }
+                                        i++;
+                                    } while ((i < data.size()) && !found);
+                                }
 
                                 // Delete exported files
                                 DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
@@ -199,16 +194,18 @@ public class FragmentTracklist extends Fragment {
 
                                 int i = 0;
                                 boolean found = false;
-                                do {
-                                    if (data.get(i).getId() == selectedtrackID) {
-                                        found = true;
-                                        data.remove(i);
-                                        adapter.notifyItemRemoved(i);
-                                        if (data.isEmpty())
-                                            TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                    }
-                                    i++;
-                                } while ((i < data.size()) && !found);
+                                synchronized(data) {
+                                    do {
+                                        if (data.get(i).getId() == selectedtrackID) {
+                                            found = true;
+                                            data.remove(i);
+                                            adapter.notifyItemRemoved(i);
+                                            if (data.isEmpty())
+                                                TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                        }
+                                        i++;
+                                    } while ((i < data.size()) && !found);
+                                }
 
                                 // Delete track files
                                 DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -239,16 +236,18 @@ public class FragmentTracklist extends Fragment {
 
                                 int i = 0;
                                 boolean found = false;
-                                do {
-                                    if (data.get(i).getId() == selectedtrackID) {
-                                        found = true;
-                                        data.remove(i);
-                                        adapter.notifyItemRemoved(i);
-                                        if (data.isEmpty())
-                                            TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                    }
-                                    i++;
-                                } while ((i < data.size()) && !found);
+                                synchronized(data) {
+                                    do {
+                                        if (data.get(i).getId() == selectedtrackID) {
+                                            found = true;
+                                            data.remove(i);
+                                            adapter.notifyItemRemoved(i);
+                                            if (data.isEmpty())
+                                                TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                        }
+                                        i++;
+                                    } while ((i < data.size()) && !found);
+                                }
 
                                 // Delete track files
                                 DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -273,39 +272,45 @@ public class FragmentTracklist extends Fragment {
                 if (!data.isEmpty() && (selectedtrackID >= 0)) {
                     int i = 0;
                     boolean found = false;
-                    do {
-                        if (data.get(i).getId() == selectedtrackID) {
-                            found = true;
-                            EventBus.getDefault().post("EXPORT_TRACK " + data.get(i).getId());
-                        }
-                        i++;
-                    } while ((i < data.size()) && !found);
+                    synchronized(data) {
+                        do {
+                            if (data.get(i).getId() == selectedtrackID) {
+                                found = true;
+                                EventBus.getDefault().post("EXPORT_TRACK " + data.get(i).getId());
+                            }
+                            i++;
+                        } while ((i < data.size()) && !found);
+                    }
                 }
                 break;
             case R.id.cardmenu_view:
                 if (!data.isEmpty() && (selectedtrackID >= 0)) {
                     int i = 0;
                     boolean found = false;
-                    do {
-                        if (data.get(i).getId() == selectedtrackID) {
-                            found = true;
-                            EventBus.getDefault().post("VIEW_TRACK " + data.get(i).getId());
-                        }
-                        i++;
-                    } while ((i < data.size()) && !found);
+                    synchronized(data) {
+                        do {
+                            if (data.get(i).getId() == selectedtrackID) {
+                                found = true;
+                                EventBus.getDefault().post("VIEW_TRACK " + data.get(i).getId());
+                            }
+                            i++;
+                        } while ((i < data.size()) && !found);
+                    }
                 }
                 break;
             case R.id.cardmenu_share:
                 if (!data.isEmpty() && (selectedtrackID >= 0)) {
                     int i = 0;
                     boolean found = false;
-                    do {
-                        if (data.get(i).getId() == selectedtrackID) {
-                            found = true;
-                            EventBus.getDefault().post("SHARE_TRACK " + data.get(i).getId());
-                        }
-                        i++;
-                    } while ((i < data.size()) && !found);
+                    synchronized(data) {
+                        do {
+                            if (data.get(i).getId() == selectedtrackID) {
+                                found = true;
+                                EventBus.getDefault().post("SHARE_TRACK " + data.get(i).getId());
+                            }
+                            i++;
+                        } while ((i < data.size()) && !found);
+                    }
                 }
                 break;
             default:
@@ -335,15 +340,20 @@ public class FragmentTracklist extends Fragment {
         if (msg.equals("UPDATE_TRACK")) {
             if (!data.isEmpty() && GPSApplication.getInstance().isCurrentTrackVisible()) {
                 final Track trk = GPSApplication.getInstance().getCurrentTrack();
-                if (data.get(0).getId() == trk.getId()) {
-                    data.set(0, trk);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Log.w("myApp", "[#] FragmentTracklist.java - update track");
-                            UpdateCurrentTrackStats();
-                        }
-                    });
+                synchronized(data) {
+                    if (data.get(0).getId() == trk.getId()) {
+                        data.set(0, trk);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Update Current Track Card Statistics
+                                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(0);
+                                if (holder != null) {
+                                    ((TrackAdapter.TrackHolder) holder).UpdateTrackStats(data.get(0));
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -351,16 +361,13 @@ public class FragmentTracklist extends Fragment {
             final long trackid = Long.valueOf(msg.split(" ")[1]);
             final int progress = Integer.valueOf(msg.split(" ")[2]);
             if ((trackid > 0) && (progress >= 0)) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int i = 0;
-                        for (Track T : data) {
-                            if (T.getId() == trackid) setProgress(i, T.getProgress());
-                            i++;
-                        }
+                int i = 0;
+                synchronized(data) {
+                    for (Track T : data) {
+                        if (T.getId() == trackid) setProgress(i, T.getProgress());
+                        i++;
                     }
-                });
+                }
             }
         }
         if (msg.equals("UPDATE_TRACKLIST")) {
@@ -462,27 +469,30 @@ public class FragmentTracklist extends Fragment {
             //Log.w("myApp", "[#] FragmentTracklist.java - Updating Tracklist");
             final List<Track> TI = GPSApplication.getInstance().getTrackList();
             //Log.w("myApp", "[#] FragmentTracklist.java - The element 0 has id = " + TI.get(0).getId());
-            if (data != null) data.clear();
-            if (!TI.isEmpty()) {
-                data.addAll(TI);
-                if (data.get(0).getId() == GPSApplication.getInstance().getCurrentTrack().getId()) {
-                    GPSApplication.getInstance().setisCurrentTrackVisible(true);
-                    //Log.w("myApp", "[#] FragmentTracklist.java - current track, VISIBLE into the tracklist ("
-                    //    + GPSApplication.getInstance().getCurrentTrack().getId() + ")");
-                } else  {
+            synchronized(data) {
+                if (data != null) data.clear();
+                if (!TI.isEmpty()) {
+                    data.addAll(TI);
+                    if (data.get(0).getId() == GPSApplication.getInstance().getCurrentTrack().getId()) {
+                        GPSApplication.getInstance().setisCurrentTrackVisible(true);
+                        //Log.w("myApp", "[#] FragmentTracklist.java - current track, VISIBLE into the tracklist ("
+                        //    + GPSApplication.getInstance().getCurrentTrack().getId() + ")");
+                    } else {
+                        GPSApplication.getInstance().setisCurrentTrackVisible(false);
+                        //Log.w("myApp", "[#] FragmentTracklist.java - current track empty, NOT VISIBLE into the tracklist");
+                    }
+                } else {
                     GPSApplication.getInstance().setisCurrentTrackVisible(false);
-                    //Log.w("myApp", "[#] FragmentTracklist.java - current track empty, NOT VISIBLE into the tracklist");
                 }
-            } else {
-                GPSApplication.getInstance().setisCurrentTrackVisible(false);
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
-                    adapter.notifyDataSetChanged();
-                }
-            });
         }
     }
 }
