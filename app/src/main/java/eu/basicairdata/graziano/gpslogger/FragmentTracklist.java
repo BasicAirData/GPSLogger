@@ -157,20 +157,26 @@ public class FragmentTracklist extends Fragment {
 
                                 EventBus.getDefault().post("DELETE_TRACK " + track.getId());
 
-                                int i = 0;
-                                boolean found = false;
-                                synchronized(data) {
-                                    do {
-                                        if (data.get(i).getId() == selectedtrackID) {
-                                            found = true;
-                                            data.remove(i);
-                                            adapter.notifyItemRemoved(i);
-                                            if (data.isEmpty())
-                                                TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        int i = 0;
+                                        boolean found = false;
+                                        synchronized (data) {
+                                            do {
+                                                if (data.get(i).getId() == selectedtrackID) {
+                                                    found = true;
+                                                    data.remove(i);
+                                                    adapter.notifyItemRemoved(i);
+                                                    if (data.isEmpty())
+                                                        TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                                }
+                                                i++;
+                                            } while ((i < data.size()) && !found);
                                         }
-                                        i++;
-                                    } while ((i < data.size()) && !found);
-                                }
+                                    }
+                                });
+
 
                                 // Delete exported files
                                 DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
@@ -192,20 +198,25 @@ public class FragmentTracklist extends Fragment {
 
                                 EventBus.getDefault().post("DELETE_TRACK " + track.getId());
 
-                                int i = 0;
-                                boolean found = false;
-                                synchronized(data) {
-                                    do {
-                                        if (data.get(i).getId() == selectedtrackID) {
-                                            found = true;
-                                            data.remove(i);
-                                            adapter.notifyItemRemoved(i);
-                                            if (data.isEmpty())
-                                                TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        int i = 0;
+                                        boolean found = false;
+                                        synchronized (data) {
+                                            do {
+                                                if (data.get(i).getId() == selectedtrackID) {
+                                                    found = true;
+                                                    data.remove(i);
+                                                    adapter.notifyItemRemoved(i);
+                                                    if (data.isEmpty())
+                                                        TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                                }
+                                                i++;
+                                            } while ((i < data.size()) && !found);
                                         }
-                                        i++;
-                                    } while ((i < data.size()) && !found);
-                                }
+                                    }
+                                });
 
                                 // Delete track files
                                 DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -234,20 +245,25 @@ public class FragmentTracklist extends Fragment {
 
                                 EventBus.getDefault().post("DELETE_TRACK " + track.getId());
 
-                                int i = 0;
-                                boolean found = false;
-                                synchronized(data) {
-                                    do {
-                                        if (data.get(i).getId() == selectedtrackID) {
-                                            found = true;
-                                            data.remove(i);
-                                            adapter.notifyItemRemoved(i);
-                                            if (data.isEmpty())
-                                                TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        int i = 0;
+                                        boolean found = false;
+                                        synchronized (data) {
+                                            do {
+                                                if (data.get(i).getId() == selectedtrackID) {
+                                                    found = true;
+                                                    data.remove(i);
+                                                    adapter.notifyItemRemoved(i);
+                                                    if (data.isEmpty())
+                                                        TVTracklistEmpty.setVisibility(View.VISIBLE);
+                                                }
+                                                i++;
+                                            } while ((i < data.size()) && !found);
                                         }
-                                        i++;
-                                    } while ((i < data.size()) && !found);
-                                }
+                                    }
+                                });
 
                                 // Delete track files
                                 DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -314,6 +330,7 @@ public class FragmentTracklist extends Fragment {
                 }
                 break;
             default:
+                //TODO: selectedtrackID = -1;
                 return false;
         }
         return true;
