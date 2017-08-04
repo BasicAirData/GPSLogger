@@ -459,6 +459,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     }
                 }
             }
+            return;
         }
         if (msg.startsWith("TRACK_EXPORTED")) {
             long trackid = Long.valueOf(msg.split(" ")[1]);
@@ -484,33 +485,61 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     }
                 }
             }
+            return;
         }
         if (msg.startsWith("EXPORT_TRACK")) {
             long trackid = Long.valueOf(msg.split(" ")[1]);
             Ex = new Exporter(trackid, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger");
             Ex.start();
+            return;
         }
         if (msg.startsWith("SHARE_TRACK")) {
             setShare(Long.valueOf(msg.split(" ")[1]));
             Ex = new Exporter(Share, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
             Ex.start();
+            return;
         }
         if (msg.startsWith("VIEW_TRACK")) {
             setOpenInViewer(Long.valueOf(msg.split(" ")[1]));
             Ex = new Exporter(OpenInViewer, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
             Ex.start();
+            return;
+        }
+        if (msg.startsWith("TOAST")) {
+            if (msg.contains("UNABLE_TO_WRITE_THE_FILE")) {
+                long trackid = Long.valueOf(msg.split(" ")[2]);
+                if (trackid > 0) {
+                    synchronized(_ArrayListTracks) {
+                        for (Track T : _ArrayListTracks) {
+                            if (T.getId() == trackid) {
+                                T.setProgress(0);
+                                EventBus.getDefault().post("UPDATE_TRACKLIST");
+                                if (trackid == OpenInViewer) {
+                                    OpenInViewer = -1;
+                                }
+                                if (trackid == Share) {
+                                    Share = -1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return;
         }
         if (msg.equals("NEW_TRACK")) {
             AsyncTODO ast = new AsyncTODO();
             ast.TaskType = "TASK_NEWTRACK";
             ast.location = null;
             AsyncTODOQueue.add(ast);
+            return;
         }
         if (msg.startsWith("DELETE_TRACK")) {
             AsyncTODO ast = new AsyncTODO();
             ast.TaskType = "TASK_" + msg;
             ast.location = null;
             AsyncTODOQueue.add(ast);
+            return;
         }
         if (msg.equals("ADD_PLACEMARK")) {
             AsyncTODO ast = new AsyncTODO();
@@ -518,11 +547,13 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             ast.location = _currentPlacemark;
             _currentPlacemark.setDescription(PlacemarkDescription);
             AsyncTODOQueue.add(ast);
+            return;
         }
         if (msg.equals("APP_PAUSE")) {
             handler.postDelayed(r, getHandlerTimer());  // Starts the switch-off handler (delayed by HandlerTimer)
             System.gc();                                // Clear mem from released objects with Garbage Collector
             //UnbindGPSService();
+            return;
         }
         if (msg.equals("APP_RESUME")) {
             AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
@@ -535,9 +566,11 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 LoadPreferences();
             }
             StartAndBindGPSService();
+            return;
         }
         if (msg.equals("UPDATE_SETTINGS")) {
             MustUpdatePrefs = true;
+            return;
         }
     }
 

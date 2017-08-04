@@ -20,6 +20,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -259,15 +260,20 @@ public class GPSActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onEvent(String msg) {
+    public void onEvent(final String msg) {
+        if (msg.startsWith("TRACK_SETPROGRESS")) {
+            return;
+        }
         if (msg.equals("REQUEST_ADD_PLACEMARK")) {
             // Show Placemark Dialog
             FragmentManager fm = getSupportFragmentManager();
             FragmentPlacemarkDialog placemarkDialog = new FragmentPlacemarkDialog();
             placemarkDialog.show(fm, "");
+            return;
         }
         if (msg.equals("APPLY_SETTINGS")) {
             LoadPreferences();
+            return;
         }
         if (msg.equals("UPDATE_TRACK")) {
             runOnUiThread(new Runnable() {
@@ -276,6 +282,18 @@ public class GPSActivity extends AppCompatActivity {
                     if (menutrackfinished != null) menutrackfinished.setVisible(!GPSApplication.getInstance().getCurrentTrack().getName().equals(""));
                 }
             });
+            return;
+        }
+        if (msg.startsWith("TOAST")) {
+            if (msg.contains("UNABLE_TO_WRITE_THE_FILE")) {
+                final Context context = this;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     }
 

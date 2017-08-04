@@ -47,6 +47,8 @@ class Exporter extends Thread {
     private int getPrefKMLAltitudeMode = 0;
     private boolean TXTFirstTrackpointFlag = true;
 
+    private boolean UnableToWriteFile = false;
+
 
     public Exporter(long ID, boolean ExportKML, boolean ExportGPX, boolean ExportTXT, String SaveIntoFolder) {
         track = GPSApplication.getInstance().GPSDataBase.getTrack(ID);
@@ -142,6 +144,25 @@ class Exporter extends Thread {
         PrintWriter TXTfw = null;
         BufferedWriter TXTbw = null;
 
+        // Check if all the files are writable:
+        try {
+            if ((ExportGPX && !(GPXfile.createNewFile())) || (ExportKML && !(KMLfile.createNewFile())) || (ExportTXT && !(TXTfile.createNewFile()))) {
+                UnableToWriteFile = true;
+                Log.w("myApp", "[#] Exporter.java - Unable to write the file");
+            }
+        } catch (SecurityException e) {
+            UnableToWriteFile = true;
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: SecurityException");
+        } catch (IOException e) {
+            UnableToWriteFile = true;
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
+        }
+
+        // If the file is not writable abort exportation:
+        if (UnableToWriteFile) {
+            EventBus.getDefault().post("TOAST UNABLE_TO_WRITE_THE_FILE " + track.getId());
+            return;
+        }
 
         try {
             if (ExportKML) {
