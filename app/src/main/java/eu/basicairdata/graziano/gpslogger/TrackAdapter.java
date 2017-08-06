@@ -1,4 +1,4 @@
-/*
+/**
  * TrackAdapter - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 19/6/2016
  *
@@ -81,7 +81,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         @Override
         public void onClick(View v) {
             if (progressBar.getProgress() == 0) {
-                EventBus.getDefault().post("TRACKLIST_SELECTION " + id);
+                EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_SELECTION, id));
                 //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
             }
         }

@@ -1,4 +1,4 @@
-/*
+/**
  * GPSActivity - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 5/5/2016
  *
@@ -130,14 +130,14 @@ public class GPSActivity extends AppCompatActivity {
     public void onResume() {
         EventBus.getDefault().register(this);
         Log.w("myApp", "[#] GPSActivity.java - onResume()");
-        EventBus.getDefault().post("APP_RESUME");
+        EventBus.getDefault().post(EventBusMSG.APP_RESUME);
         super.onResume();
         if (menutrackfinished != null) menutrackfinished.setVisible(!GPSApplication.getInstance().getCurrentTrack().getName().equals(""));
     }
 
     @Override
     public void onPause() {
-        EventBus.getDefault().post("APP_PAUSE");
+        EventBus.getDefault().post(EventBusMSG.APP_PAUSE);
         Log.w("myApp", "[#] GPSActivity.java - onPause()");
         EventBus.getDefault().unregister(this);
         super.onPause();
@@ -183,7 +183,7 @@ public class GPSActivity extends AppCompatActivity {
                 // This is the second click
                 GPSApplication.getInstance().setNewTrackFlag(false);
                 GPSApplication.getInstance().setRecording(false);
-                EventBus.getDefault().post("NEW_TRACK");
+                EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
                 ToastClickAgain.cancel();
                 Toast.makeText(this, getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
             } else {
@@ -260,22 +260,20 @@ public class GPSActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onEvent(final String msg) {
-        if (msg.startsWith("TRACK_SETPROGRESS")) {
-            return;
-        }
-        if (msg.equals("REQUEST_ADD_PLACEMARK")) {
+    public void onEvent(Short msg) {
+
+        if (msg == EventBusMSG.REQUEST_ADD_PLACEMARK) {
             // Show Placemark Dialog
             FragmentManager fm = getSupportFragmentManager();
             FragmentPlacemarkDialog placemarkDialog = new FragmentPlacemarkDialog();
             placemarkDialog.show(fm, "");
             return;
         }
-        if (msg.equals("APPLY_SETTINGS")) {
+        if (msg == EventBusMSG.APPLY_SETTINGS) {
             LoadPreferences();
             return;
         }
-        if (msg.equals("UPDATE_TRACK")) {
+        if (msg == EventBusMSG.UPDATE_TRACK) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -284,16 +282,14 @@ public class GPSActivity extends AppCompatActivity {
             });
             return;
         }
-        if (msg.startsWith("TOAST")) {
-            if (msg.contains("UNABLE_TO_WRITE_THE_FILE")) {
-                final Context context = this;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
+        if (msg == EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE) {
+            final Context context = this;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
@@ -318,7 +314,7 @@ public class GPSActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     GPSApplication.getInstance().setRecording(false);
                     GPSApplication.getInstance().setPlacemarkRequest(false);
-                    EventBus.getDefault().post("NEW_TRACK");
+                    EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
                     GPSApplication.getInstance().StopAndUnbindGPSService();
 
                     dialog.dismiss();

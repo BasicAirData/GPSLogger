@@ -1,4 +1,4 @@
-/*
+/**
  * EGM96 - Singleton Java Class for Android
  * Created by G.Capelli (BasicAirData) on 24/4/2016
  *
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package eu.basicairdata.graziano.gpslogger;
@@ -91,9 +90,9 @@ class EGM96 {
         isEGMGridLoaded = false;
         isEGMGridLoading = false;
         //listener.onEGMGridLoaded(isEGMGridLoaded);
-        EventBus.getDefault().post("UPDATE_FIX");
-        EventBus.getDefault().post("UPDATE_TRACK");
-        EventBus.getDefault().post("UPDATE_TRACKLIST");
+        EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
     }
 
     public boolean isEGMGridLoaded() {
@@ -255,9 +254,9 @@ class EGM96 {
                 if (file.length() != 2076480) {Log.w("myApp", "[#] EGM96.java - File has invalid length: " + file.length());}
                 //Toast.makeText(getApplicationContext(), "EGM96 correction not available", Toast.LENGTH_SHORT).show();
             }
-            EventBus.getDefault().post("UPDATE_FIX");
-            EventBus.getDefault().post("UPDATE_TRACK");
-            EventBus.getDefault().post("UPDATE_TRACKLIST");
+            EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+            EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+            EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
             //listener.onEGMGridLoaded(isEGMGridLoaded);
         }
     }

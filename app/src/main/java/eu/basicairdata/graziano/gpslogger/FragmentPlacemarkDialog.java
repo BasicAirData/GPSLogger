@@ -1,4 +1,4 @@
-/*
+/**
  * FragmentPlacemarkDialog - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 9/7/2016
  *
@@ -73,7 +73,7 @@ public class FragmentPlacemarkDialog extends DialogFragment {
                             String PlacemarkDescription = DescEditText.getText().toString();
                             final GPSApplication GlobalVariables = (GPSApplication) getActivity().getApplicationContext();
                             GlobalVariables.setPlacemarkDescription(PlacemarkDescription.trim());
-                            EventBus.getDefault().post("ADD_PLACEMARK");
+                            EventBus.getDefault().post(EventBusMSG.ADD_PLACEMARK);
                             //Log.w("myApp", "[#] FragmentPlacemarkDialog.java - posted ADD_PLACEMARK: " + PlacemarkDescription);
                         }
                     }

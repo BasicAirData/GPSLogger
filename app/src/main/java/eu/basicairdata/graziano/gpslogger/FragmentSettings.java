@@ -1,4 +1,4 @@
-/*
+/**
  * FragmentSettings - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 23/7/2016
  *
@@ -185,7 +185,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     public void onPause() {
         prefs.unregisterOnSharedPreferenceChangeListener(prefListener);
         Log.w("myApp", "[#] FragmentSettings.java - onPause");
-        EventBus.getDefault().post("UPDATE_SETTINGS");
+        EventBus.getDefault().post(EventBusMSG.UPDATE_SETTINGS);
         super.onPause();
     }
 

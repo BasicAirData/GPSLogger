@@ -1,4 +1,4 @@
-/*
+/**
  * FragmentTracklist - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 19/6/2016
  *
@@ -155,7 +155,7 @@ public class FragmentTracklist extends Fragment {
                                     String name = track.getName();
                                     String nameID = String.valueOf(track.getId());
 
-                                    EventBus.getDefault().post("DELETE_TRACK " + track.getId());
+                                    EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
 
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
@@ -196,7 +196,7 @@ public class FragmentTracklist extends Fragment {
                                     String name = track.getName();
                                     String nameID = String.valueOf(track.getId());
 
-                                    EventBus.getDefault().post("DELETE_TRACK " + track.getId());
+                                    EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
 
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
@@ -243,7 +243,7 @@ public class FragmentTracklist extends Fragment {
                                     String name = track.getName();
                                     String nameID = String.valueOf(track.getId());
 
-                                    EventBus.getDefault().post("DELETE_TRACK " + track.getId());
+                                    EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
 
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
@@ -293,7 +293,7 @@ public class FragmentTracklist extends Fragment {
                         do {
                             if (data.get(i).getId() == selectedtrackID) {
                                 found = true;
-                                EventBus.getDefault().post("EXPORT_TRACK " + data.get(i).getId());
+                                EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.EXPORT_TRACK, data.get(i).getId()));
                             }
                             i++;
                         } while ((i < data.size()) && !found);
@@ -308,7 +308,7 @@ public class FragmentTracklist extends Fragment {
                         do {
                             if (data.get(i).getId() == selectedtrackID) {
                                 found = true;
-                                EventBus.getDefault().post("VIEW_TRACK " + data.get(i).getId());
+                                EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.VIEW_TRACK, data.get(i).getId()));
                             }
                             i++;
                         } while ((i < data.size()) && !found);
@@ -323,7 +323,7 @@ public class FragmentTracklist extends Fragment {
                         do {
                             if (data.get(i).getId() == selectedtrackID) {
                                 found = true;
-                                EventBus.getDefault().post("SHARE_TRACK " + data.get(i).getId());
+                                EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.SHARE_TRACK, data.get(i).getId()));
                             }
                             i++;
                         } while ((i < data.size()) && !found);
@@ -354,11 +354,11 @@ public class FragmentTracklist extends Fragment {
 
 
     @Subscribe
-    public void onEvent(String msg) {
-        if (msg.equals("UPDATE_TRACK")) {
+    public void onEvent(Short msg) {
+        if (msg == EventBusMSG.UPDATE_TRACK) {
             if (!data.isEmpty() && GPSApplication.getInstance().isCurrentTrackVisible()) {
                 final Track trk = GPSApplication.getInstance().getCurrentTrack();
-                synchronized(data) {
+                synchronized (data) {
                     if (data.get(0).getId() == trk.getId()) {
                         data.set(0, trk);
                         getActivity().runOnUiThread(new Runnable() {
@@ -375,24 +375,16 @@ public class FragmentTracklist extends Fragment {
                 }
             }
         }
-        if (msg.startsWith("TRACK_SETPROGRESS")) {
-            final long trackid = Long.valueOf(msg.split(" ")[1]);
-            final int progress = Integer.valueOf(msg.split(" ")[2]);
-            if ((trackid > 0) && (progress >= 0)) {
-                int i = 0;
-                synchronized(data) {
-                    for (Track T : data) {
-                        if (T.getId() == trackid) setProgress(i, T.getProgress());
-                        i++;
-                    }
-                }
-            }
-        }
-        if (msg.equals("UPDATE_TRACKLIST")) {
+        if (msg == EventBusMSG.UPDATE_TRACKLIST) {
             Update();
         }
-        if (msg.startsWith("TRACKLIST_SELECTION")) {
-            final int selID = Integer.valueOf(msg.split(" ")[1]);
+    }
+
+
+    @Subscribe
+    public void onEvent(EventBusMSGNormal msg) {
+        if (msg.MSGType == EventBusMSG.TRACKLIST_SELECTION) {
+            final long selID = msg.id;
             if (selID >= 0) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -405,8 +397,8 @@ public class FragmentTracklist extends Fragment {
                 });
             }
         }
-        if (msg.startsWith("INTENT_SEND")) {
-            final long trackid = Long.valueOf(msg.split(" ")[1]);
+        if (msg.MSGType == EventBusMSG.INTENT_SEND) {
+            final long trackid = msg.id;
             if (trackid > 0) {
                 Track track = GPSApplication.getInstance().GPSDataBase.getTrack(trackid);
 
@@ -476,6 +468,24 @@ public class FragmentTracklist extends Fragment {
                 // Verify the intent will resolve to at least one activity
                 if ((intent.resolveActivity(getContext().getPackageManager()) != null) && (!files.isEmpty())) {
                     startActivity(chooser);
+                }
+            }
+        }
+    }
+
+
+    @Subscribe
+    public void onEvent(EventBusMSGLong msg) {
+        if (msg.MSGType == EventBusMSG.TRACK_SETPROGRESS) {
+            final long trackid = msg.id;
+            final long progress = msg.Value;
+            if ((trackid > 0) && (progress >= 0)) {
+                int i = 0;
+                synchronized(data) {
+                    for (Track T : data) {
+                        if (T.getId() == trackid) setProgress(i, T.getProgress());
+                        i++;
+                    }
                 }
             }
         }

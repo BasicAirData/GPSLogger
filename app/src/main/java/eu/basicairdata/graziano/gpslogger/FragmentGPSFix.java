@@ -1,4 +1,4 @@
-/*
+/**
  * FragmentGPSFix - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 10/5/2016
  *
@@ -21,6 +21,7 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,9 +78,8 @@ public class FragmentGPSFix extends Fragment {
     }
 
     @Subscribe
-    public void onEvent(String msg) {
-        //Log.w("myApp", "[#] FragmentGPSFix.java - onEvent!!!!");
-        if (msg.equals("UPDATE_FIX")) {
+    public void onEvent(Short msg) {
+        if (msg == EventBusMSG.UPDATE_FIX) {
             (getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

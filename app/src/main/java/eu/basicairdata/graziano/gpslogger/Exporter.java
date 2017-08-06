@@ -1,4 +1,4 @@
-/*
+/**
  * Exporter - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 16/7/2016
  *
@@ -89,7 +89,7 @@ class Exporter extends Thread {
         }
         if (track.getNumberOfLocations() + track.getNumberOfPlacemarks() == 0) return;
 
-        EventBus.getDefault().post("TRACK_SETPROGRESS " + track.getId() + " 1");
+        EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 1));
 
         if (EGMAltitudeCorrection && EGM96.getInstance().isEGMGridLoading()) {
             try {
@@ -160,7 +160,7 @@ class Exporter extends Thread {
 
         // If the file is not writable abort exportation:
         if (UnableToWriteFile) {
-            EventBus.getDefault().post("TOAST UNABLE_TO_WRITE_THE_FILE " + track.getId());
+            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
             return;
         }
 
@@ -339,11 +339,6 @@ class Exporter extends Thread {
                         }
                         placemarkList.clear();
                     }
-
-                    //long progress = 100L * (i + GroupOfLocations) / (track.getNumberOfLocations() + track.getNumberOfPlacemarks());
-                    //if (progress > 99) progress = 99;
-                    //if (progress < 1) progress = 1;
-                    //EventBus.getDefault().post("TRACK_SETPROGRESS " + track.getId() + " " + progress);
                 }
             }
 
@@ -462,7 +457,7 @@ class Exporter extends Thread {
                     long progress = 100L * (track.getNumberOfPlacemarks() + i + GroupOfLocations) / (track.getNumberOfLocations() + track.getNumberOfPlacemarks());
                     if (progress > 99) progress = 99;
                     if (progress < 1) progress = 1;
-                    EventBus.getDefault().post("TRACK_SETPROGRESS " + track.getId() + " " + progress);
+                    EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), progress));
                 }
 
                 if (ExportKML) {
@@ -501,18 +496,18 @@ class Exporter extends Thread {
 
             Log.w("myApp", "[#] Exporter.java - Track "+ track.getId() +" exported in " + (System.currentTimeMillis() - start_Time) + " ms (" + elements_total + " pts @ " + ((1000L * elements_total) / (System.currentTimeMillis() - start_Time)) + " pts/s)");
 
-            EventBus.getDefault().post("TRACK_SETPROGRESS " + track.getId() + " 100");
+            EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 100));
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
                 Log.w("myApp", "[#] Exporter.java - Cannot wait!!");
             }
 
-            EventBus.getDefault().post("TRACK_EXPORTED " + track.getId());
+            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACK_EXPORTED, track.getId()));
 
         } catch (IOException e) {
-            //e.printStackTrace();
-            //Toast.makeText(context, "File not saved",Toast.LENGTH_SHORT).show();
+            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: " + e);
         }
     }
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * FragmentTrack - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 4/6/2016
  *
@@ -74,8 +74,8 @@ public class FragmentTrack extends Fragment {
     }
 
     @Subscribe
-    public void onEvent(String msg) {
-        if (msg.equals("UPDATE_TRACK")) {
+    public void onEvent(Short msg) {
+        if (msg == EventBusMSG.UPDATE_TRACK) {
             (getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
