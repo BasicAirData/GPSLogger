@@ -630,8 +630,9 @@ class DatabaseHandler extends SQLiteOpenHelper {
         String countQuery = "SELECT  * FROM " + TABLE_LOCATIONS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        long result = cursor.getCount();
         cursor.close();
-        return cursor.getCount();
+        return result;
     }
 
 
@@ -640,8 +641,9 @@ class DatabaseHandler extends SQLiteOpenHelper {
         String countQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE " + KEY_TRACK_ID + " = " + TrackID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        long result = cursor.getCount();
         cursor.close();
-        return cursor.getCount();
+        return result;
     }
 
 
