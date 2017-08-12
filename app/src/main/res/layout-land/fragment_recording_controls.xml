@@ -65,24 +65,7 @@
         android:id="@+id/id_TableLayout_Empty"
         android:paddingTop="3dp"
         android:paddingBottom="3dp">
-
-        <TextView
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text=""
-            android:id="@+id/id_textView_EmptyLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:gravity="center_horizontal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/id_textView_Empty"
-            android:freezesText="true"
-            android:textStyle="bold"
-            android:gravity="center_horizontal"/>
+        
     </TableLayout>
 
     <TableLayout

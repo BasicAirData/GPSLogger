@@ -27,7 +27,6 @@
 
 <LinearLayout
     android:id="@+id/id_fragmenttrack"
-    android:background="@color/colorBackground"
     android:paddingTop="6dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -56,7 +55,6 @@
 
         <TextView
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/track_id"
             android:id="@+id/id_textView_TrackIDLabel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -104,7 +102,7 @@
         <TableLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-            android:id="@+id/id_tableLayout_Distance"
+                android:id="@+id/id_tableLayout_Distance"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_margin="3dp"
@@ -130,10 +128,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceLargeUM"
-                        android:text="km"
                         android:id="@+id/id_textView_DistanceUM"
                         android:layout_weight="0"
-                        android:layout_marginLeft="7dp" />
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp" />
                 </TableRow>
 
                 <TextView
@@ -184,10 +182,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearanceLargeUM"
-                    android:text="km/h"
                     android:id="@+id/id_textView_SpeedMaxUM"
                     android:layout_weight="0"
-                    android:layout_marginLeft="7dp" />
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginStart="7dp" />
             </TableRow>
 
             <TextView
@@ -229,10 +227,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearanceLargeUM"
-                    android:text="m"
                     android:id="@+id/id_textView_AltitudeGapUM"
                     android:layout_weight="0"
-                    android:layout_marginLeft="7dp" />
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginStart="7dp" />
             </TableRow>
 
             <TextView
@@ -283,10 +281,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearanceLargeUM"
-                    android:text="km/h"
                     android:id="@+id/id_textView_SpeedAvgUM"
                     android:layout_weight="0"
-                    android:layout_marginLeft="7dp" />
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginStart="7dp" />
             </TableRow>
 
             <TextView
@@ -328,10 +326,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearanceLargeUM"
-                    android:text="@string/north"
                     android:id="@+id/id_textView_OverallDirectionUM"
                     android:layout_weight="0"
-                    android:layout_marginLeft="7dp" />
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginStart="7dp" />
             </TableRow>
 
             <TextView
