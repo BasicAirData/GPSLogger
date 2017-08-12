@@ -28,8 +28,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-//import com.squareup.picasso.Picasso;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
@@ -62,6 +60,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private final PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
         private PhysicalData phd;
         private Bitmap bmp;
+        private int TT;
 
         private long id;
 
@@ -112,7 +111,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         }
 
 
-        void UpdateTrackStats(final Track trk) {
+        void UpdateTrackStats(Track trk) {
             textViewTrackName.setText(trk.getName());
             //textViewTrackName.setText(track.getId() + " - " + track.getName());
             if (trk.getNumberOfLocations() > 1) {
@@ -136,7 +135,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackGeopoints.setText(String.valueOf(trk.getNumberOfLocations()));
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
 
-            int TT = trk.getTrackType();
+            TT = trk.getTrackType();
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             else imageViewIcon.setImageBitmap(null);
         }
@@ -168,18 +167,20 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
             progressBar.setProgress(trk.getProgress());
 
-            int TT = trk.getTrackType();
+            TT = trk.getTrackType();
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
-            String Filename = FilesDir + id + ".png";
-            File file = new File(Filename);
-            if (file.exists ()) {
-                bmp = BitmapFactory.decodeFile(Filename);
-                imageViewThumbnail.setImageBitmap(bmp);
+            bmp = GPSApplication.thumbsArray.get((int) id);
+            if (bmp != null) imageViewThumbnail.setImageBitmap(bmp);
+            else {
+                String Filename = FilesDir + id + ".png";
+                File file = new File(Filename);
+                if (file.exists()) {
+                    bmp = BitmapFactory.decodeFile(Filename);
+                    imageViewThumbnail.setImageBitmap(bmp);
+                } else imageViewThumbnail.setImageDrawable(null);
             }
-            else imageViewThumbnail.setImageDrawable(null);
-            //Picasso.with(GPSApplication.getInstance().getApplicationContext()).load(file).noFade().into(imageViewThumbnail);
         }
     }
 

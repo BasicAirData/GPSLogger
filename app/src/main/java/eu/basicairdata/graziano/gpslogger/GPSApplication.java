@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -47,6 +48,7 @@ import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
+import android.util.SparseArray;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -83,18 +85,18 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     // Preferences Variables
     // private boolean prefKeepScreenOn = true;                 // DONE in GPSActivity
-    private boolean prefShowDecimalCoordinates = false;
-    private int prefUM = UM_METRIC_KMH;
-    private float prefGPSdistance = 0f;
-    private long prefGPSupdatefrequency = 1000L;
+    private boolean prefShowDecimalCoordinates  = false;
+    private int     prefUM                      = UM_METRIC_KMH;
+    private float   prefGPSdistance             = 0f;
+    private long    prefGPSupdatefrequency      = 1000L;
     private boolean prefEGM96AltitudeCorrection = false;
-    private double prefAltitudeCorrection = 0d;
-    private boolean prefExportKML = true;
-    private boolean prefExportGPX = true;
-    private boolean prefExportTXT = false;
-    private int prefKMLAltitudeMode = 0;
-    private int prefShowTrackStatsType = 0;
-    private int prefShowDirections = 0;
+    private double  prefAltitudeCorrection      = 0d;
+    private boolean prefExportKML               = true;
+    private boolean prefExportGPX               = true;
+    private boolean prefExportTXT               = false;
+    private int     prefKMLAltitudeMode         = 0;
+    private int     prefShowTrackStatsType      = 0;
+    private int     prefShowDirections          = 0;
 
     private boolean PermissionsChecked = false;
 
@@ -112,12 +114,12 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private String ViewInApp = "";                              // The string of default app name for "View"
                                                                 // "" in case of selector
 
-
     // Singleton instance
     private static GPSApplication singleton;
     public static GPSApplication getInstance(){
         return singleton;
     }
+
 
     DatabaseHandler GPSDataBase;
     private String PlacemarkDescription = "";
@@ -149,9 +151,12 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private Track _currentTrack = null;
     private List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
 
+    static SparseArray<Bitmap> thumbsArray = new SparseArray<>();       // The Array containing the Tracks Thumbnail
+
     Thumbnailer Th;
     Exporter Ex;
     private AsyncUpdateThreadClass asyncUpdateThread = new AsyncUpdateThreadClass();
+    private AsyncThumbsLoaderThreadClass asyncThumbsLoaderThreadClass = new AsyncThumbsLoaderThreadClass();
 
     // The handler that switches off the location updates after a time delay:
     final Handler handler = new Handler();
@@ -437,6 +442,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         ast.TaskType = "TASK_NEWTRACK";
         ast.location = null;
         AsyncTODOQueue.add(ast);
+
+        asyncThumbsLoaderThreadClass.start();
     }
 
     @Override
@@ -998,7 +1005,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
 
 
-// THE THREAD THAT GENERATES TRACKS THUMBNAIL -----------------------------------------------------
+// THE THREAD THAT GENERATES A TRACK THUMBNAIL -----------------------------------------------------
 
     public class Thumbnailer {
 
@@ -1137,10 +1144,63 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                             //Log.w("myApp", "[#] GPSApplication.java - Unable to save: " + Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + fname);
                         }
 
+                        final String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString() + "/Thumbnails/";
+                        String Filename = FilesDir + Id + ".png";
+                        file = new File(Filename);
+                        if (file.exists ()) {
+                            Bitmap bmp = BitmapFactory.decodeFile(Filename);
+                            if (bmp != null) {
+                                thumbsArray.put((int)Id, bmp);
+                                Log.w("myApp", "[#] GPSApplication.java - Loaded track " + Id + " thumbnail");
+                            }
+                        }
+
                         EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                     }
                 }
             }
         }
     }
+
+
+
+// THE THREAD THAT LOAD ALL TRACKS THUMBNAILS INTO thumbsArray -----------------------------------------------------
+
+    private class AsyncThumbsLoaderThreadClass extends Thread {
+
+        public AsyncThumbsLoaderThreadClass() {
+        }
+
+        public void run() {
+            Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+            final String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString() + "/Thumbnails/";
+            String Filename;
+
+            long ID = GPSDataBase.getLastTrackID();
+
+            ArrayList<Track> ArrayListTracks = new ArrayList<>();
+            ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID - 1));
+
+            Bitmap bmp;
+            File file;
+
+            if (!ArrayListTracks.isEmpty()) {
+                for (Track T : ArrayListTracks) {
+                    Filename = FilesDir + T.getId() + ".png";
+                    file = new File(Filename);
+                    if (file.exists ()) {
+                        bmp = BitmapFactory.decodeFile(Filename);
+                        if (bmp != null) {
+                            thumbsArray.put((int)T.getId(), bmp);
+                            Log.w("myApp", "[#] GPSApplication.java - Loaded track " + T.getId() + " thumbnail");
+                        }
+                    }
+                }
+            }
+
+            ArrayListTracks.clear();
+        }
+    }
+
 }
