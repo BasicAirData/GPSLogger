@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.ArrayBlockingQueue;
 
 class Exporter extends Thread {
 
@@ -48,6 +49,10 @@ class Exporter extends Thread {
     private boolean TXTFirstTrackpointFlag = true;
 
     private boolean UnableToWriteFile = false;
+    int GroupOfLocations = 300; // Reads and writes location grouped by 300;
+
+    private ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(1200);
+    private AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
 
 
     public Exporter(long ID, boolean ExportKML, boolean ExportGPX, boolean ExportTXT, String SaveIntoFolder) {
@@ -65,7 +70,6 @@ class Exporter extends Thread {
     public void run() {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
-        int GroupOfLocations = 200; // Reads and writes location grouped by 200;
         long elements_total;
         String versionName = BuildConfig.VERSION_NAME;
 
@@ -163,6 +167,8 @@ class Exporter extends Thread {
             EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
             return;
         }
+
+        asyncGeopointsLoader.start();
 
         try {
             if (ExportKML) {
@@ -371,94 +377,101 @@ class Exporter extends Thread {
                     GPXbw.write(" <trkseg>" + newLine);
                 }
 
-                List<LocationExtended> locationList = new ArrayList<>(GroupOfLocations);
+                int n = 1000;
+                long progress = 0;
+                long oldProgress = 0;
+                LocationExtended loc;
 
-                for (int i = 0; i <= track.getNumberOfLocations(); i += GroupOfLocations) {
-                    //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
-                    locationList.addAll(GPSApplication.getInstance().GPSDataBase.getLocationsList(track.getId(), i, i + GroupOfLocations - 1));
-                    //Log.w("myApp", "[#] Exporter.java - Write files");
+                for (int i = 0; i < track.getNumberOfLocations(); i++) {
 
-                    if (!locationList.isEmpty()) {
-                        for (LocationExtended loc : locationList) {
-                            // Create formatted strings
-                            formattedLatitude = String.format(Locale.US, "%.8f", loc.getLocation().getLatitude());
-                            formattedLongitude = String.format(Locale.US, "%.8f", loc.getLocation().getLongitude());
-                            if (loc.getLocation().hasAltitude()) formattedAltitude = String.format(Locale.US, "%.3f", loc.getLocation().getAltitude() + AltitudeManualCorrection - (((loc.getAltitudeEGM96Correction() == NOT_AVAILABLE) || (!EGMAltitudeCorrection)) ? 0 : loc.getAltitudeEGM96Correction()));
-                            if(ExportGPX || ExportTXT) {
-                                if (loc.getLocation().hasSpeed())
-                                    formattedSpeed = String.format(Locale.US, "%.3f", loc.getLocation().getSpeed());
-                            }
+                    loc = ArrayGeopoints.take();
 
-                            // KML
-                            if (ExportKML) {
-                                if (loc.getLocation().hasAltitude()) KMLbw.write("     " + formattedLongitude + "," + formattedLatitude + "," + formattedAltitude + newLine);
-                                else KMLbw.write("     " + formattedLongitude + "," + formattedLatitude + ",0" + newLine);
-                            }
-
-                            // GPX
-                            if (ExportGPX) {
-                                GPXbw.write("  <trkpt lat=\"" + formattedLatitude + "\" lon=\"" + formattedLongitude + "\">");
-                                if (loc.getLocation().hasAltitude()) {
-                                    GPXbw.write("<ele>");     // Elevation
-                                    GPXbw.write(formattedAltitude);
-                                    GPXbw.write("</ele>");
-                                }
-                                GPXbw.write("<time>");     // Time
-                                GPXbw.write(dfdtGPX.format(loc.getLocation().getTime()));
-                                GPXbw.write("</time>");
-                                if (loc.getLocation().hasSpeed()) {
-                                    GPXbw.write("<speed>");     // Speed
-                                    GPXbw.write(formattedSpeed);
-                                    GPXbw.write("</speed>");
-                                }
-                                if (loc.getNumberOfSatellitesUsedInFix() > 0) {                   // GPX standards requires sats used for FIX.
-                                    GPXbw.write("<sat>");                                         // and NOT the number of satellites in view!!!
-                                    GPXbw.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
-                                    GPXbw.write("</sat>");
-                                }
-                                GPXbw.write("</trkpt>" + newLine);
-                            }
-
-                            // TXT
-                            if (ExportTXT) {
-                                //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
-                                TXTbw.write("T," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
-                                if (loc.getLocation().hasAccuracy())
-                                    TXTbw.write(String.format(Locale.US, "%.0f", loc.getLocation().getAccuracy()));
-                                TXTbw.write(",");
-                                if (loc.getLocation().hasAltitude())
-                                    TXTbw.write(formattedAltitude);
-                                TXTbw.write(",");
-                                if ((loc.getAltitudeEGM96Correction() != NOT_AVAILABLE) && (EGMAltitudeCorrection))
-                                    TXTbw.write(String.format(Locale.US, "%.3f",loc.getAltitudeEGM96Correction()));
-                                TXTbw.write(",");
-                                if (loc.getLocation().hasSpeed())
-                                    TXTbw.write(formattedSpeed);
-                                TXTbw.write(",");
-                                if (loc.getLocation().hasBearing())
-                                    TXTbw.write(String.format(Locale.US, "%.0f", loc.getLocation().getBearing()));
-                                TXTbw.write(",");
-                                if (loc.getNumberOfSatellitesUsedInFix() > 0)
-                                    TXTbw.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
-                                TXTbw.write(",");
-                                if (loc.getNumberOfSatellites() > 0)
-                                    TXTbw.write(String.valueOf(loc.getNumberOfSatellites()));
-                                TXTbw.write(",");
-                                if (TXTFirstTrackpointFlag) {           // First trackpoint of the track: add the description
-                                    TXTbw.write(track.getName() + ",GPS Logger: " + track.getName());
-                                    TXTFirstTrackpointFlag = false;
-                                } else TXTbw.write(",");
-                                TXTbw.write(newLine);
-                            }
-                        }
-                        locationList.clear();
+                                        // Create formatted strings
+                    formattedLatitude = String.format(Locale.US, "%.8f", loc.getLocation().getLatitude());
+                    formattedLongitude = String.format(Locale.US, "%.8f", loc.getLocation().getLongitude());
+                    if (loc.getLocation().hasAltitude()) formattedAltitude = String.format(Locale.US, "%.3f", loc.getLocation().getAltitude() + AltitudeManualCorrection - (((loc.getAltitudeEGM96Correction() == NOT_AVAILABLE) || (!EGMAltitudeCorrection)) ? 0 : loc.getAltitudeEGM96Correction()));
+                    if(ExportGPX || ExportTXT) {
+                        if (loc.getLocation().hasSpeed())
+                            formattedSpeed = String.format(Locale.US, "%.3f", loc.getLocation().getSpeed());
                     }
 
-                    long progress = 100L * (track.getNumberOfPlacemarks() + i + GroupOfLocations) / (track.getNumberOfLocations() + track.getNumberOfPlacemarks());
-                    if (progress > 99) progress = 99;
-                    if (progress < 1) progress = 1;
-                    EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), progress));
+                    // KML
+                    if (ExportKML) {
+                        if (loc.getLocation().hasAltitude()) KMLbw.write("     " + formattedLongitude + "," + formattedLatitude + "," + formattedAltitude + newLine);
+                        else KMLbw.write("     " + formattedLongitude + "," + formattedLatitude + ",0" + newLine);
+                    }
+
+                    // GPX
+                    if (ExportGPX) {
+                        GPXbw.write("  <trkpt lat=\"" + formattedLatitude + "\" lon=\"" + formattedLongitude + "\">");
+                        if (loc.getLocation().hasAltitude()) {
+                            GPXbw.write("<ele>");     // Elevation
+                            GPXbw.write(formattedAltitude);
+                            GPXbw.write("</ele>");
+                        }
+                        GPXbw.write("<time>");     // Time
+                        GPXbw.write(dfdtGPX.format(loc.getLocation().getTime()));
+                        GPXbw.write("</time>");
+                        if (loc.getLocation().hasSpeed()) {
+                            GPXbw.write("<speed>");     // Speed
+                            GPXbw.write(formattedSpeed);
+                            GPXbw.write("</speed>");
+                        }
+                        if (loc.getNumberOfSatellitesUsedInFix() > 0) {                   // GPX standards requires sats used for FIX.
+                            GPXbw.write("<sat>");                                         // and NOT the number of satellites in view!!!
+                            GPXbw.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
+                            GPXbw.write("</sat>");
+                        }
+                        GPXbw.write("</trkpt>" + newLine);
+                    }
+
+                    // TXT
+                    if (ExportTXT) {
+                        //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
+                        TXTbw.write("T," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
+                        if (loc.getLocation().hasAccuracy())
+                            TXTbw.write(String.format(Locale.US, "%.0f", loc.getLocation().getAccuracy()));
+                        TXTbw.write(",");
+                        if (loc.getLocation().hasAltitude())
+                            TXTbw.write(formattedAltitude);
+                        TXTbw.write(",");
+                        if ((loc.getAltitudeEGM96Correction() != NOT_AVAILABLE) && (EGMAltitudeCorrection))
+                            TXTbw.write(String.format(Locale.US, "%.3f",loc.getAltitudeEGM96Correction()));
+                        TXTbw.write(",");
+                        if (loc.getLocation().hasSpeed())
+                            TXTbw.write(formattedSpeed);
+                        TXTbw.write(",");
+                        if (loc.getLocation().hasBearing())
+                            TXTbw.write(String.format(Locale.US, "%.0f", loc.getLocation().getBearing()));
+                        TXTbw.write(",");
+                        if (loc.getNumberOfSatellitesUsedInFix() > 0)
+                            TXTbw.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
+                        TXTbw.write(",");
+                        if (loc.getNumberOfSatellites() > 0)
+                            TXTbw.write(String.valueOf(loc.getNumberOfSatellites()));
+                        TXTbw.write(",");
+                        if (TXTFirstTrackpointFlag) {           // First trackpoint of the track: add the description
+                            TXTbw.write(track.getName() + ",GPS Logger: " + track.getName());
+                            TXTFirstTrackpointFlag = false;
+                        } else TXTbw.write(",");
+                        TXTbw.write(newLine);
+                    }
+
+                    n++;
+                    if (n > 30) {     // Evaluate the progress every n elements
+                        progress = 100L * (track.getNumberOfPlacemarks() + i + GroupOfLocations) / (track.getNumberOfLocations() + track.getNumberOfPlacemarks());
+                        if (progress > 99) progress = 99;
+                        if (progress < 1) progress = 1;
+                        if (progress - oldProgress >= 1) {
+                            EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), progress));
+                            oldProgress = progress;
+                            n = 0;
+                        }
+                    }
                 }
+
+                EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 100));
+                ArrayGeopoints.clear();
 
                 if (ExportKML) {
                     KMLbw.write("    </coordinates>" + newLine);
@@ -496,18 +509,50 @@ class Exporter extends Thread {
 
             Log.w("myApp", "[#] Exporter.java - Track "+ track.getId() +" exported in " + (System.currentTimeMillis() - start_Time) + " ms (" + elements_total + " pts @ " + ((1000L * elements_total) / (System.currentTimeMillis() - start_Time)) + " pts/s)");
 
-            EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 100));
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                Log.w("myApp", "[#] Exporter.java - Cannot wait!!");
-            }
+            //EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 100));
+            //try {
+            //    Thread.sleep(300);
+            //} catch (InterruptedException e) {
+            //    Log.w("myApp", "[#] Exporter.java - Cannot wait!!");
+            //}
 
             EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACK_EXPORTED, track.getId()));
 
         } catch (IOException e) {
             EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            asyncGeopointsLoader.interrupt();
             Log.w("myApp", "[#] Exporter.java - Unable to write the file: " + e);
+        } catch (InterruptedException e) {
+            asyncGeopointsLoader.interrupt();
+            Log.w("myApp", "[#] Exporter.java - Interrupted: " + e);
+        }
+    }
+
+
+    private class AsyncGeopointsLoader extends Thread {
+
+        public AsyncGeopointsLoader() {
+        }
+
+        public void run() {
+            Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+            List<LocationExtended> lList = new ArrayList<>(GroupOfLocations);
+
+            for (int i = 0; i <= track.getNumberOfLocations(); i += GroupOfLocations) {
+                //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
+                lList.addAll(GPSApplication.getInstance().GPSDataBase.getLocationsList(track.getId(), i, i + GroupOfLocations - 1));
+                if (!lList.isEmpty()) {
+                    for (LocationExtended loc : lList) {
+                        try {
+                            ArrayGeopoints.put(loc);
+                        } catch (InterruptedException e) {
+                            Log.w("myApp", "[#] Exporter.java - Interrupted: " + e);
+                        }
+                    }
+                    lList.clear();
+                }
+            }
         }
     }
 }
