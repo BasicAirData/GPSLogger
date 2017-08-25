@@ -21,7 +21,6 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,13 +137,21 @@ public class FragmentGPSFix extends Fragment {
         super.onPause();
     }
 
+
+    private LocationExtended location;
+    private double AltitudeManualCorrection;
+    private int prefDirections;
+    private int GPSStatus;
+    private boolean EGMAltitudeCorrection;
+    private boolean isValidAltitude;
+
     public void Update() {
         //Log.w("myApp", "[#] FragmentGPSFix.java - Update(Location location)");
-        final LocationExtended location = gpsApplication.getCurrentLocationExtended();
-        final double AltitudeManualCorrection = gpsApplication.getPrefAltitudeCorrection();
-        int prefDirections = gpsApplication.getPrefShowDirections();
-        final int GPSStatus = gpsApplication.getGPSStatus();
-        final boolean EGMAltitudeCorrection = gpsApplication.getPrefEGM96AltitudeCorrection();
+        location = gpsApplication.getCurrentLocationExtended();
+        AltitudeManualCorrection = gpsApplication.getPrefAltitudeCorrection();
+        prefDirections = gpsApplication.getPrefShowDirections();
+        GPSStatus = gpsApplication.getGPSStatus();
+        EGMAltitudeCorrection = gpsApplication.getPrefEGM96AltitudeCorrection();
         if (isAdded()) {
             if ((location != null) && (GPSStatus == GPS_OK)) {
 
@@ -168,7 +175,7 @@ public class FragmentGPSFix extends Fragment {
                 TVAccuracyUM.setText(phdAccuracy.UM);
 
                 // Colorize the Altitude textview depending on the altitude EGM Correction
-                final boolean isValidAltitude = EGMAltitudeCorrection && (location.getAltitudeEGM96Correction() != NOT_AVAILABLE);
+                isValidAltitude = EGMAltitudeCorrection && (location.getAltitudeEGM96Correction() != NOT_AVAILABLE);
                 TVAltitude.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
                 TVAltitudeUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
 
