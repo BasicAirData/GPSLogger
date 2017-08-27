@@ -165,6 +165,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             }
             textViewTrackGeopoints.setText(String.valueOf(trk.getNumberOfLocations()));
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
+
+            // ----- This is a Workaround of an Android bug (https://issuetracker.google.com/issues/36923384)
+            progressBar.setMax(50);
+            progressBar.setMax(100);
+            // -----
+
             progressBar.setProgress(trk.getProgress());
 
             TT = trk.getTrackType();
