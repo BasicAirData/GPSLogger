@@ -115,12 +115,6 @@ public class GPSActivity extends AppCompatActivity {
 
         activeTab = tabLayout.getSelectedTabPosition();
 
-        // Check for runtime Permissions (for Android 23+)
-        if (!GPSApplication.getInstance().isPermissionsChecked()) {
-            GPSApplication.getInstance().setPermissionsChecked(true);
-            CheckPermissions();
-        }
-
         ToastClickAgain = Toast.makeText(this, getString(R.string.toast_track_finished_click_again), Toast.LENGTH_SHORT);
 
         LoadPreferences();
@@ -133,6 +127,12 @@ public class GPSActivity extends AppCompatActivity {
         EventBus.getDefault().post(EventBusMSG.APP_RESUME);
         super.onResume();
         if (menutrackfinished != null) menutrackfinished.setVisible(!GPSApplication.getInstance().getCurrentTrack().getName().equals(""));
+
+        // Check for runtime Permissions (for Android 23+)
+        if (!GPSApplication.getInstance().isPermissionsChecked()) {
+            GPSApplication.getInstance().setPermissionsChecked(true);
+            CheckPermissions();
+        }
     }
 
     @Override

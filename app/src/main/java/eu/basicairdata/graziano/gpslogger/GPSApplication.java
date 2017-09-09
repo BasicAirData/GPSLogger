@@ -98,7 +98,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int     prefShowTrackStatsType      = 0;
     private int     prefShowDirections          = 0;
 
-    private boolean PermissionsChecked = false;
+    private boolean PermissionsChecked = false;                 // If the flag is false the GPSActivity will check for permissions
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
