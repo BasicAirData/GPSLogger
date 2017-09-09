@@ -38,7 +38,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_corner_dark"
                 android:layout_margin="3dp"
-                android:id="@+id/id_TableLayout_Coordinates">
+                android:id="@+id/id_TableLayout_Coordinates"
+                android:visibility="invisible">
 
                 <TableLayout
                     android:layout_width="0dp"
@@ -147,7 +148,8 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:background="@drawable/rounded_corner_dark"
-                android:layout_margin="3dp">
+                android:layout_margin="3dp"
+                android:visibility="invisible">
 
                 <TableRow
                     android:layout_width="fill_parent"
@@ -193,7 +195,8 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_margin="3dp"
-                android:background="@drawable/rounded_corner_dark">
+                android:background="@drawable/rounded_corner_dark"
+                android:visibility="invisible">
 
                 <TableRow
                     android:layout_width="fill_parent"
@@ -247,7 +250,8 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:background="@drawable/rounded_corner_dark"
-                android:layout_margin="3dp">
+                android:layout_margin="3dp"
+                android:visibility="invisible">
 
                 <TableRow
                     android:layout_width="fill_parent"
@@ -293,7 +297,8 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:background="@drawable/rounded_corner_dark"
-                android:layout_margin="3dp">
+                android:layout_margin="3dp"
+                android:visibility="invisible">
 
                 <TableRow
                     android:layout_width="fill_parent"
@@ -341,6 +346,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/id_textView_GPSFixStatus"
         android:paddingTop="30dp"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:text="@string/gps_searching" />
 
 </FrameLayout>
