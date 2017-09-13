@@ -107,7 +107,7 @@
     <string name="pref_category_interface">INTERFACE</string>
     <string name="pref_keep_screen_on">Keep Screen On</string>
     <string name="pref_keep_screen_on_summary">Battery drains faster</string>
-    <string name="pref_show_decimal_coordinates">Show Decimal Coords</string>
+    <string name="pref_show_decimal_coordinates">Show Decimal Coordinates</string>
     <string name="pref_show_decimal_coordinates_summary">Fractional part in decimal notation</string>
     <string name="pref_show_directions">Show Directions using</string>
     <string name="pref_show_directions_angle">Degrees East of North</string>
@@ -132,14 +132,14 @@
     <string name="pref_GPS_distance_33ft">33 feet</string>
     <string name="pref_GPS_distance_66ft">66 feet</string>
 
-    <string name="pref_GPS_update_frequency">GPS Update Frequency</string>
+    <string name="pref_GPS_update_frequency">GPS Update Interval</string>
     <string name="pref_GPS_update_frequency_1s">1 second (best accuracy)</string>
     <string name="pref_GPS_update_frequency_2s">2 seconds</string>
     <string name="pref_GPS_update_frequency_3s">3 seconds (less accurate)</string>
 
     <string name="pref_category_altitude_corrections">ALTITUDE CORRECTIONS</string>
     <string name="pref_EGM96AltitudeCorrection">EGM96 Correction</string>
-    <string name="pref_EGM96AltitudeCorrection_summary">Automatic altitude correction, Based on NGA Earth Geoid Model</string>
+    <string name="pref_EGM96AltitudeCorrection_summary">Automatic altitude correction, based on NGA Earth Geoid Model</string>
     <string name="pref_EGM96AltitudeCorrection_download_progress">Downloading 2028kB file:\nEGM96 Geoid Heights..</string>
     <string name="pref_AltitudeCorrection">Manual Correction</string>
     <string name="pref_AltitudeCorrection_summary_offset">Offset</string>
@@ -148,8 +148,8 @@
     <string name="pref_category_exporting">EXPORTATION</string>
     <string name="pref_export_TXT">Export Tracks in TXT</string>
     <string name="pref_export_TXT_summary">Plain text, comma-separated values</string>
-    <string name="pref_TXT_system_of_measurement">TXT System of Measurement</string>
-    <string name="pref_TXT_system_of_measurement_follows_app_settings">Follows app settings</string>
+    <string name="pref_TXT_system_of_measurement">TXT Units of measurement</string>
+    <string name="pref_TXT_system_of_measurement_follows_app_settings">Follow interface settings</string>
     <string name="pref_export_KML">Export Tracks in KML</string>
     <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
     <string name="pref_export_GPX">Export Tracks in GPX</string>

@@ -114,7 +114,7 @@
   <string name="pref_GPS_distance_16ft">16 piedi</string>
   <string name="pref_GPS_distance_33ft">33 piedi</string>
   <string name="pref_GPS_distance_66ft">66 piedi</string>
-  <string name="pref_GPS_update_frequency">Frequenza di aggiornamento GPS</string>
+  <string name="pref_GPS_update_frequency">Intervallo di aggiornamento GPS</string>
   <string name="pref_GPS_update_frequency_1s">1 secondo (massima accuratezza)</string>
   <string name="pref_GPS_update_frequency_2s">2 secondi</string>
   <string name="pref_GPS_update_frequency_3s">3 secondi (meno accurata)</string>
@@ -128,8 +128,8 @@
   <string name="pref_category_exporting">ESPORTAZIONE</string>
   <string name="pref_export_TXT">Esporta itinerari in TXT</string>
   <string name="pref_export_TXT_summary">Testo normale, valori separati da virgole</string>
-  <string name="pref_TXT_system_of_measurement">Sistema di misura TXT</string>
-  <string name="pref_TXT_system_of_measurement_follows_app_settings">Segue le impostazioni dell\'app</string>
+  <string name="pref_TXT_system_of_measurement">Unità di misura TXT</string>
+  <string name="pref_TXT_system_of_measurement_follows_app_settings">Segue impostazioni interfaccia</string>
   <string name="pref_export_KML">Esporta itinerari in KML</string>
   <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
   <string name="pref_export_GPX">Esporta itinerari in GPX</string>

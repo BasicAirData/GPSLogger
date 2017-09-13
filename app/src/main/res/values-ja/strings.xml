@@ -114,13 +114,13 @@
   <string name="pref_GPS_distance_16ft">16 フィート</string>
   <string name="pref_GPS_distance_33ft">33 フィート</string>
   <string name="pref_GPS_distance_66ft">66 フィート</string>
-  <string name="pref_GPS_update_frequency">GPS 更新頻度</string>
+  <string name="pref_GPS_update_frequency">GPS 更新間隔</string>
   <string name="pref_GPS_update_frequency_1s">1 秒 (最高の精度)</string>
   <string name="pref_GPS_update_frequency_2s">2 秒</string>
   <string name="pref_GPS_update_frequency_3s">3 秒 (精度低)</string>
   <string name="pref_category_altitude_corrections">高度の補正</string>
   <string name="pref_EGM96AltitudeCorrection">EGM96 補正</string>
-  <string name="pref_EGM96AltitudeCorrection_summary">自動高度補正。NGA 地球ジオイドモデルに基づき</string>
+  <string name="pref_EGM96AltitudeCorrection_summary">NGA 地球ジオイドモデルに基づく自動高度補正</string>
   <string name="pref_EGM96AltitudeCorrection_download_progress">2028kB のファイルをダウンロード中:\nEGM96 ジオイド高度..</string>
   <string name="pref_AltitudeCorrection">手動補正</string>
   <string name="pref_AltitudeCorrection_summary_offset">オフセット</string>
@@ -128,8 +128,8 @@
   <string name="pref_category_exporting">エクスポート</string>
   <string name="pref_export_TXT">TXT で追跡をエクスポート</string>
   <string name="pref_export_TXT_summary">テキスト形式、カンマ区切りの値</string>
-  <string name="pref_TXT_system_of_measurement">TXT 測定系</string>
-  <string name="pref_TXT_system_of_measurement_follows_app_settings">アプリの設定に従う</string>
+  <string name="pref_TXT_system_of_measurement">TXT 測定単位</string>
+  <string name="pref_TXT_system_of_measurement_follows_app_settings">インターフェイス設定に従う</string>
   <string name="pref_export_KML">KML で追跡をエクスポート</string>
   <string name="pref_export_KML_summary">Google キーホール マークアップ言語 (v.2.2)</string>
   <string name="pref_export_GPX">GPX で追跡をエクスポート</string>
