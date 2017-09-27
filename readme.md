@@ -30,11 +30,14 @@ You can install GPS Logger on your smartphone in one step, using the Google Stor
 <b>Q</b> - <i>I've just installed the app, but it doesn't read the GPS signal.</i><br>
 <b>A</b> - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
 
-<b>Q</b> - <i>My track is shown broken in many points in Google Earth.</i><br>
-<b>A</b> - The application might be set to show the track in 3D. Thus the track may be partially hidden under the terrain. Please go in the Exporting section of settings and switch the Altitude Mode to "Projected to ground"; your tracks should return fully visible.
+<b>Q</b> - <i>The "View" and "Share" menu are grayed out.</i><br>
+<b>A</b> - Please check in Android System settings that GPS Logger has the Storage permission granted.
 
 <b>Q</b> - <i>How can I see my recorded tracks?</i><br>
-<b>A</b> - You can see your tracks clicking on it, using the "View in Google Earth" contextual menu. Google Earth must be installed on your device; if not, please install it. Google Earth is the best application to view a track, GPS Logger choose to use it instead of an internal viewer.
+<b>A</b> - You can see your tracks clicking on it and using the "View in..." contextual menu. A KML viewer must be installed on your device; if not, please install it. One of the best KML viewers is Google Earth, but there are lots of good alternatives around.
+
+<b>Q</b> - <i>My track is not shown (or partially shown) in Google Earth.</i><br>
+<b>A</b> - 1) Please check in Android System settings that Earth has the Storage permission granted; 2) GPS Logger might be set to show the track in 3D, and the track may be hidden under the terrain. Please go in the Exportation settings, switch the Altitude Mode to "Projected to ground" and try again.
 
 <b>Q</b> - <i>My Google Earth occasionally shows a black screen instead of my track.</i><br>
-<b>A</b> - It is a Google Earth problem. When the problem occurs, please click on the small bearing located in the upper-right corner of the Earth map.
+<b>A</b> - It is a Earth 8 problem. When the problem occurs, please click on the small bearing located in the upper-right corner of the Earth map.
