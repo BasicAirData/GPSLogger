@@ -43,7 +43,7 @@ public class FragmentAboutDialog extends DialogFragment {
         AlertDialog.Builder createAboutAlert = new AlertDialog.Builder(getActivity(), R.style.MyMaterialThemeAbout);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = (View) inflater.inflate(R.layout.fragment_about_dialog, null);
+        final View view = inflater.inflate(R.layout.fragment_about_dialog, null);
 
         TVVersion = (TextView) view.findViewById(R.id.id_about_textView_Version);
         String versionName = BuildConfig.VERSION_NAME;

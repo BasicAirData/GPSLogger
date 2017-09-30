@@ -72,7 +72,8 @@
                             android:textAppearance="@style/TextAppearanceLargeUM"
                             android:id="@+id/id_textView_LatitudeUM"
                             android:layout_weight="0"
-                            android:layout_marginLeft="7dp" />
+                            android:layout_marginLeft="7dp"
+                            android:layout_marginStart="7dp"/>
                     </TableRow>
 
                     <TextView
@@ -116,7 +117,8 @@
                             android:textAppearance="@style/TextAppearanceLargeUM"
                             android:id="@+id/id_textView_LongitudeUM"
                             android:layout_weight="0"
-                            android:layout_marginLeft="7dp" />
+                            android:layout_marginLeft="7dp"
+                            android:layout_marginStart="7dp" />
 
                     </TableRow>
 

@@ -1,4 +1,4 @@
-/*
+/**
  * GPSService - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 2/11/2016
  *
@@ -17,7 +17,6 @@
  */
 
 package eu.basicairdata.graziano.gpslogger;
-
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -57,8 +56,7 @@ public class GPSService extends Service {
         startIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 1, startIntent, 0);
         builder.setContentIntent(contentIntent);
-        Notification notification = builder.build();
-        return notification;
+        return builder.build();
     }
 
     /* THREAD FOR DEBUG PURPOSE
