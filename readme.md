@@ -23,7 +23,7 @@ You can install GPS Logger on your smartphone in one step, using the Google Stor
 The app is translated in many languages thanks to the precious collaboration of some willing users around the world.<br>
 Do you want to add a new language to the app?<br>
 Do you want to help us in translations?<br>
-Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translate and keep updated the app in your Language!<br><br>
+Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translate and keep updated the app in your Language!
 
 ## Reference documents
 
