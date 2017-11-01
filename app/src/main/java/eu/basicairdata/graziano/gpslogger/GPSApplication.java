@@ -620,20 +620,25 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     }
 
     public void updateSats() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED))
         {
-            final GpsStatus gs = this.mlocManager.getGpsStatus(null);
+            final GpsStatus gs = mlocManager.getGpsStatus(null);
             int sats_inview = 0;    // Satellites in view;
             int sats_used = 0;      // Satellites used in fix;
 
-            Iterable<GpsSatellite> sats = gs.getSatellites();
-            for (GpsSatellite sat : sats) {
-                sats_inview++;
-                if (sat.usedInFix()) sats_used++;
-                //Log.w("myApp", "[#] GPSApplication.java - updateSats: i=" + i);
+            if (gs != null) {
+                Iterable<GpsSatellite> sats = gs.getSatellites();
+                for (GpsSatellite sat : sats) {
+                    sats_inview++;
+                    if (sat.usedInFix()) sats_used++;
+                    //Log.w("myApp", "[#] GPSApplication.java - updateSats: i=" + i);
+                }
+                _NumberOfSatellites = sats_inview;
+                _NumberOfSatellitesUsedInFix = sats_used;
+            } else {
+                _NumberOfSatellites = NOT_AVAILABLE;
+                _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
             }
-            _NumberOfSatellites = sats_inview;
-            _NumberOfSatellitesUsedInFix = sats_used;
         } else {
             _NumberOfSatellites = NOT_AVAILABLE;
             _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
