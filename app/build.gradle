@@ -16,7 +16,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 23
         versionCode 19
-        versionName '2.1.9b_20171101'
+        versionName '2.1.9b_20171111'
     }
     buildTypes {
         release {
@@ -40,6 +40,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.android.support:preference-v7:23.4.0'
     compile 'com.android.support:preference-v14:23.4.0'
-    //compile 'com.github.bumptech.glide:glide:3.8.0'
-    //compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.github.bumptech.glide:glide:3.8.0'
 }

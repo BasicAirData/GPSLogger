@@ -156,7 +156,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     Thumbnailer Th;
     Exporter Ex;
     private AsyncUpdateThreadClass asyncUpdateThread = new AsyncUpdateThreadClass();
-    private AsyncThumbsLoaderThreadClass asyncThumbsLoaderThreadClass = new AsyncThumbsLoaderThreadClass();
 
     // The handler that switches off the location updates after a time delay:
     final Handler handler = new Handler();
@@ -443,7 +442,11 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         ast.location = null;
         AsyncTODOQueue.add(ast);
 
-        asyncThumbsLoaderThreadClass.start();
+        // Get max available VM memory, exceeding this amount will throw an
+        // OutOfMemory exception. Stored in kilobytes as LruCache takes an
+        // int in its constructor.
+        Log.w("myApp", "[#] GPSApplication.java - Max available VM memory = " + (int) (Runtime.getRuntime().maxMemory() / 1024) + " kbytes");
+
     }
 
     @Override
@@ -1164,47 +1167,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     }
                 }
             }
-        }
-    }
-
-
-
-// THE THREAD THAT LOAD ALL TRACKS THUMBNAILS INTO thumbsArray -----------------------------------------------------
-
-    private class AsyncThumbsLoaderThreadClass extends Thread {
-
-        public AsyncThumbsLoaderThreadClass() {
-        }
-
-        public void run() {
-            Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-
-            final String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString() + "/Thumbnails/";
-            String Filename;
-
-            long ID = GPSDataBase.getLastTrackID();
-
-            ArrayList<Track> ArrayListTracks = new ArrayList<>();
-            ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID - 1));
-
-            Bitmap bmp;
-            File file;
-
-            if (!ArrayListTracks.isEmpty()) {
-                for (Track T : ArrayListTracks) {
-                    Filename = FilesDir + T.getId() + ".png";
-                    file = new File(Filename);
-                    if (file.exists ()) {
-                        bmp = BitmapFactory.decodeFile(Filename);
-                        if (bmp != null) {
-                            thumbsArray.put((int)T.getId(), bmp);
-                            Log.w("myApp", "[#] GPSApplication.java - Loaded track " + T.getId() + " thumbnail");
-                        }
-                    }
-                }
-            }
-
-            ArrayListTracks.clear();
         }
     }
 

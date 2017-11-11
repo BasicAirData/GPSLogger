@@ -20,6 +20,7 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+//import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -59,10 +64,10 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
         private final PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
         private PhysicalData phd;
-        private Bitmap bmp;
         private int TT;
 
         private long id;
+        private Bitmap bmp;
 
         private final TextView textViewTrackName;
         private final TextView textViewTrackLength;
@@ -142,6 +147,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
 
         void BindTrack(Track trk) {
+
             id = trk.getId();
             textViewTrackName.setText(trk.getName());
             //textViewTrackName.setText(track.getId() + " - " + track.getName());
@@ -177,15 +183,34 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
-            bmp = GPSApplication.thumbsArray.get((int) id);
-            if (bmp != null) imageViewThumbnail.setImageBitmap(bmp);
-            else {
+            /*
+            Picasso
+                    .with(GPSApplication.getInstance().getApplicationContext())
+                    .load("file:///" + FilesDir + id + ".png")
+                    .noPlaceholder()
+                    .noFade()
+                    .into(imageViewThumbnail);
+            */
+
+            if (Build.VERSION.SDK_INT >= 11) {
+                Glide.clear(imageViewThumbnail);
+
+                Glide
+                        .with(GPSApplication.getInstance().getApplicationContext())
+                        .load(FilesDir + id + ".png")
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        //.skipMemoryCache(true)
+                        .error(null)
+                        .dontAnimate()
+                        .into(imageViewThumbnail);
+            } else {
                 String Filename = FilesDir + id + ".png";
                 File file = new File(Filename);
-                if (file.exists()) {
+                if (file.exists ()) {
                     bmp = BitmapFactory.decodeFile(Filename);
                     imageViewThumbnail.setImageBitmap(bmp);
-                } else imageViewThumbnail.setImageDrawable(null);
+                }
+                else imageViewThumbnail.setImageDrawable(null);
             }
         }
     }
