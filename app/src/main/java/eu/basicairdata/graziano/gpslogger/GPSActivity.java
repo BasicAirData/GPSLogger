@@ -59,13 +59,7 @@ import java.util.Map;
 
 public class GPSActivity extends AppCompatActivity {
 
-    String[] permissions= new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.INTERNET};
-
     private static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-    private static final int RESULT_SETTINGS = 1;
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -128,10 +122,10 @@ public class GPSActivity extends AppCompatActivity {
         super.onResume();
         if (menutrackfinished != null) menutrackfinished.setVisible(!GPSApplication.getInstance().getCurrentTrack().getName().equals(""));
 
-        // Check for runtime Permissions (for Android 23+)
-        if (!GPSApplication.getInstance().isPermissionsChecked()) {
-            GPSApplication.getInstance().setPermissionsChecked(true);
-            CheckPermissions();
+        // Check for Location runtime Permissions (for Android 23+)
+        if (!GPSApplication.getInstance().isLocationPermissionChecked()) {
+            CheckLocationPermission();
+            GPSApplication.getInstance().setLocationPermissionChecked(true);
         }
     }
 
@@ -316,6 +310,7 @@ public class GPSActivity extends AppCompatActivity {
                     GPSApplication.getInstance().setPlacemarkRequest(false);
                     EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
                     GPSApplication.getInstance().StopAndUnbindGPSService();
+                    GPSApplication.getInstance().setLocationPermissionChecked(false);
 
                     dialog.dismiss();
                     finish();
@@ -332,12 +327,32 @@ public class GPSActivity extends AppCompatActivity {
             GPSApplication.getInstance().setRecording(false);
             GPSApplication.getInstance().setPlacemarkRequest(false);
             GPSApplication.getInstance().StopAndUnbindGPSService();
+            GPSApplication.getInstance().setLocationPermissionChecked(false);
 
             finish();
         }
     }
 
 
+    public boolean CheckLocationPermission() {
+        Log.w("myApp", "[#] GPSActivity.java - Check Location Permission...");
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.w("myApp", "[#] GPSActivity.java - Location Permission granted");
+            return true;    // Permission Granted
+        } else {
+            Log.w("myApp", "[#] GPSActivity.java - Location Permission denied");
+            boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
+            if (showRationale || !GPSApplication.getInstance().isLocationPermissionChecked()) {
+                Log.w("myApp", "[#] GPSActivity.java - Location Permission denied, need new check");
+                List<String> listPermissionsNeeded = new ArrayList<>();
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+                ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
+            }
+            return false;
+        }
+    }
+
+    /*
     public void CheckPermissions () {
         List<String> listPermissionsNeeded = new ArrayList<>();
 
@@ -351,7 +366,7 @@ public class GPSActivity extends AppCompatActivity {
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
         }
-    }
+    } */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
@@ -402,9 +417,35 @@ public class GPSActivity extends AppCompatActivity {
                                     egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
                                 }
                             }
+
+                            EventBusMSGNormal MSG = GPSApplication.getInstance().getDoIfGrantStoragePermission();
+                            if (MSG != null) {
+                                EventBus.getDefault().post(MSG);
+                                GPSApplication.getInstance().setDoIfGrantStoragePermission(null);
+                            }
+
                         } else {
                             Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
+                            EventBusMSGNormal MSG = GPSApplication.getInstance().getDoIfGrantStoragePermission();
+                            if (MSG != null) {
+                                // Shows toast "Unable to write the file"
+                                final Context context = this;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, MSG.id));
+                                //Log.w("myApp", "[#] GPSActivity.java - EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE " + MSG.id);
+                            }
+                            GPSApplication.getInstance().setDoIfGrantStoragePermission(null);
                         }
+                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+                        SharedPreferences.Editor editor1 = settings.edit();
+                        editor1.putBoolean("prefIsStoragePermissionChecked", true);
+                        editor1.commit();
+                        GPSApplication.getInstance().setStoragePermissionChecked(true);
                     }
                 }
                 break;

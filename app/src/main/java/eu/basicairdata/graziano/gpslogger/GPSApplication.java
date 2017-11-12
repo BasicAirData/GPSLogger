@@ -98,7 +98,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int     prefShowTrackStatsType      = 0;
     private int     prefShowDirections          = 0;
 
-    private boolean PermissionsChecked = false;                 // If the flag is false the GPSActivity will check for permissions
+    private boolean LocationPermissionChecked = false;            // If the flag is false the GPSActivity will check for Location Permission
+    private boolean StoragePermissionChecked = false;             // If the flag is false Storage Permission must be asked
+    private EventBusMSGNormal DoIfGrantStoragePermission = null;  // Store the message to send in case the user grant storage permission
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
@@ -110,7 +112,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean isCurrentTrackVisible = false;
     private boolean isContextMenuShareVisible = false;          // True if "Share with ..." menu is visible
     private boolean isContextMenuViewVisible = false;           // True if "View in *" menu is visible
-    private boolean isContextMenuEnabled = false;               // True if the Share + View + Export menus are enabled (Permission to write storage)
     private String ViewInApp = "";                              // The string of default app name for "View"
                                                                 // "" in case of selector
 
@@ -252,6 +253,22 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
     }
 
+    public void setDoIfGrantStoragePermission(EventBusMSGNormal doIfGrantStoragePermission) {
+        DoIfGrantStoragePermission = doIfGrantStoragePermission;
+    }
+
+    public EventBusMSGNormal getDoIfGrantStoragePermission() {
+        return DoIfGrantStoragePermission;
+    }
+
+    public boolean isStoragePermissionChecked() {
+        return StoragePermissionChecked;
+    }
+
+    public void setStoragePermissionChecked(boolean storagePermissionChecked) {
+        StoragePermissionChecked = storagePermissionChecked;
+    }
+
     public boolean isContextMenuShareVisible() {
         return isContextMenuShareVisible;
     }
@@ -264,12 +281,12 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return ViewInApp;
     }
 
-    public boolean isPermissionsChecked() {
-        return PermissionsChecked;
+    public boolean isLocationPermissionChecked() {
+        return LocationPermissionChecked;
     }
 
-    public void setPermissionsChecked(boolean permissionsChecked) {
-        PermissionsChecked = permissionsChecked;
+    public void setLocationPermissionChecked(boolean locationPermissionChecked) {
+        LocationPermissionChecked = locationPermissionChecked;
     }
 
     public void setHandlerTimer(int handlerTimer) {
@@ -383,10 +400,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     public void setisCurrentTrackVisible(boolean currentTrackVisible) {
         isCurrentTrackVisible = currentTrackVisible;
-    }
-
-    public boolean isContextMenuEnabled() {
-        return isContextMenuEnabled;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -658,15 +671,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         public void run() {
             isContextMenuShareVisible = false;
             isContextMenuViewVisible = false;
-            isContextMenuEnabled = false;
             ViewInApp = "";
 
             final PackageManager pm = getPackageManager();
-
-            // Check permissions
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                isContextMenuEnabled = true;
-
 
             // ----- menu share
             Intent intent = new Intent();
@@ -871,6 +878,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         prefKMLAltitudeMode = Integer.valueOf(preferences.getString("prefKMLAltitudeMode", "1"));
         prefShowTrackStatsType = Integer.valueOf(preferences.getString("prefShowTrackStatsType", "0"));
         prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));
+        StoragePermissionChecked = preferences.getBoolean("prefIsStoragePermissionChecked", false);
 
         long oldGPSupdatefrequency = prefGPSupdatefrequency;
         prefGPSupdatefrequency = Long.valueOf(preferences.getString("prefGPSupdatefrequency", "1000"));
