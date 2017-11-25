@@ -41,6 +41,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -206,8 +207,13 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     private void StartAndBindGPSService() {
         GPSServiceIntent = new Intent(GPSApplication.this, GPSService.class);
-        startService(GPSServiceIntent);                                                    //Starting the service
-        bindService(GPSServiceIntent, GPSServiceConnection, Context.BIND_AUTO_CREATE);     //Binding to the service!
+        //Start the service
+        startService(GPSServiceIntent);
+        //Bind to the service
+        if (Build.VERSION.SDK_INT >= 14)
+            bindService(GPSServiceIntent, GPSServiceConnection, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
+        else
+            bindService(GPSServiceIntent, GPSServiceConnection, Context.BIND_AUTO_CREATE);
         Log.w("myApp", "[#] GPSApplication.java - StartAndBindGPSService");
     }
 
