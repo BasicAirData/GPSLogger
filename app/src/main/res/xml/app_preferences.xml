@@ -124,6 +124,14 @@
             android:summary="@string/pref_export_GPX_summary"
             android:defaultValue="true"/>
 
+        <android.support.v7.preference.ListPreference
+            android:key="prefGPXVersion"
+            android:title="@string/pref_GPX_version"
+            android:summary=" "
+            android:entries="@array/GPXVersion"
+            android:entryValues="@array/GPXVersionValues"
+            android:defaultValue="100" />
+
         <android.support.v7.preference.SwitchPreferenceCompat
             android:key="prefExportKML"
             android:title="@string/pref_export_KML"

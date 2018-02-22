@@ -153,7 +153,10 @@
     <string name="pref_export_KML">Export Tracks in KML</string>
     <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
     <string name="pref_export_GPX">Export Tracks in GPX</string>
-    <string name="pref_export_GPX_summary">Standard GPS eXchange Format (v.1.0)</string>
+    <string name="pref_export_GPX_summary">Standard GPS eXchange Format</string>
+    <string name="pref_GPX_version">Version of GPX Standard</string>
+    <string name="pref_GPX_version_1_0">GPX 1.0</string>
+    <string name="pref_GPX_version_1_1">GPX 1.1</string>
     <string name="pref_KML_altitude_mode">KML Altitude mode</string>
     <string name="pref_KML_altitude_mode_absolute">Absolute</string>
     <string name="pref_KML_altitude_mode_projected">Projected to Ground</string>

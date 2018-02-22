@@ -94,6 +94,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private double  prefAltitudeCorrection      = 0d;
     private boolean prefExportKML               = true;
     private boolean prefExportGPX               = true;
+    private int     prefGPXVersion              = 100;            // the version of the GPX schema
     private boolean prefExportTXT               = false;
     private int     prefKMLAltitudeMode         = 0;
     private int     prefShowTrackStatsType      = 0;
@@ -309,6 +310,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     public int getPrefKMLAltitudeMode() {
         return prefKMLAltitudeMode;
+    }
+
+    public int getPrefGPXVersion() {
+        return prefGPXVersion;
     }
 
     public void setOpenInViewer(long openInViewer) {
@@ -882,6 +887,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         prefExportGPX = preferences.getBoolean("prefExportGPX", true);
         prefExportTXT = preferences.getBoolean("prefExportTXT", false);
         prefKMLAltitudeMode = Integer.valueOf(preferences.getString("prefKMLAltitudeMode", "1"));
+        prefGPXVersion = Integer.valueOf(preferences.getString("prefGPXVersion", "100"));               // Default value = v.1.0
         prefShowTrackStatsType = Integer.valueOf(preferences.getString("prefShowTrackStatsType", "0"));
         prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));
         StoragePermissionChecked = preferences.getBoolean("prefIsStoragePermissionChecked", false);

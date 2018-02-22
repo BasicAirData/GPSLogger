@@ -46,6 +46,7 @@ class Exporter extends Thread {
     private double AltitudeManualCorrection = 0;
     private boolean EGMAltitudeCorrection = false;
     private int getPrefKMLAltitudeMode = 0;
+    private int getPrefGPXVersion = 0;
     private boolean TXTFirstTrackpointFlag = true;
 
     private boolean UnableToWriteFile = false;
@@ -60,6 +61,7 @@ class Exporter extends Thread {
         AltitudeManualCorrection = GPSApplication.getInstance().getPrefAltitudeCorrection();
         EGMAltitudeCorrection = GPSApplication.getInstance().getPrefEGM96AltitudeCorrection();
         getPrefKMLAltitudeMode = GPSApplication.getInstance().getPrefKMLAltitudeMode();
+        getPrefGPXVersion = GPSApplication.getInstance().getPrefGPXVersion();
 
         this.ExportTXT = ExportTXT;
         this.ExportGPX = ExportGPX;
@@ -224,7 +226,11 @@ class Exporter extends Thread {
                 GPXbw.write("<!-- Created with BasicAirData GPS Logger for Android - ver. " + versionName + " -->" + newLine);
                 GPXbw.write("<!-- Track " + String.valueOf(track.getId()) + " = " + String.valueOf(track.getNumberOfLocations())
                         + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
-                GPXbw.write("<gpx creator=\"BasicAirData GPS Logger " + versionName + "\" version=\"1.0\" xmlns=\"http://www.topografix.com/GPX/1/0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine + newLine);
+                if (getPrefGPXVersion == 100)     // GPX 1.0
+                    GPXbw.write("<gpx version=\"1.0\" creator=\"BasicAirData GPS Logger " + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine + newLine);
+                if (getPrefGPXVersion == 110)     // GPX 1.1
+                    GPXbw.write("<gpx version=\"1.1\" creator=\"BasicAirData GPS Logger " + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" + newLine + newLine);
+
             }
 
             if (ExportTXT) {

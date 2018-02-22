@@ -202,6 +202,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         ListPreference pGPSDistance = (ListPreference) findPreference("prefGPSdistance");
         ListPreference pGPSUpdateFrequency = (ListPreference) findPreference("prefGPSupdatefrequency");
         ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
+        ListPreference pGPXVersion = (ListPreference) findPreference("prefGPXVersion");
         ListPreference pShowTrackStatsType = (ListPreference) findPreference("prefShowTrackStatsType");
         ListPreference pShowDirections = (ListPreference) findPreference("prefShowDirections");
         EditTextPreference pAltitudeCorrection = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
@@ -235,6 +236,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         pGPSDistance.setSummary(pGPSDistance.getEntry());
         pGPSUpdateFrequency.setSummary(pGPSUpdateFrequency.getEntry());
         pKMLAltitudeMode.setSummary(pKMLAltitudeMode.getEntry());
+        pGPXVersion.setSummary(pGPXVersion.getEntry());
         pShowTrackStatsType.setSummary(pShowTrackStatsType.getEntry());
         pShowDirections.setSummary(pShowDirections.getEntry());
     }
