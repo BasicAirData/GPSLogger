@@ -110,14 +110,13 @@ public class GPSActivity extends AppCompatActivity {
         activeTab = tabLayout.getSelectedTabPosition();
 
         ToastClickAgain = Toast.makeText(this, getString(R.string.toast_track_finished_click_again), Toast.LENGTH_SHORT);
-
-        LoadPreferences();
     }
 
     @Override
     public void onResume() {
         EventBus.getDefault().register(this);
         Log.w("myApp", "[#] GPSActivity.java - onResume()");
+        LoadPreferences();
         EventBus.getDefault().post(EventBusMSG.APP_RESUME);
         super.onResume();
         if (menutrackfinished != null) menutrackfinished.setVisible(!GPSApplication.getInstance().getCurrentTrack().getName().equals(""));
