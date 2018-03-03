@@ -104,8 +104,9 @@ class EGM96 {
     }
 
     public double getEGMCorrection(double Latitude, double Longitude) {
-    // This function calculates and return the EGM96 altitude correction value of the input coords, in m;
-    // Imput coords are: -90 < Latitude < 90; -180 < Longitude < 360 (android range -180 < Longitude < 180);
+        // This function calculates and return the EGM96 altitude correction value of the input coordinates, in m;
+        // Input coordinates are: -90 < Latitude < 90; -180 < Longitude < 360 (android range -180 < Longitude < 180);
+
         if (isEGMGridLoaded) {
             double Lat = 90.0 - Latitude;
             double Lon = Longitude;
@@ -114,22 +115,25 @@ class EGM96 {
             int ilon = (int) (Lon / 0.25) + BOUNDARY;
             int ilat = (int) (Lat / 0.25) + BOUNDARY;
 
-            // Creating points for interpolation
-            short hc11 = EGMGrid[ilon][ilat];
-            short hc12 = EGMGrid[ilon][ilat + 1];
-            short hc21 = EGMGrid[ilon + 1][ilat];
-            short hc22 = EGMGrid[ilon + 1][ilat + 1];
+            try {
+                // Creating points for interpolation
+                short hc11 = EGMGrid[ilon][ilat];
+                short hc12 = EGMGrid[ilon][ilat + 1];
+                short hc21 = EGMGrid[ilon + 1][ilat];
+                short hc22 = EGMGrid[ilon + 1][ilat + 1];
 
-            // Interpolation:
-            // Latitude
-            double hc1 = hc11 + (hc12 - hc11) * (Lat % 0.25) / 0.25;
-            double hc2 = hc21 + (hc22 - hc21) * (Lat % 0.25) / 0.25;
-            // Longitude
-            //double hc = (hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100;
+                // Interpolation:
+                // Latitude
+                double hc1 = hc11 + (hc12 - hc11) * (Lat % 0.25) / 0.25;
+                double hc2 = hc21 + (hc22 - hc21) * (Lat % 0.25) / 0.25;
+                // Longitude
+                //double hc = (hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100;
+                //Log.w("myApp", "[#] EGM96.java - getEGMCorrection(" + Latitude + ", " + Longitude + ") = " + hc);
 
-            //Log.w("myApp", "[#] EGM96.java - getEGMCorrection(" + Latitude + ", " + Longitude + ") = " + hc);
-
-            return ((hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100);
+                return ((hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return EGM96_VALUE_INVALID;
+            }
         }
         else return EGM96_VALUE_INVALID;
     }
@@ -261,7 +265,7 @@ class EGM96 {
         }
     }
 
-    // The Thread that loads the grid in background ------------------------------------------------
+    // The Thread that copies the EGM grid in FilesDir (in background) -----------------------------
 
     private class CopyEGM96Grid implements Runnable {
         // Thread: Copy the EGM grid in FilesDir
