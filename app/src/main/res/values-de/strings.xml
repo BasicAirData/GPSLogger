@@ -129,11 +129,14 @@
   <string name="pref_export_TXT">Tracks in TXT exportieren</string>
   <string name="pref_export_TXT_summary">Klartext, durch Komma getrennte Werte</string>
   <string name="pref_TXT_system_of_measurement">Einheitensystem für Export in TXT</string>
-  <string name="pref_TXT_system_of_measurement_follows_app_settings">Folgt den Schnittstelleneinstellungen</string>
+  <string name="pref_TXT_system_of_measurement_follows_app_settings">Folge den Schnittstelleneinstellungen</string>
   <string name="pref_export_KML">Tracks in KML exportieren</string>
   <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
   <string name="pref_export_GPX">Tracks in GPX exportieren</string>
-  <string name="pref_export_GPX_summary">Standard GPS eXchange Format (v.1.0)</string>
+  <string name="pref_export_GPX_summary">Standard GPS eXchange Format</string>
+  <string name="pref_GPX_version">Version des GPX-Standard</string>
+  <string name="pref_GPX_version_1_0">GPX 1.0</string>
+  <string name="pref_GPX_version_1_1">GPX 1.1</string>
   <string name="pref_KML_altitude_mode">KML Höhenmodus</string>
   <string name="pref_KML_altitude_mode_absolute">Absolut</string>
   <string name="pref_KML_altitude_mode_projected">Auf Boden projiziert</string>

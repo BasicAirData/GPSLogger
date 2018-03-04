@@ -134,6 +134,9 @@
   <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
   <string name="pref_export_GPX">Exporta itinerarios a GPX</string>
   <string name="pref_export_GPX_summary">Estándar GPS eXchange Format (v.1.0)</string>
+  <string name="pref_GPX_version">Estándar del GPX</string>
+  <string name="pref_GPX_version_1_0">GPX 1.0</string>
+  <string name="pref_GPX_version_1_1">GPX 1.1</string>
   <string name="pref_KML_altitude_mode">Modalidad de altitud KML</string>
   <string name="pref_KML_altitude_mode_absolute">Absoluto</string>
   <string name="pref_KML_altitude_mode_projected">Proyección al suelo</string>

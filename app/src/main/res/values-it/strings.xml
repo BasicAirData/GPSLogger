@@ -133,7 +133,10 @@
   <string name="pref_export_KML">Esporta itinerari in KML</string>
   <string name="pref_export_KML_summary">Google Keyhole Markup Language (v.2.2)</string>
   <string name="pref_export_GPX">Esporta itinerari in GPX</string>
-  <string name="pref_export_GPX_summary">Standard GPS eXchange Format (v.1.0)</string>
+  <string name="pref_export_GPX_summary">Standard GPS eXchange Format</string>
+  <string name="pref_GPX_version">Versione dello Standard GPX</string>
+  <string name="pref_GPX_version_1_0">GPX 1.0</string>
+  <string name="pref_GPX_version_1_1">GPX 1.1</string>
   <string name="pref_KML_altitude_mode">Modalità altitudine KML</string>
   <string name="pref_KML_altitude_mode_absolute">Assoluta</string>
   <string name="pref_KML_altitude_mode_projected">Proiettata al suolo</string>

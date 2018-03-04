@@ -133,7 +133,10 @@
   <string name="pref_export_KML">KML で追跡をエクスポート</string>
   <string name="pref_export_KML_summary">Google キーホール マークアップ言語 (v.2.2)</string>
   <string name="pref_export_GPX">GPX で追跡をエクスポート</string>
-  <string name="pref_export_GPX_summary">標準 GPS 交換フォーマット (v.1.0)</string>
+  <string name="pref_export_GPX_summary">標準 GPS 交換フォーマット</string>
+  <string name="pref_GPX_version">GPX 標準のバージョン</string>
+  <string name="pref_GPX_version_1_0">GPX 1.0</string>
+  <string name="pref_GPX_version_1_1">GPX 1.1</string>
   <string name="pref_KML_altitude_mode">KML 高度モード</string>
   <string name="pref_KML_altitude_mode_absolute">絶対値</string>
   <string name="pref_KML_altitude_mode_projected">地面に投影</string>
