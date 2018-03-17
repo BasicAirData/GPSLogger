@@ -45,7 +45,7 @@
   <string name="duration">Dauer</string>
   <string name="max_speed">Max Geschw.</string>
   <string name="average_speed">Ø Geschw.</string>
-  <string name="distance">Distanz</string>
+  <string name="distance">Entfernung</string>
   <string name="overall_direction">Gesamtrichtung</string>
   <string name="altitude_gap">Abweichung Höhe</string>
   <!-- Track Status message -->
