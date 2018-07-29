@@ -128,11 +128,11 @@
     </string-array>
 
     <!-- View Tracks with -->
-    <string-array name="ViewTracksVith">
+    <string-array name="ViewTracksWith">
         <item>@string/pref_view_tracks_with_KML</item>
         <item>@string/pref_view_tracks_with_GPX</item>
     </string-array>
-    <string-array name="ViewTracksVithValues">
+    <string-array name="ViewTracksWithValues">
         <item>0</item>
         <item>1</item>
     </string-array>

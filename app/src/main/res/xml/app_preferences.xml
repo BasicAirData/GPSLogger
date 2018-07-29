@@ -72,8 +72,8 @@
             android:key="prefViewTracksWith"
             android:title="@string/pref_view_tracks_with"
             android:summary=" "
-            android:entries="@array/ViewTracksVith"
-            android:entryValues="@array/ViewTracksVithValues"
+            android:entries="@array/ViewTracksWith"
+            android:entryValues="@array/ViewTracksWithValues"
             android:defaultValue="0" />
 
     </android.support.v7.preference.PreferenceCategory>
