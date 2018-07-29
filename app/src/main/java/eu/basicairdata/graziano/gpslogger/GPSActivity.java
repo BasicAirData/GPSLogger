@@ -275,6 +275,16 @@ public class GPSActivity extends AppCompatActivity {
             });
             return;
         }
+        if (msg == EventBusMSG.TOAST_TRACK_EXPORTED) {
+            final Context context = this;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, getString(R.string.toast_track_exported), Toast.LENGTH_LONG).show();
+                }
+            });
+            return;
+        }
         if (msg == EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE) {
             final Context context = this;
             runOnUiThread(new Runnable() {

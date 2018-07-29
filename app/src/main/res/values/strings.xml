@@ -68,6 +68,7 @@
     <string name="menu_track_finished">Track finished</string>
     <string name="toast_track_finished_click_again">Double click to finish this track</string>
     <string name="toast_track_saved_into_tracklist">Track saved into the Tracklist</string>
+    <string name="toast_track_exported">Track exported in /GPSLogger folder</string>
     <string name="menu_about">About</string>
     <string name="menu_shutdown">Shutdown</string>
 

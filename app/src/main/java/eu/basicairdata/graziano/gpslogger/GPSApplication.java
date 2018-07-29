@@ -524,10 +524,11 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                                     intent.setDataAndType(Uri.fromFile(file), "gpx+xml");
                                     startActivity(intent);
                                 }
-                            }
-                            if (trackid == Share) {
+                            } else if (trackid == Share) {
                                 Share = -1;
                                 EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.INTENT_SEND, trackid));
+                            } else {
+                                EventBus.getDefault().post(EventBusMSG.TOAST_TRACK_EXPORTED);
                             }
                         }
                     }
