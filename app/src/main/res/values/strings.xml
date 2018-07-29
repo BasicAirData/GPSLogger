@@ -117,6 +117,9 @@
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Aerial / Nautical</string>
     <string name="pref_unit_of_measurement_speed">Show Speeds in</string>
+    <string name="pref_view_tracks_with">View Tracks with</string>
+    <string name="pref_view_tracks_with_KML">KML viewer</string>
+    <string name="pref_view_tracks_with_GPX">GPX viewer</string>
 
     <string name="pref_category_tracking">TRACKING</string>
     <string name="pref_GPS_distance">Collecting Density</string>

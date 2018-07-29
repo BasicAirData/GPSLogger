@@ -68,6 +68,14 @@
             android:entryValues="@array/UMSpeedValues"
             android:defaultValue="1" />
 
+        <android.support.v7.preference.ListPreference
+            android:key="prefViewTracksWith"
+            android:title="@string/pref_view_tracks_with"
+            android:summary=" "
+            android:entries="@array/ViewTracksVith"
+            android:entryValues="@array/ViewTracksVithValues"
+            android:defaultValue="0" />
+
     </android.support.v7.preference.PreferenceCategory>
 
     <android.support.v7.preference.PreferenceCategory

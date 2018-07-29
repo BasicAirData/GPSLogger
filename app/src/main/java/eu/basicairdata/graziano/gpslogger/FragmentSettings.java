@@ -205,6 +205,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         ListPreference pGPXVersion = (ListPreference) findPreference("prefGPXVersion");
         ListPreference pShowTrackStatsType = (ListPreference) findPreference("prefShowTrackStatsType");
         ListPreference pShowDirections = (ListPreference) findPreference("prefShowDirections");
+        ListPreference pViewTracksWith = (ListPreference) findPreference("prefViewTracksWith");
         EditTextPreference pAltitudeCorrection = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
 
         altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
@@ -239,6 +240,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         pGPXVersion.setSummary(pGPXVersion.getEntry());
         pShowTrackStatsType.setSummary(pShowTrackStatsType.getEntry());
         pShowDirections.setSummary(pShowDirections.getEntry());
+        pViewTracksWith.setSummary(pViewTracksWith.getEntry());
     }
 
 

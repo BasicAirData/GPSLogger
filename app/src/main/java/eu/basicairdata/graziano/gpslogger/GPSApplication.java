@@ -87,6 +87,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     // Preferences Variables
     // private boolean prefKeepScreenOn = true;                 // DONE in GPSActivity
     private boolean prefShowDecimalCoordinates  = false;
+    private int     prefViewTracksWith          = 0;
     private int     prefUM                      = UM_METRIC_KMH;
     private float   prefGPSdistance             = 0f;
     private long    prefGPSupdatefrequency      = 1000L;
@@ -509,11 +510,20 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                             if (trackid == OpenInViewer) {
                                 OpenInViewer = -1;
-                                File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", T.getName() + ".kml");
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.setDataAndType(Uri.fromFile(file), "application/vnd.google-earth.kml+xml");
-                                startActivity(intent);
+                                if (prefViewTracksWith == 0) {              // KML Viewer
+                                    File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", T.getName() + ".kml");
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setDataAndType(Uri.fromFile(file), "application/vnd.google-earth.kml+xml");
+                                    startActivity(intent);
+                                }
+                                if (prefViewTracksWith == 1) {              // GPX Viewer
+                                    File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", T.getName() + ".gpx");
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setDataAndType(Uri.fromFile(file), "gpx+xml");
+                                    startActivity(intent);
+                                }
                             }
                             if (trackid == Share) {
                                 Share = -1;
@@ -539,8 +549,14 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         if (msg.MSGType == EventBusMSG.VIEW_TRACK) {
             setOpenInViewer(msg.id);
-            Ex = new Exporter(OpenInViewer, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-            Ex.start();
+            if (prefViewTracksWith == 0) {              // KML Viewer
+                Ex = new Exporter(OpenInViewer, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                Ex.start();
+            }
+            if (prefViewTracksWith == 1) {              // GPX Viewer
+                Ex = new Exporter(OpenInViewer, false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                Ex.start();
+            }
             return;
         }
         if (msg.MSGType == EventBusMSG.DELETE_TRACK) {
@@ -702,6 +718,13 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setType("application/vnd.google-earth.kml+xml");
+
+            if (prefViewTracksWith == 0) {              // KML Viewer
+                intent.setType("application/vnd.google-earth.kml+xml");
+            }
+            if (prefViewTracksWith == 1) {              // GPX Viewer
+                intent.setType("application/gpx+xml");
+            }
             ResolveInfo ri = pm.resolveActivity(intent, 0); // Find default app
             if (ri != null) {
                 //Log.w("myApp", "[#] FragmentTracklist.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
@@ -884,6 +907,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
         //prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
         prefShowDecimalCoordinates = preferences.getBoolean("prefShowDecimalCoordinates", false);
+        prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
         prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
         prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
         prefEGM96AltitudeCorrection = preferences.getBoolean("prefEGM96AltitudeCorrection", false);
