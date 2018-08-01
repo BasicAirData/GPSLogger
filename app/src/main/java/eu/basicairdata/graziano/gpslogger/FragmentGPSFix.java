@@ -19,6 +19,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -119,7 +120,28 @@ public class FragmentGPSFix extends Fragment {
         TLBearing = (TableLayout) view.findViewById(R.id.id_TableLayout_Bearing);
         TLAccuracy = (TableLayout) view.findViewById(R.id.id_TableLayout_Accuracy);
 
+        TVGPSFixStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (GPSStatus == GPS_DISABLED) {
+                    if (GPSApplication.getInstance().getLocationSettingsFlag()) {
+                        // This is the second click
+                        GPSApplication.getInstance().setLocationSettingsFlag(false);
+                        onLaunchSettings();
+                    } else {
+                        GPSApplication.getInstance().setLocationSettingsFlag(true); // Start the timer
+                    }
+                }
+            }
+        });
+
         return view;
+    }
+
+    public void onLaunchSettings() {
+        Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        if (callGPSSettingIntent != null) startActivityForResult(callGPSSettingIntent, 0);
+        // TODO: show toast "Unable to open location settings"
     }
 
     @Override
@@ -141,7 +163,7 @@ public class FragmentGPSFix extends Fragment {
     private LocationExtended location;
     private double AltitudeManualCorrection;
     private int prefDirections;
-    private int GPSStatus;
+    private int GPSStatus = GPS_DISABLED;
     private boolean EGMAltitudeCorrection;
     private boolean isValidAltitude;
 

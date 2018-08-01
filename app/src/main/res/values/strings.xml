@@ -41,7 +41,7 @@
 
 
     <!-- GPS Status messages -->
-    <string name="gps_disabled">GPS disabled</string>
+    <string name="gps_disabled">GPS disabled\n\nDouble clicking here\nyou can enable the Location Service\nand set a Locating Method\nthat uses the GPS sensor</string>
     <string name="gps_out_of_service">GPS out of service</string>
     <string name="gps_temporary_unavailable">GPS temporary unavailable</string>
     <string name="gps_searching">Looking for GPS</string>

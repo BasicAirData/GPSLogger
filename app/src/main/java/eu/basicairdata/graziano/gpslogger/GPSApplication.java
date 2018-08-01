@@ -143,6 +143,15 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
     };
 
+    private boolean LocationSettingsFlag = false;           // The variable that handle the double-click on "Open Location Settings"
+    final Handler locationsettingshandler = new Handler();
+    Runnable locationsettingsr = new Runnable() {
+        @Override
+        public void run() {
+            LocationSettingsFlag = false;
+        }
+    };
+
     private LocationManager mlocManager = null;             // GPS LocationManager
     private int _NumberOfSatellites = 0;
     private int _NumberOfSatellitesUsedInFix = 0;
@@ -258,6 +267,21 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         } else {
             NewTrackFlag = false;
             newtrackhandler.removeCallbacks(newtrackr);         // Cancel the previous newtrackr handler
+        }
+    }
+
+    public boolean getLocationSettingsFlag() {
+        return LocationSettingsFlag;
+    }
+
+    public void setLocationSettingsFlag(boolean locationSettingsFlag) {
+        if (locationSettingsFlag) {
+            LocationSettingsFlag = true;
+            locationsettingshandler.removeCallbacks(locationsettingsr);   // Cancel the previous locationsettingsr handler
+            locationsettingshandler.postDelayed(locationsettingsr, 1000); // starts the new handler
+        } else {
+            LocationSettingsFlag = false;
+            locationsettingshandler.removeCallbacks(locationsettingsr);   // Cancel the previous locationsettingsr handler
         }
     }
 
