@@ -630,9 +630,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         if (msg == EventBusMSG.APP_PAUSE) {
             handler.postDelayed(r, getHandlerTimer());  // Starts the switch-off handler (delayed by HandlerTimer)
-            System.gc();                                // Clear mem from released objects with Garbage Collector
             if ((_currentTrack.getNumberOfLocations() == 0) && (_currentTrack.getNumberOfPlacemarks() == 0)
                 && (!Recording) && (!PlacemarkRequest)) StopAndUnbindGPSService();
+            System.gc();                                // Clear mem from released objects with Garbage Collector
             return;
         }
         if (msg == EventBusMSG.APP_RESUME) {
