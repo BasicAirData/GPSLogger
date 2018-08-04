@@ -222,7 +222,7 @@ public class FragmentGPSFix extends Fragment {
                 TVGPSFixStatus.setVisibility(View.VISIBLE);
                 switch (GPSStatus) {
                     case GPS_DISABLED:
-                        TVGPSFixStatus.setText(R.string.gps_disabled);
+                        TVGPSFixStatus.setText(R.string.gps_disabled_with_hint);
                         break;
                     case GPS_OUTOFSERVICE:
                         TVGPSFixStatus.setText(R.string.gps_out_of_service);
