@@ -40,7 +40,7 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 <b>Q</b> - <i>The Location is active, but the app sees "GPS disabled".</i><br>
 <b>A</b> - Please go on Location section of your Android settings: the phone could be set to use the "Battery saving" Locating method. This method uses Wi-Fi & mobile networks to estimate your location, without turn on the GPS. In case please switch to "Phone only" or "High accuracy" method to enable the GPS sensor.
 
-<b>Q</b> - <i>The "View" and "Share" menu are grayed out.</i><br>
+<b>Q</b> - <i>The "View", "Export", and "Share" menus are grayed out.</i><br>
 <b>A</b> - Please check in Android System settings that GPS Logger has the Storage permission granted.
 
 <b>Q</b> - <i>How can I see my recorded tracks?</i><br>
