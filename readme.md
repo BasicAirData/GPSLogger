@@ -37,6 +37,9 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 <b>Q</b> - <i>I've just installed the app, but it doesn't read the GPS signal.</i><br>
 <b>A</b> - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
 
+<b>Q</b> - <i>The Location is active, but the app sees "GPS disabled".</i><br>
+<b>A</b> - Please go on Location section of your Android settings: the phone could be set to use the "Battery saving" Locating method. This method uses Wi-Fi & mobile networks to estimate your location, without turn on the GPS. In case please switch to "Phone only" or "High accuracy" method to enable the GPS sensor.
+
 <b>Q</b> - <i>The "View" and "Share" menu are grayed out.</i><br>
 <b>A</b> - Please check in Android System settings that GPS Logger has the Storage permission granted.
 
@@ -48,3 +51,6 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 
 <b>Q</b> - <i>My Google Earth occasionally shows a black screen instead of my track.</i><br>
 <b>A</b> - It is a Earth 8 problem. When the problem occurs, please click on the small bearing located in the upper-right corner of the Earth map.
+
+<b>Q</b> - <i>The app sometimes stops recording when running in background.</i><br>
+<b>A</b> - The app could be closed by the system during the background recording. To avoid it, you can go on the device maintenance section of your android settings, select the battery sub-section, and add GPS Logger to the list of unmonitored apps. Furthermore, anti-viruses (like Avast) are very aggressive with long running apps, and must be correctly set.
