@@ -24,6 +24,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -34,12 +35,16 @@ public class GPSService extends Service {
         return singleton;
     }
     // IBinder
-    private final IBinder mBinder = new LocalBinder();
-    public class LocalBinder extends Binder {                                   //returns the instance of the service
-        public GPSService getServiceInstance(){
-            return GPSService.this;
-        }
-    }
+    private final IBinder mBinder = new Binder(); //new LocalBinder();
+    //public class LocalBinder extends Binder {                                   //returns the instance of the service
+        //public GPSService getServiceInstance(){
+        //    return GPSService.this;
+        //}
+    //}
+
+    // PARTIAL_WAKELOCK
+    private PowerManager powerManager;
+    PowerManager.WakeLock wakeLock;
 
     private Notification getNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
@@ -82,6 +87,10 @@ public class GPSService extends Service {
         //if (!t.isAlive()) {
         //    t.start();
         //}
+
+        // PARTIAL_WAKELOCK
+        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"GPSLogger");
         Log.w("myApp", "[#] GPSService.java - CREATE = onCreate");
     }
 
@@ -94,6 +103,10 @@ public class GPSService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        if (wakeLock != null && !wakeLock.isHeld()) {
+            wakeLock.acquire();
+            Log.w("myApp", "[#] GPSService.java - WAKELOCK acquired");
+        }
         Log.w("myApp", "[#] GPSService.java - BIND = onBind");
         return mBinder;
         //return null;
@@ -101,6 +114,12 @@ public class GPSService extends Service {
 
     @Override
     public void onDestroy() {
+        // PARTIAL_WAKELOCK
+        if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release();
+            Log.w("myApp", "[#] GPSService.java - WAKELOCK released");
+        }
+
         Log.w("myApp", "[#] GPSService.java - DESTROY = onDestroy");
         // THREAD FOR DEBUG PURPOSE
         //if (t.isAlive()) t.interrupt();
