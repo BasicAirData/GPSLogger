@@ -195,7 +195,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     // ------------------------------------------------------------------------------------ Service
     Intent GPSServiceIntent;
-    //GPSService GPSLoggerService;
+    GPSService GPSLoggerService;
     boolean isGPSServiceBound = false;
 
     private ServiceConnection GPSServiceConnection = new ServiceConnection() {
@@ -203,8 +203,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            //GPSService.LocalBinder binder = (GPSService.LocalBinder) service;
-            //GPSLoggerService = binder.getServiceInstance();                     //Get instance of your service!
+            GPSService.LocalBinder binder = (GPSService.LocalBinder) service;
+            GPSLoggerService = binder.getServiceInstance();                     //Get instance of your service!
             Log.w("myApp", "[#] GPSApplication.java - GPSSERVICE CONNECTED - onServiceConnected event");
             isGPSServiceBound = true;
         }

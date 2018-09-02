@@ -35,12 +35,12 @@ public class GPSService extends Service {
         return singleton;
     }
     // IBinder
-    private final IBinder mBinder = new Binder(); //new LocalBinder();
-    //public class LocalBinder extends Binder {                                   //returns the instance of the service
-        //public GPSService getServiceInstance(){
-        //    return GPSService.this;
-        //}
-    //}
+    private final IBinder mBinder = new LocalBinder();
+    public class LocalBinder extends Binder {                                   //returns the instance of the service
+        public GPSService getServiceInstance(){
+            return GPSService.this;
+        }
+    }
 
     // PARTIAL_WAKELOCK
     private PowerManager powerManager;
