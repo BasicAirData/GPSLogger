@@ -247,6 +247,8 @@ class Exporter extends Thread {
             Log.w("myApp", "[#] Exporter.java - Writing Placemarks");
 
             if (track.getNumberOfPlacemarks() > 0) {
+                int placemark_id = 1;                   // It is used to add a progressive "id" to Placemarks
+
                 // Writes track headings
 
                 List<LocationExtended> placemarkList = new ArrayList<>(GroupOfLocations);
@@ -267,7 +269,7 @@ class Exporter extends Thread {
 
                             // KML
                             if (ExportKML) {
-                                KMLbw.write("  <Placemark>" + newLine);
+                                KMLbw.write("  <Placemark id=\"" + placemark_id + "\">" + newLine);
                                 KMLbw.write("   <name>");
                                 KMLbw.write(loc.getDescription()
                                         .replace("<","&lt;")
@@ -348,6 +350,8 @@ class Exporter extends Thread {
                                 TXTbw.write(loc.getDescription().replace(",","_"));
                                 TXTbw.write(newLine);
                             }
+
+                            placemark_id++;
                         }
                         placemarkList.clear();
                     }
@@ -366,7 +370,7 @@ class Exporter extends Thread {
 
                 // Writes track headings
                 if (ExportKML) {
-                    KMLbw.write("  <Placemark>" + newLine);
+                    KMLbw.write("  <Placemark id=\"" + track.getName() + "\">" + newLine);
                     KMLbw.write("   <name>GPS Logger</name>" + newLine);
                     KMLbw.write("   <description>Track: " + track.getName() + " </description>" + newLine);
                     KMLbw.write("   <styleUrl>#TrackLineAndPoly</styleUrl>" + newLine);
