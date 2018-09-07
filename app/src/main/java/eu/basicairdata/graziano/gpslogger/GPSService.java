@@ -50,6 +50,7 @@ public class GPSService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         //builder.setSmallIcon(R.drawable.ic_notification_24dp)
         builder.setSmallIcon(R.mipmap.ic_notify_24dp)
+                .setColor(getResources().getColor(R.color.colorPrimaryLight))
                 .setContentTitle(getString(R.string.app_name))
                 .setShowWhen(false)
                 .setContentText(getString(R.string.notification_contenttext));
