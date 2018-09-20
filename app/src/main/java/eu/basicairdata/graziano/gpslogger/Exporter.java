@@ -74,6 +74,8 @@ class Exporter extends Thread {
 
         long elements_total;
         String versionName = BuildConfig.VERSION_NAME;
+        GPSApplication GPSApp = GPSApplication.getInstance();
+        if (GPSApp == null) return;
 
         elements_total = track.getNumberOfLocations() + track.getNumberOfPlacemarks();
         long start_Time = System.currentTimeMillis();
@@ -198,25 +200,34 @@ class Exporter extends Thread {
                         + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
                 KMLbw.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\">" + newLine);
                 KMLbw.write(" <Document>" + newLine);
-                KMLbw.write("  <name>Paths</name>" + newLine);
-                KMLbw.write("  <description>GPS Logger: " + track.getName() + newLine);
-                KMLbw.write("  </description>" + newLine);
-
-                KMLbw.write("  <Style id=\"TrackLineAndPoly\">" + newLine);
-                KMLbw.write("   <LineStyle>" + newLine);
-                KMLbw.write("    <color>ff0000ff</color>" + newLine);
-                KMLbw.write("    <width>4</width>" + newLine);
-                KMLbw.write("   </LineStyle>" + newLine);
-                KMLbw.write("   <PolyStyle>" + newLine);
-                KMLbw.write("    <color>7f0000ff</color>" + newLine);
-                KMLbw.write("   </PolyStyle>" + newLine);
-                KMLbw.write("  </Style>" + newLine);
-
-                KMLbw.write("  <Style id=\"Bookmark_Style\">" + newLine);
-                KMLbw.write("   <IconStyle>" + newLine);
-                KMLbw.write("    <Icon> <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle_highlight.png</href> </Icon>" + newLine);
-                KMLbw.write("   </IconStyle>" + newLine);
-                KMLbw.write("  </Style>" + newLine + newLine);
+                KMLbw.write("  <name>GPS Logger " + track.getName() + "</name>" + newLine);
+                KMLbw.write("  <description><![CDATA[" + String.valueOf(track.getNumberOfLocations()) + " Trackpoints<br>" +
+                        String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks]]></description>" + newLine);
+                if (track.getNumberOfLocations() > 0) {
+                    KMLbw.write("  <Style id=\"TrackStyle\">" + newLine);
+                    KMLbw.write("   <LineStyle>" + newLine);
+                    KMLbw.write("    <color>ff0000ff</color>" + newLine);
+                    KMLbw.write("    <width>3</width>" + newLine);
+                    KMLbw.write("   </LineStyle>" + newLine);
+                    KMLbw.write("   <PolyStyle>" + newLine);
+                    KMLbw.write("    <color>7f0000ff</color>" + newLine);
+                    KMLbw.write("   </PolyStyle>" + newLine);
+                    KMLbw.write("   <BalloonStyle>" + newLine);
+                    KMLbw.write("    <text><![CDATA[<p style=\"color:red;font-weight:bold\">$[name]</p><p style=\"font-size:11px\">$[description]</p><p style=\"font-size:7px\">" +
+                            GPSApp.getApplicationContext().getString(R.string.pref_track_stats) + ": " +
+                            GPSApp.getApplicationContext().getString(R.string.pref_track_stats_totaltime) + " | " +
+                            GPSApp.getApplicationContext().getString(R.string.pref_track_stats_movingtime) + "</p>]]></text>" + newLine);
+                    KMLbw.write("   </BalloonStyle>" + newLine);
+                    KMLbw.write("  </Style>" + newLine);
+                }
+                if (track.getNumberOfPlacemarks() > 0) {
+                    KMLbw.write("  <Style id=\"PlacemarkStyle\">" + newLine);
+                    KMLbw.write("   <IconStyle>" + newLine);
+                    KMLbw.write("    <Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle_highlight.png</href></Icon>" + newLine);
+                    KMLbw.write("   </IconStyle>" + newLine);
+                    KMLbw.write("  </Style>" + newLine);
+                }
+                KMLbw.write(newLine);
             }
 
             if (ExportGPX) {
@@ -255,7 +266,7 @@ class Exporter extends Thread {
 
                 for (int i = 0; i <= track.getNumberOfPlacemarks(); i += GroupOfLocations) {
                     //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
-                    placemarkList.addAll(GPSApplication.getInstance().GPSDataBase.getPlacemarksList(track.getId(), i, i + GroupOfLocations - 1));
+                    placemarkList.addAll(GPSApp.GPSDataBase.getPlacemarksList(track.getId(), i, i + GroupOfLocations - 1));
 
                     if (!placemarkList.isEmpty()) {
                         for (LocationExtended loc : placemarkList) {
@@ -278,7 +289,7 @@ class Exporter extends Thread {
                                         .replace("\"","&quot;")
                                         .replace("'","&apos;"));
                                 KMLbw.write("</name>" + newLine);
-                                KMLbw.write("   <styleUrl>#Bookmark_Style</styleUrl>" + newLine);
+                                KMLbw.write("   <styleUrl>#PlacemarkStyle</styleUrl>" + newLine);
                                 KMLbw.write("   <Point>" + newLine);
                                 KMLbw.write("    <altitudeMode>" + (getPrefKMLAltitudeMode == 1 ? "clampToGround" : "absolute") + "</altitudeMode>" + newLine);
                                 KMLbw.write("    <coordinates>");
@@ -370,10 +381,36 @@ class Exporter extends Thread {
 
                 // Writes track headings
                 if (ExportKML) {
+                    PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+                    PhysicalData phdDuration;
+                    PhysicalData phdDurationMoving;
+                    PhysicalData phdSpeedMax;
+                    PhysicalData phdSpeedAvg;
+                    PhysicalData phdSpeedAvgMoving;
+                    PhysicalData phdDistance;
+                    PhysicalData phdAltitudeGap;
+                    PhysicalData phdOverallDirection;
+                    phdDuration = phdformatter.format(track.getDuration(),PhysicalDataFormatter.FORMAT_DURATION);
+                    phdDurationMoving = phdformatter.format(track.getDuration_Moving(),PhysicalDataFormatter.FORMAT_DURATION);
+                    phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
+                    phdSpeedAvg = phdformatter.format(track.getSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                    phdSpeedAvgMoving = phdformatter.format(track.getSpeedAverageMoving(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                    phdDistance = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
+                    phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(GPSApp.getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
+                    phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
+
+                    String TrackDesc = GPSApp.getApplicationContext().getString(R.string.distance) + " = " + phdDistance.Value + " " + phdDistance.UM +
+                            "<br>" + GPSApp.getApplicationContext().getString(R.string.duration) + " = " + phdDuration.Value + " | " + phdDurationMoving.Value +
+                            "<br>" + GPSApp.getApplicationContext().getString(R.string.altitude_gap) + " = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM +
+                            "<br>" + GPSApp.getApplicationContext().getString(R.string.max_speed) + " = " + phdSpeedMax.Value + " " + phdSpeedMax.UM +
+                            "<br>" + GPSApp.getApplicationContext().getString(R.string.average_speed) + " = " + phdSpeedAvg.Value + " | " + phdSpeedAvgMoving.Value + " " + phdSpeedAvg.UM +
+                            "<br>" + GPSApp.getApplicationContext().getString(R.string.direction) + " = " + phdOverallDirection.Value + " " + phdOverallDirection.UM +
+                            "<br><br><i>" + track.getNumberOfLocations() + " " + GPSApp.getApplicationContext().getString(R.string.trackpoints) + "</i>" ;
+
                     KMLbw.write("  <Placemark id=\"" + track.getName() + "\">" + newLine);
-                    KMLbw.write("   <name>GPS Logger</name>" + newLine);
-                    KMLbw.write("   <description>Track: " + track.getName() + " </description>" + newLine);
-                    KMLbw.write("   <styleUrl>#TrackLineAndPoly</styleUrl>" + newLine);
+                    KMLbw.write("   <name>" + GPSApp.getApplicationContext().getString(R.string.tab_track) + " " + track.getName() + "</name>" + newLine);
+                    KMLbw.write("   <description><![CDATA[" + TrackDesc + "]]></description>" + newLine);
+                    KMLbw.write("   <styleUrl>#TrackStyle</styleUrl>" + newLine);
                     KMLbw.write("   <LineString>" + newLine);
                     KMLbw.write("    <extrude>0</extrude>" + newLine);
                     KMLbw.write("    <tessellate>0</tessellate>" + newLine);
