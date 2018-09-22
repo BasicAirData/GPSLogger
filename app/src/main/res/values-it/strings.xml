@@ -36,6 +36,7 @@
   <string name="west">O</string>
   <!-- GPS Status messages -->
   <string name="gps_disabled">GPS disabilitato</string>
+  <string name="gps_disabled_with_hint">GPS disabilitato\n\nCliccando 2 volte qui\npuoi abilitare il servizio Posizione\ne impostare un metodo di ricerca\nche utilizza il sensore GPS</string>
   <string name="gps_out_of_service">GPS fuori servizio</string>
   <string name="gps_temporary_unavailable">GPS temporaneamente non disponibile</string>
   <string name="gps_searching">Ricerca del segnale GPS</string>
@@ -58,6 +59,7 @@
   <string name="menu_track_finished">Itinerario completato</string>
   <string name="toast_track_finished_click_again">Doppio clic per terminare questo itinerario</string>
   <string name="toast_track_saved_into_tracklist">Itinerario archiviato</string>
+  <string name="toast_track_exported">Itinerario esportato nella cartella /GPSLogger</string>
   <string name="menu_about">Info</string>
   <string name="menu_shutdown">Spegni</string>
   <!-- Placemark Creation dialog -->
@@ -101,6 +103,9 @@
   <string name="pref_unit_of_measurement_imperial">Imperiale</string>
   <string name="pref_unit_of_measurement_aerial_nautical">Aereo / Nautico</string>
   <string name="pref_unit_of_measurement_speed">Visualizza le velocità in</string>
+  <string name="pref_view_tracks_with">Visualizza gli itinerari con</string>
+  <string name="pref_view_tracks_with_KML">Visualizzatore KML</string>
+  <string name="pref_view_tracks_with_GPX">Visualizzatore GPX</string>
   <string name="pref_category_tracking">REGISTRAZIONE</string>
   <string name="pref_GPS_distance">Densità registrazione punti</string>
   <string name="pref_GPS_distance_max">Massima</string>
@@ -151,7 +156,7 @@
   <string name="toast_download_failed">Download non riuscito. Riprova più tardi</string>
   <!-- About Dialog -->
   <string name="about_version">ver.</string>
-  <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra i tuoi percorsi utilizzando il GPS. È possibile visualizzarli in Google Earth, condividerli ed esportarli nella cartella /GPSLogger del dispositivo in formato KML, GPX e TXT.\n\nQuesto programma è software libero, rilasciato sotto i termini della GNU General Public license.\nPer maggiori dettagli si veda: http://www.gnu.org/licenses/gpl.txt\n\nPer l\'EGM96 geoid file disclaimer vedi: http://earth-info.nga.mil/GandG/disclaim.html\n\nSe ti piace utilizzare questa applicazione, prenditi un momento per valutare GPS Logger nel Google Store.</string>
+  <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra i tuoi percorsi utilizzando il GPS. È possibile visualizzarli nel tuo visualizzatore preferito, condividerli ed esportarli nella cartella /GPSLogger del dispositivo in formato KML, GPX e TXT.\n\nQuesto programma è software libero, rilasciato sotto i termini della GNU General Public license.\nPer maggiori dettagli si veda: http://www.gnu.org/licenses/gpl.txt\n\nPer l\'EGM96 geoid file disclaimer vedi: http://earth-info.nga.mil/GandG/disclaim.html\n\nSe ti piace utilizzare questa applicazione, prenditi un momento per valutare GPS Logger nel Google Store.</string>
   <string name="about_ok">Chiudi</string>
   <string name="about_rate_this_app">Valuta questa app</string>
   <string name="about_unable_to_rate">Impossibile accedere a Google Store</string>

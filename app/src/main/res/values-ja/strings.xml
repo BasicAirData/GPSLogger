@@ -36,6 +36,7 @@
   <string name="west">西</string>
   <!-- GPS Status messages -->
   <string name="gps_disabled">GPS が無効です</string>
+  <string name="gps_disabled_with_hint">GPS が無効です\n\nここをダブルクリックすると\n位置情報サービスを有効にして\nGPS センサーが使用する\n検索方法を設定することができます</string>
   <string name="gps_out_of_service">GPS 圏外</string>
   <string name="gps_temporary_unavailable">GPS は一時的に利用できません</string>
   <string name="gps_searching">GPS を探しています</string>
@@ -58,6 +59,7 @@
   <string name="menu_track_finished">追跡完了</string>
   <string name="toast_track_finished_click_again">ダブルクリックするとこの追跡を終了します</string>
   <string name="toast_track_saved_into_tracklist">追跡リストに追跡を保存しました</string>
+  <string name="toast_track_exported">/GPSLogger フォルダーに追跡をエクスポートしました</string>
   <string name="menu_about">アプリについて</string>
   <string name="menu_shutdown">シャットダウン</string>
   <!-- Placemark Creation dialog -->
@@ -101,6 +103,9 @@
   <string name="pref_unit_of_measurement_imperial">ヤード・ポンド法</string>
   <string name="pref_unit_of_measurement_aerial_nautical">航空 / 航海</string>
   <string name="pref_unit_of_measurement_speed">速度の表示</string>
+  <string name="pref_view_tracks_with">追跡の表示…</string>
+  <string name="pref_view_tracks_with_KML">KML ビューアー</string>
+  <string name="pref_view_tracks_with_GPX">GPX ビューアー</string>
   <string name="pref_category_tracking">追跡</string>
   <string name="pref_GPS_distance">収集密度</string>
   <string name="pref_GPS_distance_max">最大</string>

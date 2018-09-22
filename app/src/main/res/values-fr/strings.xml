@@ -36,6 +36,7 @@
   <string name="west">O</string>
   <!-- GPS Status messages -->
   <string name="gps_disabled">GPS désactivé</string>
+  <string name="gps_disabled_with_hint">GPS désactivé\n\nEn double-cliquant ici,\nvous pouvez activer le Service de Localisation\net définir une Méthode de Localisation\nqui utilise le signal GPS</string>
   <string name="gps_out_of_service">GPS hors service</string>
   <string name="gps_temporary_unavailable">GPS temporairement indisponible</string>
   <string name="gps_searching">Acquisition GPS</string>
@@ -58,6 +59,7 @@
   <string name="menu_track_finished">Tracé terminé</string>
   <string name="toast_track_finished_click_again">Double-cliquer pour terminer ce tracé</string>
   <string name="toast_track_saved_into_tracklist">Tracé archivé</string>
+  <string name="toast_track_exported">Tracé exporté dans le dossier /GPSLogger</string>
   <string name="menu_about">À propos</string>
   <string name="menu_shutdown">Éteindre</string>
   <!-- Placemark Creation dialog -->
@@ -76,7 +78,7 @@
   <string name="card_trackinfo_placemarks">Repères</string>
   <!-- Context menu of Tracklist -->
   <string name="card_menu_export">Exporter</string>
-  <string name="card_menu_view_selector">Ouvrir avec ...</string>
+  <string name="card_menu_view_selector">Ouvrir avec...</string>
   <string name="card_menu_view">Ouvrir avec %1$s</string>
   <string name="card_menu_delete">Supprimer</string>
   <string name="card_menu_share">Partager avec ...</string>
@@ -101,6 +103,9 @@
   <string name="pref_unit_of_measurement_imperial">Impérial</string>
   <string name="pref_unit_of_measurement_aerial_nautical">Aérien / Nautique</string>
   <string name="pref_unit_of_measurement_speed">Afficher les vitesses en</string>
+  <string name="pref_view_tracks_with">Visualiser les Tracés avec</string>
+  <string name="pref_view_tracks_with_KML">Lecteur KML</string>
+  <string name="pref_view_tracks_with_GPX">Lecteur GPX</string>
   <string name="pref_category_tracking">TRAÇAGE</string>
   <string name="pref_GPS_distance">Densité de Collecte</string>
   <string name="pref_GPS_distance_max">Maximale</string>
@@ -151,7 +156,7 @@
   <string name="toast_download_failed">Échec du téléchargement. Veuillez réessayer plus tard</string>
   <!-- About Dialog -->
   <string name="about_version">ver.</string>
-  <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger enregistre vos parcours en utilisant le GPS. Vous pouvez les afficher dans Google Earth, les partager et les exporter dans le dossier GPSLogger de votre appareil au format KML, GPX et TXT.\n\nCe programme est un logiciel libre, publié sous les termes de la GNU General Public License.\nPour plus de détails, voir : http://www.gnu.org/licenses/gpl.txt\n\nPour la mise en garde sur le fichier EGM96 geoid, voir : http://earth-info.nga.mil/GandG/disclaim.html\n\nSi vous aimez utiliser cette application, vous pouvez prendre un instant pour noter GPS Logger sur le Google Play Store.</string>
+  <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger enregistre vos parcours en utilisant le GPS. Vous pouvez les afficher dans votre visualiseur préféré, les partager et les exporter dans le dossier GPSLogger de votre appareil au format KML, GPX et TXT.\n\nCe programme est un logiciel libre, publié sous les termes de la GNU General Public License.\nPour plus de détails, voir : http://www.gnu.org/licenses/gpl.txt\n\nPour la mise en garde sur les fichiers EGM96 geoid, voir : http://earth-info.nga.mil/GandG/disclaim.html\n\nSi vous aimez cette application, vous pouvez prendre un instant pour noter GPS Logger sur le Google Play Store.</string>
   <string name="about_ok">Fermer</string>
   <string name="about_rate_this_app">Noter l\'Appli</string>
   <string name="about_unable_to_rate">Impossible d\'ouvrir le Google Store</string>
