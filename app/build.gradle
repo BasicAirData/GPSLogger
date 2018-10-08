@@ -16,7 +16,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 23
         versionCode 22
-        versionName '2.1.11'
+        versionName '2.1.12b_20181008'
     }
     buildTypes {
         release {
@@ -35,7 +35,7 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:percent:23.4.0'
-    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'org.greenrobot:eventbus:3.1.1'
     compile 'com.android.support:cardview-v7:23.4.0'
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.android.support:preference-v7:23.4.0'
