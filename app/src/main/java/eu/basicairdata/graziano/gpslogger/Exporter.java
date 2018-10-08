@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -72,6 +74,7 @@ class Exporter extends Thread {
     public void run() {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
+        Date creationTime;
         long elements_total;
         String versionName = BuildConfig.VERSION_NAME;
         GPSApplication GPSApp = GPSApplication.getInstance();
@@ -188,6 +191,8 @@ class Exporter extends Thread {
                 TXTbw = new BufferedWriter(TXTfw);
             }
 
+            creationTime = Calendar.getInstance().getTime();
+
             // ---------------------------------------------------------------------- Writing Heads
             Log.w("myApp", "[#] Exporter.java - Writing Heads");
 
@@ -238,10 +243,13 @@ class Exporter extends Thread {
                 GPXbw.write("<!-- Track " + String.valueOf(track.getId()) + " = " + String.valueOf(track.getNumberOfLocations())
                         + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
                 if (getPrefGPXVersion == 100)     // GPX 1.0
-                    GPXbw.write("<gpx version=\"1.0\" creator=\"BasicAirData GPS Logger " + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine + newLine);
+                    GPXbw.write("<gpx version=\"1.0\" creator=\"BasicAirData GPS Logger " + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine);
                 if (getPrefGPXVersion == 110)     // GPX 1.1
-                    GPXbw.write("<gpx version=\"1.1\" creator=\"BasicAirData GPS Logger " + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" + newLine + newLine);
+                    GPXbw.write("<gpx version=\"1.1\" creator=\"BasicAirData GPS Logger " + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" + newLine);
 
+                GPXbw.write("<time>");     // Time
+                GPXbw.write(dfdtGPX.format(creationTime));
+                GPXbw.write("</time>" + newLine + newLine);
             }
 
             if (ExportTXT) {
