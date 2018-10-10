@@ -242,14 +242,26 @@ class Exporter extends Thread {
                 GPXbw.write("<!-- Created with BasicAirData GPS Logger for Android - ver. " + versionName + " -->" + newLine);
                 GPXbw.write("<!-- Track " + String.valueOf(track.getId()) + " = " + String.valueOf(track.getNumberOfLocations())
                         + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
-                if (getPrefGPXVersion == 100)     // GPX 1.0
-                    GPXbw.write("<gpx version=\"1.0\" creator=\"BasicAirData GPS Logger " + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine);
-                if (getPrefGPXVersion == 110)     // GPX 1.1
-                    GPXbw.write("<gpx version=\"1.1\" creator=\"BasicAirData GPS Logger " + versionName + "\" xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" + newLine);
-
-                GPXbw.write("<time>");     // Time
-                GPXbw.write(dfdtGPX.format(creationTime));
-                GPXbw.write("</time>" + newLine + newLine);
+                if (getPrefGPXVersion == 100) {     // GPX 1.0
+                    GPXbw.write("<gpx version=\"1.0\"" + newLine
+                              + "     creator=\"BasicAirData GPS Logger " + versionName + "\"" + newLine
+                              + "     xmlns=\"http://www.topografix.com/GPX/1/0\"" + newLine
+                              + "     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + newLine
+                              + "     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine);
+                    GPXbw.write("<name>GPS Logger " + track.getName() + "</name>" + newLine);
+                    GPXbw.write("<time>" + dfdtGPX.format(creationTime) + "</time>" + newLine + newLine);
+                }
+                if (getPrefGPXVersion == 110) {    // GPX 1.1
+                    GPXbw.write("<gpx version=\"1.1\"" + newLine
+                              + "     creator=\"BasicAirData GPS Logger " + versionName + "\"" + newLine
+                              + "     xmlns=\"http://www.topografix.com/GPX/1/1\"" + newLine
+                              + "     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + newLine
+                              + "     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" + newLine);
+                    GPXbw.write("<metadata> " + newLine);    // GPX Metadata
+                    GPXbw.write(" <name>GPS Logger " + track.getName() + "</name>" + newLine);
+                    GPXbw.write(" <time>" + dfdtGPX.format(creationTime) + "</time>" + newLine);
+                    GPXbw.write("</metadata>" + newLine + newLine);
+                }
             }
 
             if (ExportTXT) {
@@ -427,8 +439,7 @@ class Exporter extends Thread {
                 }
                 if (ExportGPX) {
                     GPXbw.write("<trk>" + newLine);
-                    GPXbw.write(" <name>" + track.getName() + "</name>" + newLine);
-                    GPXbw.write(" <desc>GPS Logger: " + track.getName() + "</desc>" + newLine);
+                    GPXbw.write(" <name>" + GPSApp.getApplicationContext().getString(R.string.tab_track) + " " + track.getName() + "</name>" + newLine);
                     GPXbw.write(" <trkseg>" + newLine);
                 }
 
