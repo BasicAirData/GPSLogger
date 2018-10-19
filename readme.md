@@ -46,11 +46,11 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 <b>Q</b> - <i>How can I see my recorded tracks?</i><br>
 <b>A</b> - You can see your tracks clicking on it and using the "View in..." contextual menu. A KML viewer must be installed on your device; if not, please install it. One of the best KML viewers is Google Earth, but there are lots of good alternatives around.
 
+<b>Q</b> - <i>The menu "View in" opens the Earth app, but doesn't show my track.</i><br>
+<b>A</b> - It is a Earth problem. If you want to use Earth to view your tracks you have to open Earth before, and then go on GPS Logger and select "View in".
+
 <b>Q</b> - <i>My track is not shown (or partially shown) in Google Earth.</i><br>
 <b>A</b> - 1) Please check in Android System settings that Earth has the Storage permission granted; 2) GPS Logger might be set to show the track in 3D, and the track may be hidden under the terrain. Please go in the Exportation settings, switch the Altitude Mode to "Projected to ground" and try again.
-
-<b>Q</b> - <i>My Google Earth occasionally shows a black screen instead of my track.</i><br>
-<b>A</b> - It is a Earth 8 problem. When the problem occurs, please click on the small bearing located in the upper-right corner of the Earth map.
 
 <b>Q</b> - <i>The app sometimes stops recording when running in background.</i><br>
 <b>A</b> - The app could be closed by the system during the background recording. To avoid it, you can go on the device maintenance section of your android settings, select the battery sub-section, and add GPS Logger to the list of unmonitored apps. Furthermore, anti-viruses (like Avast) are very aggressive with long running apps, and must be correctly set.
