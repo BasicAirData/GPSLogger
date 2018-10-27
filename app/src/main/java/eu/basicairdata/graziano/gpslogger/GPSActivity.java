@@ -114,11 +114,11 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+        super.onResume();
         EventBus.getDefault().register(this);
         Log.w("myApp", "[#] GPSActivity.java - onResume()");
         LoadPreferences();
         EventBus.getDefault().post(EventBusMSG.APP_RESUME);
-        super.onResume();
         if (menutrackfinished != null) menutrackfinished.setVisible(!GPSApplication.getInstance().getCurrentTrack().getName().equals(""));
 
         // Check for Location runtime Permissions (for Android 23+)
@@ -130,10 +130,10 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
+        super.onPause();
         EventBus.getDefault().post(EventBusMSG.APP_PAUSE);
         Log.w("myApp", "[#] GPSActivity.java - onPause()");
         EventBus.getDefault().unregister(this);
-        super.onPause();
     }
 
     @Override
