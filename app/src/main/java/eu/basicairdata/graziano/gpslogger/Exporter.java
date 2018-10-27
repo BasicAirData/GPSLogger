@@ -74,6 +74,9 @@ class Exporter extends Thread {
     public void run() {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
+        final int GPX1_0 = 100;
+        final int GPX1_1 = 110;
+
         Date creationTime;
         long elements_total;
         String versionName = BuildConfig.VERSION_NAME;
@@ -242,7 +245,7 @@ class Exporter extends Thread {
                 GPXbw.write("<!-- Created with BasicAirData GPS Logger for Android - ver. " + versionName + " -->" + newLine);
                 GPXbw.write("<!-- Track " + String.valueOf(track.getId()) + " = " + String.valueOf(track.getNumberOfLocations())
                         + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
-                if (getPrefGPXVersion == 100) {     // GPX 1.0
+                if (getPrefGPXVersion == GPX1_0) {     // GPX 1.0
                     GPXbw.write("<gpx version=\"1.0\"" + newLine
                               + "     creator=\"BasicAirData GPS Logger " + versionName + "\"" + newLine
                               + "     xmlns=\"http://www.topografix.com/GPX/1/0\"" + newLine
@@ -251,12 +254,15 @@ class Exporter extends Thread {
                     GPXbw.write("<name>GPS Logger " + track.getName() + "</name>" + newLine);
                     GPXbw.write("<time>" + dfdtGPX.format(creationTime) + "</time>" + newLine + newLine);
                 }
-                if (getPrefGPXVersion == 110) {    // GPX 1.1
+                if (getPrefGPXVersion == GPX1_1) {    // GPX 1.1
                     GPXbw.write("<gpx version=\"1.1\"" + newLine
                               + "     creator=\"BasicAirData GPS Logger " + versionName + "\"" + newLine
                               + "     xmlns=\"http://www.topografix.com/GPX/1/1\"" + newLine
                               + "     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + newLine
                               + "     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" + newLine);
+                    //          + "     xmlns:gpxx=\"http://www.garmin.com/xmlschemas/GpxExtensions/v3\"" + newLine           // Garmin extension to include speeds
+                    //          + "     xmlns:gpxtrkx=\"http://www.garmin.com/xmlschemas/TrackStatsExtension/v1\"" + newLine  //
+                    //          + "     xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\">" + newLine); //
                     GPXbw.write("<metadata> " + newLine);    // GPX Metadata
                     GPXbw.write(" <name>GPS Logger " + track.getName() + "</name>" + newLine);
                     GPXbw.write(" <time>" + dfdtGPX.format(creationTime) + "</time>" + newLine);
@@ -478,16 +484,26 @@ class Exporter extends Thread {
                         GPXbw.write("<time>");     // Time
                         GPXbw.write(dfdtGPX.format(loc.getLocation().getTime()));
                         GPXbw.write("</time>");
-                        if (loc.getLocation().hasSpeed()) {
-                            GPXbw.write("<speed>");     // Speed
-                            GPXbw.write(formattedSpeed);
-                            GPXbw.write("</speed>");
+                        if (getPrefGPXVersion == GPX1_0) {
+                            if (loc.getLocation().hasSpeed()) {
+                                GPXbw.write("<speed>");     // Speed
+                                GPXbw.write(formattedSpeed);
+                                GPXbw.write("</speed>");
+                            }
                         }
                         if (loc.getNumberOfSatellitesUsedInFix() > 0) {                   // GPX standards requires sats used for FIX.
                             GPXbw.write("<sat>");                                         // and NOT the number of satellites in view!!!
                             GPXbw.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
                             GPXbw.write("</sat>");
                         }
+                        /*
+                        if (getPrefGPXVersion == GPX1_1) {                                // GPX 1.1 doesn't support speed tags. Let's switch to Garmin extensions :(
+                            if (loc.getLocation().hasSpeed()) {
+                                GPXbw.write("<extensions><gpxtpx:TrackPointExtension><gpxtpx:speed>");     // Speed (as Garmin extension)
+                                GPXbw.write(formattedSpeed);
+                                GPXbw.write("</gpxtpx:speed></gpxtpx:TrackPointExtension></extensions>");
+                            }
+                        } */
                         GPXbw.write("</trkpt>" + newLine);
                     }
 
