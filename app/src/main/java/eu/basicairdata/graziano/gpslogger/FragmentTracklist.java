@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -60,6 +61,7 @@ public class FragmentTracklist extends Fragment {
     private View view;
     private TextView TVTracklistEmpty;
     private long selectedtrackID = -1;
+    private boolean gotoPermissionSettings = false;
 
 
     public FragmentTracklist() {
@@ -129,6 +131,8 @@ public class FragmentTracklist extends Fragment {
 
         final GPSApplication gpsApplication = GPSApplication.getInstance();
 
+        gotoPermissionSettings = false;
+
         //menu.setHeaderTitle("Track " + data.get(selectedtrackID).getName());
         //Log.w("myApp", "[#] FragmentTracklist.java - share + export");
         if (gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT()) {
@@ -148,9 +152,10 @@ public class FragmentTracklist extends Fragment {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             boolean shouldShowRationale = ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (!shouldShowRationale && gpsApplication.isStoragePermissionChecked()) {
-                menu.findItem(R.id.cardmenu_share).setEnabled(false);
-                menu.findItem(R.id.cardmenu_view).setEnabled(false);
-                menu.findItem(R.id.cardmenu_export).setEnabled(false);
+                //menu.findItem(R.id.cardmenu_share).setEnabled(false);
+                //menu.findItem(R.id.cardmenu_view).setEnabled(false);
+                //menu.findItem(R.id.cardmenu_export).setEnabled(false);
+                gotoPermissionSettings = true;
             }
         }
     }
@@ -315,10 +320,14 @@ public class FragmentTracklist extends Fragment {
                             if (data.get(i).getId() == selectedtrackID) {
                                 found = true;
                                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    // Store the message to send in case the storage permission will be granted
-                                    GPSApplication.getInstance().setDoIfGrantStoragePermission(new EventBusMSGNormal(EventBusMSG.EXPORT_TRACK, data.get(i).getId()));
-                                    // Ask for storage permission
-                                    CheckStoragePermission();
+                                    if (gotoPermissionSettings) {       // Permission denied, no more ask!!
+                                        EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_REQUIRED);
+                                    } else {
+                                        // Store the message to send in case the storage permission will be granted
+                                        GPSApplication.getInstance().setDoIfGrantStoragePermission(new EventBusMSGNormal(EventBusMSG.EXPORT_TRACK, data.get(i).getId()));
+                                        // Ask for storage permission
+                                        CheckStoragePermission();
+                                    }
                                 }
                                 else EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.EXPORT_TRACK, data.get(i).getId()));
                             }
@@ -336,10 +345,14 @@ public class FragmentTracklist extends Fragment {
                             if (data.get(i).getId() == selectedtrackID) {
                                 found = true;
                                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    // Store the message to send in case the storage permission will be granted
-                                    GPSApplication.getInstance().setDoIfGrantStoragePermission(new EventBusMSGNormal(EventBusMSG.VIEW_TRACK, data.get(i).getId()));
-                                    // Ask for storage permission
-                                    CheckStoragePermission();
+                                    if (gotoPermissionSettings) {       // Permission denied, no more ask!!
+                                        EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_REQUIRED);
+                                    } else {
+                                        // Store the message to send in case the storage permission will be granted
+                                        GPSApplication.getInstance().setDoIfGrantStoragePermission(new EventBusMSGNormal(EventBusMSG.VIEW_TRACK, data.get(i).getId()));
+                                        // Ask for storage permission
+                                        CheckStoragePermission();
+                                    }
                                 } else EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.VIEW_TRACK, data.get(i).getId()));
                             }
                             i++;
@@ -356,10 +369,14 @@ public class FragmentTracklist extends Fragment {
                             if (data.get(i).getId() == selectedtrackID) {
                                 found = true;
                                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    // Store the message to send in case the storage permission will be granted
-                                    GPSApplication.getInstance().setDoIfGrantStoragePermission(new EventBusMSGNormal(EventBusMSG.SHARE_TRACK, data.get(i).getId()));
-                                    // Ask for storage permission
-                                    CheckStoragePermission();
+                                    if (gotoPermissionSettings) {       // Permission denied, no more ask!!
+                                        EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_REQUIRED);
+                                    } else {
+                                        // Store the message to send in case the storage permission will be granted
+                                        GPSApplication.getInstance().setDoIfGrantStoragePermission(new EventBusMSGNormal(EventBusMSG.SHARE_TRACK, data.get(i).getId()));
+                                        // Ask for storage permission
+                                        CheckStoragePermission();
+                                    }
                                 } else EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.SHARE_TRACK, data.get(i).getId()));
                             }
                             i++;

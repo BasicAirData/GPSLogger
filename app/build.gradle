@@ -16,9 +16,14 @@ android {
         minSdkVersion 8
         targetSdkVersion 23
         versionCode 22
-        versionName '2.1.12b_20181027'
+        versionName '2.1.12b_20181028'
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

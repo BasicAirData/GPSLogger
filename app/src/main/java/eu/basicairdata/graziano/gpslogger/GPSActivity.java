@@ -25,8 +25,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
@@ -283,6 +285,20 @@ public class GPSActivity extends AppCompatActivity {
                     Toast.makeText(context, getString(R.string.toast_track_exported), Toast.LENGTH_LONG).show();
                 }
             });
+            return;
+        }
+        if (msg == EventBusMSG.STORAGE_PERMISSION_REQUIRED) {
+            final Context context = this;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
+                }
+            });
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivity(intent);
             return;
         }
         if (msg == EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE) {

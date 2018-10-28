@@ -31,6 +31,7 @@ public class EventBusMSG {
     static final short ADD_PLACEMARK                    =   9;  // The placemark is available
     static final short APPLY_SETTINGS                   =  10;  // The new settings must be applied
     static final short TOAST_TRACK_EXPORTED             =  11;  // The exporter has finished to export the track, shows toast
+    static final short STORAGE_PERMISSION_REQUIRED      =  12;  // The Storage permission is required
 
     static final short DELETE_TRACK                     =  20;  // Delete the track (given id)
     static final short EXPORT_TRACK                     =  21;  // Export the track (given id)
