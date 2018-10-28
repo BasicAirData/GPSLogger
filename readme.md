@@ -33,7 +33,7 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 
 [Repository License](LICENSE)
 
-## Mini FAQ
+## Frequently Asked Questions
 <b>Q</b> - <i>I've just installed the app, but it doesn't read the GPS signal.</i><br>
 <b>A</b> - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
 
@@ -44,7 +44,7 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 <b>A</b> - Please check in Android System settings that GPS Logger has the Storage permission granted.
 
 <b>Q</b> - <i>How can I see my recorded tracks?</i><br>
-<b>A</b> - You can see your tracks clicking on it and using the "View in..." contextual menu. A KML viewer must be installed on your device; if not, please install it. One of the best KML viewers is Google Earth, but there are lots of good alternatives around.
+<b>A</b> - You can see your tracks clicking on it and using the "View in..." contextual menu. A KML/GPX viewer must be installed on your device; if not, please install it. In GPS Logger's settings you can choose to use a GPX or a KML viewer. A good track viewer for Android is GPX Viewer, but there are lots of good alternatives around.
 
 <b>Q</b> - <i>The menu "View in" opens the Earth app, but doesn't show my track.</i><br>
 <b>A</b> - It is a Earth problem. If you want to use Earth to view your tracks you have to open Earth before, and then go on GPS Logger and select "View in".
