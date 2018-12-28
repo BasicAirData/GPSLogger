@@ -21,6 +21,8 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +48,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.StrictMode;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -444,6 +447,29 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void onCreate() {
         super.onCreate();
         singleton = this;
+
+        // work around the android.os.FileUriExposedException
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+        final String CHANNEL_ID = "GPSLoggerServiceChannel";
+
+        // Create notification channel for Android >= O
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    getString(R.string.app_name),
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            channel.setSound(null, null);
+            channel.enableLights(false);
+            channel.enableVibration(false);
+            channel.setSound(null,null);
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
 
         EventBus.getDefault().register(this);
 
