@@ -94,7 +94,7 @@ public class GPSActivity extends AppCompatActivity {
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.setOnTabSelectedListener(
+        tabLayout.addOnTabSelectedListener(
                 new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
