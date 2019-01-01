@@ -87,6 +87,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private static final int GPS_STABILIZING = 4;
     private static final int GPS_OK = 5;
 
+    public static final int APP_ORIGIN_NOT_SPECIFIED     = 0;
+    public static final int APP_ORIGIN_GOOGLE_PLAY_STORE = 1;  // The app is installed via the Google Play Store
+
     // Preferences Variables
     // private boolean prefKeepScreenOn = true;                 // DONE in GPSActivity
     private boolean prefShowDecimalCoordinates  = false;
@@ -132,10 +135,12 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private String PlacemarkDescription = "";
     private boolean Recording = false;
     private boolean PlacemarkRequest = false;
-    private long OpenInViewer = -1;                    // The index to be opened in viewer
+    private long OpenInViewer = -1;                         // The index to be opened in viewer
     private long Share = -1;                                // The index to be Shared
     private boolean isGPSLocationUpdatesActive = false;
     private int GPSStatus = GPS_SEARCHING;
+
+    private int AppOrigin = APP_ORIGIN_NOT_SPECIFIED;       // Which package manager is used to install this app
 
     private boolean NewTrackFlag = false;                   // The variable that handle the double-click on "Track Finished"
     final Handler newtrackhandler = new Handler();
@@ -441,6 +446,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         isCurrentTrackVisible = currentTrackVisible;
     }
 
+    public int getAppOrigin() {
+        return AppOrigin;
+    }
+
     // --------------------------------------------------------------------------------------------
 
     @Override
@@ -499,7 +508,18 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             }
         }
 
-        GPSDataBase = new DatabaseHandler(this);                                        // Initialize the Database
+        try {                                                                           // Determine the app installation source
+            String installer;
+            installer = getApplicationContext().getPackageManager().getInstallerPackageName(getApplicationContext().getPackageName());
+            if (installer.equals("com.android.vending") || installer.equals("com.google.android.feedback"))
+                AppOrigin = APP_ORIGIN_GOOGLE_PLAY_STORE;                               // App installed from Google Play Store
+            else AppOrigin = APP_ORIGIN_NOT_SPECIFIED;                                  // Otherwise
+        } catch (Throwable e) {
+            Log.w("myApp", "[#] GPSApplication.java - Exception trying to determine the package installer");
+            AppOrigin = APP_ORIGIN_NOT_SPECIFIED;
+        }
+
+        GPSDataBase = new DatabaseHandler(this);                                 // Initialize the Database
 
         // Prepare the current track
         if (GPSDataBase.getLastTrackID() == 0) GPSDataBase.addTrack(new Track());       // Creation of the first track if the DB is empty
