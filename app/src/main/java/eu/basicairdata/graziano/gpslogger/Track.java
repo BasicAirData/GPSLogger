@@ -1,4 +1,4 @@
-/*
+/**
  * Track - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 1/5/2016
  *
@@ -713,6 +713,16 @@ public class Track {
             }
         }
         if (SpeedMax < (50.0f / 3.6f)) {
+            if ((SpeedAverageMoving + SpeedMax) / 2 > 35.0f / 3.6f) return TRACK_TYPE_CAR;
+            if ((SpeedAverageMoving + SpeedMax) / 2 > 20.0f / 3.6)  return TRACK_TYPE_BICYCLE;
+            else if ((SpeedAverageMoving + SpeedMax) / 2 > 12.0f / 3.6f) return TRACK_TYPE_RUN;
+            else {
+                if ((Altitude_Up != NOT_AVAILABLE) && (Altitude_Down != NOT_AVAILABLE))
+                    if ((Altitude_Down + Altitude_Up > (0.1f * Distance)) && (Distance > 500.0f))
+                        return TRACK_TYPE_MOUNTAIN;
+                    else return TRACK_TYPE_WALK;
+            }
+            /*
             if (SpeedAverageMoving > 20.0f / 3.6f) return TRACK_TYPE_CAR;
             if (SpeedAverageMoving > 12.0f / 3.6) return TRACK_TYPE_BICYCLE;
             else if (SpeedAverageMoving > 8.0f / 3.6f) return TRACK_TYPE_RUN;
@@ -721,7 +731,7 @@ public class Track {
                     if ((Altitude_Down + Altitude_Up > (0.1f * Distance)) && (Distance > 500.0f))
                         return TRACK_TYPE_MOUNTAIN;
                 else return TRACK_TYPE_WALK;
-            }
+            }*/
         }
         if ((Altitude_Up != NOT_AVAILABLE) && (Altitude_Down != NOT_AVAILABLE))
             if ((Altitude_Down + Altitude_Up > 5000.0) && (SpeedMax > 300.0f / 3.6f)) return TRACK_TYPE_FLIGHT;
