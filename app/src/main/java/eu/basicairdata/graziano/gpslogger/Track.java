@@ -102,6 +102,9 @@ public class Track {
     // The value of the progressbar in card view
     private int Progress = 0;
 
+    // True if the card view is selected
+    private boolean Selected = false;
+
     // The altitude validator (the anti spikes filter):
     // - Max Acceleration = 12 m/s^2
     // - Stabilization time = 4 s
@@ -547,6 +550,14 @@ public class Track {
 
     public void setProgress(int progress) {
         Progress = progress;
+    }
+
+    public boolean isSelected() {
+        return Selected;
+    }
+
+    public void setSelected(boolean selected) {
+        Selected = selected;
     }
 
     // --------------------------------------------------------------------------------------------

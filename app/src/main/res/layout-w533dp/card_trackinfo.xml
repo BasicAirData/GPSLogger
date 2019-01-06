@@ -29,6 +29,7 @@
     card_view:cardBackgroundColor="@color/colorCardTrackBackground"
     card_view:cardCornerRadius="2dp"
     card_view:cardElevation="3dp"
+    card_view:cardPreventCornerOverlap="false"
     card_view:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -44,6 +45,7 @@
             android:layout_gravity="center_vertical" />
 
         <RelativeLayout
+            android:id="@+id/id_cardData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"

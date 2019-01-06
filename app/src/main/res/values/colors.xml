@@ -34,6 +34,10 @@
     <color name="colorCurrentTrackCardBackground">#202020</color>
     <color name="colorCardBackground">#3b3b3b</color>
     <color name="colorCardTrackBackground">#2f2f2f</color>
+    <color name="colorCardBackground_Selected">#5a5a5a</color>
+    <color name="colorCardTrackBackground_Selected">#484848</color>
+    <!-- <color name="colorCardBackground_Selected">#6b3b3b</color> -->
+    <!-- <color name="colorCardTrackBackground_Selected">#5f2f2f</color> -->
     <color name="colorThumbnailLineColor">#d7d7d7</color>
     <color name="colorThumbnailLineBackground">#161616</color>
 

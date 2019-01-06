@@ -49,6 +49,10 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="preferenceTheme">@style/MyPreferenceThemeOverlay</item>
         <item name="android:windowBackground">@color/colorBackground</item>
+        <!--  It should be true otherwise action mode will not overlay toolbar -->
+        <item name="windowActionModeOverlay">true</item>
+        <!--  For Custom Action Mode Background Color/Drawable -->
+        <item name="actionModeBackground">@color/colorPrimaryDark</item>
     </style>
 
     <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">

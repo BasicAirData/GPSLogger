@@ -20,7 +20,6 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,11 +30,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-//import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.util.List;
 
 
@@ -45,6 +42,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     private final static String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString() + "/Thumbnails/";
     private final static int CARDTYPE_CURRENTTRACK = 0;
     private final static int CARDTYPE_TRACK = 1;
+    private final static int CARDTYPE_SELECTEDTRACK = 2;
 
     private List<Track> dataSet;
 
@@ -60,14 +58,14 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     };
 
 
-    static class TrackHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    class TrackHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
         private PhysicalData phd;
         private int TT;
 
         private long id;
-        private Bitmap bmp;
 
         private final TextView textViewTrackName;
         private final TextView textViewTrackLength;
@@ -84,7 +82,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
         @Override
         public void onClick(View v) {
-            if (progressBar.getProgress() == 0) {
+            if ((progressBar.getProgress() == 0) && (GPSApplication.getInstance().JobsPending == 0)) {
                 EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_SELECTION, id));
                 //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
             }
@@ -147,7 +145,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
 
         void BindTrack(Track trk) {
-
             id = trk.getId();
             textViewTrackName.setText(trk.getName());
             //textViewTrackName.setText(track.getId() + " - " + track.getName());
@@ -183,35 +180,15 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
-            /*
-            Picasso
+            Glide.clear(imageViewThumbnail);
+            Glide
                     .with(GPSApplication.getInstance().getApplicationContext())
-                    .load("file:///" + FilesDir + id + ".png")
-                    .noPlaceholder()
-                    .noFade()
+                    .load(FilesDir + id + ".png")
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    //.skipMemoryCache(true)
+                    .error(null)
+                    .dontAnimate()
                     .into(imageViewThumbnail);
-            */
-
-            if (Build.VERSION.SDK_INT >= 11) {
-                Glide.clear(imageViewThumbnail);
-
-                Glide
-                        .with(GPSApplication.getInstance().getApplicationContext())
-                        .load(FilesDir + id + ".png")
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        //.skipMemoryCache(true)
-                        .error(null)
-                        .dontAnimate()
-                        .into(imageViewThumbnail);
-            } else {
-                String Filename = FilesDir + id + ".png";
-                File file = new File(Filename);
-                if (file.exists ()) {
-                    bmp = BitmapFactory.decodeFile(Filename);
-                    imageViewThumbnail.setImageBitmap(bmp);
-                }
-                else imageViewThumbnail.setImageDrawable(null);
-            }
         }
     }
 
@@ -226,12 +203,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     @Override
     public TrackHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new TrackHolder(LayoutInflater.from(parent.getContext()).inflate(
-                viewType == 0 ? R.layout.card_currenttrackinfo : R.layout.card_trackinfo, parent, false));
+                viewType == CARDTYPE_SELECTEDTRACK ? R.layout.card_selectedtrackinfo : R.layout.card_trackinfo, parent, false));
     }
 
 
     public int getItemViewType (int position) {
-        return (position == 0) && GPSApplication.getInstance().isCurrentTrackVisible() ? CARDTYPE_CURRENTTRACK : CARDTYPE_TRACK;
+        return (dataSet.get(position).isSelected() ? CARDTYPE_SELECTEDTRACK : CARDTYPE_TRACK);
     }
 
 

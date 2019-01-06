@@ -101,7 +101,10 @@ class Exporter extends Thread {
             //Log.w("myApp", "[#] Exporter.java - Track = null!!");
             return;
         }
-        if (track.getNumberOfLocations() + track.getNumberOfPlacemarks() == 0) return;
+        if (track.getNumberOfLocations() + track.getNumberOfPlacemarks() == 0) {
+            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            return;
+        }
 
         EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 1));
 
@@ -134,7 +137,10 @@ class Exporter extends Thread {
         if (!sd.exists()) {
             success = sd.mkdir();
         }
-        if (!success) return;
+        if (!success) {
+            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            return;
+        }
 
         // Create files, deleting old version if exists
         if (ExportKML) {
