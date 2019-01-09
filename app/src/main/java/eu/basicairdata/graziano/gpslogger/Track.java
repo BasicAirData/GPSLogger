@@ -102,6 +102,9 @@ public class Track {
     // The value of the progressbar in card view
     private int Progress = 0;
 
+    // The progress of the last Job
+    private int JobProgress = 0;
+
     // True if the card view is selected
     private boolean Selected = false;
 
@@ -550,6 +553,14 @@ public class Track {
 
     public void setProgress(int progress) {
         Progress = progress;
+    }
+
+    public int getJobProgress() {
+        return JobProgress;
+    }
+
+    public void setJobProgress(int jobProgress) {
+        JobProgress = jobProgress;
     }
 
     public boolean isSelected() {

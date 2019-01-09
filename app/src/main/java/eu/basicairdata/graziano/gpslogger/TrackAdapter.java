@@ -77,12 +77,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private final TextView textViewTrackPlacemarks;
         private final ImageView imageViewThumbnail;
         private final ImageView imageViewIcon;
-        private final ProgressBar progressBar;
+        //private final ProgressBar progressBar;
 
 
         @Override
         public void onClick(View v) {
-            if ((progressBar.getProgress() == 0) && (GPSApplication.getInstance().JobsPending == 0)) {
+            if (GPSApplication.getInstance().JobsPending == 0) {
                 EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_SELECTION, id));
                 //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
             }
@@ -105,12 +105,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks     = (TextView) itemView.findViewById(R.id.id_textView_card_placemarks);
             imageViewThumbnail          = (ImageView) itemView.findViewById(R.id.id_imageView_card_minimap);
             imageViewIcon               = (ImageView) itemView.findViewById(R.id.id_imageView_card_tracktype);
-            progressBar                 = (ProgressBar) itemView.findViewById(R.id.id_progressBar_card);
-        }
-
-
-        void SetProgress(int newprogress) {
-            progressBar.setProgress(newprogress);
+            //progressBar                 = (ProgressBar) itemView.findViewById(R.id.id_progressBar_card);
         }
 
 
@@ -170,11 +165,11 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
 
             // ----- This is a Workaround of an Android bug (https://issuetracker.google.com/issues/36923384)
-            progressBar.setMax(50);
-            progressBar.setMax(100);
+            //progressBar.setMax(50);
+            //progressBar.setMax(100);
             // -----
 
-            progressBar.setProgress(trk.getProgress());
+            //progressBar.setProgress(trk.getProgress());
 
             TT = trk.getTrackType();
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
@@ -213,10 +208,21 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
 
     @Override
-    public void onBindViewHolder(final TrackHolder holder, final int listPosition) {
+    public void onBindViewHolder(TrackHolder holder, int listPosition) {
         holder.BindTrack(dataSet.get(listPosition));
     }
 
+/*
+    @Override
+    public void onBindViewHolder(TrackHolder holder, int listPosition, List<Object> payloads) {
+        if(!payloads.isEmpty()) {
+            //if (payloads.get(0) instanceof Integer) {
+                // Update progressbar:
+                holder.progressBar.setProgress((Integer) payloads.get(0));
+            //}
+        } else super.onBindViewHolder(holder, listPosition, payloads);
+    }
+*/
 
     @Override
     public int getItemCount() {

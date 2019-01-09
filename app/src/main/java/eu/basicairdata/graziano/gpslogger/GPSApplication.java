@@ -170,9 +170,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     private int NumberOfSelectedTracks = 0;                 // The number of tracks selected on the Tracklist
 
+    private int JobProgress = 0;
     public int JobsPending = 0;                             // The number of jobs to be done
     public int JobType = JOB_TYPE_NONE;                     // The type off job that is pending
-    public ArrayList<Track> JobTracklist = new ArrayList<Track>();
+    private ArrayList<Track> JobTracklist = new ArrayList<Track>();
                                                             // The list of tracks that are processed on the current job
 
     private int _Stabilizer = StabilizingSamples;
@@ -445,6 +446,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return JobTracklist;
     }
 
+    public int getJobProgress() {
+        return JobProgress;
+    }
+
     // --------------------------------------------------------------------------------------------
 
     @Override
@@ -553,8 +558,34 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             if ((trackid > 0) && (progress >= 0)) {
                 synchronized(_ArrayListTracks) {
                     for (Track T : _ArrayListTracks) {
-                        if (T.getId() == trackid) T.setProgress((int) progress);
+                        if (T.getId() == trackid) {
+                            T.setProgress((int) progress);
+                            if (progress > T.getJobProgress()) T.setJobProgress(T.getProgress());
+                        }
                     }
+                }
+
+
+                long jobTotalPoints = 0;
+                long jobDonePoints = 0;
+                int jobProgress = 0;
+                int jobOldProgress = JobProgress;
+                //int i = 0;
+
+                for (Track T : JobTracklist) {
+                    //i++;
+                    jobTotalPoints += T.getNumberOfLocations() + T.getNumberOfPlacemarks();
+                    //Log.w("myApp","Progress = " + T.getJobProgress());
+                    jobDonePoints += Math.ceil((T.getNumberOfLocations() + T.getNumberOfPlacemarks()) * T.getJobProgress() / 100);
+                }
+                if (jobTotalPoints > 0) {
+                    jobProgress = (int) Math.ceil(100 * jobDonePoints / jobTotalPoints);
+                }
+                if (JobTracklist.isEmpty()) jobProgress = 0;
+                if (jobProgress != jobOldProgress) {
+                    //Log.w("myApp", "[#] GPSApplication.java - Global progress of current Job = 100 * " + jobDonePoints + "/" + jobTotalPoints + " = " + jobProgress + " | JobsTracklist has " + i + " elements");
+                    JobProgress = jobProgress;
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
                 }
             }
             return;
@@ -570,6 +601,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     for (Track T : _ArrayListTracks) {
                         if (T.getId() == trackid) {
                             T.setProgress(0);
+                            T.setJobProgress(100);
                             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                             if (JobsPending > 0) {
                                 JobsPending--;
@@ -600,6 +632,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                                 JobsPending--;
                                 // TODO - Launch signal when pendingjobs = 0
                             }
+                            T.setJobProgress(100);
                             T.setProgress(0);
                             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                         }
@@ -794,6 +827,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void LoadJob (int jobType) {
         JobTracklist.clear();
         JobTracklist = getSelectedTracks();
+        for (Track T : JobTracklist) {
+            T.setJobProgress(0);
+        }
         JobsPending = JobTracklist.size();
         JobType = jobType;
     }

@@ -68,13 +68,16 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true" />
 
-            <ProgressBar
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/id_progressBar_card"
-                style="@style/ProgressBarCard"
-                android:progress="0"
-                android:max="100"
+                android:id="@+id/id_card_separator"
+                android:background="@color/colorRoundedCornerDarkBorder"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:minHeight="1.7dp"
                 android:layout_below="@+id/id_imageView_card_tracktype" />
 
             <LinearLayout
@@ -83,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
                 android:weightSum="3"
-                android:layout_below="@+id/id_progressBar_card">
+                android:layout_below="@+id/id_card_separator">
 
                 <LinearLayout
                     android:orientation="horizontal"

@@ -75,16 +75,6 @@ public class FragmentTracklist extends Fragment {
         return file.exists ();
     }
 
-
-    public void setProgress(int listPosition, int progress) {
-        //adapter.notifyItemChanged(listPosition);
-        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(listPosition);
-        if (holder != null) {
-            ((TrackAdapter.TrackHolder)holder).SetProgress(progress);
-        }
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -451,24 +441,6 @@ public class FragmentTracklist extends Fragment {
             }
         }
         else Update();    // Update the Tracklist!!
-    }
-
-
-    @Subscribe
-    public void onEvent(EventBusMSGLong msg) {
-        if (msg.MSGType == EventBusMSG.TRACK_SETPROGRESS) {
-            final long trackid = msg.id;
-            final long progress = msg.Value;
-            if ((trackid > 0) && (progress >= 0)) {
-                int i = 0;
-                synchronized(data) {
-                    for (Track T : data) {
-                        if (T.getId() == trackid) setProgress(i, T.getProgress());
-                        i++;
-                    }
-                }
-            }
-        }
     }
 
 

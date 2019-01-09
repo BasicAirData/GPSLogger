@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="eu.basicairdata.graziano.gpslogger.FragmentJobProgress">
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/id_jobProgressBar"
+        style="@style/ProgressBar"
+        android:progress="0"
+        android:max="100"/>
+</FrameLayout>

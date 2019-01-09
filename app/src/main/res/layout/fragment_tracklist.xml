@@ -39,4 +39,13 @@
         android:paddingTop="30dp"
         android:text="@string/tracklist_empty" />
 
+    <fragment
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:name="eu.basicairdata.graziano.gpslogger.FragmentJobProgress"
+        android:id="@+id/fragment_FragmentJobProgress"
+        android:layout_gravity="bottom"
+        tools:layout="@layout/fragment_job_progress"
+        android:layout_margin="0dp" />
+
 </FrameLayout>
