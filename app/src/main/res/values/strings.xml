@@ -69,7 +69,7 @@
     <string name="menu_track_finished">Track finished</string>
     <string name="toast_track_finished_click_again">Double click to finish this track</string>
     <string name="toast_track_saved_into_tracklist">Track saved into the Tracklist</string>
-    <string name="toast_track_exported">Track exported in /GPSLogger folder</string>
+    <string name="toast_track_exported">Tracks exported in /GPSLogger folder</string>
     <string name="menu_about">About</string>
     <string name="menu_shutdown">Shutdown</string>
 
@@ -98,8 +98,8 @@
     <string name="card_menu_share">Share with ...</string>
 
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">Do you also want to delete all exported files of this track?</string>
-    <string name="card_message_delete_confirmation">Do you really want to delete this track?</string>
+    <string name="card_message_delete_also_exported">Do you also want to delete all exported files of the selected tracks?</string>
+    <string name="card_message_delete_confirmation">Do you really want to delete the selected tracks?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
