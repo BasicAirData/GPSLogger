@@ -33,6 +33,7 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,6 +176,10 @@ public class FragmentTracklist extends Fragment {
                     }
                 }
             }
+            return;
+        }
+        if (msg == EventBusMSG.NOTIFY_TRACKS_DELETED) {
+            DeleteSomeTracks();
             return;
         }
         if (msg == EventBusMSG.UPDATE_TRACKLIST) {
@@ -405,7 +410,7 @@ public class FragmentTracklist extends Fragment {
 
     public void Update() {
         if (isAdded()) {
-            //Log.w("myApp", "[#] FragmentTracklist.java - Updating Tracklist");
+            Log.w("myApp", "[#] FragmentTracklist.java - Updating Tracklist");
             final List<Track> TI = GPSApplication.getInstance().getTrackList();
             //Log.w("myApp", "[#] FragmentTracklist.java - The element 0 has id = " + TI.get(0).getId());
             synchronized(data) {
@@ -436,5 +441,24 @@ public class FragmentTracklist extends Fragment {
                 }
             }
         }
+    }
+
+
+    public void DeleteSomeTracks() {
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                List<Track> TI = GPSApplication.getInstance().getTrackList();
+                synchronized (data) {
+                    for (int i = data.size() - 1; i >= 0; i--) {
+                        if (!TI.contains(data.get(i))) {
+                            data.remove(i);
+                            adapter.notifyItemRemoved(i);
+                        }
+                    }
+                }
+            }
+        });
     }
 }

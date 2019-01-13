@@ -833,7 +833,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         }
                     }
                 }
-                EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+                EventBus.getDefault().post(EventBusMSG.NOTIFY_TRACKS_DELETED);
                 break;
             case JOB_TYPE_EXPORT:
                 for (Track T : JobTracklist) {
