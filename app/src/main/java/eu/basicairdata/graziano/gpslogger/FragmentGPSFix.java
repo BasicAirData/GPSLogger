@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class FragmentGPSFix extends Fragment {
 
@@ -77,15 +78,10 @@ public class FragmentGPSFix extends Fragment {
         // Required empty public constructor
     }
 
-    @Subscribe
+    @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_FIX) {
-            (getActivity()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Update();
-                }
-            });
+            Update();
         }
     }
 
@@ -127,7 +123,9 @@ public class FragmentGPSFix extends Fragment {
                     if (GPSApplication.getInstance().getLocationSettingsFlag()) {
                         // This is the second click
                         GPSApplication.getInstance().setLocationSettingsFlag(false);
-                        onLaunchSettings();
+                        // Go to Settings screen
+                        Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        if (callGPSSettingIntent != null) startActivityForResult(callGPSSettingIntent, 0);
                     } else {
                         GPSApplication.getInstance().setLocationSettingsFlag(true); // Start the timer
                     }
@@ -136,12 +134,6 @@ public class FragmentGPSFix extends Fragment {
         });
 
         return view;
-    }
-
-    public void onLaunchSettings() {
-        Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        if (callGPSSettingIntent != null) startActivityForResult(callGPSSettingIntent, 0);
-        // TODO: show toast "Unable to open location settings"
     }
 
     @Override
@@ -200,7 +192,6 @@ public class FragmentGPSFix extends Fragment {
                 isValidAltitude = EGMAltitudeCorrection && (location.getAltitudeEGM96Correction() != NOT_AVAILABLE);
                 TVAltitude.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
                 TVAltitudeUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
-
 
                 TVGPSFixStatus.setVisibility(View.GONE);
 

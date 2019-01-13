@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class FragmentJobProgress extends Fragment {
 
@@ -61,7 +62,7 @@ public class FragmentJobProgress extends Fragment {
         super.onPause();
     }
 
-    @Subscribe
+    @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_JOB_PROGRESS) {
             Update();
@@ -70,12 +71,7 @@ public class FragmentJobProgress extends Fragment {
 
     public void Update() {
         if (isAdded()) {
-            (getActivity()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setProgress(GPSApplication.getInstance().getJobProgress() == 100 ? 0 : GPSApplication.getInstance().getJobProgress());
-                }
-            });
+            progressBar.setProgress(GPSApplication.getInstance().getJobProgress() == 100 ? 0 : GPSApplication.getInstance().getJobProgress());
         }
     }
 }

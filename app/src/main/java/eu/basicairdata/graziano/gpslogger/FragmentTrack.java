@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class FragmentTrack extends Fragment {
 
@@ -73,15 +74,10 @@ public class FragmentTrack extends Fragment {
         // Required empty public constructor
     }
 
-    @Subscribe
+    @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_TRACK) {
-            (getActivity()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Update();
-                }
-            });
+            Update();
         }
     }
 

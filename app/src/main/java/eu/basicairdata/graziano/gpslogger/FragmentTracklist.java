@@ -238,9 +238,6 @@ public class FragmentTracklist extends Fragment {
                             String name = track.getName();
                             String nameID = String.valueOf(track.getId());
 
-                            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
-
-
                             // Delete exported files
                             DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
                             DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".kml");
@@ -261,8 +258,6 @@ public class FragmentTracklist extends Fragment {
                         for (Track track : selectedTracks) {
                             String name = track.getName();
                             String nameID = String.valueOf(track.getId());
-
-                            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
 
                             // Delete track files
                             DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -291,8 +286,6 @@ public class FragmentTracklist extends Fragment {
                         for (final Track track : selectedTracks) {
                             String name = track.getName();
                             String nameID = String.valueOf(track.getId());
-
-                            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
 
                             // Delete track files
                             DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -399,8 +392,12 @@ public class FragmentTracklist extends Fragment {
             // Create intent to show chooser
             Intent chooser = Intent.createChooser(intent, getString(R.string.card_menu_share));
             // Verify the intent will resolve to at least one activity
-            if ((intent.resolveActivity(getContext().getPackageManager()) != null) && (!files.isEmpty())) {
-                startActivity(chooser);
+            try {
+                if ((intent.resolveActivity(getContext().getPackageManager()) != null) && (!files.isEmpty())) {
+                    startActivity(chooser);
+                }
+            } catch (NullPointerException e) {
+                //Log.w("myApp", "[#] FragmentTracklist.java - Unable to start the Activity");
             }
         }
     }
@@ -426,14 +423,17 @@ public class FragmentTracklist extends Fragment {
                 } else {
                     GPSApplication.getInstance().setisCurrentTrackVisible(false);
                 }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                } catch (NullPointerException e) {
+                    //Log.w("myApp", "[#] FragmentTracklist.java - Unable to manage UI");
+                }
             }
         }
     }
