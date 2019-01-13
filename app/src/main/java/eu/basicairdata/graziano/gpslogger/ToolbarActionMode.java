@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class ToolbarActionMode implements ActionMode.Callback {
 
@@ -57,15 +58,23 @@ public class ToolbarActionMode implements ActionMode.Callback {
         GPSApplication.getInstance().DeselectAllTracks();
     }
 
-    @Subscribe
-    public void onEvent(Short msg) {
-
-        if (msg == EventBusMSG.UPDATE_TRACKLIST) {
-            EvaluateVisibility();
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void onEvent(EventBusMSGNormal msg) {
+        switch (msg.MSGType) {
+            case EventBusMSG.TRACKLIST_SELECTION:
+                EvaluateVisibility();
         }
     }
 
-    private void EvaluateVisibility() {
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void onEvent(Short msg) {
+        switch (msg) {
+            case EventBusMSG.UPDATE_TRACKLIST:
+                EvaluateVisibility();
+        }
+    }
+
+    public void EvaluateVisibility() {
         actionmenu.findItem(R.id.cardmenu_view).setVisible((gpsApplication.getNumberOfSelectedTracks() <= 1) && (gpsApplication.isContextMenuViewVisible()));
         actionmenu.findItem(R.id.cardmenu_share).setVisible(gpsApplication.isContextMenuShareVisible());
         actionmenu.findItem(R.id.cardmenu_export).setVisible(gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT());

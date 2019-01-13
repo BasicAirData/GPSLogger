@@ -168,8 +168,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int _NumberOfSatellites = 0;
     private int _NumberOfSatellitesUsedInFix = 0;
 
-    private int NumberOfSelectedTracks = 0;                 // The number of tracks selected on the Tracklist
-
     private int JobProgress = 0;
     public int JobsPending = 0;                             // The number of jobs to be done
     public int JobType = JOB_TYPE_NONE;                     // The type off job that is pending
@@ -438,10 +436,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return AppOrigin;
     }
 
-    public int getNumberOfSelectedTracks() {
-        return NumberOfSelectedTracks;
-    }
-
     public ArrayList<Track> getJobTracklist() {
         return JobTracklist;
     }
@@ -602,7 +596,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         if (T.getId() == trackid) {
                             T.setProgress(0);
                             T.setJobProgress(100);
-                            EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+                            //EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                             if (JobsPending > 0) {
                                 JobsPending--;
                                 Log.w("myApp", "[#] GPSApplication.java - Pending Jobs = " + JobsPending);
@@ -634,38 +628,15 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                             }
                             T.setJobProgress(100);
                             T.setProgress(0);
-                            EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+                            //EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                         }
                     }
                 }
-            }
-            return;
-        }
-        if (msg.MSGType == EventBusMSG.DELETE_TRACK) {
-            AsyncTODO ast = new AsyncTODO();
-            ast.TaskType = "TASK_DELETE_TRACK " + msg.id;
-            ast.location = null;
-            AsyncTODOQueue.add(ast);
-            return;
-        }
-        if (msg.MSGType == EventBusMSG.TRACKLIST_SELECTION) {
-            long trackid = msg.id;
-            int nsel = 0;
-            if (trackid > 0) {
-                synchronized(_ArrayListTracks) {
-                    for (Track T : _ArrayListTracks) {
-                        if (T.getId() == trackid) {
-                            T.setSelected(!T.isSelected());
-                        }
-                        if (T.isSelected()) nsel++;
-                    }
-                }
-                NumberOfSelectedTracks = nsel;
-                EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
             }
             return;
         }
     }
+
 
     @Subscribe
     public void onEvent(Short msg) {
@@ -811,15 +782,26 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     }
 
 
+    public int getNumberOfSelectedTracks() {
+        int nsel = 0;
+        synchronized(_ArrayListTracks) {
+            for (Track T : _ArrayListTracks) {
+                if (T.isSelected()) nsel++;
+            }
+        }
+        return nsel;
+    }
+
+
     public void DeselectAllTracks() {
         synchronized(_ArrayListTracks) {
             for (Track T : _ArrayListTracks) {
                 if (T.isSelected()) {
                     T.setSelected(false);
+                    EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_SELECTION, T.getId()));
                 }
             }
         }
-        NumberOfSelectedTracks = 0;
         EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
     }
 
@@ -838,6 +820,20 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void ExecuteJob () {
         switch (JobType) {
             case JOB_TYPE_NONE:
+                break;
+            case JOB_TYPE_DELETE:
+                synchronized (_ArrayListTracks) {
+                    for (Track T : JobTracklist) {
+                        int i = _ArrayListTracks.indexOf(T);
+                        if (i != -1) {
+                            GPSDataBase.DeleteTrack(_ArrayListTracks.get(i).getId());
+                            Log.w("myApp", "[#] GPSApplication.java - Track " + _ArrayListTracks.get(i).getId() + " deleted.");
+                            _ArrayListTracks.remove(i);
+                            if (JobsPending > 0) JobsPending--;
+                        }
+                    }
+                }
+                EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                 break;
             case JOB_TYPE_EXPORT:
                 for (Track T : JobTracklist) {
@@ -1205,7 +1201,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     _currentLocationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
                     EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 }
-
+/*
                 if (asyncTODO.TaskType.contains("TASK_DELETE_TRACK")) {
                     Log.w("myApp", "[#] GPSApplication.java - Deleting Track ID = " + asyncTODO.TaskType.split(" ")[1]);
                     if (Integer.valueOf(asyncTODO.TaskType.split(" ")[1]) >= 0) {
@@ -1220,6 +1216,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                                         GPSDataBase.DeleteTrack(_ArrayListTracks.get(i).getId());
                                         Log.w("myApp", "[#] GPSApplication.java - Track " + _ArrayListTracks.get(i).getId() + " deleted.");
                                         _ArrayListTracks.remove(i);
+                                        if (JobsPending > 0) JobsPending--;
+                                        else EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                                     }
                                     i++;
                                 } while ((i < _ArrayListTracks.size()) && !found);
@@ -1229,6 +1227,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         }
                     }
                 }
+                */
             }
         }
     }

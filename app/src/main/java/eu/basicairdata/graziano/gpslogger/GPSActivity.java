@@ -259,6 +259,14 @@ public class GPSActivity extends AppCompatActivity {
     }
 
     @Subscribe
+    public void onEvent(EventBusMSGNormal msg) {
+        switch (msg.MSGType) {
+            case EventBusMSG.TRACKLIST_SELECTION:
+                ActivateActionModeIfNeeded();
+        }
+    }
+
+    @Subscribe
     public void onEvent(Short msg) {
 
         if (msg == EventBusMSG.REQUEST_ADD_PLACEMARK) {
@@ -404,21 +412,6 @@ public class GPSActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    public void CheckPermissions () {
-        List<String> listPermissionsNeeded = new ArrayList<>();
-
-        for (String p:permissions) {
-            int result = ContextCompat.checkSelfPermission(this,p);
-            Log.w("myApp", "[#] GPSActivity.java - " + p + " = PERMISSION_" + (result == PackageManager.PERMISSION_GRANTED ? "GRANTED" : "DENIED"));
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(p);
-            }
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
-        }
-    } */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {

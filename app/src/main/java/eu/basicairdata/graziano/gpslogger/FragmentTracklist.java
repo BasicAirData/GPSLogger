@@ -51,7 +51,7 @@ public class FragmentTracklist extends Fragment {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
-    private RecyclerView.Adapter adapter;
+    private TrackAdapter adapter;
     private List<Track> data = Collections.synchronizedList(new ArrayList<Track>());
 
     private View view;
@@ -128,6 +128,29 @@ public class FragmentTracklist extends Fragment {
     public void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
+    }
+
+    @Subscribe
+    public void onEvent(EventBusMSGNormal msg) {
+        if (msg.MSGType == EventBusMSG.TRACKLIST_SELECTION) {
+            final long trackid = msg.id;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int i = 0;
+                    boolean found = false;
+                    synchronized (data) {
+                        do {
+                            if (data.get(i).getId() == trackid) {
+                                found = true;
+                                adapter.notifyItemChanged(i);
+                            }
+                            i++;
+                        } while ((i < data.size()) && !found);
+                    }
+                }
+            });
+        }
     }
 
 
@@ -214,29 +237,8 @@ public class FragmentTracklist extends Fragment {
 
                             String name = track.getName();
                             String nameID = String.valueOf(track.getId());
-                            final long Tid = track.getId();
 
-                            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    int i = 0;
-                                    boolean found = false;
-                                    synchronized (data) {
-                                        do {
-                                            if (data.get(i).getId() == Tid) {
-                                                found = true;
-                                                data.remove(i);
-                                                adapter.notifyItemRemoved(i);
-                                                if (data.isEmpty())
-                                                    TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                            }
-                                            i++;
-                                        } while ((i < data.size()) && !found);
-                                    }
-                                }
-                            });
+                            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
 
 
                             // Delete exported files
@@ -250,7 +252,8 @@ public class FragmentTracklist extends Fragment {
                             DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
                         }
                         dialog.dismiss();
-                        GPSApplication.getInstance().DeselectAllTracks();
+                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().ExecuteJob();
                     }
                 });
                 builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -258,29 +261,8 @@ public class FragmentTracklist extends Fragment {
                         for (Track track : selectedTracks) {
                             String name = track.getName();
                             String nameID = String.valueOf(track.getId());
-                            final long Tid = track.getId();
 
-                            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    int i = 0;
-                                    boolean found = false;
-                                    synchronized (data) {
-                                        do {
-                                            if (data.get(i).getId() == Tid) {
-                                                found = true;
-                                                data.remove(i);
-                                                adapter.notifyItemRemoved(i);
-                                                if (data.isEmpty())
-                                                    TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                            }
-                                            i++;
-                                        } while ((i < data.size()) && !found);
-                                    }
-                                }
-                            });
+                            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
 
                             // Delete track files
                             DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -289,7 +271,8 @@ public class FragmentTracklist extends Fragment {
                             DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
                         }
                         dialog.dismiss();
-                        GPSApplication.getInstance().DeselectAllTracks();
+                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().ExecuteJob();
                     }
                 });
                 builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -308,29 +291,8 @@ public class FragmentTracklist extends Fragment {
                         for (final Track track : selectedTracks) {
                             String name = track.getName();
                             String nameID = String.valueOf(track.getId());
-                            final long Tid = track.getId();
 
                             EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.DELETE_TRACK, track.getId()));
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    int i = 0;
-                                    boolean found = false;
-                                    synchronized (data) {
-                                        do {
-                                            if (data.get(i).getId() == Tid) {
-                                                found = true;
-                                                data.remove(i);
-                                                adapter.notifyItemRemoved(i);
-                                                if (data.isEmpty())
-                                                    TVTracklistEmpty.setVisibility(View.VISIBLE);
-                                            }
-                                            i++;
-                                        } while ((i < data.size()) && !found);
-                                    }
-                                }
-                            });
 
                             // Delete track files
                             DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
@@ -339,7 +301,8 @@ public class FragmentTracklist extends Fragment {
                             DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
                         }
                         dialog.dismiss();
-                        GPSApplication.getInstance().DeselectAllTracks();
+                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().ExecuteJob();
                     }
                 });
                 builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -440,7 +403,6 @@ public class FragmentTracklist extends Fragment {
                 startActivity(chooser);
             }
         }
-        else Update();    // Update the Tracklist!!
     }
 
 
