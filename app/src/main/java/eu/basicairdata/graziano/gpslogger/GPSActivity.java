@@ -71,6 +71,7 @@ public class GPSActivity extends AppCompatActivity {
     private View bottomSheet;
     private MenuItem menutrackfinished = null;
     private int activeTab = 1;
+    final Context context = this;
 
     private boolean prefKeepScreenOn = true;
 
@@ -144,7 +145,6 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //moveTaskToBack(true);
         ShutdownApp();
     }
 
@@ -268,64 +268,58 @@ public class GPSActivity extends AppCompatActivity {
 
     @Subscribe
     public void onEvent(Short msg) {
+        switch (msg) {
+            case EventBusMSG.REQUEST_ADD_PLACEMARK:
+                // Show Placemark Dialog
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentPlacemarkDialog placemarkDialog = new FragmentPlacemarkDialog();
+                placemarkDialog.show(fm, "");
+                break;
+            case EventBusMSG.UPDATE_TRACKLIST:
+            case EventBusMSG.NOTIFY_TRACKS_DELETED:
+                ActivateActionModeIfNeeded();
+                break;
+            case EventBusMSG.APPLY_SETTINGS:
+                LoadPreferences();
+                break;
 
-        if (msg == EventBusMSG.REQUEST_ADD_PLACEMARK) {
-            // Show Placemark Dialog
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentPlacemarkDialog placemarkDialog = new FragmentPlacemarkDialog();
-            placemarkDialog.show(fm, "");
-            return;
-        }
-        if (msg == EventBusMSG.UPDATE_TRACKLIST) {
-            ActivateActionModeIfNeeded();
-            return;
-        }
-        if (msg == EventBusMSG.APPLY_SETTINGS) {
-            LoadPreferences();
-            return;
-        }
-        if (msg == EventBusMSG.UPDATE_TRACK) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (menutrackfinished != null) menutrackfinished.setVisible(!GPSApplication.getInstance().getCurrentTrack().getName().equals(""));
-                }
-            });
-            return;
-        }
-        if (msg == EventBusMSG.TOAST_TRACK_EXPORTED) {
-            final Context context = this;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, getString(R.string.toast_track_exported), Toast.LENGTH_LONG).show();
-                }
-            });
-            return;
-        }
-        if (msg == EventBusMSG.STORAGE_PERMISSION_REQUIRED) {
-            final Context context = this;
-            GPSApplication.getInstance().JobsPending = 0;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
-                }
-            });
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", getPackageName(), null);
-            intent.setData(uri);
-            startActivity(intent);
-            return;
-        }
-        if (msg == EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE) {
-            final Context context = this;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
-                }
-            });
+            case EventBusMSG.UPDATE_TRACK:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (menutrackfinished != null)
+                            menutrackfinished.setVisible(!GPSApplication.getInstance().getCurrentTrack().getName().equals(""));
+                    }
+                });
+                break;
+            case EventBusMSG.TOAST_TRACK_EXPORTED:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.toast_track_exported), Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case EventBusMSG.STORAGE_PERMISSION_REQUIRED:
+                GPSApplication.getInstance().JobsPending = 0;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
+                    }
+                });
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+                break;
+            case EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
+                    }
+                });
         }
     }
 
