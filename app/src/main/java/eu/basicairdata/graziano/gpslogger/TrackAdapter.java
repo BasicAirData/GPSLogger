@@ -79,7 +79,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
         @Override
         public void onClick(View v) {
-            if (GPSApplication.getInstance().JobsPending == 0) {
+            if (GPSApplication.getInstance().getJobsPending() == 0) {
                 track.setSelected(!track.isSelected());
                 EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_SELECTION, track.getId()));
                 //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);

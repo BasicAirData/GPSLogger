@@ -169,7 +169,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int _NumberOfSatellitesUsedInFix = 0;
 
     private int JobProgress = 0;
-    public int JobsPending = 0;                             // The number of jobs to be done
+    private int JobsPending = 0;                            // The number of jobs to be done
     public int JobType = JOB_TYPE_NONE;                     // The type off job that is pending
     private ArrayList<Track> JobTracklist = new ArrayList<Track>();
                                                             // The list of tracks that are processed on the current job
@@ -444,6 +444,14 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return JobProgress;
     }
 
+    public int getJobsPending() {
+        return JobsPending;
+    }
+
+    public void setJobsPending(int jobsPending) {
+        JobsPending = jobsPending;
+    }
+
     // --------------------------------------------------------------------------------------------
 
     @Override
@@ -596,10 +604,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         if (T.getId() == trackid) {
                             T.setProgress(0);
                             T.setJobProgress(100);
-                            //EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                             if (JobsPending > 0) {
                                 JobsPending--;
-                                Log.w("myApp", "[#] GPSApplication.java - Pending Jobs = " + JobsPending);
                                 if (JobsPending == 0) {
                                     if (JobType == JOB_TYPE_VIEW) {
                                         ViewTracks();
@@ -610,6 +616,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                                     }
                                 }
                             }
+                            Log.w("myApp", "[#] GPSApplication.java - Pending Jobs = " + JobsPending);
                         }
                     }
                 }
@@ -622,16 +629,17 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 synchronized(_ArrayListTracks) {
                     for (Track T : _ArrayListTracks) {
                         if (T.getId() == trackid) {
-                            if (JobsPending > 0) {
-                                JobsPending--;
-                                // TODO - Launch signal when pendingjobs = 0
-                            }
-                            T.setJobProgress(100);
                             T.setProgress(0);
-                            //EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+                            T.setJobProgress(100);
+                            if (JobsPending > 0) {
+                                JobsPending = 0;
+                                EventBus.getDefault().post(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE);
+                            }
+                            Log.w("myApp", "[#] GPSApplication.java - WORK FAILED - Pending Jobs = " + JobsPending);
                         }
                     }
                 }
+                EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
             }
             return;
         }

@@ -301,7 +301,7 @@ public class GPSActivity extends AppCompatActivity {
                 });
                 break;
             case EventBusMSG.STORAGE_PERMISSION_REQUIRED:
-                GPSApplication.getInstance().JobsPending = 0;
+                GPSApplication.getInstance().setJobsPending(0);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -457,11 +457,11 @@ public class GPSActivity extends AppCompatActivity {
                                 }
                             }
 
-                            if (GPSApplication.getInstance().JobsPending > 0) GPSApplication.getInstance().ExecuteJob();
+                            if (GPSApplication.getInstance().getJobsPending() > 0) GPSApplication.getInstance().ExecuteJob();
 
                         } else {
                             Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
-                            if (GPSApplication.getInstance().JobsPending > 0) {
+                            if (GPSApplication.getInstance().getJobsPending() > 0) {
                                 // Shows toast "Unable to write the file"
                                 final Context context = this;
                                 runOnUiThread(new Runnable() {
@@ -472,7 +472,7 @@ public class GPSActivity extends AppCompatActivity {
                                 });
                                 //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, MSG.id));
                                 //Log.w("myApp", "[#] GPSActivity.java - EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE " + MSG.id);
-                                GPSApplication.getInstance().JobsPending = 0;
+                                GPSApplication.getInstance().setJobsPending(0);
                             }
                         }
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
