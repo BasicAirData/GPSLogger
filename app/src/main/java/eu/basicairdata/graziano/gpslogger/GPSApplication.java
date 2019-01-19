@@ -182,8 +182,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private Track _currentTrack = null;
     private List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
 
-    static SparseArray<Bitmap> thumbsArray = new SparseArray<>();       // The Array containing the Tracks Thumbnail
-
     Thumbnailer Th;
     Exporter Ex;
     private AsyncUpdateThreadClass asyncUpdateThread = new AsyncUpdateThreadClass();
@@ -1046,6 +1044,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     public void UpdateTrackList() {
         long ID = GPSDataBase.getLastTrackID();
+
         if (ID > 0) {
             synchronized(_ArrayListTracks) {
                 _ArrayListTracks.clear();
@@ -1340,7 +1339,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 if (file.exists()) file.delete();
 
                 if (DrawScale > 0) {
-                    int GroupOfLocations = 50;
+                    int GroupOfLocations = 200;
                     Path path = new Path();
                     List<LatLng> latlngList = new ArrayList<>();
 
@@ -1381,17 +1380,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         } catch (Exception e) {
                             e.printStackTrace();
                             //Log.w("myApp", "[#] GPSApplication.java - Unable to save: " + Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + fname);
-                        }
-
-                        final String FilesDir = GPSApplication.getInstance().getApplicationContext().getFilesDir().toString() + "/Thumbnails/";
-                        String Filename = FilesDir + Id + ".png";
-                        file = new File(Filename);
-                        if (file.exists ()) {
-                            Bitmap bmp = BitmapFactory.decodeFile(Filename);
-                            if (bmp != null) {
-                                thumbsArray.put((int)Id, bmp);
-                                Log.w("myApp", "[#] GPSApplication.java - Loaded track " + Id + " thumbnail");
-                            }
                         }
 
                         EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
