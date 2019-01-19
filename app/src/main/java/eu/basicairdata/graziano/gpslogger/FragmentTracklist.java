@@ -445,20 +445,24 @@ public class FragmentTracklist extends Fragment {
 
 
     public void DeleteSomeTracks() {
-
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                List<Track> TI = GPSApplication.getInstance().getTrackList();
-                synchronized (data) {
-                    for (int i = data.size() - 1; i >= 0; i--) {
-                        if (!TI.contains(data.get(i))) {
-                            data.remove(i);
-                            adapter.notifyItemRemoved(i);
+        try {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    List<Track> TI = GPSApplication.getInstance().getTrackList();
+                    synchronized (data) {
+                        for (int i = data.size() - 1; i >= 0; i--) {
+                            if (!TI.contains(data.get(i))) {
+                                data.remove(i);
+                                adapter.notifyItemRemoved(i);
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        } catch (NullPointerException e) {
+            //Log.w("myApp", "[#] FragmentTracklist.java - Unable to manage UI");
+            Update();
+        }
     }
 }
