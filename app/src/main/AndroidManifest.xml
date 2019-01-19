@@ -28,8 +28,10 @@
 
     <uses-feature android:name="android.hardware.location.gps" android:required="true" />
 
+    <!--
     <uses-sdk xmlns:tools="http://schemas.android.com/tools"
         tools:overrideLibrary="android.support.v14.preference" />
+    -->
 
     <application
         android:name=".GPSApplication"
