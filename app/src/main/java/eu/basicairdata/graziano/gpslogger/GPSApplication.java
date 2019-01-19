@@ -1042,6 +1042,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     public void UpdateTrackList() {
         long ID = GPSDataBase.getLastTrackID();
+        List<Track> _OldArrayListTracks = new ArrayList<Track>();
+        _OldArrayListTracks.addAll(_ArrayListTracks);
 
         if (ID > 0) {
             synchronized(_ArrayListTracks) {
@@ -1057,6 +1059,17 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     _ArrayListTracks.add(0, _currentTrack);
                 } else
                     Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: current track not visible into the tracklist");
+
+                // Resume the state of Job and Selection of each Track
+                for (Track T : _ArrayListTracks) {
+                    for (Track OT : _OldArrayListTracks) {
+                        if (T.getId() == OT.getId()) {
+                            T.setSelected(OT.isSelected());
+                            T.setJobProgress(OT.getJobProgress());
+                            T.setProgress(OT.getProgress());
+                        }
+                    }
+                }
             }
             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
             //Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: Added " + _ArrayListTracks.size() + " tracks");
