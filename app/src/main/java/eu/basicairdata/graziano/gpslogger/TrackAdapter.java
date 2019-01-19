@@ -20,6 +20,7 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,10 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_flight_white_24dp)
     };
 
+    private static final Bitmap bmpCurrentTrackRecording = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_recording_white_48dp);
+    private static final Bitmap bmpCurrentTrackPaused = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_paused_white_48dp);
+
+
 
 
     class TrackHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -75,6 +80,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private final TextView textViewTrackPlacemarks;
         private final ImageView imageViewThumbnail;
         private final ImageView imageViewIcon;
+        private final CardView cardView;
 
 
         @Override
@@ -102,6 +108,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks     = (TextView) itemView.findViewById(R.id.id_textView_card_placemarks);
             imageViewThumbnail          = (ImageView) itemView.findViewById(R.id.id_imageView_card_minimap);
             imageViewIcon               = (ImageView) itemView.findViewById(R.id.id_imageView_card_tracktype);
+            cardView                    = (CardView) itemView.findViewById(R.id.card_view);
         }
 
 
@@ -132,6 +139,8 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             TT = trk.getTrackType();
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             else imageViewIcon.setImageBitmap(null);
+
+            imageViewThumbnail.setImageBitmap (GPSApplication.getInstance().getRecording() ? bmpCurrentTrackRecording : bmpCurrentTrackPaused);
         }
 
 
@@ -163,15 +172,20 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (track.getTrackType() != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[track.getTrackType()]);
             else imageViewIcon.setImageBitmap(null);
 
-            Glide.clear(imageViewThumbnail);
-            Glide
-                    .with(GPSApplication.getInstance().getApplicationContext())
-                    .load(FilesDir + track.getId() + ".png")
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    //.skipMemoryCache(true)
-                    .error(null)
-                    .dontAnimate()
-                    .into(imageViewThumbnail);
+            if (GPSApplication.getInstance().getCurrentTrack().getId() == trk.getId()) {
+                imageViewThumbnail.setImageBitmap (GPSApplication.getInstance().getRecording() ? bmpCurrentTrackRecording : bmpCurrentTrackPaused);
+            }
+            else {
+                Glide.clear(imageViewThumbnail);
+                Glide
+                        .with(GPSApplication.getInstance().getApplicationContext())
+                        .load(FilesDir + track.getId() + ".png")
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        //.skipMemoryCache(true)
+                        .error(null)
+                        .dontAnimate()
+                        .into(imageViewThumbnail);
+            }
         }
     }
 

@@ -162,7 +162,7 @@ public class FragmentTracklist extends Fragment {
                 final Track trk = GPSApplication.getInstance().getCurrentTrack();
                 synchronized (data) {
                     if (data.get(0).getId() == trk.getId()) {
-                        data.set(0, trk);
+                        //data.set(0, trk);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

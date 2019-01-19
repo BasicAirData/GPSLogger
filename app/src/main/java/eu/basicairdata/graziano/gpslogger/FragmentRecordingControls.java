@@ -97,6 +97,7 @@ public class FragmentRecordingControls extends Fragment{
             final Boolean grs = gpsApplication.getRecording();
             boolean newRecordingState = !grs;
             gpsApplication.setRecording(newRecordingState);
+            EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
             tableLayoutGeoPoints.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
         }
     }
