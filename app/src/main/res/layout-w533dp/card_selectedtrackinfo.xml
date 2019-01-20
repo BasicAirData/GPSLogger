@@ -68,7 +68,7 @@
                 android:textAppearance="@style/TextAppearanceCardSmall"
                 android:id="@+id/id_textView_card_TrackDesc"
                 android:textStyle="italic"
-                android:text="Track 19"
+                android:paddingBottom="2dp"
                 android:layout_below="@id/id_textView_card_TrackName"/>
         </RelativeLayout>
 
@@ -132,7 +132,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:text="@string/card_trackinfo_duration"
                         android:id="@+id/id_textView_card_durationLabel"
-                        android:layout_marginTop="2dp" />
+                        android:layout_marginTop="3dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -140,7 +140,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:text="@string/card_trackinfo_altitude_gap"
                         android:id="@+id/id_textView_card_altitudegapLabel"
-                        android:layout_marginTop="2dp" />
+                        android:layout_marginTop="3dp" />
 
                 </LinearLayout>
 
@@ -163,7 +163,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_duration"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_altitudegap"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
@@ -207,7 +207,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:text="@string/card_trackinfo_average_speed"
                         android:id="@+id/id_textView_card_averagespeedLabel"
-                        android:layout_marginTop="2dp" />
+                        android:layout_marginTop="3dp" />
 
                 </LinearLayout>
 
@@ -230,7 +230,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_averagespeed"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
@@ -263,7 +263,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_placemarksLabel"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:text="@string/card_trackinfo_placemarks" />
                 </LinearLayout>
 
@@ -286,7 +286,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_placemarks"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
                 </LinearLayout>
