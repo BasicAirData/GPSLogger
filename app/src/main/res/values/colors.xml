@@ -23,6 +23,7 @@
     <color name="colorPrimaryDark">#550000</color>
     <color name="colorPrimaryLight">#b51111</color>
     <color name="textColorPrimary">#ffffff</color>
+    <color name="textColorCardTitle">#d7d7d7</color>
     <color name="textColorSecondary">#888888</color>
     <color name="colorBackground">#111111</color>
     <color name="colorTrackBackground">#282828</color>
@@ -36,7 +37,8 @@
     <color name="colorCardBackground_Title">#16ffffff</color>
     <color name="colorCardBackground_Data">#0affffff</color>
     <color name="colorCardBackground">#2f2f2f</color>
-    <color name="colorCardBackground_Selected">#674242</color>
+    <color name="colorCardBackground_Selected">#623232</color>
+    <!-- <color name="colorCardBackground_Selected">#674242</color> -->
     <!-- <color name="colorCardBackground_Selected">#583a3a</color> -->
     <color name="colorThumbnailLineColor">#d7d7d7</color>
     <color name="colorThumbnailLineBackground">#161616</color>

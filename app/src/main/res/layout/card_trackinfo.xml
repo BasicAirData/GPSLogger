@@ -59,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/id_textView_card_TrackName"
+                android:textColor="@color/textColorCardTitle"
                 android:textStyle="bold"
                 android:paddingTop="1dp" />
 
