@@ -26,16 +26,15 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardBackgroundColor="@color/colorCardTrackBackground_Selected"
+    card_view:cardBackgroundColor="@color/colorCardBackground_Selected"
     card_view:cardCornerRadius="2dp"
     card_view:cardElevation="3dp"
     card_view:cardPreventCornerOverlap="false"
     card_view:cardUseCompatPadding="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/id_imageView_card_minimap"
@@ -43,14 +42,17 @@
             android:layout_width="@dimen/thumbSize"
             android:layout_height="@dimen/thumbSize"
             android:layout_margin="5dp"
-            android:layout_gravity="center_vertical" />
+            android:layout_centerVertical="true"/>
 
         <RelativeLayout
-            android:id="@+id/id_cardData"
+            android:id="@+id/id_cardDataTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/id_imageView_card_minimap"
+            android:layout_toEndOf="@+id/id_imageView_card_minimap"
             android:padding="5dp"
-            android:background="@color/colorCardBackground_Selected">
+            android:paddingBottom="7dp"
+            android:background="@color/colorCardBackground_Title">
 
             <TextView
                 android:layout_width="match_parent"
@@ -60,240 +62,238 @@
                 android:textStyle="bold"
                 android:paddingTop="1dp" />
 
-            <ImageView
-                android:id="@+id/id_imageView_card_tracktype"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_margin="2dp"
-                android:clickable="false"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true" />
-
-            <View
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/id_card_separator"
-                android:background="@color/colorRoundedCornerDarkBorder"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                android:minHeight="1.7dp"
-                android:layout_below="@+id/id_imageView_card_tracktype" />
+                android:textAppearance="@style/TextAppearanceCardSmall"
+                android:id="@+id/id_textView_card_TrackDesc"
+                android:textStyle="italic"
+                android:text="Track 19"
+                android:layout_below="@id/id_textView_card_TrackName"/>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/id_imageView_card_tracktype"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="7dp"
+            android:clickable="false"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_card_separator"
+            android:background="@color/colorCardBackground_Line"
+            android:layout_margin="0dp"
+            android:minHeight="1.7dp"
+            android:layout_toRightOf="@+id/id_imageView_card_minimap"
+            android:layout_toEndOf="@+id/id_imageView_card_minimap"
+            android:layout_below="@+id/id_cardDataTitle" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorCardBackground_Data"
+            android:baselineAligned="false"
+            android:weightSum="3"
+            android:padding="5dp"
+            android:layout_toRightOf="@+id/id_imageView_card_minimap"
+            android:layout_toEndOf="@+id/id_imageView_card_minimap"
+            android:layout_below="@+id/id_card_separator">
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:weightSum="3"
-                android:layout_below="@+id/id_card_separator">
+                android:layout_weight="1">
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:paddingBottom="2dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp">
 
-                    <LinearLayout
-                        android:orientation="vertical"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginEnd="8dp">
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:text="@string/card_trackinfo_length"
+                        android:id="@+id/id_textView_card_lengthLabel"
+                        android:layout_marginTop="2dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:text="@string/card_trackinfo_length"
-                            android:id="@+id/id_textView_card_lengthLabel"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:text="@string/card_trackinfo_duration"
-                            android:id="@+id/id_textView_card_durationLabel"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:text="@string/card_trackinfo_altitude_gap"
-                            android:id="@+id/id_textView_card_altitudegapLabel"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="vertical"
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:text="@string/card_trackinfo_duration"
+                        android:id="@+id/id_textView_card_durationLabel"
+                        android:layout_marginTop="2dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:id="@+id/id_textView_card_length"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:textColor="@color/textColorPrimary"
-                            android:maxLines="1" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:id="@+id/id_textView_card_duration"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:textColor="@color/textColorPrimary"
-                            android:maxLines="1" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:id="@+id/id_textView_card_altitudegap"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:textColor="@color/textColorPrimary"
-                            android:maxLines="1" />
-
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:text="@string/card_trackinfo_altitude_gap"
+                        android:id="@+id/id_textView_card_altitudegapLabel"
+                        android:layout_marginTop="2dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" >
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
 
-                    <LinearLayout
-                        android:orientation="vertical"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginEnd="8dp">
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:id="@+id/id_textView_card_length"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColorPrimary"
+                        android:maxLines="1" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:text="@string/card_trackinfo_max_speed"
-                            android:id="@+id/id_textView_card_maxspeedLabel"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:text="@string/card_trackinfo_average_speed"
-                            android:id="@+id/id_textView_card_averagespeedLabel"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:id="@+id/id_textView_card_maxspeed"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:textColor="@color/textColorPrimary"
-                            android:maxLines="1" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:id="@+id/id_textView_card_averagespeed"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:textColor="@color/textColorPrimary"
-                            android:maxLines="1" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <LinearLayout
-                        android:orientation="vertical"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp">
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:id="@+id/id_textView_card_duration"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColorPrimary"
+                        android:maxLines="1" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:text="@string/card_trackinfo_geopoints"
-                            android:id="@+id/id_textView_card_geopointsLabel"
-                            android:layout_marginBottom="2dp"
-                            android:layout_marginTop="2dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:id="@+id/id_textView_card_placemarksLabel"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:text="@string/card_trackinfo_placemarks" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="vertical"
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:id="@+id/id_textView_card_geopoints"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:textColor="@color/textColorPrimary"
-                            android:maxLines="1" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceCardSmall"
-                            android:id="@+id/id_textView_card_placemarks"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"
-                            android:textColor="@color/textColorPrimary"
-                            android:maxLines="1" />
-                    </LinearLayout>
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:id="@+id/id_textView_card_altitudegap"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColorPrimary"
+                        android:maxLines="1" />
 
                 </LinearLayout>
 
             </LinearLayout>
-        </RelativeLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:text="@string/card_trackinfo_max_speed"
+                        android:id="@+id/id_textView_card_maxspeedLabel"
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:text="@string/card_trackinfo_average_speed"
+                        android:id="@+id/id_textView_card_averagespeedLabel"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:id="@+id/id_textView_card_maxspeed"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColorPrimary"
+                        android:maxLines="1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:id="@+id/id_textView_card_averagespeed"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColorPrimary"
+                        android:maxLines="1" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:text="@string/card_trackinfo_geopoints"
+                        android:id="@+id/id_textView_card_geopointsLabel"
+                        android:layout_marginTop="2dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:id="@+id/id_textView_card_placemarksLabel"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/card_trackinfo_placemarks" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:id="@+id/id_textView_card_geopoints"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColorPrimary"
+                        android:maxLines="1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearanceCardSmall"
+                        android:id="@+id/id_textView_card_placemarks"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/textColorPrimary"
+                        android:maxLines="1" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </android.support.v7.widget.CardView>

@@ -68,6 +68,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private int TT;
 
         private final TextView textViewTrackName;
+        private final TextView textViewTrackDescription;
         private final TextView textViewTrackLength;
         private final TextView textViewTrackDuration;
         private final TextView textViewTrackAltitudeGap;
@@ -95,6 +96,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             itemView.setOnClickListener(this);
 
             textViewTrackName           = (TextView) itemView.findViewById(R.id.id_textView_card_TrackName);
+            textViewTrackDescription    = (TextView) itemView.findViewById(R.id.id_textView_card_TrackDesc);
             textViewTrackLength         = (TextView) itemView.findViewById(R.id.id_textView_card_length);
             textViewTrackDuration       = (TextView) itemView.findViewById(R.id.id_textView_card_duration);
             textViewTrackAltitudeGap    = (TextView) itemView.findViewById(R.id.id_textView_card_altitudegap);
@@ -142,6 +144,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         void BindTrack(Track trk) {
             track = trk;
             textViewTrackName.setText(track.getName());
+            textViewTrackDescription.setText(GPSApplication.getInstance().getString(R.string.track_id) + " " + trk.getId());
             //textViewTrackName.setText(track.getId() + " - " + track.getName());
             if (trk.getNumberOfLocations() > 1) {
                 phd = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);

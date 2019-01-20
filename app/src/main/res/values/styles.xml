@@ -80,6 +80,8 @@
 
     <style name="TextAppearanceCardSmall" parent="@android:style/TextAppearance.Small">
         <item name="android:textSize">@dimen/TextAppearanceSmallTextSize</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_marginTop">2dp</item>
     </style>
 
     <style name="ListSeparatorTextView">
