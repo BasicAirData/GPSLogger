@@ -166,6 +166,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int _NumberOfSatellites = 0;
     private int _NumberOfSatellitesUsedInFix = 0;
 
+    private int GPSActivity_activeTab = 0;                  // The active tab on GPSActivity
     private int JobProgress = 0;
     private int JobsPending = 0;                            // The number of jobs to be done
     public int JobType = JOB_TYPE_NONE;                     // The type off job that is pending
@@ -446,6 +447,14 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     public void setJobsPending(int jobsPending) {
         JobsPending = jobsPending;
+    }
+
+    public int getGPSActivity_activeTab() {
+        return GPSActivity_activeTab;
+    }
+
+    public void setGPSActivity_activeTab(int GPSActivity_activeTab) {
+        this.GPSActivity_activeTab = GPSActivity_activeTab;
     }
 
     // --------------------------------------------------------------------------------------------

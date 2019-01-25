@@ -103,7 +103,9 @@ public class GPSActivity extends AppCompatActivity {
                     public void onTabSelected(TabLayout.Tab tab) {
                         super.onTabSelected(tab);
                         activeTab = tab.getPosition();
+                        GPSApplication.getInstance().setGPSActivity_activeTab(activeTab);
                         updateBottomSheetPosition();
+                        ActivateActionModeIfNeeded();
                     }
                 });
 
@@ -113,6 +115,7 @@ public class GPSActivity extends AppCompatActivity {
         mBottomSheetBehavior.setHideable (false);
 
         activeTab = tabLayout.getSelectedTabPosition();
+        GPSApplication.getInstance().setGPSActivity_activeTab(activeTab);
 
         ToastClickAgain = Toast.makeText(this, getString(R.string.toast_track_finished_click_again), Toast.LENGTH_SHORT);
     }
@@ -373,7 +376,7 @@ public class GPSActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (GPSApplication.getInstance().getNumberOfSelectedTracks() > 0) {
+                if ((GPSApplication.getInstance().getNumberOfSelectedTracks() > 0) && (activeTab == 2)) {
                     if (actionMode == null)
                         actionMode = (startSupportActionMode(new ToolbarActionMode()));
                     actionMode.setTitle(GPSApplication.getInstance().getNumberOfSelectedTracks() > 1 ? String.valueOf(GPSApplication.getInstance().getNumberOfSelectedTracks()) : "");
