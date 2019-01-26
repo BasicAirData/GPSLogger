@@ -172,6 +172,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public int JobType = JOB_TYPE_NONE;                     // The type off job that is pending
     private ArrayList<Track> JobTracklist = new ArrayList<Track>();
                                                             // The list of tracks that are processed on the current job
+    private ArrayList<Track> JobToBeExecutedTracklist = new ArrayList<Track>();
+                                                            // The list of tracks that are not yet processed on the current job
 
     private int _Stabilizer = StabilizingSamples;
     private int HandlerTimer = DEFAULTHANDLERTIMER;
@@ -206,6 +208,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             }
         }
     };
+
+    private int ActiveExporterThreads = 0;                  // The exporter that are active
+    private final int MAX_ACTIVE_EXPORTER_THREADS = 5;      // The maximum number of Exporter threads to run simultaneously
 
 
     // ------------------------------------------------------------------------------------ Service
@@ -609,6 +614,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         if (T.getId() == trackid) {
                             T.setProgress(0);
                             T.setJobProgress(100);
+                            ActiveExporterThreads--;
+                            ExecuteJob();
                             if (JobsPending > 0) {
                                 JobsPending--;
                                 if (JobsPending == 0) {
@@ -636,6 +643,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         if (T.getId() == trackid) {
                             T.setProgress(0);
                             T.setJobProgress(100);
+                            ActiveExporterThreads--;
+                            ExecuteJob();
                             if (JobsPending > 0) {
                                 JobsPending = 0;
                                 EventBus.getDefault().post(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE);
@@ -822,6 +831,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void LoadJob (int jobType) {
         JobTracklist.clear();
         JobTracklist = getSelectedTracks();
+        JobToBeExecutedTracklist.clear();
+        JobToBeExecutedTracklist.addAll(JobTracklist);
         for (Track T : JobTracklist) {
             T.setJobProgress(0);
         }
@@ -829,14 +840,13 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         JobType = jobType;
     }
 
-
     public void ExecuteJob () {
         switch (JobType) {
             case JOB_TYPE_NONE:
                 break;
             case JOB_TYPE_DELETE:
                 synchronized (_ArrayListTracks) {
-                    for (Track T : JobTracklist) {
+                    for (Track T : JobToBeExecutedTracklist) {
                         int i = _ArrayListTracks.indexOf(T);
                         if (i != -1) {
                             GPSDataBase.DeleteTrack(_ArrayListTracks.get(i).getId());
@@ -847,29 +857,45 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     }
                 }
                 EventBus.getDefault().post(EventBusMSG.NOTIFY_TRACKS_DELETED);
+                JobToBeExecutedTracklist.clear();
                 break;
             case JOB_TYPE_EXPORT:
-                for (Track T : JobTracklist) {
+                for (int i = JobToBeExecutedTracklist.size()-1; i >= 0; i--) {
+                    Track T = JobToBeExecutedTracklist.get(i);
                     Ex = new Exporter(T.getId(), prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger");
+                    JobToBeExecutedTracklist.remove(i);
+                    ActiveExporterThreads ++;
                     Ex.start();
+                    if (ActiveExporterThreads >= MAX_ACTIVE_EXPORTER_THREADS) break;
                 }
                 break;
             case JOB_TYPE_VIEW:
-                for (Track T : JobTracklist) {
+                for (int i = JobToBeExecutedTracklist.size()-1; i >= 0; i--) {
+                    Track T = JobToBeExecutedTracklist.get(i);
                     if (prefViewTracksWith == 0) {              // KML Viewer
                         Ex = new Exporter(T.getId(), true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                        JobToBeExecutedTracklist.remove(T);
+                        ActiveExporterThreads ++;
                         Ex.start();
+                        if (ActiveExporterThreads >= MAX_ACTIVE_EXPORTER_THREADS) break;
                     }
                     if (prefViewTracksWith == 1) {              // GPX Viewer
                         Ex = new Exporter(T.getId(), false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                        JobToBeExecutedTracklist.remove(T);
+                        ActiveExporterThreads ++;
                         Ex.start();
+                        if (ActiveExporterThreads >= MAX_ACTIVE_EXPORTER_THREADS) break;
                     }
                 }
                 break;
             case JOB_TYPE_SHARE:
-                for (Track T : JobTracklist) {
+                for (int i = JobToBeExecutedTracklist.size()-1; i >= 0; i--) {
+                    Track T = JobToBeExecutedTracklist.get(i);
                     Ex = new Exporter(T.getId(), prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                    JobToBeExecutedTracklist.remove(T);
+                    ActiveExporterThreads ++;
                     Ex.start();
+                    if (ActiveExporterThreads >= MAX_ACTIVE_EXPORTER_THREADS) break;
                 }
                 break;
             default:

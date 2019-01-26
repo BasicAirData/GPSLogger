@@ -37,7 +37,7 @@
     <color name="colorCardBackground_Title">#16ffffff</color>
     <color name="colorCardBackground_Data">#0affffff</color>
     <color name="colorCardBackground">#2f2f2f</color>
-    <color name="colorCardBackground_Selected">#623232</color>
+    <color name="colorCardBackground_Selected">#6a3737</color>
     <!-- <color name="colorCardBackground_Selected">#674242</color> -->
     <!-- <color name="colorCardBackground_Selected">#583a3a</color> -->
     <color name="colorThumbnailLineColor">#d7d7d7</color>
