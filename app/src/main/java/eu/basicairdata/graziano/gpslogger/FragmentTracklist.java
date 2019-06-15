@@ -314,7 +314,7 @@ public class FragmentTracklist extends Fragment {
             return;
         }
         if (msg == EventBusMSG.INTENT_SEND) {
-            final ArrayList<Track> selectedTracks = GPSApplication.getInstance().getJobTracklist(); // The list of shared tracks
+            final List<ExportingTask> selectedTracks = GPSApplication.getInstance().getExportingTaskList(); // The list of shared tracks
             ArrayList<Uri> files = new ArrayList<>();                                               // The list of URI to be attached to intent
             File file;
 
@@ -327,7 +327,10 @@ public class FragmentTracklist extends Fragment {
             //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setType("text/xml");
 
-            for (Track track : selectedTracks) {
+            for (ExportingTask ET : selectedTracks) {
+
+                Track track = GPSApplication.getInstance().GPSDataBase.getTrack(ET.getId());
+                if (track == null) return;
 
                 if (i > 0) {
                     extraSubject.append(" + ");

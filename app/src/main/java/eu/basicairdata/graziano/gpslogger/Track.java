@@ -99,12 +99,6 @@ public class Track {
 
     private int Type = TRACK_TYPE_ND;                               // Saved in DB
 
-    // The value of the progressbar in card view
-    private int Progress = 0;
-
-    // The progress of the last Job
-    private int JobProgress = 0;
-
     // True if the card view is selected
     private boolean Selected = false;
 
@@ -545,22 +539,6 @@ public class Track {
 
     public int getType() {
         return Type;
-    }
-
-    public int getProgress() {
-        return Progress;
-    }
-
-    public void setProgress(int progress) {
-        Progress = progress;
-    }
-
-    public int getJobProgress() {
-        return JobProgress;
-    }
-
-    public void setJobProgress(int jobProgress) {
-        JobProgress = jobProgress;
     }
 
     public boolean isSelected() {

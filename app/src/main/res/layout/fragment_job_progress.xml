@@ -11,5 +11,5 @@
         android:id="@+id/id_jobProgressBar"
         style="@style/ProgressBar"
         android:progress="0"
-        android:max="100"/>
+        android:max="1000"/>
 </FrameLayout>

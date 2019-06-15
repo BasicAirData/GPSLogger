@@ -35,12 +35,9 @@ public class EventBusMSG {
     static final short UPDATE_JOB_PROGRESS              =  13;  // Update the progress of the current Job
     static final short NOTIFY_TRACKS_DELETED            =  14;  // Notify that some tracks are deleted
 
-    static final short TRACK_EXPORTED                   =  24;  // The exporter has finished to process the track (given id)
     static final short TRACKLIST_SELECTION              =  25;  // The user select (into the tracklist) the track with a given id
     static final short INTENT_SEND                      =  26;  // Request to share
     static final short TOAST_UNABLE_TO_WRITE_THE_FILE   =  27;  // Exporter fails to export the Track (given id)
-
-    static final short TRACK_SETPROGRESS                =  30;  // Change the progress value of the Track (given id)
 
     static final short ACTION_BULK_DELETE_TRACKS        =  40;  // Delete the selected tracks
     static final short ACTION_BULK_EXPORT_TRACKS        =  41;  // Export the selected tracks

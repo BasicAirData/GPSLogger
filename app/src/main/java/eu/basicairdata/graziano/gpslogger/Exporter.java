@@ -21,8 +21,6 @@ package eu.basicairdata.graziano.gpslogger;
 import android.os.Environment;
 import android.util.Log;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +38,8 @@ class Exporter extends Thread {
 
     private static final int NOT_AVAILABLE = -100000;
 
-    private Track track = null;
+    private Track track;
+    private ExportingTask exportingTask;
     private boolean ExportKML = true;
     private boolean ExportGPX = true;
     private boolean ExportTXT = true;
@@ -58,8 +57,11 @@ class Exporter extends Thread {
     private AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
 
 
-    public Exporter(long ID, boolean ExportKML, boolean ExportGPX, boolean ExportTXT, String SaveIntoFolder) {
-        track = GPSApplication.getInstance().GPSDataBase.getTrack(ID);
+    public Exporter(ExportingTask exportingTask, boolean ExportKML, boolean ExportGPX, boolean ExportTXT, String SaveIntoFolder) {
+        this.exportingTask = exportingTask;
+        this.exportingTask.setNumberOfPoints_Processed(0);
+        this.exportingTask.setStatus(ExportingTask.STATUS_RUNNING);
+        track = GPSApplication.getInstance().GPSDataBase.getTrack(exportingTask.getId());
         AltitudeManualCorrection = GPSApplication.getInstance().getPrefAltitudeCorrection();
         EGMAltitudeCorrection = GPSApplication.getInstance().getPrefEGM96AltitudeCorrection();
         getPrefKMLAltitudeMode = GPSApplication.getInstance().getPrefKMLAltitudeMode();
@@ -99,14 +101,16 @@ class Exporter extends Thread {
 
         if (track == null) {
             //Log.w("myApp", "[#] Exporter.java - Track = null!!");
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
             return;
         }
         if (track.getNumberOfLocations() + track.getNumberOfPlacemarks() == 0) {
-            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
             return;
         }
 
-        EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 1));
+        //EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 1));
 
         if (EGMAltitudeCorrection && EGM96.getInstance().isEGMGridLoading()) {
             try {
@@ -138,7 +142,9 @@ class Exporter extends Thread {
             success = sd.mkdir();
         }
         if (!success) {
-            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            Log.w("myApp", "[#] Exporter.java - Unable to sd.mkdir");
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
             return;
         }
 
@@ -176,12 +182,14 @@ class Exporter extends Thread {
         } catch (IOException e) {
             UnableToWriteFile = true;
             Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
-        }
-
-        // If the file is not writable abort exportation:
-        if (UnableToWriteFile) {
-            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
-            return;
+        } finally {
+            // If the file is not writable abort exportation:
+            if (UnableToWriteFile) {
+                Log.w("myApp", "[#] Exporter.java - Unable to write the file!!");
+                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+                //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+                return;
+            }
         }
 
         asyncGeopointsLoader.start();
@@ -395,10 +403,13 @@ class Exporter extends Thread {
                             }
 
                             placemark_id++;
+                            exportingTask.setNumberOfPoints_Processed(exportingTask.getNumberOfPoints_Processed() + 1);
                         }
                         placemarkList.clear();
                     }
                 }
+
+                exportingTask.setNumberOfPoints_Processed(track.getNumberOfPlacemarks());
             }
 
 
@@ -455,9 +466,6 @@ class Exporter extends Thread {
                     GPXbw.write(" <trkseg>" + newLine);
                 }
 
-                int n = 1000;
-                long progress = 0;
-                long oldProgress = 0;
                 LocationExtended loc;
 
                 for (int i = 0; i < track.getNumberOfLocations(); i++) {
@@ -545,20 +553,10 @@ class Exporter extends Thread {
                         TXTbw.write(newLine);
                     }
 
-                    n++;
-                    if (n > 30) {     // Evaluate the progress every n elements
-                        progress = 100L * (track.getNumberOfPlacemarks() + i + GroupOfLocations) / (track.getNumberOfLocations() + track.getNumberOfPlacemarks());
-                        if (progress > 99) progress = 99;
-                        if (progress < 1) progress = 1;
-                        if (progress - oldProgress >= 1) {
-                            EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), progress));
-                            oldProgress = progress;
-                            n = 0;
-                        }
-                    }
+                    exportingTask.setNumberOfPoints_Processed(exportingTask.getNumberOfPoints_Processed() + 1);
                 }
 
-                EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 100));
+                exportingTask.setNumberOfPoints_Processed(track.getNumberOfPlacemarks() + track.getNumberOfLocations());
                 ArrayGeopoints.clear();
 
                 if (ExportKML) {
@@ -596,21 +594,15 @@ class Exporter extends Thread {
             }
 
             Log.w("myApp", "[#] Exporter.java - Track "+ track.getId() +" exported in " + (System.currentTimeMillis() - start_Time) + " ms (" + elements_total + " pts @ " + ((1000L * elements_total) / (System.currentTimeMillis() - start_Time)) + " pts/s)");
-
-            //EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 100));
-            //try {
-            //    Thread.sleep(300);
-            //} catch (InterruptedException e) {
-            //    Log.w("myApp", "[#] Exporter.java - Cannot wait!!");
-            //}
-
-            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACK_EXPORTED, track.getId()));
-
+            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACK_EXPORTED, track.getId()));
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_SUCCESS);
         } catch (IOException e) {
-            EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
             asyncGeopointsLoader.interrupt();
             Log.w("myApp", "[#] Exporter.java - Unable to write the file: " + e);
         } catch (InterruptedException e) {
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
             asyncGeopointsLoader.interrupt();
             Log.w("myApp", "[#] Exporter.java - Interrupted: " + e);
         }
