@@ -1,4 +1,4 @@
-/*
+/**
  * DatabaseHandler - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 1/5/2016
  *
@@ -24,9 +24,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 
 class DatabaseHandler extends SQLiteOpenHelper {
@@ -951,6 +956,69 @@ class DatabaseHandler extends SQLiteOpenHelper {
             cursor.close();
         }
         return trackList;
+    }
+
+
+    public void CorrectGPSWeekRollover() {
+        String CorrectLocationsQuery = "UPDATE " + TABLE_LOCATIONS + " SET " + KEY_LOCATION_TIME + " = " + KEY_LOCATION_TIME + " + 619315200000 WHERE "
+                + KEY_LOCATION_TIME + " <= 1388534400000 ";               // 01/01/2014 00:00:00.000
+        String CorrectPlacemarksQuery = "UPDATE " + TABLE_PLACEMARKS + " SET " + KEY_LOCATION_TIME + " = " + KEY_LOCATION_TIME + " + 619315200000 WHERE "
+                + KEY_LOCATION_TIME + " <= 1388534400000 ";               // 01/01/2014 00:00:00.000
+        String CorrectNamesQuery = "SELECT " + KEY_ID + "," + KEY_TRACK_NAME + " FROM " + TABLE_TRACKS + " WHERE "
+                + KEY_TRACK_NAME + " LIKE '199%'";
+
+        class IdAndName {
+            long id;
+            String Name;
+        }
+
+        ArrayList <IdAndName> Names = new ArrayList<>();
+
+        //Log.w("myApp", "[#] DatabaseHandler.java - getTrackList(" + startNumber + ", " +endNumber + ") ==> " + selectQuery);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Correction of Locations
+        db.execSQL(CorrectLocationsQuery);
+
+        // Correction of Placemarks
+        db.execSQL(CorrectPlacemarksQuery);
+
+
+        // Correction of Track Names
+        Cursor cursor = db.rawQuery(CorrectNamesQuery, null);
+
+        if (cursor != null) {
+            int i = 0;
+            // looping through all rows and adding to list
+            if (cursor.moveToFirst()) {
+                do {
+                    SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd-HHmmss");  // date and time formatter
+                    SDF.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    try {
+                        Date d = SDF.parse(cursor.getString(1));
+                        long timeInMilliseconds = d.getTime();
+                        long timeInMilliseconds_Corrected = timeInMilliseconds + 619315200000L;
+                        String Name_Corrected = SDF.format(timeInMilliseconds_Corrected);
+                        //Log.w("myApp", "[#] GPSApplication.java - NAME CORRECTED FROM " + cursor.getString(0) + " TO " + Name_Corrected);
+                        IdAndName IN = new IdAndName();
+                        IN.id = cursor.getLong(0);
+                        IN.Name = Name_Corrected;
+                        Names.add(IN);
+                    } catch (ParseException ex) {
+                        Log.v("Exception", ex.getLocalizedMessage());
+                    }
+                    i++;
+                } while (cursor.moveToNext());
+            }
+            Log.w("myApp", "[#] DatabaseHandler.java - CorrectGPSWeekRollover NAMES = " + i);
+            cursor.close();
+        }
+
+        for (IdAndName N : Names) {
+            Log.w("myApp", "[#] GPSApplication.java - CORRECTING TRACK " + N.id + " = " + N.Name);
+            db.execSQL("UPDATE " + TABLE_TRACKS + " SET " + KEY_TRACK_NAME + " = \"" + N.Name + "\" WHERE " + KEY_ID + " = " + N.id);
+        }
     }
 
 

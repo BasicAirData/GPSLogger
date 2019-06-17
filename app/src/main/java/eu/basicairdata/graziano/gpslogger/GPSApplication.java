@@ -111,6 +111,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int     prefKMLAltitudeMode         = 0;
     private int     prefShowTrackStatsType      = 0;
     private int     prefShowDirections          = 0;
+    private boolean prefGPSWeekRolloverCorrected= false;
 
     private boolean LocationPermissionChecked = false;            // If the flag is false the GPSActivity will check for Location Permission
     private boolean StoragePermissionChecked = false;             // If the flag is false Storage Permission must be asked
@@ -238,7 +239,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             }
 
             // Update job progress
-            if (JobProgress != (int) Math.round(1000L*Progress/Total)) {
+            if (JobProgress != (int) Math.round(1000L*Progress/Total)) {        // The ProgressBar on FragmentJobProgress has android:max="1000"
                 JobProgress = (int) Math.round(1000L*Progress/Total);
                 EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
             }
@@ -622,6 +623,18 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         LoadPreferences();                                                              // Load Settings
 
         // ----------------------------------------------------------------------------------------
+        // GPS Week Rollover Correction for stored data
+
+        if (!prefGPSWeekRolloverCorrected) {
+            Log.w("myApp", "[#] GPSApplication.java - CORRECTING DATA FOR GPS WEEK ROLLOVER");
+            GPSDataBase.CorrectGPSWeekRollover();
+            prefGPSWeekRolloverCorrected = true;
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+            editor.putBoolean("prefGPSWeekRolloverCorrected", true);
+            editor.commit();
+        }
+
+        // ----------------------------------------------------------------------------------------
 
         asyncUpdateThread.start();
         AsyncTODO ast = new AsyncTODO();
@@ -633,7 +646,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         // OutOfMemory exception. Stored in kilobytes as LruCache takes an
         // int in its constructor.
         //Log.w("myApp", "[#] GPSApplication.java - Max available VM memory = " + (int) (Runtime.getRuntime().maxMemory() / 1024) + " kbytes");
-
     }
 
 
@@ -952,6 +964,11 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         if (loc != null) {      // Location data is valid
             //Log.w("myApp", "[#] GPSApplication.java - onLocationChanged: provider=" + loc.getProvider());
             if (loc.hasSpeed() && (loc.getSpeed() == 0)) loc.removeBearing();           // Removes bearing if the speed is zero
+            // --------- Workaround for old GPS that are affected to Week Rollover
+            //loc.setTime(loc.getTime() - 619315200000L);                               // Commented out, it simulate the old GPS hardware Timestamp
+            if (loc.getTime() <= 1388534400000L)                                        // 01/01/2014 00:00:00.000
+                loc.setTime(loc.getTime() + 619315200000L);                             // Timestamp incremented by 1024×7×24×60×60×1000 = 619315200000 ms
+                                                                                        // This value must be doubled every 1024 weeks !!!
             LocationExtended eloc = new LocationExtended(loc);
             eloc.setNumberOfSatellites(getNumberOfSatellites());
             eloc.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
@@ -1098,6 +1115,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         // -----------------------------------------------------------------------
 
         //prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
+        prefGPSWeekRolloverCorrected = preferences.getBoolean("prefGPSWeekRolloverCorrected", false);
         prefShowDecimalCoordinates = preferences.getBoolean("prefShowDecimalCoordinates", false);
         prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
         prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
@@ -1403,5 +1421,4 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             }
         }
     }
-
 }
