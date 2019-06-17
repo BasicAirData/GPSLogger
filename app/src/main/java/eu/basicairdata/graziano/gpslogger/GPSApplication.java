@@ -549,6 +549,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     @Override
     public void onCreate() {
+        boolean isFirstRun = false;
         super.onCreate();
         singleton = this;
 
@@ -617,7 +618,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         GPSDataBase = new DatabaseHandler(this);                                 // Initialize the Database
 
         // Prepare the current track
-        if (GPSDataBase.getLastTrackID() == 0) GPSDataBase.addTrack(new Track());       // Creation of the first track if the DB is empty
+        if (GPSDataBase.getLastTrackID() == 0) {
+            GPSDataBase.addTrack(new Track());                                          // Creation of the first track if the DB is empty
+            isFirstRun = true;
+        }
         _currentTrack = GPSDataBase.getLastTrack();                                     // Get the last track
 
         LoadPreferences();                                                              // Load Settings
@@ -626,8 +630,11 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         // GPS Week Rollover Correction for stored data
 
         if (!prefGPSWeekRolloverCorrected) {
-            Log.w("myApp", "[#] GPSApplication.java - CORRECTING DATA FOR GPS WEEK ROLLOVER");
-            GPSDataBase.CorrectGPSWeekRollover();
+            if (!isFirstRun) {
+                Log.w("myApp", "[#] GPSApplication.java - CORRECTING DATA FOR GPS WEEK ROLLOVER");
+                GPSDataBase.CorrectGPSWeekRollover();
+                Log.w("myApp", "[#] GPSApplication.java - DATA FOR GPS WEEK ROLLOVER CORRECTED");
+            }
             prefGPSWeekRolloverCorrected = true;
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
             editor.putBoolean("prefGPSWeekRolloverCorrected", true);
