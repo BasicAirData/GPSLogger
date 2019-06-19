@@ -113,8 +113,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int     prefShowDirections          = 0;
     private boolean prefGPSWeekRolloverCorrected= false;
 
-    private boolean LocationPermissionChecked = false;            // If the flag is false the GPSActivity will check for Location Permission
-    private boolean StoragePermissionChecked = false;             // If the flag is false Storage Permission must be asked
+    private boolean LocationPermissionChecked   = false;          // If the flag is false the GPSActivity will check for Location Permission
+    private boolean StoragePermissionChecked    = false;          // If the flag is false Storage Permission must be asked
+    private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
@@ -206,7 +207,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
     };
 
-    private int ActiveExporterThreads = 0;                  // The exporter that are active
     private final int MAX_ACTIVE_EXPORTER_THREADS = 3;      // The maximum number of Exporter threads to run simultaneously
 
     private List<ExportingTask> ExportingTaskList = new ArrayList<>();
@@ -549,7 +549,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     @Override
     public void onCreate() {
-        boolean isFirstRun = false;
         super.onCreate();
         singleton = this;
 
@@ -575,6 +574,12 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             manager.createNotificationChannel(channel);
         }
 
+        // -----------------------
+        // TODO: Uncomment it For Test Purpose (to run the Week Rollover Tests)
+        // SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+        // editor.putBoolean("prefGPSWeekRolloverCorrected", false);
+        // editor.commit();
+        // -----------------------
 
         EventBus.getDefault().register(this);
 
@@ -625,21 +630,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         _currentTrack = GPSDataBase.getLastTrack();                                     // Get the last track
 
         LoadPreferences();                                                              // Load Settings
-
-        // ----------------------------------------------------------------------------------------
-        // GPS Week Rollover Correction for stored data
-
-        if (!prefGPSWeekRolloverCorrected) {
-            if (!isFirstRun) {
-                Log.w("myApp", "[#] GPSApplication.java - CORRECTING DATA FOR GPS WEEK ROLLOVER");
-                GPSDataBase.CorrectGPSWeekRollover();
-                Log.w("myApp", "[#] GPSApplication.java - DATA FOR GPS WEEK ROLLOVER CORRECTED");
-            }
-            prefGPSWeekRolloverCorrected = true;
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-            editor.putBoolean("prefGPSWeekRolloverCorrected", true);
-            editor.commit();
-        }
 
         // ----------------------------------------------------------------------------------------
 
@@ -973,7 +963,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             if (loc.hasSpeed() && (loc.getSpeed() == 0)) loc.removeBearing();           // Removes bearing if the speed is zero
             // --------- Workaround for old GPS that are affected to Week Rollover
             //loc.setTime(loc.getTime() - 619315200000L);                               // Commented out, it simulate the old GPS hardware Timestamp
-            if (loc.getTime() <= 1388534400000L)                                        // 01/01/2014 00:00:00.000
+            if (loc.getTime() <= 1388534400000L)                                        // if the Location Time is <= 01/01/2014 00:00:00.000
                 loc.setTime(loc.getTime() + 619315200000L);                             // Timestamp incremented by 1024×7×24×60×60×1000 = 619315200000 ms
                                                                                         // This value must be doubled every 1024 weeks !!!
             LocationExtended eloc = new LocationExtended(loc);
@@ -1183,6 +1173,26 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             track = _currentTrack;
             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
             UpdateTrackList();
+
+            // ----------------------------------------------------------------------------------------
+            // Apply the GPS Week Rollover Correction, for data already stored into the DB
+            // ----------------------------------------------------------------------------------------
+
+            if (!prefGPSWeekRolloverCorrected) {
+                if (!isFirstRun) {
+                    Log.w("myApp", "[#] GPSApplication.java - CORRECTING DATA FOR GPS WEEK ROLLOVER");
+                    GPSDataBase.CorrectGPSWeekRollover();
+                    Log.w("myApp", "[#] GPSApplication.java - DATA FOR GPS WEEK ROLLOVER CORRECTED");
+                    UpdateTrackList();
+                    Log.w("myApp", "[#] GPSApplication.java - TRACKLIST UPDATED WITH THE CORRECTED NAMES");
+                }
+                prefGPSWeekRolloverCorrected = true;
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                editor.putBoolean("prefGPSWeekRolloverCorrected", true);
+                editor.commit();
+            }
+            // ----------------------------------------------------------------------------------------
+
 
             while (true) {
                 AsyncTODO asyncTODO;
