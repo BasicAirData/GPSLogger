@@ -71,7 +71,7 @@ public class FragmentJobProgress extends Fragment {
 
     public void Update() {
         if (isAdded()) {
-            progressBar.setProgress((GPSApplication.getInstance().getJobProgress() == 100) || (GPSApplication.getInstance().getJobsPending() == 0 ) ? 0 : GPSApplication.getInstance().getJobProgress());
+            progressBar.setProgress((GPSApplication.getInstance().getJobProgress() == 1000) || (GPSApplication.getInstance().getJobsPending() == 0 ) ? 0 : GPSApplication.getInstance().getJobProgress());
         }
     }
 }
