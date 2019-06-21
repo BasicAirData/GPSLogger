@@ -37,6 +37,16 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/id_imageView_card_pulse"
+            android:src="@mipmap/ic_recording_48dp"
+            android:visibility="invisible"
+            android:scaleType="center"
+            android:layout_width="@dimen/thumbSize"
+            android:layout_height="@dimen/thumbSize"
+            android:layout_margin="5dp"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
             android:id="@+id/id_imageView_card_minimap"
             android:scaleType="center"
             android:layout_width="@dimen/thumbSize"

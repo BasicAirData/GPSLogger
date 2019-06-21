@@ -24,6 +24,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,7 +40,6 @@ import java.util.List;
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     private final static int NOT_AVAILABLE = -100000;
-    private final static int CARDTYPE_CURRENTTRACK = 0;
     private final static int CARDTYPE_TRACK = 1;
     private final static int CARDTYPE_SELECTEDTRACK = 2;
 
@@ -54,7 +55,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_flight_white_24dp)
     };
 
-    private static final Bitmap bmpCurrentTrackRecording = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_forward_white_48dp);
+    private static final Bitmap bmpCurrentTrackRecording = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_recording_48dp);
     private static final Bitmap bmpCurrentTrackPaused = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_paused_white_48dp);
 
 
@@ -77,6 +78,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private final TextView textViewTrackGeopoints;
         private final TextView textViewTrackPlacemarks;
         private final ImageView imageViewThumbnail;
+        private final ImageView imageViewPulse;
         private final ImageView imageViewIcon;
 
 
@@ -95,23 +97,27 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
             itemView.setOnClickListener(this);
 
-            textViewTrackName           = (TextView) itemView.findViewById(R.id.id_textView_card_TrackName);
-            textViewTrackDescription    = (TextView) itemView.findViewById(R.id.id_textView_card_TrackDesc);
-            textViewTrackLength         = (TextView) itemView.findViewById(R.id.id_textView_card_length);
-            textViewTrackDuration       = (TextView) itemView.findViewById(R.id.id_textView_card_duration);
-            textViewTrackAltitudeGap    = (TextView) itemView.findViewById(R.id.id_textView_card_altitudegap);
-            textViewTrackMaxSpeed       = (TextView) itemView.findViewById(R.id.id_textView_card_maxspeed);
-            textViewTrackAverageSpeed   = (TextView) itemView.findViewById(R.id.id_textView_card_averagespeed);
-            textViewTrackGeopoints      = (TextView) itemView.findViewById(R.id.id_textView_card_geopoints);
-            textViewTrackPlacemarks     = (TextView) itemView.findViewById(R.id.id_textView_card_placemarks);
-            imageViewThumbnail          = (ImageView) itemView.findViewById(R.id.id_imageView_card_minimap);
-            imageViewIcon               = (ImageView) itemView.findViewById(R.id.id_imageView_card_tracktype);
+            // TextViews
+            textViewTrackName           = itemView.findViewById(R.id.id_textView_card_TrackName);
+            textViewTrackDescription    = itemView.findViewById(R.id.id_textView_card_TrackDesc);
+            textViewTrackLength         = itemView.findViewById(R.id.id_textView_card_length);
+            textViewTrackDuration       = itemView.findViewById(R.id.id_textView_card_duration);
+            textViewTrackAltitudeGap    = itemView.findViewById(R.id.id_textView_card_altitudegap);
+            textViewTrackMaxSpeed       = itemView.findViewById(R.id.id_textView_card_maxspeed);
+            textViewTrackAverageSpeed   = itemView.findViewById(R.id.id_textView_card_averagespeed);
+            textViewTrackGeopoints      = itemView.findViewById(R.id.id_textView_card_geopoints);
+            textViewTrackPlacemarks     = itemView.findViewById(R.id.id_textView_card_placemarks);
+
+            // ImageViews
+            imageViewThumbnail          = itemView.findViewById(R.id.id_imageView_card_minimap);
+            imageViewPulse              = itemView.findViewById(R.id.id_imageView_card_pulse);
+            imageViewIcon               = itemView.findViewById(R.id.id_imageView_card_tracktype);
         }
 
 
         void UpdateTrackStats(Track trk) {
             textViewTrackName.setText(trk.getName());
-            //textViewTrackName.setText(track.getId() + " - " + track.getName());
+
             if (trk.getNumberOfLocations() > 1) {
                 phd = phdformatter.format(trk.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
                 textViewTrackLength.setText(phd.Value + " " + phd.UM);
@@ -137,15 +143,24 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
-            imageViewThumbnail.setImageBitmap (GPSApplication.getInstance().getRecording() ? bmpCurrentTrackRecording : bmpCurrentTrackPaused);
+            if (GPSApplication.getInstance().getRecording()) {
+                imageViewThumbnail.setImageBitmap(bmpCurrentTrackRecording);
+                imageViewPulse.setVisibility(View.VISIBLE);
+                Animation sunRise = AnimationUtils.loadAnimation(GPSApplication.getInstance().getApplicationContext(), R.anim.record_pulse);
+                imageViewPulse.startAnimation(sunRise);
+            } else {
+                imageViewPulse.setVisibility(View.INVISIBLE);
+                imageViewThumbnail.setImageBitmap(bmpCurrentTrackPaused);
+            }
         }
 
 
         void BindTrack(Track trk) {
             track = trk;
+            imageViewPulse.setVisibility(View.INVISIBLE);
             textViewTrackName.setText(track.getName());
             textViewTrackDescription.setText(GPSApplication.getInstance().getString(R.string.track_id) + " " + trk.getId());
-            //textViewTrackName.setText(track.getId() + " - " + track.getName());
+
             if (trk.getNumberOfLocations() > 1) {
                 phd = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
                 textViewTrackLength.setText(phd.Value + " " + phd.UM);
