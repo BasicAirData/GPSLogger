@@ -213,7 +213,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
 
     // The handler that checks the progress of an exportation:
-    private final int ExportingStatusCheckInterval = 32;          // The app updates the progress of exportation every 32 milliseconds
+    private final int ExportingStatusCheckInterval = 16;          // The app updates the progress of exportation every 16 milliseconds
     final Handler ExportingStatusCheckHandler = new Handler();
 
     Runnable ExportingStatusChecker = new Runnable() {
