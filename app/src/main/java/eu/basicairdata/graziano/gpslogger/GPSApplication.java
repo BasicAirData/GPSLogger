@@ -60,6 +60,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -873,20 +874,15 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             case JOB_TYPE_NONE:
                 break;
             case JOB_TYPE_DELETE:
+                String S = "TASK_DELETE_TRACKS";
                 for (ExportingTask ET : ExportingTaskList) {
-                    synchronized (_ArrayListTracks) {
-                        for (Track T : _ArrayListTracks) {
-                            if (T.getId() == ET.getId()) {
-                                GPSDataBase.DeleteTrack(ET.getId());
-                                Log.w("myApp", "[#] GPSApplication.java - Track " + ET.getId() + " deleted.");
-                                _ArrayListTracks.remove(T);
-                                if (JobsPending > 0) JobsPending--;
-                                break;
-                            }
-                        }
-                    }
+                    S = S + " " + ET.getId();
                 }
-                EventBus.getDefault().post(EventBusMSG.NOTIFY_TRACKS_DELETED);
+                AsyncTODO ast = new AsyncTODO();
+                ast.TaskType = S;
+                ast.location = null;
+                AsyncTODOQueue.add(ast);
+                //EventBus.getDefault().post(EventBusMSG.NOTIFY_TRACKS_DELETED);
                 break;
             case JOB_TYPE_EXPORT:
             case JOB_TYPE_VIEW:
@@ -1264,33 +1260,42 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     _currentLocationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
                     EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 }
-/*
-                if (asyncTODO.TaskType.contains("TASK_DELETE_TRACK")) {
-                    Log.w("myApp", "[#] GPSApplication.java - Deleting Track ID = " + asyncTODO.TaskType.split(" ")[1]);
-                    if (Integer.valueOf(asyncTODO.TaskType.split(" ")[1]) >= 0) {
-                        long selectedtrackID = Integer.valueOf(asyncTODO.TaskType.split(" ")[1]);
-                        synchronized(_ArrayListTracks) {
-                            if (!_ArrayListTracks.isEmpty() && (selectedtrackID >= 0)) {
-                                int i = 0;
-                                boolean found = false;
-                                do {
-                                    if (_ArrayListTracks.get(i).getId() == selectedtrackID) {
-                                        found = true;
-                                        GPSDataBase.DeleteTrack(_ArrayListTracks.get(i).getId());
-                                        Log.w("myApp", "[#] GPSApplication.java - Track " + _ArrayListTracks.get(i).getId() + " deleted.");
-                                        _ArrayListTracks.remove(i);
+
+                // Task: Delete some tracks
+                if (asyncTODO.TaskType.startsWith("TASK_DELETE_TRACKS")) {
+
+                    String STokens = asyncTODO.TaskType.substring(19);
+                    List<String> tokens = new ArrayList<>();
+                    StringTokenizer tokenizer = new StringTokenizer(STokens, " ");
+                    while (tokenizer.hasMoreElements()) {
+                        tokens.add(tokenizer.nextToken());
+                    }
+                    if (!tokens.isEmpty()) {
+                        JobProgress = 0;
+                        int TracksToBeDeleted = tokens.size();
+                        int TracksDeleted = 0;
+                        for (String s : tokens) {
+                            int i = Integer.valueOf(s);
+                            synchronized (_ArrayListTracks) {
+                                for (Track T : _ArrayListTracks) {
+                                    if (T.getId() == i) {
+                                        GPSDataBase.DeleteTrack(i);
+                                        Log.w("myApp", "[#] GPSApplication.java - TASK_DELETE_TRACKS: Track " + i + " deleted.");
+                                        _ArrayListTracks.remove(T);
+                                        TracksDeleted++;
+                                        JobProgress = (int) Math.round(1000L*TracksDeleted/TracksToBeDeleted);
+                                        EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
                                         if (JobsPending > 0) JobsPending--;
-                                        else EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+                                        break;
                                     }
-                                    i++;
-                                } while ((i < _ArrayListTracks.size()) && !found);
-                                //Log.w("myApp", "[#] GPSApplication.java - now DB Contains " + GPSDataBase.getLocationsTotalCount() + " locations");
-                                //if (found) UpdateTrackList();
+                                }
                             }
                         }
                     }
+                    JobProgress = 0;
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
+                    EventBus.getDefault().post(EventBusMSG.NOTIFY_TRACKS_DELETED);
                 }
-                */
             }
         }
     }
