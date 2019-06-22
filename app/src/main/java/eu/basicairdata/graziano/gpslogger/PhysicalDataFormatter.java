@@ -1,4 +1,4 @@
-/*
+/**
  * PhysicalDataFormatter - Java Class for Android
  * Created by G.Capelli (BasicAirData) on 21/3/2017
  *
@@ -129,29 +129,25 @@ class PhysicalDataFormatter {
             case FORMAT_BEARING:    // Bearing (Direction)
                 switch (gpsApplication.getPrefShowDirections()) {
                     case 0:         // NSWE
-                        final String N = gpsApplication.getString(R.string.north);
-                        final String S = gpsApplication.getString(R.string.south);
-                        final String W = gpsApplication.getString(R.string.west);
-                        final String E = gpsApplication.getString(R.string.east);
                         int dr = (int) Math.round(Number / 22.5);
                         switch (dr) {
-                            case 0:     _PhysicalData.Value = N;            return(_PhysicalData);
-                            case 1:     _PhysicalData.Value = N + N + E;    return(_PhysicalData);
-                            case 2:     _PhysicalData.Value = N + E;        return(_PhysicalData);
-                            case 3:     _PhysicalData.Value = E + N + E;    return(_PhysicalData);
-                            case 4:     _PhysicalData.Value = E;            return(_PhysicalData);
-                            case 5:     _PhysicalData.Value = E + S + E;    return(_PhysicalData);
-                            case 6:     _PhysicalData.Value = S + E;        return(_PhysicalData);
-                            case 7:     _PhysicalData.Value = S + S + E;    return(_PhysicalData);
-                            case 8:     _PhysicalData.Value = S;            return(_PhysicalData);
-                            case 9:     _PhysicalData.Value = S + S + W;    return(_PhysicalData);
-                            case 10:    _PhysicalData.Value = S + W;        return(_PhysicalData);
-                            case 11:    _PhysicalData.Value = W + S + W;    return(_PhysicalData);
-                            case 12:    _PhysicalData.Value = W;            return(_PhysicalData);
-                            case 13:    _PhysicalData.Value = W + N + W;    return(_PhysicalData);
-                            case 14:    _PhysicalData.Value = N + W;        return(_PhysicalData);
-                            case 15:    _PhysicalData.Value = N + N + W;    return(_PhysicalData);
-                            case 16:    _PhysicalData.Value = N;            return(_PhysicalData);
+                            case 0:     _PhysicalData.Value = gpsApplication.getString(R.string.north);             return(_PhysicalData);
+                            case 1:     _PhysicalData.Value = gpsApplication.getString(R.string.north_northeast);   return(_PhysicalData);
+                            case 2:     _PhysicalData.Value = gpsApplication.getString(R.string.northeast);         return(_PhysicalData);
+                            case 3:     _PhysicalData.Value = gpsApplication.getString(R.string.east_northeast);    return(_PhysicalData);
+                            case 4:     _PhysicalData.Value = gpsApplication.getString(R.string.east);              return(_PhysicalData);
+                            case 5:     _PhysicalData.Value = gpsApplication.getString(R.string.east_southeast);    return(_PhysicalData);
+                            case 6:     _PhysicalData.Value = gpsApplication.getString(R.string.southeast);         return(_PhysicalData);
+                            case 7:     _PhysicalData.Value = gpsApplication.getString(R.string.south_southeast);   return(_PhysicalData);
+                            case 8:     _PhysicalData.Value = gpsApplication.getString(R.string.south);             return(_PhysicalData);
+                            case 9:     _PhysicalData.Value = gpsApplication.getString(R.string.south_southwest);   return(_PhysicalData);
+                            case 10:    _PhysicalData.Value = gpsApplication.getString(R.string.southwest);         return(_PhysicalData);
+                            case 11:    _PhysicalData.Value = gpsApplication.getString(R.string.west_southwest);    return(_PhysicalData);
+                            case 12:    _PhysicalData.Value = gpsApplication.getString(R.string.west);              return(_PhysicalData);
+                            case 13:    _PhysicalData.Value = gpsApplication.getString(R.string.west_northwest);    return(_PhysicalData);
+                            case 14:    _PhysicalData.Value = gpsApplication.getString(R.string.northwest);         return(_PhysicalData);
+                            case 15:    _PhysicalData.Value = gpsApplication.getString(R.string.north_northwest);   return(_PhysicalData);
+                            case 16:    _PhysicalData.Value = gpsApplication.getString(R.string.north);             return(_PhysicalData);
                         }
                     case 1:         // Angle
                         _PhysicalData.Value = String.valueOf(Math.round(Number));

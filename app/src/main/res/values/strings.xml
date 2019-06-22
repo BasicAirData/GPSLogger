@@ -35,9 +35,21 @@
     <string name="accuracy">Accuracy</string>
 
     <string name="north">N</string>
-    <string name="south">S</string>
+    <string name="north_northeast">NNE</string>
+    <string name="northeast">NE</string>
+    <string name="east_northeast">ENE</string>
     <string name="east">E</string>
+    <string name="east_southeast">ESE</string>
+    <string name="southeast">SE</string>
+    <string name="south_southeast">SSE</string>
+    <string name="south">S</string>
+    <string name="south_southwest">SSW</string>
+    <string name="southwest">SW</string>
+    <string name="west_southwest">WSW</string>
     <string name="west">W</string>
+    <string name="west_northwest">WNW</string>
+    <string name="northwest">NW</string>
+    <string name="north_northwest">NNW</string>
 
 
     <!-- GPS Status messages -->
