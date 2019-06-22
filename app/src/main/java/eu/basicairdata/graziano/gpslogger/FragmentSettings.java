@@ -46,6 +46,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class FragmentSettings extends PreferenceFragmentCompat {
 
@@ -151,7 +160,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
                             // execute this when the downloader must be fired
                             final DownloadTask downloadTask = new DownloadTask(getActivity());
-                            downloadTask.execute("http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC");
+                            downloadTask.execute("https://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC");
 
                             mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
@@ -265,6 +274,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
     // ----------------------------------------------------------------.----- EGM96 - Download file
 
+
     // usually, subclasses of AsyncTask are declared inside the activity class.
     // that way, you can easily modify the UI thread from here
     private class DownloadTask extends AsyncTask<String, Integer, String> {
@@ -276,14 +286,52 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             this.context = context;
         }
 
+        // Disables the SSL certificate checking for new instances of {@link HttpsURLConnection} This has been created to
+        // usually aid testing on a local box, not for use on production. On this case it is OK
+        // Code found on https://gist.github.com/tobiasrohloff/72e32bc4e215522c4bcc
+
+        private void disableSSLCertificateChecking() {
+            TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                @Override
+                public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                    // Not implemented
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                    // Not implemented
+                }
+            } };
+
+            try {
+                SSLContext sc = SSLContext.getInstance("TLS");
+
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         @Override
         protected String doInBackground(String... sUrl) {
             InputStream input = null;
             OutputStream output = null;
-            HttpURLConnection connection = null;
+            HttpsURLConnection connection = null;
             try {
                 URL url = new URL(sUrl[0]);
-                connection = (HttpURLConnection) url.openConnection();
+
+                disableSSLCertificateChecking();
+
+                connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
 
                 // expect HTTP 200 OK, so we don't mistakenly save error report

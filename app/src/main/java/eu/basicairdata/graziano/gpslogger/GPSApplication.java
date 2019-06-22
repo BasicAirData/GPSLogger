@@ -575,10 +575,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
 
         // -----------------------
-        // TODO: Uncomment it For Test Purpose (to run the Week Rollover Tests)
+        // TODO: Uncomment it to run the Week Rollover Tests (For Test Purpose)
         // SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
         // editor.putBoolean("prefGPSWeekRolloverCorrected", false);
         // editor.commit();
+        // -----------------------
+
+        // -----------------------
+        // TODO: Uncomment it to reload the EGM Grid File (For Test Purpose)
+        //File file = new File(getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+        //if (file.exists ()) file.delete();
         // -----------------------
 
         EventBus.getDefault().register(this);
