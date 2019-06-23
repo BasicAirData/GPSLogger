@@ -124,9 +124,9 @@ class Exporter extends Thread {
             }
         }
 
-        SimpleDateFormat dfdtGPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");  // date and time formatter for GPX timestamp
+        SimpleDateFormat dfdtGPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");  // date and time formatter for GPX timestamp
         dfdtGPX.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat dfdtTXT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");  // date and time formatter for TXT timestamp
+        SimpleDateFormat dfdtTXT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS");  // date and time formatter for TXT timestamp
         dfdtTXT.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         File KMLfile = null;
@@ -286,7 +286,7 @@ class Exporter extends Thread {
 
             if (ExportTXT) {
                 // Writing head of TXT file
-                TXTbw.write("type,time,latitude,longitude,accuracy (m),altitude (m),geoid_height (m),speed (m/s),bearing (deg),sat_used,sat_inview,name,desc" + newLine);
+                TXTbw.write("type,date time,latitude,longitude,accuracy(m),altitude(m),geoid_height(m),speed(m/s),bearing(deg),sat_used,sat_inview,name,desc" + newLine);
             }
 
             String formattedLatitude = "";
