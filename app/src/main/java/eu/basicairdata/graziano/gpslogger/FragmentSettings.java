@@ -160,7 +160,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
                             // execute this when the downloader must be fired
                             final DownloadTask downloadTask = new DownloadTask(getActivity());
-                            downloadTask.execute("https://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC");
+                            downloadTask.execute("http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC");
 
                             mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
@@ -323,46 +323,54 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         @Override
         protected String doInBackground(String... sUrl) {
+            boolean redirect = false;
+            String HTTPSUrl = "";
             InputStream input = null;
             OutputStream output = null;
-            HttpsURLConnection connection = null;
+            HttpURLConnection connection = null;
             try {
                 URL url = new URL(sUrl[0]);
-
-                disableSSLCertificateChecking();
-
-                connection = (HttpsURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
                 // expect HTTP 200 OK, so we don't mistakenly save error report
                 // instead of the file
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    return "Server returned HTTP " + connection.getResponseCode()
+                    if ((connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) || (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM)) {
+                        // REDIRECTED !!
+                        HTTPSUrl = connection.getHeaderField("Location");
+                        connection.disconnect();
+                        redirect = true;
+                        Log.w("myApp", "[#] FragmentSettings.java - Download of EGM Grid redirected to " + HTTPSUrl) ;
+                    }
+                    else return "Server returned HTTP " + connection.getResponseCode()
                             + " " + connection.getResponseMessage();
                 }
 
-                // this will be useful to display download percentage
-                // might be -1: server did not report the length
-                int fileLength = connection.getContentLength();
+                if (!redirect) {
+                    // this will be useful to display download percentage
+                    // might be -1: server did not report the length
+                    int fileLength = connection.getContentLength();
 
-                // download the file
-                input = connection.getInputStream();
-                output = new FileOutputStream(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+                    // download the file
+                    input = connection.getInputStream();
+                    output = new FileOutputStream(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
 
-                byte data[] = new byte[4096];
-                long total = 0;
-                int count;
-                while ((count = input.read(data)) != -1) {
-                    // allow canceling with back button
-                    if (isCancelled()) {
-                        input.close();
-                        return null;
+                    byte data[] = new byte[4096];
+                    long total = 0;
+                    int count;
+                    while ((count = input.read(data)) != -1) {
+                        // allow canceling with back button
+                        if (isCancelled()) {
+                            input.close();
+                            return null;
+                        }
+                        total += count;
+                        // publishing the progress....
+                        if (fileLength > 0) // only if total length is known
+                            publishProgress((int) (total * 2028 / fileLength));
+                        output.write(data, 0, count);
                     }
-                    total += count;
-                    // publishing the progress....
-                    if (fileLength > 0) // only if total length is known
-                        publishProgress((int) (total * 2028 / fileLength));
-                    output.write(data, 0, count);
                 }
             } catch (Exception e) {
                 return e.toString();
@@ -378,7 +386,66 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (connection != null)
                     connection.disconnect();
             }
-            return null;
+            if (!redirect) return null;
+            else {
+                // REDIRECTION. Try with HTTPS:
+                HttpsURLConnection connection_https = null;
+                try {
+                    URL url = new URL(HTTPSUrl);
+
+                    connection_https = (HttpsURLConnection) url.openConnection();
+
+                    disableSSLCertificateChecking();
+
+                    connection_https = (HttpsURLConnection) url.openConnection();
+                    connection_https.connect();
+
+                    // expect HTTP 200 OK, so we don't mistakenly save error report
+                    // instead of the file
+                    if (connection_https.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                        return "Server returned HTTP " + connection_https.getResponseCode()
+                                + " " + connection_https.getResponseMessage();
+                    }
+
+                    // this will be useful to display download percentage
+                    // might be -1: server did not report the length
+                    int fileLength = connection_https.getContentLength();
+
+                    // download the file
+                    input = connection_https.getInputStream();
+                    output = new FileOutputStream(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+
+                    byte data[] = new byte[4096];
+                    long total = 0;
+                    int count;
+                    while ((count = input.read(data)) != -1) {
+                        // allow canceling with back button
+                        if (isCancelled()) {
+                            input.close();
+                            return null;
+                        }
+                        total += count;
+                        // publishing the progress....
+                        if (fileLength > 0) // only if total length is known
+                            publishProgress((int) (total * 2028 / fileLength));
+                        output.write(data, 0, count);
+                    }
+                } catch (Exception e) {
+                    return e.toString();
+                } finally {
+                    try {
+                        if (output != null)
+                            output.close();
+                        if (input != null)
+                            input.close();
+                    } catch (IOException ignored) {
+                    }
+
+                    if (connection_https != null)
+                        connection_https.disconnect();
+                }
+                return null;
+            }
         }
 
         @Override
