@@ -331,17 +331,22 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             try {
                 URL url = new URL(sUrl[0]);
                 connection = (HttpURLConnection) url.openConnection();
+                connection.setInstanceFollowRedirects(true);
                 connection.connect();
 
                 // expect HTTP 200 OK, so we don't mistakenly save error report
                 // instead of the file
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    if ((connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) || (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM)) {
+                    if ((connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP)
+                            || (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM)
+                            || (connection.getResponseCode() == HttpURLConnection.HTTP_SEE_OTHER)) {
                         // REDIRECTED !!
                         HTTPSUrl = connection.getHeaderField("Location");
                         connection.disconnect();
-                        redirect = true;
-                        Log.w("myApp", "[#] FragmentSettings.java - Download of EGM Grid redirected to " + HTTPSUrl) ;
+                        if (HTTPSUrl.startsWith("https")) {
+                            redirect = true;
+                            Log.w("myApp", "[#] FragmentSettings.java - Download of EGM Grid redirected to " + HTTPSUrl) ;
+                        }
                     }
                     else return "Server returned HTTP " + connection.getResponseCode()
                             + " " + connection.getResponseMessage();
@@ -394,6 +399,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     URL url = new URL(HTTPSUrl);
 
                     connection_https = (HttpsURLConnection) url.openConnection();
+                    connection_https.setInstanceFollowRedirects(true);
 
                     disableSSLCertificateChecking();
 
