@@ -460,6 +460,7 @@ public class FragmentTracklist extends Fragment {
                                 adapter.notifyItemRemoved(i);
                             }
                         }
+                        TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
                     }
                 }
             });
