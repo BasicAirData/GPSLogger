@@ -118,7 +118,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         void UpdateTrackStats(Track trk) {
             textViewTrackName.setText(trk.getName());
 
-            if (trk.getNumberOfLocations() > 1) {
+            if (trk.getNumberOfLocations() >= 1) {
                 phd = phdformatter.format(trk.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
                 textViewTrackLength.setText(phd.Value + " " + phd.UM);
                 phd = phdformatter.format(trk.getPrefTime(),PhysicalDataFormatter.FORMAT_DURATION);
