@@ -219,8 +219,8 @@ public class FragmentGPSFix extends Fragment {
                         TVGPSFixStatus.setText(R.string.gps_out_of_service);
                         break;
                     case GPS_TEMPORARYUNAVAILABLE:
-                        TVGPSFixStatus.setText(R.string.gps_temporary_unavailable);
-                        break;
+                        //TVGPSFixStatus.setText(R.string.gps_temporary_unavailable);
+                        //break;
                     case GPS_SEARCHING:
                         TVGPSFixStatus.setText(R.string.gps_searching);
                         break;
