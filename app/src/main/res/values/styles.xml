@@ -92,6 +92,12 @@
 
     <style name="MyMaterialThemeAbout" parent="MyMaterialTheme.Base">
         <item name="android:windowBackground">@color/colorTrackBackground</item>
+        <item name="android:windowAnimationStyle">@style/MyAboutAnimation.Window</item>
+    </style>
+
+    <style name="MyAboutAnimation.Window" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
     </style>
 
 </resources>
