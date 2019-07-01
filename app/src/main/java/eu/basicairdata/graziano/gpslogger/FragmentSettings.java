@@ -491,6 +491,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         PrefEGM96SetToTrue();
 
                         // Ask to switch to Absolute Altitude Mode if not already active.
+                        /*
                         ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
                         if (!(pKMLAltitudeMode.getValue().equals("0"))) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.StyledDialog));
@@ -515,6 +516,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                             AlertDialog dialog = builder.create();
                             dialog.show();
                         }
+                        */
 
                     } else {
                         Toast.makeText(context, getString(R.string.toast_download_failed), Toast.LENGTH_SHORT).show();
