@@ -264,7 +264,8 @@ public class GPSActivity extends AppCompatActivity {
     @Subscribe
     public void onEvent(EventBusMSGNormal msg) {
         switch (msg.MSGType) {
-            case EventBusMSG.TRACKLIST_SELECTION:
+            case EventBusMSG.TRACKLIST_SELECT:
+            case EventBusMSG.TRACKLIST_DESELECT:
                 ActivateActionModeIfNeeded();
         }
     }

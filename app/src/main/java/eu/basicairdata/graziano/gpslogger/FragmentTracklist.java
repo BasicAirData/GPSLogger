@@ -132,25 +132,21 @@ public class FragmentTracklist extends Fragment {
     }
 
     @Subscribe
-    public void onEvent(EventBusMSGNormal msg) {
-        if (msg.MSGType == EventBusMSG.TRACKLIST_SELECTION) {
-            final long trackid = msg.id;
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    int i = 0;
-                    boolean found = false;
-                    synchronized (data) {
-                        do {
-                            if (data.get(i).getId() == trackid) {
-                                found = true;
-                                adapter.notifyItemChanged(i);
-                            }
-                            i++;
-                        } while ((i < data.size()) && !found);
-                    }
+    public void onEvent(final EventBusMSGNormal msg) {
+        switch (msg.MSGType) {
+            case EventBusMSG.TRACKLIST_SELECT:
+            case EventBusMSG.TRACKLIST_DESELECT:
+                int i = 0;
+                boolean found = false;
+                synchronized (data) {
+                    do {
+                        if (data.get(i).getId() == msg.id) {
+                            found = true;
+                            data.get(i).setSelected(msg.MSGType == EventBusMSG.TRACKLIST_SELECT);
+                        }
+                        i++;
+                    } while ((i < data.size()) && !found);
                 }
-            });
         }
     }
 

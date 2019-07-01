@@ -20,6 +20,7 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +41,6 @@ import java.util.List;
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     private final static int NOT_AVAILABLE = -100000;
-    private final static int CARDTYPE_TRACK = 1;
-    private final static int CARDTYPE_SELECTEDTRACK = 2;
 
     private List<Track> dataSet;
 
@@ -59,8 +58,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     private static final Bitmap bmpCurrentTrackPaused = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_paused_white_48dp);
 
 
-
-
     class TrackHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
@@ -68,6 +65,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private Track track;
         private int TT;
 
+        private final CardView card;
         private final TextView textViewTrackName;
         private final TextView textViewTrackDescription;
         private final TextView textViewTrackLength;
@@ -86,7 +84,8 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         public void onClick(View v) {
             if (GPSApplication.getInstance().getJobsPending() == 0) {
                 track.setSelected(!track.isSelected());
-                EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_SELECTION, track.getId()));
+                card.setCardBackgroundColor(GPSApplication.getInstance().getResources().getColor(track.isSelected() ? R.color.colorCardBackground_Selected : R.color.colorCardBackground));
+                EventBus.getDefault().post(new EventBusMSGNormal(track.isSelected() ? EventBusMSG.TRACKLIST_SELECT : EventBusMSG.TRACKLIST_DESELECT, track.getId()));
                 //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
             }
         }
@@ -96,6 +95,9 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             super(itemView);
 
             itemView.setOnClickListener(this);
+
+            // CardView
+            card                        = itemView.findViewById(R.id.card_view);
 
             // TextViews
             textViewTrackName           = itemView.findViewById(R.id.id_textView_card_TrackName);
@@ -157,9 +159,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
         void BindTrack(Track trk) {
             track = trk;
+
+            card.setCardBackgroundColor(GPSApplication.getInstance().getResources().getColor(track.isSelected() ? R.color.colorCardBackground_Selected : R.color.colorCardBackground));
+
             imageViewPulse.setVisibility(View.INVISIBLE);
             textViewTrackName.setText(track.getName());
-            textViewTrackDescription.setText(GPSApplication.getInstance().getString(R.string.track_id) + " " + trk.getId());
+            textViewTrackDescription.setText(GPSApplication.getInstance().getString(R.string.track_id) + " " + track.getId());
 
             if (trk.getNumberOfLocations() >= 1) {
                 phd = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
@@ -185,7 +190,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (track.getTrackType() != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[track.getTrackType()]);
             else imageViewIcon.setImageBitmap(null);
 
-            if (GPSApplication.getInstance().getCurrentTrack().getId() == trk.getId()) {
+            if (GPSApplication.getInstance().getCurrentTrack().getId() == track.getId()) {
                 imageViewThumbnail.setImageBitmap (GPSApplication.getInstance().getRecording() ? bmpCurrentTrackRecording : bmpCurrentTrackPaused);
             }
             else {
@@ -212,13 +217,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     @Override
     public TrackHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new TrackHolder(LayoutInflater.from(parent.getContext()).inflate(
-                viewType == CARDTYPE_SELECTEDTRACK ? R.layout.card_selectedtrackinfo : R.layout.card_trackinfo, parent, false));
-    }
-
-
-    public int getItemViewType (int position) {
-        return (dataSet.get(position).isSelected() ? CARDTYPE_SELECTEDTRACK : CARDTYPE_TRACK);
+        return new TrackHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_trackinfo, parent, false));
     }
 
 
@@ -227,17 +226,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         holder.BindTrack(dataSet.get(listPosition));
     }
 
-/*
-    @Override
-    public void onBindViewHolder(TrackHolder holder, int listPosition, List<Object> payloads) {
-        if(!payloads.isEmpty()) {
-            //if (payloads.get(0) instanceof Integer) {
-                // Update progressbar:
-                holder.progressBar.setProgress((Integer) payloads.get(0));
-            //}
-        } else super.onBindViewHolder(holder, listPosition, payloads);
-    }
-*/
 
     @Override
     public int getItemCount() {

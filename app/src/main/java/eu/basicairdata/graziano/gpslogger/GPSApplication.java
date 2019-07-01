@@ -818,7 +818,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             for (Track T : _ArrayListTracks) {
                 if (T.isSelected()) {
                     T.setSelected(false);
-                    EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_SELECTION, T.getId()));
+                    EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_DESELECT, T.getId()));
                 }
             }
         }
