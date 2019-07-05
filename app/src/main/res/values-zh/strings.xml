@@ -30,7 +30,7 @@
     <string name="speed">速度</string>
     <string name="direction">方向</string>
     <string name="accuracy">精度</string>
-    <string name="north">N</string>
+    <string name="north">北</string>
     <string name="north_northeast">东北偏北</string>
     <string name="northeast">东北</string>
     <string name="east_northeast">东北偏东</string>
