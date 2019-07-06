@@ -32,16 +32,12 @@
     <color name="colorRoundedCornerDarkBottom">#161616</color>
     <color name="colorRoundedCornerDarkBorder">#707070</color>
 
-    <color name="colorCurrentTrackCardBackground">#202020</color>
     <color name="colorCardBackground_Line">#58ffffff</color>
     <color name="colorCardBackground_Title">#16ffffff</color>
     <color name="colorCardBackground_Data">#0affffff</color>
     <color name="colorCardBackground">#2f2f2f</color>
     <color name="colorCardBackground_Selected">#6a3737</color>
-    <!-- <color name="colorCardBackground_Selected">#674242</color> -->
-    <!-- <color name="colorCardBackground_Selected">#583a3a</color> -->
-    <color name="colorThumbnailLineColor">#d7d7d7</color>
-    <color name="colorThumbnailLineBackground">#161616</color>
+    <color name="colorThumbnailLineColor">#c9c9c9</color>
 
     <color name="colorAccent">#dddddd</color>
     <color name="preference_accent">#ca2222</color>

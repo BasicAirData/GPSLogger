@@ -1340,7 +1340,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 NumberOfLocations = track.getNumberOfLocations();
 
                 // Setup Paints
-                drawPaint.setColor(Color.parseColor("#c9c9c9"));
+                drawPaint.setColor(getResources().getColor(R.color.colorThumbnailLineColor));
                 drawPaint.setAntiAlias(true);
                 drawPaint.setStrokeWidth(getResources().getDimension(R.dimen.thumbLineWidth));
                 //drawPaint.setStrokeWidth(2);
@@ -1356,7 +1356,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 BGPaint.setStrokeJoin(Paint.Join.ROUND);
                 BGPaint.setStrokeCap(Paint.Cap.ROUND);
 
-                EndDotdrawPaint.setColor(Color.parseColor("#c9c9c9"));
+                EndDotdrawPaint.setColor(getResources().getColor(R.color.colorThumbnailLineColor));
                 EndDotdrawPaint.setAntiAlias(true);
                 EndDotdrawPaint.setStrokeWidth(getResources().getDimension(R.dimen.thumbLineWidth) * 2.5f);
                 EndDotdrawPaint.setStyle(Paint.Style.STROKE);
