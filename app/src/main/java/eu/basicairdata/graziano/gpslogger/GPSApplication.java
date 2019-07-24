@@ -1457,7 +1457,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                             //Log.w("myApp", "[#] GPSApplication.java - Unable to save: " + Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + fname);
                         }
 
-                        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+                        EventBus.getDefault().post(EventBusMSG.REFRESH_TRACKLIST);
                     }
                 }
             }

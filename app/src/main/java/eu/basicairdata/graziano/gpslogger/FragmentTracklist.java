@@ -174,6 +174,19 @@ public class FragmentTracklist extends Fragment {
             }
             return;
         }
+        if (msg == EventBusMSG.REFRESH_TRACKLIST) {
+            try {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            } catch (NullPointerException e) {
+                //Log.w("myApp", "[#] FragmentTracklist.java - Unable to manage UI");
+            }
+            return;
+        }
         if (msg == EventBusMSG.NOTIFY_TRACKS_DELETED) {
             DeleteSomeTracks();
             return;
