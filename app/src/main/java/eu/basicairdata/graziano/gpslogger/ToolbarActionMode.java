@@ -1,5 +1,6 @@
 package eu.basicairdata.graziano.gpslogger;
 
+import android.os.Handler;
 import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,29 @@ public class ToolbarActionMode implements ActionMode.Callback {
 
     private Menu actionmenu;
     private GPSApplication gpsApplication = GPSApplication.getInstance();
+
+
+    // A flag that avoids to start more than one job at a time on Actionmode Toolbar
+    private boolean ActionmodeButtonPressed = false;
+
+    private final Handler handler_ActionmodeButtonPressed = new Handler();
+    private Runnable r_ActionmodeButtonPressed = new Runnable() {
+        @Override
+        public void run() {
+            setActionmodeButtonPressed(false);
+        }
+    };
+
+    public boolean isActionmodeButtonPressed() {
+        return ActionmodeButtonPressed;
+    }
+
+    public void setActionmodeButtonPressed(boolean actionmodeButtonPressed) {
+        ActionmodeButtonPressed = actionmodeButtonPressed;
+        if (actionmodeButtonPressed) {
+            handler_ActionmodeButtonPressed.postDelayed(r_ActionmodeButtonPressed, 500);    // The Flag remains active for 500 ms
+        } else handler_ActionmodeButtonPressed.removeCallbacks(r_ActionmodeButtonPressed);
+    }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -33,23 +57,30 @@ public class ToolbarActionMode implements ActionMode.Callback {
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.cardmenu_delete:
-                EventBus.getDefault().post(EventBusMSG.ACTION_BULK_DELETE_TRACKS);
-                break;
-            case R.id.cardmenu_export:
-                EventBus.getDefault().post(EventBusMSG.ACTION_BULK_EXPORT_TRACKS);
-                break;
-            case R.id.cardmenu_view:
-                EventBus.getDefault().post(EventBusMSG.ACTION_BULK_VIEW_TRACKS);
-                break;
-            case R.id.cardmenu_share:
-                EventBus.getDefault().post(EventBusMSG.ACTION_BULK_SHARE_TRACKS);
-                break;
-            default:
-                return false;
+        if (!isActionmodeButtonPressed()) {
+            switch (item.getItemId()) {
+                case R.id.cardmenu_delete:
+                    setActionmodeButtonPressed(true);
+                    EventBus.getDefault().post(EventBusMSG.ACTION_BULK_DELETE_TRACKS);
+                    break;
+                case R.id.cardmenu_export:
+                    setActionmodeButtonPressed(true);
+                    EventBus.getDefault().post(EventBusMSG.ACTION_BULK_EXPORT_TRACKS);
+                    break;
+                case R.id.cardmenu_view:
+                    setActionmodeButtonPressed(true);
+                    EventBus.getDefault().post(EventBusMSG.ACTION_BULK_VIEW_TRACKS);
+                    break;
+                case R.id.cardmenu_share:
+                    setActionmodeButtonPressed(true);
+                    EventBus.getDefault().post(EventBusMSG.ACTION_BULK_SHARE_TRACKS);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
