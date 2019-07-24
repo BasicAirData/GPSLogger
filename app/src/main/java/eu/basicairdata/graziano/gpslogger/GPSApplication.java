@@ -23,6 +23,7 @@ import android.Manifest;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -777,14 +778,26 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.google-earth.kml+xml");
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Log.w("myApp", "[#] GPSApplication.java - ViewTrack: Unable to view the track: " + e);
+                AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
+                asyncPrepareTracklistContextMenu.start();
+            }
         }
         if (prefViewTracksWith == 1) {              // GPX Viewer
             File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".gpx");
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setDataAndType(Uri.fromFile(file), "gpx+xml");
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Log.w("myApp", "[#] GPSApplication.java - ViewTrack: Unable to view the track: " + e);
+                AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
+                asyncPrepareTracklistContextMenu.start();
+            }
         }
     }
 
@@ -940,6 +953,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 isContextMenuViewVisible = true;
             }
             Log.w("myApp", "[#] GPSApplication.java - Tracklist ContextMenu prepared");
+            EventBus.getDefault().post(EventBusMSG.UPDATE_ACTIONBAR);
         }
     }
 

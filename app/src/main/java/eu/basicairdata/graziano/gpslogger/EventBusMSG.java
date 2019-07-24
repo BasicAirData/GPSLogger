@@ -34,6 +34,7 @@ public class EventBusMSG {
     static final short STORAGE_PERMISSION_REQUIRED      =  12;  // The Storage permission is required
     static final short UPDATE_JOB_PROGRESS              =  13;  // Update the progress of the current Job
     static final short NOTIFY_TRACKS_DELETED            =  14;  // Notify that some tracks are deleted
+    static final short UPDATE_ACTIONBAR                 =  15;  // Notify that the actionbar must be updated
 
     static final short TRACKLIST_DESELECT               =  24;  // The user deselect (into the tracklist) the track with a given id
     static final short TRACKLIST_SELECT                 =  25;  // The user select (into the tracklist) the track with a given id
