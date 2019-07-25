@@ -48,7 +48,7 @@
     <string name="north_northwest">NNO</string>
     <!-- GPS Status messages -->
     <string name="gps_disabled">GPS desactivado</string>
-    <string name="gps_disabled_with_hint">GPS no activado \n\n hacer doble clic aquí \n y elejir el servicio de ubicación\n con un método de localización \nque utilice el sensor de GPS</string>
+    <string name="gps_disabled_with_hint">GPS no activado \n\n hacer doble clic aquí \n y elegir el servicio de ubicación\n con un método de localización \nque utilice el sensor de GPS</string>
     <string name="gps_out_of_service">GPS fuera de servicio</string>
     <string name="gps_temporary_unavailable">GPS temporaneamente no disponible</string>
     <string name="gps_searching">Buscando GPS</string>
