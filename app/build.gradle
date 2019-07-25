@@ -33,8 +33,8 @@ android {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 24
-        versionName '2.2.1b_20190724'
+        versionCode 25
+        versionName '2.2.1'
     }
     buildTypes {
         debug {
@@ -63,6 +63,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:preference-v7:27.1.1'
     implementation 'com.android.support:preference-v14:27.1.1'
-    //implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.github.bumptech.glide:glide:3.8.0'
 }
