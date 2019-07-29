@@ -883,27 +883,32 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
 
     public void ExecuteJob () {
-        switch (JobType) {
-            case JOB_TYPE_NONE:
-                break;
-            case JOB_TYPE_DELETE:
-                String S = "TASK_DELETE_TRACKS";
-                for (ExportingTask ET : ExportingTaskList) {
-                    S = S + " " + ET.getId();
-                }
-                AsyncTODO ast = new AsyncTODO();
-                ast.TaskType = S;
-                ast.location = null;
-                AsyncTODOQueue.add(ast);
-                //EventBus.getDefault().post(EventBusMSG.NOTIFY_TRACKS_DELETED);
-                break;
-            case JOB_TYPE_EXPORT:
-            case JOB_TYPE_VIEW:
-            case JOB_TYPE_SHARE:
-                startExportingStatusChecker();
-                break;
-            default:
-                break;
+        if (!ExportingTaskList.isEmpty()) {
+            switch (JobType) {
+                case JOB_TYPE_NONE:
+                    break;
+                case JOB_TYPE_DELETE:
+                    String S = "TASK_DELETE_TRACKS";
+                    for (ExportingTask ET : ExportingTaskList) {
+                        S = S + " " + ET.getId();
+                    }
+                    AsyncTODO ast = new AsyncTODO();
+                    ast.TaskType = S;
+                    ast.location = null;
+                    AsyncTODOQueue.add(ast);
+                    break;
+                case JOB_TYPE_EXPORT:
+                case JOB_TYPE_VIEW:
+                case JOB_TYPE_SHARE:
+                    startExportingStatusChecker();
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            Log.w("myApp", "[#] GPSApplication.java - Empty Job, nothing processed");
+            JobProgress = 0;
+            JobsPending = 0;
         }
     }
 
@@ -940,9 +945,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             }
             ResolveInfo ri = pm.resolveActivity(intent, 0); // Find default app
             if (ri != null) {
-                //Log.w("myApp", "[#] FragmentTracklist.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+                //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
                 List<ResolveInfo> lri = pm.queryIntentActivities(intent, 0);
-                //Log.w("myApp", "[#] FragmentTracklist.java - Found " + lri.size() + " viewers:");
+                //Log.w("myApp", "[#] GPSApplication.java - Found " + lri.size() + " viewers:");
                 for (ResolveInfo tmpri : lri) {
                     //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
                     if (ri.activityInfo.applicationInfo.packageName.equals(tmpri.activityInfo.applicationInfo.packageName)) {
