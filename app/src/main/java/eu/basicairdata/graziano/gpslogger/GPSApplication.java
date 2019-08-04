@@ -90,11 +90,11 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public static final int APP_ORIGIN_NOT_SPECIFIED     = 0;
     public static final int APP_ORIGIN_GOOGLE_PLAY_STORE = 1;  // The app is installed via the Google Play Store
 
-    public static final int JOB_TYPE_NONE   = 0;                // No operation
-    public static final int JOB_TYPE_EXPORT = 1;                // Bulk Exportation
-    public static final int JOB_TYPE_VIEW   = 2;                // Bulk View
-    public static final int JOB_TYPE_SHARE  = 3;                // Bulk Share
-    public static final int JOB_TYPE_DELETE = 4;                // Bulk Delete
+    public static final int JOB_TYPE_NONE       = 0;                // No operation
+    public static final int JOB_TYPE_EXPORT     = 1;                // Bulk Exportation
+    public static final int JOB_TYPE_VIEW       = 2;                // Bulk View
+    public static final int JOB_TYPE_SHARE      = 3;                // Bulk Share
+    public static final int JOB_TYPE_DELETE     = 4;                // Bulk Delete
 
 
     // Preferences Variables
@@ -174,6 +174,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private int JobProgress = 0;
     private int JobsPending = 0;                            // The number of jobs to be done
     public int JobType = JOB_TYPE_NONE;                     // The type of job that is pending
+    private boolean DeleteAlsoExportedFiles = false;        // When true, the deletion of some tracks will delete also the exported files of the tracks
 
     private int _Stabilizer = StabilizingSamples;
     private int HandlerTimer = DEFAULTHANDLERTIMER;
@@ -547,7 +548,33 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return ExportingTaskList;
     }
 
-// --------------------------------------------------------------------------------------------
+    public void setDeleteAlsoExportedFiles(boolean deleteAlsoExportedFiles) {
+        DeleteAlsoExportedFiles = deleteAlsoExportedFiles;
+    }
+
+
+    // ------------------------------------------------------------------------ Utility
+
+    private void DeleteFile(String filename) {
+        File file = new File(filename);
+        boolean deleted;
+        if (file.exists ()) {
+            deleted = file.delete();
+            if (deleted) Log.w("myApp", "[#] GPSApplication.java - DeleteFile: " + filename + " deleted");
+            else Log.w("myApp", "[#] GPSApplication.java - DeleteFile: " + filename + " unable to delete the File");
+        }
+        else Log.w("myApp", "[#] GPSApplication.java - DeleteFile: " + filename + " doesn't exists");
+    }
+
+
+    /* NOT USED, Commented out
+    private boolean FileExists(String filename) {
+        File file = new File(filename);
+        return file.exists ();
+    } */
+
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public void onCreate() {
@@ -1254,6 +1281,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                     track.add(locationExtended);
                     GPSDataBase.addLocationToTrack(locationExtended, track);
+                    //Log.w("myApp", "[#] GPSApplication.java - TASK_ADDLOCATION: Added new Location in " + track.getId());
                     _currentTrack = track;
                     EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
                     if (_currentTrack.getNumberOfLocations() + _currentTrack.getNumberOfPlacemarks() == 1) UpdateTrackList();
@@ -1294,20 +1322,36 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         int TracksToBeDeleted = tokens.size();
                         int TracksDeleted = 0;
                         for (String s : tokens) {
+                            Track track = null;             // The track found in the _ArrayListTracks
                             int i = Integer.valueOf(s);
                             synchronized (_ArrayListTracks) {
                                 for (Track T : _ArrayListTracks) {
                                     if (T.getId() == i) {
+                                        track = T;
                                         GPSDataBase.DeleteTrack(i);
                                         Log.w("myApp", "[#] GPSApplication.java - TASK_DELETE_TRACKS: Track " + i + " deleted.");
                                         _ArrayListTracks.remove(T);
-                                        TracksDeleted++;
-                                        JobProgress = (int) Math.round(1000L*TracksDeleted/TracksToBeDeleted);
-                                        EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
-                                        if (JobsPending > 0) JobsPending--;
                                         break;
                                     }
                                 }
+                            }
+                            if (track != null) {
+                                // Delete track files
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".txt");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".kml");
+                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".gpx");
+                                DeleteFile(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
+                                if (DeleteAlsoExportedFiles) {
+                                    // Delete exported files
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx");
+                                }
+
+                                TracksDeleted++;
+                                JobProgress = (int) Math.round(1000L*TracksDeleted/TracksToBeDeleted);
+                                EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
+                                if (JobsPending > 0) JobsPending--;
                             }
                         }
                     }

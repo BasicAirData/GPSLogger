@@ -64,13 +64,6 @@ public class FragmentTracklist extends Fragment {
         // Required empty public constructor
     }
 
-
-    private void DeleteFile(String filename) {
-        File file = new File(filename);
-        if (file.exists ()) file.delete();
-    }
-
-
     private boolean FileExists(String filename) {
         File file = new File(filename);
         return file.exists ();
@@ -236,10 +229,12 @@ public class FragmentTracklist extends Fragment {
 
             // Check if exist at least one exported file:
             boolean fileexist = false;
-            for (Track track : selectedTracks) {
-                fileexist |= FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml")
-                          || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx")
-                          || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                for (Track track : selectedTracks) {
+                    fileexist |= FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml")
+                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx")
+                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
+                }
             }
             if (fileexist) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
@@ -247,39 +242,16 @@ public class FragmentTracklist extends Fragment {
                 builder.setIcon(android.R.drawable.ic_menu_info_details);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        for (Track track : selectedTracks) {
-
-                            String name = track.getName();
-                            String nameID = String.valueOf(track.getId());
-
-                            // Delete exported files
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".txt");
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".kml");
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + name + ".gpx");
-                            // Delete track files
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                            DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
-                        }
                         dialog.dismiss();
+                        GPSApplication.getInstance().setDeleteAlsoExportedFiles(true); // Delete also exported files
                         GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
                         GPSApplication.getInstance().ExecuteJob();
                     }
                 });
                 builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        for (Track track : selectedTracks) {
-                            String name = track.getName();
-                            String nameID = String.valueOf(track.getId());
-
-                            // Delete track files
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                            DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
-                        }
                         dialog.dismiss();
+                        GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
                         GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
                         GPSApplication.getInstance().ExecuteJob();
                     }
@@ -297,17 +269,8 @@ public class FragmentTracklist extends Fragment {
                 builder.setIcon(android.R.drawable.ic_menu_info_details);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        for (final Track track : selectedTracks) {
-                            String name = track.getName();
-                            String nameID = String.valueOf(track.getId());
-
-                            // Delete track files
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".txt");
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".kml");
-                            DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + name + ".gpx");
-                            DeleteFile(getContext().getFilesDir() + "/Thumbnails/" + nameID + ".png");
-                        }
                         dialog.dismiss();
+                        GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
                         GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
                         GPSApplication.getInstance().ExecuteJob();
                     }
