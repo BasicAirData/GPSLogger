@@ -52,6 +52,7 @@ import android.os.StrictMode;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -1124,6 +1125,13 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
         if (ID > 0) {
             synchronized(_ArrayListTracks) {
+                // Save Selections
+                ArrayList <Long> SelectedT = new ArrayList<>();
+                for (Track T : _ArrayListTracks) {
+                    if (T.isSelected()) SelectedT.add(T.getId());
+                }
+
+                // Update the List
                 _ArrayListTracks.clear();
                 _ArrayListTracks.addAll(GPSDataBase.getTracksList(0, ID - 1));
                 if ((ID > 1) && (GPSDataBase.getTrack(ID - 1) != null)) {
@@ -1136,6 +1144,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                     _ArrayListTracks.add(0, _currentTrack);
                 } else
                     Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: current track not visible into the tracklist");
+
+                // Restore the selection state
+                for (Track T : _ArrayListTracks) {
+                    for (Long SelT : SelectedT) {
+                        if (SelT == T.getId()) {
+                            T.setSelected(true);
+                            break;
+                        }
+                    }
+                }
             }
             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
             //Log.w("myApp", "[#] GPSApplication.java - Update Tracklist: Added " + _ArrayListTracks.size() + " tracks");
