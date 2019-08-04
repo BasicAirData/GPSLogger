@@ -114,11 +114,19 @@ public class GPSActivity extends AppCompatActivity {
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setHideable (false);
 
-        activeTab = tabLayout.getSelectedTabPosition();
-        GPSApplication.getInstance().setGPSActivity_activeTab(activeTab);
-
         ToastClickAgain = Toast.makeText(this, getString(R.string.toast_track_finished_click_again), Toast.LENGTH_SHORT);
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //Log.w("myApp", "[#] GPSActivity.java - onStart()");
+        activeTab = tabLayout.getSelectedTabPosition();
+        GPSApplication.getInstance().setGPSActivity_activeTab(activeTab);
+    }
+
 
     @Override
     public void onResume() {
