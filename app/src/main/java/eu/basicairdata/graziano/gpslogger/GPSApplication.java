@@ -744,14 +744,14 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             mlocManager.removeGpsStatusListener(this);
             mlocManager.removeUpdates(this);
             isGPSLocationUpdatesActive = false;
-            Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = false");
+            //Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = false");
         }
         if (state && !isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             mlocManager.addGpsStatusListener(this);
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this); // Requires Location update
             isGPSLocationUpdatesActive = true;
-            Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
+            //Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
             StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
         }
     }
@@ -760,7 +760,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
         if (isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            Log.w("myApp", "[#] GPSApplication.java - updateGPSLocationFrequency");
+            //Log.w("myApp", "[#] GPSApplication.java - updateGPSLocationFrequency");
             mlocManager.removeGpsStatusListener(this);
             mlocManager.removeUpdates(this);
             StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
@@ -796,7 +796,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         } catch (NullPointerException e) {
             _NumberOfSatellites = NOT_AVAILABLE;
             _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
-            Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
+            //Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
         }
         //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
     }
