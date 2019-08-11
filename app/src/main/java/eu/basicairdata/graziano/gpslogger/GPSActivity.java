@@ -431,7 +431,10 @@ public class GPSActivity extends AppCompatActivity {
                     // Check for permissions
                     if (perms.containsKey(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                            Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_GRANTED");
+                            Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_GRANTED; setGPSLocationUpdates!");
+                            GPSApplication.getInstance().setGPSLocationUpdates(false);
+                            GPSApplication.getInstance().setGPSLocationUpdates(true);
+                            GPSApplication.getInstance().updateGPSLocationFrequency();
                         } else {
                             Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_DENIED");
                         }

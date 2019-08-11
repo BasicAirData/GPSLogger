@@ -52,7 +52,6 @@ import android.os.StrictMode;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -745,12 +744,14 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             mlocManager.removeGpsStatusListener(this);
             mlocManager.removeUpdates(this);
             isGPSLocationUpdatesActive = false;
+            Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = false");
         }
         if (state && !isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             mlocManager.addGpsStatusListener(this);
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this); // Requires Location update
             isGPSLocationUpdatesActive = true;
+            Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
             StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
         }
     }
@@ -759,6 +760,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
         if (isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            Log.w("myApp", "[#] GPSApplication.java - updateGPSLocationFrequency");
             mlocManager.removeGpsStatusListener(this);
             mlocManager.removeUpdates(this);
             StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
