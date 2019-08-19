@@ -1342,39 +1342,48 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         int TracksToBeDeleted = tokens.size();
                         int TracksDeleted = 0;
                         for (String s : tokens) {
-                            Track track = null;             // The track found in the _ArrayListTracks
+                            Track track = null;                 // The track found in the _ArrayListTracks
                             int i = Integer.valueOf(s);
-                            synchronized (_ArrayListTracks) {
-                                for (Track T : _ArrayListTracks) {
-                                    if (T.getId() == i) {
-                                        track = T;
-                                        GPSDataBase.DeleteTrack(i);
-                                        Log.w("myApp", "[#] GPSApplication.java - TASK_DELETE_TRACKS: Track " + i + " deleted.");
-                                        _ArrayListTracks.remove(T);
-                                        break;
+                            if (i != _currentTrack.getId()) {   // Prevent the deletion of the current track
+                                synchronized (_ArrayListTracks) {
+                                    for (Track T : _ArrayListTracks) {
+                                        if (T.getId() == i) {
+                                            track = T;
+                                            GPSDataBase.DeleteTrack(i);
+                                            Log.w("myApp", "[#] GPSApplication.java - TASK_DELETE_TRACKS: Track " + i + " deleted.");
+                                            _ArrayListTracks.remove(T);
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                            if (track != null) {
-                                // Delete track files
-                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".txt");
-                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".kml");
-                                DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".gpx");
-                                DeleteFile(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
-                                if (DeleteAlsoExportedFiles) {
-                                    // Delete exported files
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx");
-                                }
+                                if (track != null) {
+                                    // Delete track files
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".txt");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".kml");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".gpx");
+                                    DeleteFile(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
+                                    if (DeleteAlsoExportedFiles) {
+                                        // Delete exported files
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx");
+                                    }
 
+                                    TracksDeleted++;
+                                    JobProgress = (int) Math.round(1000L * TracksDeleted / TracksToBeDeleted);
+                                    EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
+                                    if (JobsPending > 0) JobsPending--;
+                                }
+                            } else {
+                                Log.w("myApp", "[#] GPSApplication.java - TASK_DELETE_TRACKS: Unable to delete the current track!");
                                 TracksDeleted++;
-                                JobProgress = (int) Math.round(1000L*TracksDeleted/TracksToBeDeleted);
+                                JobProgress = (int) Math.round(1000L * TracksDeleted / TracksToBeDeleted);
                                 EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
                                 if (JobsPending > 0) JobsPending--;
                             }
                         }
                     }
+                    DeselectAllTracks();
                     JobProgress = 0;
                     EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
                     EventBus.getDefault().post(EventBusMSG.NOTIFY_TRACKS_DELETED);
