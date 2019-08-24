@@ -865,7 +865,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 }
             }
         }
-        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+        EventBus.getDefault().post(EventBusMSG.REFRESH_TRACKLIST);
     }
 
 
@@ -1383,7 +1383,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                             }
                         }
                     }
-                    DeselectAllTracks();
                     JobProgress = 0;
                     EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
                     EventBus.getDefault().post(EventBusMSG.NOTIFY_TRACKS_DELETED);
