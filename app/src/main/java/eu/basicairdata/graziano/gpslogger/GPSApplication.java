@@ -118,6 +118,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean LocationPermissionChecked   = false;          // If the flag is false the GPSActivity will check for Location Permission
     private boolean StoragePermissionChecked    = false;          // If the flag is false Storage Permission must be asked
     private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
+    private boolean isJustStarted               = true;           // True if the application has just been started
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
@@ -552,6 +553,13 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         DeleteAlsoExportedFiles = deleteAlsoExportedFiles;
     }
 
+    public boolean isJustStarted() {
+        return isJustStarted;
+    }
+
+    public void setJustStarted(boolean justStarted) {
+        isJustStarted = justStarted;
+    }
 
     // ------------------------------------------------------------------------ Utility
 
@@ -669,10 +677,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         // ----------------------------------------------------------------------------------------
 
         asyncUpdateThread.start();
-        AsyncTODO ast = new AsyncTODO();
-        ast.TaskType = "TASK_NEWTRACK";
-        ast.location = null;
-        AsyncTODOQueue.add(ast);
+        //AsyncTODO ast = new AsyncTODO();
+        //ast.TaskType = "TASK_NEWTRACK";
+        //ast.location = null;
+        //AsyncTODOQueue.add(ast);
 
         // Get max available VM memory, exceeding this amount will throw an
         // OutOfMemory exception. Stored in kilobytes as LruCache takes an
