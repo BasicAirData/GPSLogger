@@ -760,7 +760,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this); // Requires Location update
             isGPSLocationUpdatesActive = true;
             //Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
-            StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
+            if (prefGPSupdatefrequency >= 1000) StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
+            else StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / 1000);
         }
     }
 
@@ -771,7 +772,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             //Log.w("myApp", "[#] GPSApplication.java - updateGPSLocationFrequency");
             mlocManager.removeGpsStatusListener(this);
             mlocManager.removeUpdates(this);
-            StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
+            if (prefGPSupdatefrequency >= 1000) StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
+            else StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / 1000);
             mlocManager.addGpsStatusListener(this);
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this);
         }

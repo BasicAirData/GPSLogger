@@ -151,6 +151,7 @@
     <string name="pref_GPS_distance_66ft">66 feet</string>
 
     <string name="pref_GPS_update_frequency">GPS Update Interval</string>
+    <string name="pref_GPS_update_frequency_max">The shortest available</string>
     <string name="pref_GPS_update_frequency_1s">1 second (best accuracy)</string>
     <string name="pref_GPS_update_frequency_2s">2 seconds</string>
     <string name="pref_GPS_update_frequency_3s">3 seconds (less accurate)</string>
