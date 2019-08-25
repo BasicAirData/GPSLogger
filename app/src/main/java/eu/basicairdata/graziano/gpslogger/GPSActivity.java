@@ -150,7 +150,7 @@ public class GPSActivity extends AppCompatActivity {
         if (GPSApp.isJustStarted() && (GPSApp.getCurrentTrack().getNumberOfLocations() + GPSApp.getCurrentTrack().getNumberOfPlacemarks() > 0)) {
             Toast.makeText(context, getString(R.string.toast_active_track_not_empty), Toast.LENGTH_LONG).show();
             GPSApp.setJustStarted(false);
-        }
+        } else GPSApp.setJustStarted(false);
     }
 
     @Override
