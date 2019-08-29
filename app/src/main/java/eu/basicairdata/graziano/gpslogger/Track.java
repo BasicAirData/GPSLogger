@@ -257,8 +257,8 @@ public class Track {
         // --------------------------------------------------------------------------------- Speeds
 
         if ((End_Speed != NOT_AVAILABLE) && (End_Speed > SpeedMax)) SpeedMax = End_Speed;
-        if (Duration > 0) SpeedAverage = Distance / ((float) Duration / 1000);
-        if (Duration_Moving > 0) SpeedAverageMoving = Distance / ((float) Duration_Moving / 1000);
+        if (Duration > 0) SpeedAverage = (Distance + DistanceInProgress) / (((float) Duration) / 1000f);
+        if (Duration_Moving > 0) SpeedAverageMoving = (Distance + DistanceInProgress) / (((float) Duration_Moving) / 1000f);
         NumberOfLocations++;
     }
 
