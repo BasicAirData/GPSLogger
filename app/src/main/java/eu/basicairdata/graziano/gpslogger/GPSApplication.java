@@ -119,6 +119,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean StoragePermissionChecked    = false;          // If the flag is false Storage Permission must be asked
     private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
     private boolean isJustStarted               = true;           // True if the application has just been started
+    private boolean isMockProvider              = false;          // True if the location is from mock provider
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
@@ -1020,6 +1021,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void onLocationChanged(Location loc) {
         //if ((loc != null) && (loc.getProvider().equals(LocationManager.GPS_PROVIDER)) {
         if (loc != null) {      // Location data is valid
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {          // For API >= 18
+                if ((PrevFix == null) || (loc.isFromMockProvider()!=isMockProvider)) {  // Reset the number of satellites when the provider changes between GPS and MOCK
+                    isMockProvider = loc.isFromMockProvider();
+                    _NumberOfSatellites = NOT_AVAILABLE;
+                    _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                    if (isMockProvider) Log.w("myApp", "[#] GPSApplication.java - Provider Type = MOCK PROVIDER");
+                    else Log.w("myApp", "[#] GPSApplication.java - Provider Type = GPS PROVIDER");
+                }
+            }
+
             //Log.w("myApp", "[#] GPSApplication.java - onLocationChanged: provider=" + loc.getProvider());
             if (loc.hasSpeed() && (loc.getSpeed() == 0)) loc.removeBearing();           // Removes bearing if the speed is zero
             // --------- Workaround for old GPS that are affected to Week Rollover
