@@ -57,7 +57,6 @@ public class FragmentTracklist extends Fragment {
 
     private View view;
     private TextView TVTracklistEmpty;
-    private boolean gotoPermissionSettings = false;
 
 
     public FragmentTracklist() {
@@ -87,16 +86,15 @@ public class FragmentTracklist extends Fragment {
     }
 
     public boolean CheckStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission GRANTED");
             return true;    // Permission Granted
-        else {
-            boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (showRationale || !GPSApplication.getInstance().isStoragePermissionChecked()) {
-                List<String> listPermissionsNeeded = new ArrayList<>();
-                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-                ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
-            }
+        } else {
+            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission DENIED");
+            List<String> listPermissionsNeeded = new ArrayList<>();
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
             return false;
         }
     }
@@ -105,14 +103,6 @@ public class FragmentTracklist extends Fragment {
     @Override
     public void onResume() {
         EventBus.getDefault().register(this);
-
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            boolean shouldShowRationale = ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (!shouldShowRationale && GPSApplication.getInstance().isStoragePermissionChecked()) {
-                gotoPermissionSettings = true;
-            }
-        }
-
         Update();
         super.onResume();
     }
@@ -191,11 +181,7 @@ public class FragmentTracklist extends Fragment {
         if (msg == EventBusMSG.ACTION_BULK_SHARE_TRACKS) {
             GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_SHARE);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (gotoPermissionSettings) {       // Permission denied, no more ask!!
-                    EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_REQUIRED);
-                } else {
-                    CheckStoragePermission();   // Ask for storage permission
-                }
+                CheckStoragePermission();   // Ask for storage permission
             } else GPSApplication.getInstance().ExecuteJob();
             GPSApplication.getInstance().DeselectAllTracks();
             return;
@@ -203,11 +189,7 @@ public class FragmentTracklist extends Fragment {
         if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
             GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_VIEW);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (gotoPermissionSettings) {       // Permission denied, no more ask!!
-                    EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_REQUIRED);
-                } else {
-                    CheckStoragePermission();   // Ask for storage permission
-                }
+                CheckStoragePermission();   // Ask for storage permission
             } else GPSApplication.getInstance().ExecuteJob();
             GPSApplication.getInstance().DeselectAllTracks();
             return;
@@ -215,11 +197,7 @@ public class FragmentTracklist extends Fragment {
         if (msg == EventBusMSG.ACTION_BULK_EXPORT_TRACKS) {
             GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_EXPORT);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (gotoPermissionSettings) {       // Permission denied, no more ask!!
-                    EventBus.getDefault().post(EventBusMSG.STORAGE_PERMISSION_REQUIRED);
-                } else {
-                    CheckStoragePermission();   // Ask for storage permission
-                }
+                CheckStoragePermission();   // Ask for storage permission
             } else GPSApplication.getInstance().ExecuteJob();
             GPSApplication.getInstance().DeselectAllTracks();
             return;

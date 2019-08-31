@@ -25,10 +25,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
@@ -76,6 +74,7 @@ public class GPSActivity extends AppCompatActivity {
     final Context context = this;
 
     private boolean prefKeepScreenOn = true;
+    private boolean show_toast_grant_storage_permission = false;
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
@@ -148,9 +147,14 @@ public class GPSActivity extends AppCompatActivity {
         ActivateActionModeIfNeeded();
 
         if (GPSApp.isJustStarted() && (GPSApp.getCurrentTrack().getNumberOfLocations() + GPSApp.getCurrentTrack().getNumberOfPlacemarks() > 0)) {
-            Toast.makeText(context, getString(R.string.toast_active_track_not_empty), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.context, getString(R.string.toast_active_track_not_empty), Toast.LENGTH_LONG).show();
             GPSApp.setJustStarted(false);
         } else GPSApp.setJustStarted(false);
+
+        if (show_toast_grant_storage_permission) {
+            Toast.makeText(this.context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
+            show_toast_grant_storage_permission = false;
+        }
     }
 
     @Override
@@ -319,19 +323,13 @@ public class GPSActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case EventBusMSG.STORAGE_PERMISSION_REQUIRED:
-                GPSApp.setJobsPending(0);
+            case EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED:
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
                     }
                 });
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                intent.setData(uri);
-                startActivity(intent);
-                break;
             case EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE:
                 runOnUiThread(new Runnable() {
                     @Override
@@ -498,23 +496,11 @@ public class GPSActivity extends AppCompatActivity {
                             Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
                             if (GPSApp.getJobsPending() > 0) {
                                 // Shows toast "Unable to write the file"
-                                final Context context = this;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                                //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, MSG.id));
-                                //Log.w("myApp", "[#] GPSActivity.java - EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE " + MSG.id);
+                                show_toast_grant_storage_permission = true;
+                                EventBus.getDefault().post(EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED);
                                 GPSApp.setJobsPending(0);
                             }
                         }
-                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-                        SharedPreferences.Editor editor1 = settings.edit();
-                        editor1.putBoolean("prefIsStoragePermissionChecked", true);
-                        editor1.commit();
-                        GPSApp.setStoragePermissionChecked(true);
                     }
                 }
                 break;

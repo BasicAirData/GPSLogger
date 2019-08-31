@@ -116,7 +116,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean prefGPSWeekRolloverCorrected= false;
 
     private boolean LocationPermissionChecked   = false;          // If the flag is false the GPSActivity will check for Location Permission
-    private boolean StoragePermissionChecked    = false;          // If the flag is false Storage Permission must be asked
     private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
     private boolean isJustStarted               = true;           // True if the application has just been started
     private boolean isMockProvider              = false;          // True if the location is from mock provider
@@ -391,14 +390,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             LocationSettingsFlag = false;
             locationsettingshandler.removeCallbacks(locationsettingsr);   // Cancel the previous locationsettingsr handler
         }
-    }
-
-    public boolean isStoragePermissionChecked() {
-        return StoragePermissionChecked;
-    }
-
-    public void setStoragePermissionChecked(boolean storagePermissionChecked) {
-        StoragePermissionChecked = storagePermissionChecked;
     }
 
     public boolean isContextMenuShareVisible() {
@@ -1188,6 +1179,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     private void LoadPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup",Context.MODE_PRIVATE);
 
         // ---------Conversion from the previous versions of GPS Logger preferences
         if (preferences.contains("prefShowImperialUnits")) {       // The old boolean setting for imperial units in v.1.1.5
@@ -1198,6 +1190,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             editor.remove("prefShowImperialUnits");
             editor.commit();
         }
+
+        // ---------Remove the prefIsStoragePermissionChecked in preferences if present
+
+        if (preferences.contains("prefIsStoragePermissionChecked")) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove("prefIsStoragePermissionChecked");
+            editor.commit();
+        }
+
+
         // -----------------------------------------------------------------------
 
         //prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
@@ -1216,7 +1218,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         prefGPXVersion = Integer.valueOf(preferences.getString("prefGPXVersion", "100"));               // Default value = v.1.0
         prefShowTrackStatsType = Integer.valueOf(preferences.getString("prefShowTrackStatsType", "0"));
         prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));
-        StoragePermissionChecked = preferences.getBoolean("prefIsStoragePermissionChecked", false);
 
         long oldGPSupdatefrequency = prefGPSupdatefrequency;
         prefGPSupdatefrequency = Long.valueOf(preferences.getString("prefGPSupdatefrequency", "1000"));
