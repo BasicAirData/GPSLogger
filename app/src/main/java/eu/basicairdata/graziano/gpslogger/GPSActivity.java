@@ -25,8 +25,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
@@ -145,6 +147,37 @@ public class GPSActivity extends AppCompatActivity {
         }
 
         ActivateActionModeIfNeeded();
+
+        if (GPSApp.FlagExists(GPSApp.FLAG_RECORDING) && !GPSApp.getRecording()) {
+            // The app is crashed in background
+            Log.w("myApp", "[#] GPSActivity.java - THE APP HAS BEEN KILLED IN BACKGROUND DURING A RECORDING !!!");
+            GPSApp.FlagRemove(GPSApp.FLAG_RECORDING);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.StyledDialog));
+            builder.setMessage(getResources().getString(R.string.dlg_app_killed_description));
+            builder.setIcon(android.R.drawable.ic_menu_info_details);
+            builder.setPositiveButton(R.string.about_ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            builder.setNeutralButton(R.string.open_android_app_settings, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    try {
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        //Log.w("myApp", "[#] GPSActivity.java - Unable to open the settings screen");
+                    }
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
 
         if (GPSApp.isJustStarted() && (GPSApp.getCurrentTrack().getNumberOfLocations() + GPSApp.getCurrentTrack().getNumberOfPlacemarks() > 0)) {
             Toast.makeText(this.context, getString(R.string.toast_active_track_not_empty), Toast.LENGTH_LONG).show();

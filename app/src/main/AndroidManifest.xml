@@ -28,14 +28,10 @@
 
     <uses-feature android:name="android.hardware.location.gps" android:required="true" />
 
-    <!--
-    <uses-sdk xmlns:tools="http://schemas.android.com/tools"
-        tools:overrideLibrary="android.support.v14.preference" />
-    -->
-
     <application
         android:name=".GPSApplication"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/my_backup_rules"
         android:icon="@mipmap/gps_logger"
         android:label="@string/app_name"
         android:supportsRtl="true"

@@ -96,6 +96,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public static final int JOB_TYPE_SHARE      = 3;                // Bulk Share
     public static final int JOB_TYPE_DELETE     = 4;                // Bulk Delete
 
+    public static final String FLAG_RECORDING   = "flagRecording";  // The persistent Flag is set when the app is recording, in order to detect Background Crashes
+
 
     // Preferences Variables
     // private boolean prefKeepScreenOn = true;                 // DONE in GPSActivity
@@ -495,6 +497,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public void setRecording(boolean recordingState) {
         PrevRecordedFix = null;
         Recording = recordingState;
+        if (Recording) FlagAdd(FLAG_RECORDING);
+        else FlagRemove(FLAG_RECORDING);
     }
 
     public boolean getPlacemarkRequest() { return PlacemarkRequest; }
@@ -572,6 +576,30 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         File file = new File(filename);
         return file.exists ();
     } */
+
+
+    // Flags are Boolean SharedPreferences that are excluded by automatic Backups
+
+    public void FlagAdd (String flag) {
+        SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences_nobackup.edit();
+        editor.putBoolean(flag, true);
+        editor.commit();
+    }
+
+
+    public void FlagRemove (String flag) {
+        SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences_nobackup.edit();
+        editor.remove(flag);
+        editor.commit();
+    }
+
+
+    public boolean FlagExists (String flag) {
+        SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup",Context.MODE_PRIVATE);
+        return preferences_nobackup.getBoolean(flag, false);
+    }
 
 
     // --------------------------------------------------------------------------------------------
@@ -1179,7 +1207,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     private void LoadPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup",Context.MODE_PRIVATE);
 
         // ---------Conversion from the previous versions of GPS Logger preferences
         if (preferences.contains("prefShowImperialUnits")) {       // The old boolean setting for imperial units in v.1.1.5
