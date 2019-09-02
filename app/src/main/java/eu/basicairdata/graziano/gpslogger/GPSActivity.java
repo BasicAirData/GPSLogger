@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
@@ -154,27 +155,31 @@ public class GPSActivity extends AppCompatActivity {
             GPSApp.FlagRemove(GPSApp.FLAG_RECORDING);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.StyledDialog));
-            builder.setMessage(getResources().getString(R.string.dlg_app_killed_description));
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                builder.setMessage(getResources().getString(R.string.dlg_app_killed) + "\n\n" + getResources().getString(R.string.dlg_app_killed_description));
+                builder.setNeutralButton(R.string.open_android_app_settings, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        try {
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            //Log.w("myApp", "[#] GPSActivity.java - Unable to open the settings screen");
+                        }
+                        dialog.dismiss();
+                    }
+                });
+            }
+            else builder.setMessage(getResources().getString(R.string.dlg_app_killed));
             builder.setIcon(android.R.drawable.ic_menu_info_details);
             builder.setPositiveButton(R.string.about_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }
             });
-            builder.setNeutralButton(R.string.open_android_app_settings, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Intent intent = new Intent();
-                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    intent.setData(uri);
-                    try {
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        //Log.w("myApp", "[#] GPSActivity.java - Unable to open the settings screen");
-                    }
-                    dialog.dismiss();
-                }
-            });
+
             AlertDialog dialog = builder.create();
             dialog.show();
         }

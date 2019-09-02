@@ -119,7 +119,8 @@
     <string name="please_grant_storage_permission">Please grant the Storage Permission to enable this Feature</string>
 
     <!-- Notification App killed messagebox -->
-    <string name="dlg_app_killed_description">The App has been killed during background recording.\n\nPlease check in Android Settings that the app is not Battery optimized and not even Background restricted.</string>
+    <string name="dlg_app_killed">The App has been killed during background recording.</string>
+    <string name="dlg_app_killed_description">Please check in Android Settings that the app is not Battery optimized and not even Background restricted.</string>
     <string name="open_android_app_settings">Open Settings</string>
 
     <!-- Preferences -->
