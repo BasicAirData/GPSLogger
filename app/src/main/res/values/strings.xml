@@ -19,7 +19,7 @@
   -->
 
 <resources>
-    <string name="app_name">GPS Logger</string>
+    <string name="app_name" translatable="false">GPS Logger</string>
 
     <!-- Tabs -->
     <string name="tab_gpsfix">GPS Fix</string>
@@ -33,6 +33,8 @@
     <string name="speed">Speed</string>
     <string name="direction">Direction</string>
     <string name="accuracy">Accuracy</string>
+    <string name="time">Time</string>
+    <string name="satellites">Satellites</string>
 
     <string name="north">N</string>
     <string name="north_northeast">NNE</string>
