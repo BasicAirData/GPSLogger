@@ -1252,6 +1252,14 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         // ---------------------------------------------- Update the GPS Update Frequency if needed
         if (oldGPSupdatefrequency != prefGPSupdatefrequency) updateGPSLocationFrequency();
 
+        // ---------------------------------------------------------------- If no Exportation formats are enabled, enable the GPX one
+        if (!prefExportKML && !prefExportGPX && !prefExportTXT) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("prefExportGPX", true);
+            editor.commit();
+            prefExportGPX = true;
+        }
+
         // ---------------------------------------------------------------- Load EGM Grid if needed
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
