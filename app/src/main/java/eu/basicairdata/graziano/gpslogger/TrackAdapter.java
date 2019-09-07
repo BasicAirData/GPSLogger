@@ -57,6 +57,8 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     private static final Bitmap bmpCurrentTrackRecording = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_recording_48dp);
     private static final Bitmap bmpCurrentTrackPaused = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_paused_white_48dp);
 
+    private long StartAnimationTime = 0;
+    private long PointsCount = GPSApplication.getInstance().getCurrentTrack().getNumberOfLocations() + GPSApplication.getInstance().getCurrentTrack().getNumberOfPlacemarks();
 
     class TrackHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -148,8 +150,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (GPSApplication.getInstance().getRecording()) {
                 imageViewThumbnail.setImageBitmap(bmpCurrentTrackRecording);
                 imageViewPulse.setVisibility(View.VISIBLE);
-                Animation sunRise = AnimationUtils.loadAnimation(GPSApplication.getInstance().getApplicationContext(), R.anim.record_pulse);
-                imageViewPulse.startAnimation(sunRise);
+                if ((PointsCount != trk.getNumberOfLocations()+trk.getNumberOfPlacemarks()) && (System.currentTimeMillis() - StartAnimationTime >= 700L)) {
+                    PointsCount = trk.getNumberOfLocations()+trk.getNumberOfPlacemarks();
+                    Animation sunRise = AnimationUtils.loadAnimation(GPSApplication.getInstance().getApplicationContext(), R.anim.record_pulse);
+                    imageViewPulse.startAnimation(sunRise);
+                    StartAnimationTime = System.currentTimeMillis();
+                }
             } else {
                 imageViewPulse.setVisibility(View.INVISIBLE);
                 imageViewThumbnail.setImageBitmap(bmpCurrentTrackPaused);
