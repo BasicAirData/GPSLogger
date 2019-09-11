@@ -56,8 +56,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        super.onPause();
         Log.w("myApp", "[#] SettingsActivity.java - onPause()");
+        super.onPause();
     }
 
     @Override

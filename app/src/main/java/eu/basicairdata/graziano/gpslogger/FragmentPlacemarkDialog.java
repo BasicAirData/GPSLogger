@@ -18,7 +18,6 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -63,8 +62,6 @@ public class FragmentPlacemarkDialog extends DialogFragment {
         }, 200);
 
         createPlacemarkAlert.setView(view)
-
-                //.setPositiveButton(R.string.conti_nue, new DialogInterface.OnClickListener() {
                 .setPositiveButton(R.string.dlg_button_add, new DialogInterface.OnClickListener() {
 
                     @Override
@@ -78,12 +75,9 @@ public class FragmentPlacemarkDialog extends DialogFragment {
                         }
                     }
                 })
-                //.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 .setNegativeButton(R.string.dlg_button_cancel, new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-
                     }
                 });
         return createPlacemarkAlert.create();
@@ -92,12 +86,6 @@ public class FragmentPlacemarkDialog extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getDialog().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 }

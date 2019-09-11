@@ -197,10 +197,10 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        super.onPause();
         EventBus.getDefault().post(EventBusMSG.APP_PAUSE);
         Log.w("myApp", "[#] GPSActivity.java - onPause()");
         EventBus.getDefault().unregister(this);
+        super.onPause();
     }
 
     @Override
@@ -368,6 +368,7 @@ public class GPSActivity extends AppCompatActivity {
                         Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
                     }
                 });
+                break;
             case EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE:
                 runOnUiThread(new Runnable() {
                     @Override
@@ -467,8 +468,6 @@ public class GPSActivity extends AppCompatActivity {
                 List<String> listPermissionsNeeded = new ArrayList<>();
                 listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
-            } else {
-
             }
             return false;
         }

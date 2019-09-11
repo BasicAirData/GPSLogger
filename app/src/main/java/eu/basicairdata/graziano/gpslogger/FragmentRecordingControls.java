@@ -81,8 +81,8 @@ public class FragmentRecordingControls extends Fragment{
 
     @Override
     public void onResume() {
-        EventBus.getDefault().register(this);
         super.onResume();
+        EventBus.getDefault().register(this);
         Update();
     }
 

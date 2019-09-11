@@ -697,10 +697,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         // ----------------------------------------------------------------------------------------
 
         asyncUpdateThread.start();
-        //AsyncTODO ast = new AsyncTODO();
-        //ast.TaskType = "TASK_NEWTRACK";
-        //ast.location = null;
-        //AsyncTODOQueue.add(ast);
 
         // Get max available VM memory, exceeding this amount will throw an
         // OutOfMemory exception. Stored in kilobytes as LruCache takes an
@@ -765,7 +761,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     public void setGPSLocationUpdates (boolean state) {
         // Request permissions = https://developer.android.com/training/permissions/requesting.html
-
         if (!state && !getRecording() && isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             GPSStatus = GPS_SEARCHING;
@@ -786,7 +781,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     }
 
     public void updateGPSLocationFrequency () {
-
         if (isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             //Log.w("myApp", "[#] GPSApplication.java - updateGPSLocationFrequency");
@@ -1022,6 +1016,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
     }
 
+
     // ------------------------------------------------------------------------- GpsStatus.Listener
     @Override
     public void onGpsStatusChanged(final int event) {
@@ -1034,6 +1029,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 break;
         }
     }
+
 
     // --------------------------------------------------------------------------- LocationListener
     @Override
@@ -1225,7 +1221,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             editor.remove("prefIsStoragePermissionChecked");
             editor.commit();
         }
-
 
         // -----------------------------------------------------------------------
 

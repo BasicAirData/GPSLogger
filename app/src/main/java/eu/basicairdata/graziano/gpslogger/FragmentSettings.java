@@ -141,21 +141,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (key.equals("prefEGM96AltitudeCorrection")) {
                     if (sharedPreferences.getBoolean(key, false)) {
                         if (!Downloaded) {
-
-                        /* new AlertDialog.Builder(this)                         // Confirmation dialog for file download
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setTitle("Question")
-                            .setMessage("Download EGM96 coefficients (file size 2 MB)?")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // Start Download
-                                }
-
-                            })
-                            .setNegativeButton("No", null)
-                            .show();         */
-
                             // execute this when the downloader must be fired
                             final DownloadTask downloadTask = new DownloadTask(getActivity());
                             downloadTask.execute("http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC");
@@ -178,6 +163,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
     @Override
     public void onResume() {
+        super.onResume();
         // Remove dividers between preferences
         setDivider(new ColorDrawable(Color.TRANSPARENT));
         setDividerHeight(0);
@@ -185,7 +171,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         prefs.registerOnSharedPreferenceChangeListener(prefListener);
         //Log.w("myApp", "[#] FragmentSettings.java - onResume");
         SetupPreferences();
-        super.onResume();
     }
 
     @Override

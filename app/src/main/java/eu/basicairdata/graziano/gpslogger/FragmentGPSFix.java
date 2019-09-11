@@ -138,16 +138,14 @@ public class FragmentGPSFix extends Fragment {
 
     @Override
     public void onResume() {
-        //Log.w("myApp", "[#] FragmentGPSFix: onResume() - " + FLatitude);
+        super.onResume();
         EventBus.getDefault().register(this);
         Update();
-        super.onResume();
     }
 
     @Override
     public void onPause() {
         EventBus.getDefault().unregister(this);
-        //Log.w("myApp", "[#] FragmentGPSFix: onPause()");
         super.onPause();
     }
 

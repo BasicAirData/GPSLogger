@@ -102,9 +102,9 @@ public class FragmentTracklist extends Fragment {
 
     @Override
     public void onResume() {
+        super.onResume();
         EventBus.getDefault().register(this);
         Update();
-        super.onResume();
     }
 
 
@@ -113,6 +113,7 @@ public class FragmentTracklist extends Fragment {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
+
 
     @Subscribe
     public void onEvent(final EventBusMSGNormal msg) {
