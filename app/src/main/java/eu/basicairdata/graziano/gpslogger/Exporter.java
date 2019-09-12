@@ -51,7 +51,7 @@ class Exporter extends Thread {
     private boolean TXTFirstTrackpointFlag = true;
 
     private boolean UnableToWriteFile = false;
-    int GroupOfLocations = 300; // Reads and writes location grouped by 300;
+    int GroupOfLocations = 300;                           // Reads and writes location grouped by this number;
 
     private ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(1200);
     private AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
@@ -71,6 +71,7 @@ class Exporter extends Thread {
         this.ExportGPX = ExportGPX;
         this.ExportKML = ExportKML;
         this.SaveIntoFolder = SaveIntoFolder;
+
     }
 
     public void run() {
@@ -124,9 +125,11 @@ class Exporter extends Thread {
             }
         }
 
-        SimpleDateFormat dfdtGPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");  // date and time formatter for GPX timestamp
+        SimpleDateFormat dfdtGPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");        // date and time formatter for GPX timestamp (with millis)
+        SimpleDateFormat dfdtGPX_NoMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   // date and time formatter for GPX timestamp (without millis)
         dfdtGPX.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat dfdtTXT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS");  // date and time formatter for TXT timestamp
+        SimpleDateFormat dfdtTXT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS");           // date and time formatter for TXT timestamp (with millis)
+        SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");      // date and time formatter for TXT timestamp (without millis)
         dfdtTXT.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         File KMLfile = null;
@@ -353,7 +356,10 @@ class Exporter extends Thread {
                                     GPXbw.write("</ele>");
                                 }
                                 GPXbw.write("<time>");     // Time
-                                GPXbw.write(dfdtGPX.format(loc.getLocation().getTime()));
+                                //GPXbw.write(dfdtGPX.format(loc.getLocation().getTime()));
+                                GPXbw.write(((loc.getLocation().getTime() % 1000L) == 0L) ?
+                                        dfdtGPX_NoMillis.format(loc.getLocation().getTime()) :
+                                        dfdtGPX.format(loc.getLocation().getTime()));
                                 GPXbw.write("</time>");
                                 GPXbw.write("<name>");     // Name
                                 GPXbw.write(loc.getDescription()
@@ -374,7 +380,11 @@ class Exporter extends Thread {
                             // TXT
                             if (ExportTXT) {
                                 //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
-                                TXTbw.write("W," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
+                                //TXTbw.write("W," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
+                                TXTbw.write("W," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
+                                          dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
+                                          dfdtTXT.format(loc.getLocation().getTime()))
+                                        + "," + formattedLatitude + "," + formattedLongitude + ",");
                                 if (loc.getLocation().hasAccuracy())
                                     TXTbw.write(String.format(Locale.US, "%.0f", loc.getLocation().getAccuracy()));
                                 TXTbw.write(",");
@@ -496,7 +506,10 @@ class Exporter extends Thread {
                             GPXbw.write("</ele>");
                         }
                         GPXbw.write("<time>");     // Time
-                        GPXbw.write(dfdtGPX.format(loc.getLocation().getTime()));
+                        //GPXbw.write(dfdtGPX.format(loc.getLocation().getTime()));
+                        GPXbw.write(((loc.getLocation().getTime() % 1000L) == 0L) ?
+                                dfdtGPX_NoMillis.format(loc.getLocation().getTime()) :
+                                dfdtGPX.format(loc.getLocation().getTime()));
                         GPXbw.write("</time>");
                         if (getPrefGPXVersion == GPX1_0) {
                             if (loc.getLocation().hasSpeed()) {
@@ -524,7 +537,11 @@ class Exporter extends Thread {
                     // TXT
                     if (ExportTXT) {
                         //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
-                        TXTbw.write("T," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
+                        //TXTbw.write("T," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
+                        TXTbw.write("T," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
+                                  dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
+                                  dfdtTXT.format(loc.getLocation().getTime()))
+                                + "," + formattedLatitude + "," + formattedLongitude + ",");
                         if (loc.getLocation().hasAccuracy())
                             TXTbw.write(String.format(Locale.US, "%.0f", loc.getLocation().getAccuracy()));
                         TXTbw.write(",");
@@ -626,6 +643,7 @@ class Exporter extends Thread {
                     for (LocationExtended loc : lList) {
                         try {
                             ArrayGeopoints.put(loc);
+                            //Log.w("myApp", "[#] Exporter.java - " + ArrayGeopoints.size());
                         } catch (InterruptedException e) {
                             Log.w("myApp", "[#] Exporter.java - Interrupted: " + e);
                         }
