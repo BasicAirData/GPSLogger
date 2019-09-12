@@ -51,9 +51,9 @@ class Exporter extends Thread {
     private boolean TXTFirstTrackpointFlag = true;
 
     private boolean UnableToWriteFile = false;
-    int GroupOfLocations = 300;                           // Reads and writes location grouped by this number;
+    int GroupOfLocations;                           // Reads and writes location grouped by this number;
 
-    private ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(1200);
+    private ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(3500);
     private AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
 
 
@@ -72,6 +72,19 @@ class Exporter extends Thread {
         this.ExportKML = ExportKML;
         this.SaveIntoFolder = SaveIntoFolder;
 
+
+        int Formats = 0;
+        if (ExportKML) Formats++;
+        if (ExportGPX) Formats++;
+        if (ExportTXT) Formats++;
+        if (Formats == 1) GroupOfLocations = 1500;
+        else {
+            GroupOfLocations = 1900;
+            if (ExportKML) GroupOfLocations -= 200;     // KML is a light format, less time to write file
+            if (ExportTXT) GroupOfLocations -= 800;     //
+            if (ExportGPX) GroupOfLocations -= 600;     // GPX is the heavier format, more time to write the file
+        }
+        //GroupOfLocations = 300;
     }
 
     public void run() {
