@@ -34,23 +34,23 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 [Repository License](LICENSE)
 
 ## Frequently Asked Questions
-<b>Q</b> - <i>I've just installed the app, but it doesn't read the GPS signal.</i><br>
-<b>A</b> - Please try to reboot your device. Check also that the GPS signal is strong enough and, if not, go in an open area.
+<b>Q</b> - <i>I've just installed the App, but it doesn't read the GPS Signal.</i><br>
+<b>A</b> - Please try to reboot your Device. Check also that the GPS Signal is strong enough and, if not, go in an open Area.
 
-<b>Q</b> - <i>The Location is active, but the app sees "GPS disabled".</i><br>
-<b>A</b> - Please go on Location section of your Android settings: the phone could be set to use the "Battery saving" Locating method. This method uses Wi-Fi & mobile networks to estimate your location, without turn on the GPS. In case please switch to "Phone only" or "High accuracy" method to enable the GPS sensor.
+<b>Q</b> - <i>The Location is active, but the App sees "GPS disabled".</i><br>
+<b>A</b> - Please go on Location Section of your Android Settings: the Phone could be set to use the "Battery saving" Locating Method. This Method uses Wi-Fi & Mobile Networks to estimate your Location, without turn on the GPS. In case please switch to "Phone only" or "High accuracy" Method to enable the GPS Sensor.
 
-<b>Q</b> - <i>The "View", "Export", and "Share" menus are grayed out.</i><br>
-<b>A</b> - Please check in Android System settings that GPS Logger has the Storage permission granted.
+<b>Q</b> - <i>How can I view my recorded Tracks?</i><br>
+<b>A</b> - You can view your Tracks by going on Tracklist Tab and clicking on it. An Actionbar will appear, that should contain an Eye Icon. A KML/GPX viewer must be installed on your device; if not (in this case the Eye Icon will not be visible), please install it. In GPS Logger's Settings you can choose to use a GPX or a KML Viewer. A good Viewer for Android is GPX Viewer, but there are lots of good Alternatives around.
 
-<b>Q</b> - <i>How can I see my recorded tracks?</i><br>
-<b>A</b> - You can see your tracks clicking on it and using the "View in..." contextual menu. A KML/GPX viewer must be installed on your device; if not, please install it. In GPS Logger's settings you can choose to use a GPX or a KML viewer. A good track viewer for Android is GPX Viewer, but there are lots of good alternatives around.
+<b>Q</b> - <i>The "View" Icon is not visible on Actionbar.</i><br>
+<b>A</b> - The "View" Icon is visible, by selecting one single Track of the Tracklist, if you have at least one external Viewer installed on your Device. In GPS Logger's Settings you can choose to use a GPX or a KML Viewer. A good Viewer for Android is GPX Viewer, but there are lots of good Alternatives around.
 
-<b>Q</b> - <i>The menu "View in" opens the Earth app, but doesn't show my track.</i><br>
-<b>A</b> - It is a Earth problem. If you want to use Earth to view your tracks you have to open Earth before, and then go on GPS Logger and select "View in".
+<b>Q</b> - <i>The "Share" Icon is not visible on Actionbar.</i><br>
+<b>A</b> - The "Share" Icon is visible, by selecting some Tracks of the Tracklist, if you have at least one Application installed on your Device with which to Share the Files. The Formats you will share are set on Exporting Section of GPS Logger's Settings, please check that at least one Exportation Format is selected.
 
 <b>Q</b> - <i>My track is not shown (or partially shown) in Google Earth.</i><br>
-<b>A</b> - 1) Please check in Android System settings that Earth has the Storage permission granted; 2) GPS Logger might be set to show the track in 3D, and the track may be hidden under the terrain. Please go in the Exportation settings, switch the Altitude Mode to "Projected to ground" and try again.
+<b>A</b> - 1) Please check in Android System Settings that Earth has the Storage Permission granted; 2) GPS Logger might be set to show the Track in 3D, and the Track may be hidden under the Terrain. Please go in the Exportation Settings, switch the Altitude Mode to "Projected to ground" and try again.
 
-<b>Q</b> - <i>The app sometimes stops recording when running in background.</i><br>
-<b>A</b> - The app could be closed by the system during the background recording. To avoid it, you have to go on the Android Settings and turn off all battery monitoring and optimizations for GPS Logger. Sadly any device brand implemented in a different way the settings to keep safe the background apps, so a little research must be done. Furthermore, anti-viruses (like Avast) are very aggressive with long running apps, and must be correctly set.
+<b>Q</b> - <i>The App sometimes stops recording when running in Background.</i><br>
+<b>A</b> - The App could be closed by the System during the Background Recording. To avoid it, you have to go on the Android Settings and turn off all Battery Monitoring and Optimizations for GPS Logger. On Android 9 check also that the Application is NOT Background Restricted. Sadly any Device Brand implemented in a different Way the Settings to keep safe the Background Apps, so a small Research must be done. Furthermore, Anti-Viruses (like Avast) are very aggressive with long running Apps, and must be correctly set.
