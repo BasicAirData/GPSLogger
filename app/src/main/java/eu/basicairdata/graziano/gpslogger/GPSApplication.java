@@ -245,9 +245,16 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             }
 
             // Update job progress
-            if (JobProgress != (int) Math.round(1000L*Progress/Total)) {        // The ProgressBar on FragmentJobProgress has android:max="1000"
-                JobProgress = (int) Math.round(1000L*Progress/Total);
-                EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
+            if (Total != 0) {
+                if (JobProgress != (int) Math.round(1000L * Progress / Total)) {        // The ProgressBar on FragmentJobProgress has android:max="1000"
+                    JobProgress = (int) Math.round(1000L * Progress / Total);
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
+                }
+            } else {
+                if (JobProgress != 0) {
+                    JobProgress = 0;
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
+                }
             }
 
             //Log.w("myApp", "[#] GPSApplication.java - ExportingStatusChecker running: " + 100*Progress/Total + "% - P "
