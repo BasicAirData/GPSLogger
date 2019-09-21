@@ -18,7 +18,6 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
-    <string name="app_name">GPS Logger</string>
     <!-- Tabs -->
     <string name="tab_gpsfix">Fix GPS</string>
     <string name="tab_track">Itinerario</string>
@@ -30,6 +29,8 @@
     <string name="speed">Velocità</string>
     <string name="direction">Direzione</string>
     <string name="accuracy">Accuratezza</string>
+    <string name="time">Tempo</string>
+    <string name="satellites">Satelliti</string>
     <string name="north">N</string>
     <string name="north_northeast">NNE</string>
     <string name="northeast">NE</string>
@@ -68,8 +69,8 @@
     <string name="trackpoints">Punti GPS</string>
     <!-- Main menu -->
     <string name="menu_settings">Impostazioni</string>
-    <string name="menu_track_finished">Itinerario completato</string>
-    <string name="toast_track_finished_click_again">Doppio clic per terminare questo itinerario</string>
+    <string name="menu_track_finished">Itinerario finalizzato</string>
+    <string name="toast_track_finished_click_again">Doppio clic per finalizzare questo itinerario</string>
     <string name="toast_track_saved_into_tracklist">Itinerario archiviato</string>
     <string name="toast_track_exported">Itinerari esportati nella cartella /GPSLogger</string>
     <string name="menu_about">Info</string>
@@ -102,6 +103,10 @@
     <string name="cancel">Annulla</string>
     <string name="export_unable_to_write_file">Impossibile scrivere il file</string>
     <string name="please_grant_storage_permission">Per abilitare questa funzione è necessario concedere l\'autorizzazione all\'utilizzo della memoria di archiviazione</string>
+    <!-- Notification App killed messagebox -->
+    <string name="dlg_app_killed">L\'App è stata uccisa durante la registrazione in background.</string>
+    <string name="dlg_app_killed_description">Controlla nelle impostazioni di Android che per questa app l\'ottimizzazione uso batteria non sia attiva e l\'attività in background sia consentita senza limitazioni.</string>
+    <string name="open_android_app_settings">Apri Impostazioni</string>
     <!-- Preferences -->
     <string name="pref_category_interface">INTERFACCIA</string>
     <string name="pref_keep_screen_on">Mantieni lo schermo attivo</string>
@@ -133,6 +138,7 @@
     <string name="pref_GPS_distance_33ft">33 piedi</string>
     <string name="pref_GPS_distance_66ft">66 piedi</string>
     <string name="pref_GPS_update_frequency">Intervallo di aggiornamento GPS</string>
+    <string name="pref_GPS_update_frequency_max">Il più corto possibile</string>
     <string name="pref_GPS_update_frequency_1s">1 secondo (massima accuratezza)</string>
     <string name="pref_GPS_update_frequency_2s">2 secondi</string>
     <string name="pref_GPS_update_frequency_3s">3 secondi (meno accurata)</string>
@@ -161,12 +167,11 @@
     <string name="pref_track_stats">Statistiche itinerario basate su</string>
     <string name="pref_track_stats_totaltime">Tempo totale</string>
     <string name="pref_track_stats_movingtime">Tempo in movimento</string>
-    <!-- Preferences messages -->
-    <string name="pref_message_switch_to_absolute_altitude_mode">Ti suggeriamo di passare alla modalità di altitudine assoluta, per visualizzare gli itinerari in 3D in Google Earth.\n\nÈ possibile scegliere in qualsiasi momento la modalità assoluta o proiettata al suolo nella sezione delle impostazioni di esportazione.</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Errore durante il download</string>
     <string name="toast_download_completed">Download completato</string>
     <string name="toast_download_failed">Download non riuscito. Riprova più tardi</string>
+    <string name="toast_active_track_not_empty">L\'itinerario attivo non è vuoto</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra i tuoi percorsi utilizzando il GPS. È possibile visualizzarli nel tuo visualizzatore preferito, condividerli ed esportarli nella cartella /GPSLogger del dispositivo in formato KML, GPX e TXT.\n\nQuesto programma è software libero, rilasciato sotto i termini della GNU General Public license.\nPer maggiori dettagli si veda: http://www.gnu.org/licenses/gpl.txt\n\nPer l\'EGM96 geoid file disclaimer vedi: http://earth-info.nga.mil/GandG/disclaim.html</string>
@@ -177,7 +182,7 @@
     <!-- Notification icon -->
     <string name="notification_contenttext">è attivo</string>
     <!-- Exit confirmation -->
-    <string name="message_exit_confirmation">Vuoi terminare l\'itinerario corrente e chiudere l\'app?</string>
+    <string name="message_exit_finalizing">Stai per chiudere l\'app.\nVuoi finalizzare ora l\'itinerario attivo?</string>
     <!-- Units of Measurement -->
     <string name="UM_m">m</string>
     <string name="UM_km">km</string>

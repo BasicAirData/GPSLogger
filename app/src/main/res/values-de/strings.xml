@@ -18,7 +18,6 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
-    <string name="app_name">GPS Logger</string>
     <!-- Tabs -->
     <string name="tab_gpsfix">GPS-Fix</string>
     <string name="tab_track">Track</string>
@@ -30,6 +29,8 @@
     <string name="speed">Geschw.</string>
     <string name="direction">Richtung</string>
     <string name="accuracy">Genauigkeit</string>
+    <string name="time">Zeit</string>
+    <string name="satellites">Satelliten</string>
     <string name="north">N</string>
     <string name="north_northeast">NNO</string>
     <string name="northeast">NO</string>
@@ -68,8 +69,8 @@
     <string name="trackpoints">Wegpunkte</string>
     <!-- Main menu -->
     <string name="menu_settings">Einstellungen</string>
-    <string name="menu_track_finished">Track beendet</string>
-    <string name="toast_track_finished_click_again">Doppelklick, um Track zu beenden</string>
+    <string name="menu_track_finished">Aufzeichnung beendet</string>
+    <string name="toast_track_finished_click_again">Doppelklick, um Aufzeichnung zu beenden</string>
     <string name="toast_track_saved_into_tracklist">Track in Trackliste gespeichert</string>
     <string name="toast_track_exported">Tracks exportiert in /GPSLogger Ordner</string>
     <string name="menu_about">Über</string>
@@ -102,6 +103,10 @@
     <string name="cancel">Abbrechen</string>
     <string name="export_unable_to_write_file">Die Datei konnte nicht geschrieben werden</string>
     <string name="please_grant_storage_permission">Bitte Zugriff auf Speicher erlauben, um auf diese Funktion zugreifen zu können</string>
+    <!-- Notification App killed messagebox -->
+    <string name="dlg_app_killed">Die App wurde während der Hintergrundaufzeichnung gekillt.</string>
+    <string name="dlg_app_killed_description">Bitte überprüfen Sie in den Android-Einstellungen, ob für die App Akkuoptimierungen gelten und nicht auch die Nutzung im Hintergrund eingeschränkt ist.</string>
+    <string name="open_android_app_settings">Einstellungen öffnen</string>
     <!-- Preferences -->
     <string name="pref_category_interface">SCHNITTSTELLE</string>
     <string name="pref_keep_screen_on">Bildschirm nicht ausschalten</string>
@@ -133,6 +138,7 @@
     <string name="pref_GPS_distance_33ft">33 Fuß</string>
     <string name="pref_GPS_distance_66ft">66 Fuß</string>
     <string name="pref_GPS_update_frequency">GPS-Updateintervall</string>
+    <string name="pref_GPS_update_frequency_max">Die kürzeste verfügbare</string>
     <string name="pref_GPS_update_frequency_1s">1 Sekunde (höchste Genauigkeit)</string>
     <string name="pref_GPS_update_frequency_2s">2 Sekunden</string>
     <string name="pref_GPS_update_frequency_3s">3 Sekunden (weniger genau)</string>
@@ -161,12 +167,11 @@
     <string name="pref_track_stats">Track-Statistiken basierend auf</string>
     <string name="pref_track_stats_totaltime">Gesamtzeit</string>
     <string name="pref_track_stats_movingtime">Zeit in Bewegung</string>
-    <!-- Preferences messages -->
-    <string name="pref_message_switch_to_absolute_altitude_mode">Wir schlagen vor, in den Absoluten Höhenmodus zu wechseln, um die Tracks in 3D in Google Earth zu sehen. \n\nSie können jederzeit zwischen Absolut und auf den Boden projiziert im Abschnitt \"Export\" wechseln.</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Download-Fehler</string>
     <string name="toast_download_completed">Download abgeschlossen</string>
     <string name="toast_download_failed">Download ist fehlgeschlagen. Versuchen Sie es später noch einmal</string>
+    <string name="toast_active_track_not_empty">Der aktive Track ist nicht leer</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger zeichnet Tracks mit Hilfe von GPS auf. Sie können sie in Ihren bevorzugten Viewer ansehen, teilen und exportieren Sie sie im Ordner \"GPSLogger\" Ihres Geräts in KML, GPX und TXT-Format.\n\nDieses Programm ist freie Software, veröffentlicht unter den Bedingungen von der GNU General Public License.\nFür mehr Details siehe: http://www.gnu.org/licenses/gpl.txt\n\nFür EGM96 Geoid Daten Haftungsausschluss siehe: http://earth-info.nga.mil/GandG/disclaim.html</string>
@@ -177,7 +182,7 @@
     <!-- Notification icon -->
     <string name="notification_contenttext">ist aktiv</string>
     <!-- Exit confirmation -->
-    <string name="message_exit_confirmation">Möchten Sie wirklich diesen Track beenden und die App schließen?</string>
+    <string name="message_exit_finalizing">Sie schließen die App.\nMöchten Sie den aktuellen Track jetzt abschließen?</string>
     <!-- Units of Measurement -->
     <string name="UM_m">m</string>
     <string name="UM_km">km</string>

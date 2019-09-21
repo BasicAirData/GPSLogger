@@ -34,7 +34,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 26
-        versionName '2.2.3b_20190912'
+        versionName '2.2.3b_20190921'
     }
     buildTypes {
         debug {

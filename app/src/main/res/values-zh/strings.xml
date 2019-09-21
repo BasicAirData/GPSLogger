@@ -18,7 +18,6 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
-    <string name="app_name">GPS Logger</string>
     <!-- Tabs -->
     <string name="tab_gpsfix">GPS定位</string>
     <string name="tab_track">轨迹</string>
@@ -30,6 +29,8 @@
     <string name="speed">速度</string>
     <string name="direction">方向</string>
     <string name="accuracy">精度</string>
+    <string name="time">时间</string>
+    <string name="satellites">卫星数量</string>
     <string name="north">北</string>
     <string name="north_northeast">东北偏北</string>
     <string name="northeast">东北</string>
@@ -102,6 +103,10 @@
     <string name="cancel">取消</string>
     <string name="export_unable_to_write_file">无法写入到文件</string>
     <string name="please_grant_storage_permission">请授予存储权限以启用此功能</string>
+    <!-- Notification App killed messagebox -->
+    <string name="dlg_app_killed">本应用在后台记录过程中被终止。</string>
+    <string name="dlg_app_killed_description">请检查安卓设置，确保本应用不被电量优化或后台限制。</string>
+    <string name="open_android_app_settings">打开设置</string>
     <!-- Preferences -->
     <string name="pref_category_interface">界面</string>
     <string name="pref_keep_screen_on">保持屏幕常亮</string>
@@ -133,6 +138,7 @@
     <string name="pref_GPS_distance_33ft">33英尺</string>
     <string name="pref_GPS_distance_66ft">66英尺</string>
     <string name="pref_GPS_update_frequency">GPS更新间隔</string>
+    <string name="pref_GPS_update_frequency_max">最短可用间隔</string>
     <string name="pref_GPS_update_frequency_1s">1秒 (最佳精度)</string>
     <string name="pref_GPS_update_frequency_2s">2秒</string>
     <string name="pref_GPS_update_frequency_3s">3秒 (不太准确)</string>
@@ -161,12 +167,11 @@
     <string name="pref_track_stats">轨迹统计数据基于</string>
     <string name="pref_track_stats_totaltime">总时长</string>
     <string name="pref_track_stats_movingtime">移动时间</string>
-    <!-- Preferences messages -->
-    <string name="pref_message_switch_to_absolute_altitude_mode">当在谷歌地球上以3D模式查看您的轨迹，我们建议切换到绝对高度模式。\n\n您可以随时在“设置”的“导出”部分中，在\"绝对\"和\"投影到地面\"之间切换。</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">下载错误</string>
     <string name="toast_download_completed">下载已完成</string>
     <string name="toast_download_failed">下载失败。请稍后再试</string>
+    <string name="toast_active_track_not_empty">当前活动轨迹非空</string>
     <!-- About Dialog -->
     <string name="about_version">版本</string>
     <string name="about_description">版权所有(C)2016 BasicAirData \nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger使用GPS记录您的轨迹。您可以在喜欢的查看器中查看它们，并以KML，GPX和TXT格式将它们分享，导出到设备的GPSLogger文件夹中。\n\n此程序是免费软件，根据GNU通用公共许可证条款发布。\n有关详细信息，请参阅：http://www.gnu.org/licenses/gpl.txt\n\n对于EGM96大地水准面文件免责声明请参阅：http://earth-info.nga.mil/GandG/disclaim.html</string>
@@ -177,7 +182,7 @@
     <!-- Notification icon -->
     <string name="notification_contenttext">处于活动状态</string>
     <!-- Exit confirmation -->
-    <string name="message_exit_confirmation">您真的想结束此轨迹记录并关闭应用程序吗？</string>
+    <string name="message_exit_finalizing">您正准备关闭本应用。\n您要现在结束当前轨迹记录吗？</string>
     <!-- Units of Measurement -->
     <string name="UM_m">米</string>
     <string name="UM_km">公里</string>
