@@ -139,11 +139,13 @@ class Exporter extends Thread {
         }
 
         SimpleDateFormat dfdtGPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");        // date and time formatter for GPX timestamp (with millis)
-        SimpleDateFormat dfdtGPX_NoMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   // date and time formatter for GPX timestamp (without millis)
         dfdtGPX.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat dfdtGPX_NoMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   // date and time formatter for GPX timestamp (without millis)
+        dfdtGPX_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
         SimpleDateFormat dfdtTXT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS");           // date and time formatter for TXT timestamp (with millis)
-        SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");      // date and time formatter for TXT timestamp (without millis)
         dfdtTXT.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");      // date and time formatter for TXT timestamp (without millis)
+        dfdtTXT_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         File KMLfile = null;
         File GPXfile = null;
@@ -282,7 +284,7 @@ class Exporter extends Thread {
                               + "     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + newLine
                               + "     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine);
                     GPXbw.write("<name>GPS Logger " + track.getName() + "</name>" + newLine);
-                    GPXbw.write("<time>" + dfdtGPX.format(creationTime) + "</time>" + newLine + newLine);
+                    GPXbw.write("<time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine + newLine);
                 }
                 if (getPrefGPXVersion == GPX1_1) {    // GPX 1.1
                     GPXbw.write("<gpx version=\"1.1\"" + newLine
@@ -295,7 +297,7 @@ class Exporter extends Thread {
                     //          + "     xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\">" + newLine); //
                     GPXbw.write("<metadata> " + newLine);    // GPX Metadata
                     GPXbw.write(" <name>GPS Logger " + track.getName() + "</name>" + newLine);
-                    GPXbw.write(" <time>" + dfdtGPX.format(creationTime) + "</time>" + newLine);
+                    GPXbw.write(" <time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
                     GPXbw.write("</metadata>" + newLine + newLine);
                 }
             }
