@@ -987,8 +987,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             final PackageManager pm = getPackageManager();
 
             // ----- menu share
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+            Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setType("text/xml");
             // Verify the intent will resolve to at least one activity
             if ((intent.resolveActivity(pm) != null)) isContextMenuShareVisible = true;

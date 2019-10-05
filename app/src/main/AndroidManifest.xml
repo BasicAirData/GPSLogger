@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.location.gps" android:required="true" />
@@ -32,6 +33,7 @@
         android:name=".GPSApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/my_backup_rules"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/gps_logger"
         android:label="@string/app_name"
         android:supportsRtl="true"
