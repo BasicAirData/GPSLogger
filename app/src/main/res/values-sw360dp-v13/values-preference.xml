@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ values-preference.xml (sw360dp-v13)
+  ~ Created by G.Capelli (BasicAirData) on 06/10/2019
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!-- This file has been added to remove the left padding on the Settings Screen.
+     The padding has been added by default in API 28, to keep aligned the header text
+     with the preferences (the Material Guidelines deepen the topic very well), and to leave space for icons.
+     We don't have icons, and we prefer to use all the space available, like on API 27.
+     https://stackoverflow.com/questions/51518758/preferencefragmentcompat-has-padding-on-preferencecategory-that-i-cant-get-rid/52960668
+     -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <bool name="config_materialPreferenceIconSpaceReserved" tools:ignore="MissingDefaultResource,PrivateResource">false</bool>
+    <dimen name="preference_category_padding_start" tools:ignore="MissingDefaultResource,PrivateResource">0dp</dimen>
+</resources>
