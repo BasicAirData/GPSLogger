@@ -20,6 +20,9 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.location.Location;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 class PhysicalDataFormatter {
 
     private final int NOT_AVAILABLE = -100000;
@@ -40,7 +43,8 @@ class PhysicalDataFormatter {
     static final byte FORMAT_DURATION    = 7;
     static final byte FORMAT_SPEED_AVG   = 8;
     static final byte FORMAT_DISTANCE    = 9;
-    
+    static final byte FORMAT_TIME        = 10;
+
     private final float M_TO_FT   = 3.280839895f;
     private final float M_TO_NM   = 0.000539957f;
     private final float MS_TO_MPH = 2.2369363f;
@@ -256,6 +260,12 @@ class PhysicalDataFormatter {
                     }
                 }
                 _PhysicalData.Value = hours.equals("00") ? minutes + ":" + seconds : hours + ":" + minutes + ":" + seconds;
+                return(_PhysicalData);
+
+            case FORMAT_TIME:   // Timestamps
+                SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss");        // date and time formatter
+                dfdTime.setTimeZone(TimeZone.getTimeZone("GMT"));
+                _PhysicalData.Value = dfdTime.format(Number);
                 return(_PhysicalData);
         }
         return(_PhysicalData);
