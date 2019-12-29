@@ -36,7 +36,7 @@
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_corner_dark"
+            android:background="?attr/TileDrawable_ref"
             android:layout_margin="3dp"
             android:id="@+id/id_TableLayout_Coordinates"
             android:visibility="invisible">
@@ -150,7 +150,7 @@
                 android:id="@+id/id_TableLayout_Time"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
-                android:background="@drawable/rounded_corner_dark"
+                android:background="?attr/TileDrawable_ref"
                 android:layout_margin="3dp"
                 android:visibility="invisible">
 
@@ -189,7 +189,7 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_margin="3dp"
-                android:background="@drawable/rounded_corner_dark"
+                android:background="?attr/TileDrawable_ref"
                 android:visibility="invisible">
 
                 <TableRow
@@ -234,7 +234,7 @@
                 android:id="@+id/id_TableLayout_Altitude"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
-                android:background="@drawable/rounded_corner_dark"
+                android:background="?attr/TileDrawable_ref"
                 android:layout_margin="3dp"
                 android:visibility="invisible">
 
@@ -282,7 +282,7 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_margin="3dp"
-                android:background="@drawable/rounded_corner_dark"
+                android:background="?attr/TileDrawable_ref"
                 android:visibility="invisible">
 
                 <TableRow
@@ -336,7 +336,7 @@
                 android:id="@+id/id_TableLayout_Accuracy"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
-                android:background="@drawable/rounded_corner_dark"
+                android:background="?attr/TileDrawable_ref"
                 android:layout_margin="3dp"
                 android:visibility="invisible">
 
@@ -383,7 +383,7 @@
                 android:id="@+id/id_TableLayout_Bearing"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
-                android:background="@drawable/rounded_corner_dark"
+                android:background="?attr/TileDrawable_ref"
                 android:layout_margin="3dp"
                 android:visibility="invisible">
 

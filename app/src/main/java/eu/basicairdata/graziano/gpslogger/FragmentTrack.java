@@ -18,6 +18,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -31,6 +32,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class FragmentTrack extends Fragment {
+
+    int indexOftextColorPrimary = 0;
+    int indexOftextColorSecondary = 0;
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
@@ -86,6 +90,16 @@ public class FragmentTrack extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_track, container, false);
+
+        int[] attrs1 = {R.attr.textColorPrimary};
+        TypedArray ta1 = getContext().obtainStyledAttributes(attrs1);
+        indexOftextColorPrimary = ta1.getResourceId(0, android.R.color.black);
+        ta1.recycle();
+
+        int[] attrs2 = {R.attr.textColorSecondary};
+        TypedArray ta2 = getContext().obtainStyledAttributes(attrs2);
+        indexOftextColorSecondary = ta2.getResourceId(0, android.R.color.black);
+        ta2.recycle();
 
         TVDuration = (TextView) view.findViewById(R.id.id_textView_Duration);
         TVTrackID = (TextView) view.findViewById(R.id.id_textView_TrackIDLabel);
@@ -167,8 +181,8 @@ public class FragmentTrack extends Fragment {
 
                 // Colorize the Altitude Gap textview depending on the altitude filter
                 isValidAltitude = track.isValidAltitude();
-                TVAltitudeGap.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
-                TVAltitudeGapUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
+                TVAltitudeGap.setTextColor(isValidAltitude ? getResources().getColor(indexOftextColorPrimary) : getResources().getColor(indexOftextColorSecondary));
+                TVAltitudeGapUM.setTextColor(isValidAltitude ? getResources().getColor(indexOftextColorPrimary) : getResources().getColor(indexOftextColorSecondary));
 
                 TVTrackStatus.setVisibility(View.INVISIBLE);
 

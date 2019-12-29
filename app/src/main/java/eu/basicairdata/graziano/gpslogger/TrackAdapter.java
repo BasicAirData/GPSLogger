@@ -20,6 +20,7 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ColorMatrixColorFilter;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,7 +41,18 @@ import java.util.List;
 
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
+    private static final float[] NEGATIVE = {
+            -1.0f,      0,      0,     0,  210, // red
+                0,  -1.0f,      0,     0,  210, // green
+                0,      0,  -1.0f,     0,  210, // blue
+                0,      0,      0, 0.75f,    0  // alpha
+    };
+
     private final static int NOT_AVAILABLE = -100000;
+
+    public int indexOfcolorCardBackground = 0;
+    public int indexOfcolorCardBackground_Selected = 0;
+    public boolean isLightTheme = false;
 
     private List<Track> dataSet;
 
@@ -86,7 +98,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         public void onClick(View v) {
             if (GPSApplication.getInstance().getJobsPending() == 0) {
                 track.setSelected(!track.isSelected());
-                card.setCardBackgroundColor(GPSApplication.getInstance().getResources().getColor(track.isSelected() ? R.color.colorCardBackground_Selected : R.color.colorCardBackground));
+                card.setCardBackgroundColor(GPSApplication.getInstance().getResources().getColor(track.isSelected() ? indexOfcolorCardBackground_Selected : indexOfcolorCardBackground));
                 EventBus.getDefault().post(new EventBusMSGNormal(track.isSelected() ? EventBusMSG.TRACKLIST_SELECT : EventBusMSG.TRACKLIST_DESELECT, track.getId()));
                 //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + id);
             }
@@ -116,6 +128,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             imageViewThumbnail          = itemView.findViewById(R.id.id_imageView_card_minimap);
             imageViewPulse              = itemView.findViewById(R.id.id_imageView_card_pulse);
             imageViewIcon               = itemView.findViewById(R.id.id_imageView_card_tracktype);
+
+            if (isLightTheme) {
+                imageViewThumbnail.setColorFilter(new ColorMatrixColorFilter(NEGATIVE));
+                imageViewPulse.setColorFilter(new ColorMatrixColorFilter(NEGATIVE));
+                imageViewIcon.setColorFilter(new ColorMatrixColorFilter(NEGATIVE));
+            }
         }
 
 
@@ -166,7 +184,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         void BindTrack(Track trk) {
             track = trk;
 
-            card.setCardBackgroundColor(GPSApplication.getInstance().getResources().getColor(track.isSelected() ? R.color.colorCardBackground_Selected : R.color.colorCardBackground));
+            card.setCardBackgroundColor(GPSApplication.getInstance().getResources().getColor(track.isSelected() ? indexOfcolorCardBackground_Selected : indexOfcolorCardBackground));
 
             imageViewPulse.setVisibility(View.INVISIBLE);
             textViewTrackName.setText(track.getName());
@@ -215,6 +233,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
 
     TrackAdapter(List<Track> data) {
+
         synchronized(data) {
             this.dataSet = data;
         }

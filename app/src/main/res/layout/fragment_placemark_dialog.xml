@@ -37,6 +37,8 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginBottom="4dp"
+            android:textColorHint="@color/textColorSecondary"
+            android:textColor="@color/textColorPrimary"
             android:hint="@string/dlg_placemark_description" >
 
             <requestFocus />

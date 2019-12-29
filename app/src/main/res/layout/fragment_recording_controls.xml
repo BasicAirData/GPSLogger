@@ -24,7 +24,7 @@
     android:layout_height="wrap_content"
     tools:context="eu.basicairdata.graziano.gpslogger.FragmentRecordingControls"
     android:id="@+id/id_fragmentrecordingcontrols"
-    android:background="@color/colorTrackBackground"
+    android:background="?attr/colorRecControlBackground"
     android:orientation="horizontal"
     android:weightSum="2"
     android:baselineAligned="false">
@@ -40,6 +40,7 @@
 
         <TextView
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?attr/textColorRecControlSecondary"
             android:text="@string/placemarks"
             android:id="@+id/id_textView_PlacemarksLabel"
             android:layout_width="wrap_content"
@@ -51,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="?attr/textColorRecControlPrimary"
             android:id="@+id/id_textView_Placemarks"
             android:freezesText="true"
             android:textStyle="bold"
@@ -64,13 +66,13 @@
         android:layout_weight="1"
         android:id="@+id/id_TableLayout_GeoPoints"
         android:paddingTop="3dp"
-        android:paddingBottom="3dp"
-        android:clickable="true">
+        android:paddingBottom="3dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?attr/textColorRecControlSecondary"
             android:text="@string/trackpoints"
             android:id="@+id/id_textView_GeoPointsLabel"
             android:textSize="13sp"
@@ -80,6 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="?attr/textColorRecControlPrimary"
             android:id="@+id/id_textView_GeoPoints"
             android:freezesText="true"
             android:textStyle="bold"

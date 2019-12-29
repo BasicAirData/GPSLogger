@@ -21,6 +21,7 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -45,6 +46,9 @@ public class FragmentGPSFix extends Fragment {
     private final int GPS_SEARCHING = 3;
     private final int GPS_STABILIZING = 4;
     private final int GPS_OK = 5;
+
+    int indexOftextColorPrimary = 0;
+    int indexOftextColorSecondary = 0;
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
@@ -107,6 +111,16 @@ public class FragmentGPSFix extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_gpsfix, container, false);
+
+        int[] attrs1 = {R.attr.textColorPrimary};
+        TypedArray ta1 = getContext().obtainStyledAttributes(attrs1);
+        indexOftextColorPrimary = ta1.getResourceId(0, android.R.color.black);
+        ta1.recycle();
+
+        int[] attrs2 = {R.attr.textColorSecondary};
+        TypedArray ta2 = getContext().obtainStyledAttributes(attrs2);
+        indexOftextColorSecondary = ta2.getResourceId(0, android.R.color.black);
+        ta2.recycle();
 
         FLGPSFix = (FrameLayout) view.findViewById(R.id.id_fragmentgpsfixFrameLayout);
 
@@ -211,8 +225,8 @@ public class FragmentGPSFix extends Fragment {
 
                 // Colorize the Altitude textview depending on the altitude EGM Correction
                 isValidAltitude = EGMAltitudeCorrection && (location.getAltitudeEGM96Correction() != NOT_AVAILABLE);
-                TVAltitude.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
-                TVAltitudeUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
+                TVAltitude.setTextColor(isValidAltitude ? getResources().getColor(indexOftextColorPrimary) : getResources().getColor(indexOftextColorSecondary));
+                TVAltitudeUM.setTextColor(isValidAltitude ? getResources().getColor(indexOftextColorPrimary) : getResources().getColor(indexOftextColorSecondary));
 
                 TVGPSFixStatus.setVisibility(View.GONE);
 

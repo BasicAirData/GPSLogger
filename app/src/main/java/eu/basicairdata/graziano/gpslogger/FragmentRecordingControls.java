@@ -98,7 +98,7 @@ public class FragmentRecordingControls extends Fragment{
             boolean newRecordingState = !grs;
             gpsApplication.setRecording(newRecordingState);
             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-            tableLayoutGeoPoints.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
+            tableLayoutGeoPoints.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTransparent));
         }
     }
 
@@ -107,7 +107,7 @@ public class FragmentRecordingControls extends Fragment{
             final Boolean pr = gpsApplication.getPlacemarkRequest();
             boolean newPlacemarkRequestState = !pr;
             gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
-            tableLayoutPlacemarks.setBackgroundColor(newPlacemarkRequestState ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
+            tableLayoutPlacemarks.setBackgroundColor(newPlacemarkRequestState ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTransparent));
         }
     }
 
@@ -129,9 +129,9 @@ public class FragmentRecordingControls extends Fragment{
                 if (TVPlacemarks != null)
                     TVPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
                 if (tableLayoutGeoPoints != null)
-                    tableLayoutGeoPoints.setBackgroundColor(grs ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
+                    tableLayoutGeoPoints.setBackgroundColor(grs ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTransparent));
                 if (tableLayoutPlacemarks != null)
-                    tableLayoutPlacemarks.setBackgroundColor(pr ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTrackBackground));
+                    tableLayoutPlacemarks.setBackgroundColor(pr ? getResources().getColor(R.color.colorPrimary) : getResources().getColor(R.color.colorTransparent));
             }
         }
     }

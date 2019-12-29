@@ -19,6 +19,9 @@
   -->
 
 <resources>
+
+    <!-- ======[ DARK THEME ]================================================================== -->
+
     <color name="colorPrimary">#880000</color>
     <color name="colorPrimaryDark">#550000</color>
     <color name="colorPrimaryLight">#b51111</color>
@@ -26,14 +29,17 @@
     <color name="textColorCardTitle">#d7d7d7</color>
     <color name="textColorSecondary">#888888</color>
     <color name="colorBackground">#111111</color>
-    <color name="colorTrackBackground">#282828</color>
+
+    <color name="colorRecControlBackground">#282828</color>
+    <color name="textColorRecControlPrimary">#ffffff</color>
+    <color name="textColorRecControlSecondary">#cccccc</color>
 
     <color name="colorRoundedCornerDarktop">#202020</color>
     <color name="colorRoundedCornerDarkBottom">#161616</color>
     <color name="colorRoundedCornerDarkBorder">#707070</color>
 
-    <color name="colorCardBackground_Line">#58ffffff</color>
     <color name="colorCardBackground_Title">#16ffffff</color>
+    <color name="colorCardBackground_Line">#58ffffff</color>
     <color name="colorCardBackground_Data">#0affffff</color>
     <color name="colorCardBackground">#2b2b2b</color>
     <color name="colorCardBackground_Selected">#6a3737</color>
@@ -41,5 +47,44 @@
 
     <color name="colorAccent">#dddddd</color>
     <color name="preference_accent">#ca2222</color>
+
+
+
+
+    <!-- ======[ LIGHT THEME ]================================================================= -->
+
+    <color name="colorPrimary_Light">#880000</color>
+    <color name="colorPrimaryDark_Light">#550000</color>
+    <color name="colorPrimaryLight_Light">#b51111</color>
+    <color name="textColorPrimary_Light">#111111</color>
+    <color name="textColorCardTitle_Light">#272727</color>
+    <color name="textColorSecondary_Light">#888888</color>
+    <color name="colorBackground_Light">#e8e8e8</color>
+
+    <color name="colorRecControlBackground_Light">#666666</color>
+    <color name="textColorRecControlPrimary_Light">#ffffff</color>
+    <color name="textColorRecControlSecondary_Light">#cccccc</color>
+
+    <color name="colorRoundedCornerDarkBottom_Light">#eeeeee</color>
+    <color name="colorRoundedCornerDarktop_Light">#ffffff</color>
+    <color name="colorRoundedCornerDarkBorder_Light">#cccccc</color>
+
+    <color name="colorCardBackground_Title_Light">#20000000</color>
+    <color name="colorCardBackground_Line_Light">#4a000000</color>
+    <color name="colorCardBackground_Data_Light">#07000000</color>
+    <color name="colorCardBackground_Light">#ffffff</color>
+    <color name="colorCardBackground_Selected_Light">#ffcccc</color>
+    <color name="colorThumbnailLineColor_Light">#363636</color>
+
+    <color name="colorAccent_Light">#eeeeee</color>
+    <color name="preference_accent_Light">#880000</color>
+
+
+
+
+    <!-- ======[ SHARED COLORS ]=============================================================== -->
+
+    <color name="colorTransparent">#00000000</color>
     <color name="preference_fallback_accent_color">#ca2222</color>
+
 </resources>

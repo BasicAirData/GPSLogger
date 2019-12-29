@@ -22,6 +22,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -73,6 +74,7 @@ public class FragmentTracklist extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tracklist, container, false);
+
         TVTracklistEmpty = (TextView) view.findViewById(R.id.id_textView_TracklistEmpty);
         recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -82,6 +84,22 @@ public class FragmentTracklist extends Fragment {
         recyclerView.getItemAnimator().setChangeDuration(0);
         adapter = new TrackAdapter(data);
         recyclerView.setAdapter(adapter);
+
+        int[] attrs1 = {R.attr.colorCardBackground};
+        TypedArray ta1 = getContext().obtainStyledAttributes(attrs1);
+        adapter.indexOfcolorCardBackground = ta1.getResourceId(0, android.R.color.black);
+        ta1.recycle();
+
+        int[] attrs2 = {R.attr.colorCardBackground_Selected};
+        TypedArray ta2 = getContext().obtainStyledAttributes(attrs2);
+        adapter.indexOfcolorCardBackground_Selected = ta2.getResourceId(0, android.R.color.black);
+        ta2.recycle();
+
+        int[] attrs3 = {R.attr.isLightTheme};
+        TypedArray ta3 = getContext().obtainStyledAttributes(attrs3);
+        adapter.isLightTheme = ta3.getBoolean(0, false);
+        ta3.recycle();
+
         return view;
     }
 

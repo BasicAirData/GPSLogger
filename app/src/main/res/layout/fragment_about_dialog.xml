@@ -64,6 +64,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColorLink="?android:attr/textColorSecondary"
                 android:text="@string/about_description"
                 android:id="@+id/id_about_textView_description"
                 android:layout_gravity="center_horizontal"
