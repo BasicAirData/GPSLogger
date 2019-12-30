@@ -173,6 +173,14 @@ public class FragmentGPSFix extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Workaround for Nokia Devices, Android 9
+        // https://github.com/BasicAirData/GPSLogger/issues/77
+        if (EventBus.getDefault().isRegistered(this)) {
+            //Log.w("myApp", "[#] FragmentGPSFix.java - EventBus: FragmentGPSFix already registered");
+            EventBus.getDefault().unregister(this);
+        }
+
         EventBus.getDefault().register(this);
         Update();
     }
