@@ -77,6 +77,7 @@ public class GPSActivity extends AppCompatActivity {
     final Context context = this;
 
     private boolean prefKeepScreenOn = true;
+    private boolean LightColorTheme = false;
     private boolean show_toast_grant_storage_permission = false;
 
     private BottomSheetBehavior mBottomSheetBehavior;
@@ -86,6 +87,16 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Apply the right Color Theme
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("prefLightColorTheme", false)) {
+            setTheme(R.style.MyMaterialTheme_Light);
+            LightColorTheme = true;
+        }
+        else {
+            setTheme(R.style.MyMaterialTheme);
+            LightColorTheme = false;
+        }
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_gps);
@@ -392,6 +403,10 @@ public class GPSActivity extends AppCompatActivity {
         prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
         if (prefKeepScreenOn) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        if (LightColorTheme != preferences.getBoolean("prefLightColorTheme", false)) {
+            this.recreate();
+        }
     }
 
     private void ShutdownApp()

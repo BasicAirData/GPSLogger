@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -32,6 +33,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Apply the right Color Theme
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("prefLightColorTheme", false))
+            setTheme(R.style.MySettingsTheme_Light);
+        else setTheme(R.style.MySettingsTheme);
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_settings);

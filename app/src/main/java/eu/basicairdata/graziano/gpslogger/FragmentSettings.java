@@ -156,6 +156,16 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         }
                     }
                 }
+
+                if (key.equals("prefLightColorTheme")) {
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    SharedPreferences.Editor editor1 = settings.edit();
+                    editor1.putBoolean("prefLightColorTheme", sharedPreferences.getBoolean(key, false));
+                    editor1.commit();
+
+                    getActivity().recreate();
+                }
+
                 SetupPreferences();
             }
         };

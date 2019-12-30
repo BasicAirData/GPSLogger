@@ -31,6 +31,12 @@
             android:defaultValue="true" />
 
         <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="prefLightColorTheme"
+            android:title="@string/pref_light_color_theme"
+            android:summary="@string/pref_light_color_theme_summary"
+            android:defaultValue="false" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="prefShowDecimalCoordinates"
             android:title="@string/pref_show_decimal_coordinates"
             android:summary="@string/pref_show_decimal_coordinates_summary"
