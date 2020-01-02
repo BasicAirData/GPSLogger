@@ -69,11 +69,11 @@
     <color name="colorRoundedCornerDarktop_Light">#ffffff</color>
     <color name="colorRoundedCornerDarkBorder_Light">#cccccc</color>
 
-    <color name="colorCardBackground_Title_Light">#20000000</color>
-    <color name="colorCardBackground_Line_Light">#4a000000</color>
+    <color name="colorCardBackground_Title_Light">#10000000</color>
+    <color name="colorCardBackground_Line_Light">#4f000000</color>
     <color name="colorCardBackground_Data_Light">#07000000</color>
     <color name="colorCardBackground_Light">#ffffff</color>
-    <color name="colorCardBackground_Selected_Light">#ffcccc</color>
+    <color name="colorCardBackground_Selected_Light">#ffc5c1</color>
     <color name="colorThumbnailLineColor_Light">#363636</color>
 
     <color name="colorAccent_Light">#eeeeee</color>

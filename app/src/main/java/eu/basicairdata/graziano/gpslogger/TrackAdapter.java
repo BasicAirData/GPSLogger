@@ -42,10 +42,10 @@ import java.util.List;
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     private static final float[] NEGATIVE = {
-            -1.0f,      0,      0,     0,  210, // red
-                0,  -1.0f,      0,     0,  210, // green
-                0,      0,  -1.0f,     0,  210, // blue
-                0,      0,      0, 0.75f,    0  // alpha
+            -1.0f,      0,      0,     0,  230, // red
+                0,  -1.0f,      0,     0,  230, // green
+                0,      0,  -1.0f,     0,  230, // blue
+                0,      0,      0, 1.00f,    0  // alpha
     };
 
     private final static int NOT_AVAILABLE = -100000;
