@@ -41,6 +41,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.view.ActionMode;
 import android.support.v7.view.ContextThemeWrapper;
@@ -77,7 +78,6 @@ public class GPSActivity extends AppCompatActivity {
     final Context context = this;
 
     private boolean prefKeepScreenOn = true;
-    private boolean LightColorTheme = false;
     private boolean show_toast_grant_storage_permission = false;
 
     private BottomSheetBehavior mBottomSheetBehavior;
@@ -87,28 +87,25 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Apply the right Color Theme
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("prefLightColorTheme", false)) {
-            setTheme(R.style.MyMaterialTheme_Light);
-            LightColorTheme = true;
-        }
-        else {
-            setTheme(R.style.MyMaterialTheme);
-            LightColorTheme = false;
-        }
 
         super.onCreate(savedInstanceState);
 
+        if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false)) {
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+
         setContentView(R.layout.activity_gps);
-        toolbar = (Toolbar) findViewById(R.id.id_toolbar);
+        toolbar = findViewById(R.id.id_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        viewPager = (ViewPager) findViewById(R.id.id_viewpager);
+        viewPager = findViewById(R.id.id_viewpager);
         viewPager.setOffscreenPageLimit(3);
 
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) findViewById(R.id.id_tablayout);
+        tabLayout = findViewById(R.id.id_tablayout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -403,10 +400,6 @@ public class GPSActivity extends AppCompatActivity {
         prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
         if (prefKeepScreenOn) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        if (LightColorTheme != preferences.getBoolean("prefLightColorTheme", false)) {
-            this.recreate();
-        }
     }
 
     private void ShutdownApp()

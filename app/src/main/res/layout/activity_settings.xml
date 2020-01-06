@@ -38,7 +38,7 @@
 
     <RelativeLayout
         android:id="@+id/id_preferences"
-        android:background="?attr/backgroundColor"
+        android:background="@color/colorBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

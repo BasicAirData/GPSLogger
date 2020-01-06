@@ -46,7 +46,7 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_margin="3dp"
-                android:background="?attr/TileDrawable_ref"
+                android:background="@drawable/rounded_corner"
                 android:layout_weight="2">
 
                 <TextView
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/id_tableLayout_SpeedMax"
                 android:layout_margin="3dp"
-                android:background="?attr/TileDrawable_ref"
+                android:background="@drawable/rounded_corner"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_weight="1">
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/id_tableLayout_AltitudeGap"
                 android:layout_margin="3dp"
-                android:background="?attr/TileDrawable_ref"
+                android:background="@drawable/rounded_corner"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_weight="1">
@@ -173,7 +173,7 @@
                 android:id="@+id/id_tableLayout_Duration"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
-                android:background="?attr/TileDrawable_ref"
+                android:background="@drawable/rounded_corner"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:baselineAligned="false">
@@ -204,7 +204,7 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_margin="3dp"
-                android:background="?attr/TileDrawable_ref"
+                android:background="@drawable/rounded_corner"
                 android:layout_weight="1">
 
                 <TableRow
@@ -249,7 +249,7 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_margin="3dp"
-                android:background="?attr/TileDrawable_ref"
+                android:background="@drawable/rounded_corner"
                 android:layout_weight="1" >
 
                 <TableRow
@@ -292,7 +292,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/id_tableLayout_OverallDirection"
                 android:layout_margin="3dp"
-                android:background="?attr/TileDrawable_ref"
+                android:background="@drawable/rounded_corner"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:layout_weight="1" >

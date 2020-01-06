@@ -21,7 +21,6 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -46,9 +45,6 @@ public class FragmentGPSFix extends Fragment {
     private final int GPS_SEARCHING = 3;
     private final int GPS_STABILIZING = 4;
     private final int GPS_OK = 5;
-
-    int indexOftextColorPrimary = 0;
-    int indexOftextColorSecondary = 0;
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
@@ -112,43 +108,37 @@ public class FragmentGPSFix extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_gpsfix, container, false);
 
-        int[] attrs1 = {R.attr.textColorPrimary};
-        TypedArray ta1 = getContext().obtainStyledAttributes(attrs1);
-        indexOftextColorPrimary = ta1.getResourceId(0, android.R.color.black);
-        ta1.recycle();
+        // FrameLayouts
+        FLGPSFix            = view.findViewById(R.id.id_fragmentgpsfixFrameLayout);
 
-        int[] attrs2 = {R.attr.textColorSecondary};
-        TypedArray ta2 = getContext().obtainStyledAttributes(attrs2);
-        indexOftextColorSecondary = ta2.getResourceId(0, android.R.color.black);
-        ta2.recycle();
+        // TextViews
+        TVLatitude          = view.findViewById(R.id.id_textView_Latitude);
+        TVLongitude         = view.findViewById(R.id.id_textView_Longitude);
+        TVLatitudeUM        = view.findViewById(R.id.id_textView_LatitudeUM);
+        TVLongitudeUM       = view.findViewById(R.id.id_textView_LongitudeUM);
+        TVAltitude          = view.findViewById(R.id.id_textView_Altitude);
+        TVAltitudeUM        = view.findViewById(R.id.id_textView_AltitudeUM);
+        TVSpeed             = view.findViewById(R.id.id_textView_Speed);
+        TVSpeedUM           = view.findViewById(R.id.id_textView_SpeedUM);
+        TVBearing           = view.findViewById(R.id.id_textView_Bearing);
+        TVAccuracy          = view.findViewById(R.id.id_textView_Accuracy);
+        TVAccuracyUM        = view.findViewById(R.id.id_textView_AccuracyUM);
+        TVGPSFixStatus      = view.findViewById(R.id.id_textView_GPSFixStatus);
+        TVDirectionUM       = view.findViewById(R.id.id_textView_BearingUM);
+        TVTime              = view.findViewById(R.id.id_textView_Time);
+        TVSatellites        = view.findViewById(R.id.id_textView_Satellites);
 
-        FLGPSFix = (FrameLayout) view.findViewById(R.id.id_fragmentgpsfixFrameLayout);
+        // TableLayouts
+        TLCoordinates       = view.findViewById(R.id.id_TableLayout_Coordinates) ;
+        TLAltitude          = view.findViewById(R.id.id_TableLayout_Altitude);
+        TLSpeed             = view.findViewById(R.id.id_TableLayout_Speed);
+        TLBearing           = view.findViewById(R.id.id_TableLayout_Bearing);
+        TLAccuracy          = view.findViewById(R.id.id_TableLayout_Accuracy);
+        TLTime              = view.findViewById(R.id.id_TableLayout_Time);
+        TLSatellites        = view.findViewById(R.id.id_TableLayout_Satellites);
 
-        TVLatitude = (TextView) view.findViewById(R.id.id_textView_Latitude);
-        TVLongitude = (TextView) view.findViewById(R.id.id_textView_Longitude);
-        TVLatitudeUM = (TextView) view.findViewById(R.id.id_textView_LatitudeUM);
-        TVLongitudeUM = (TextView) view.findViewById(R.id.id_textView_LongitudeUM);
-        TVAltitude = (TextView) view.findViewById(R.id.id_textView_Altitude);
-        TVAltitudeUM = (TextView) view.findViewById(R.id.id_textView_AltitudeUM);
-        TVSpeed = (TextView) view.findViewById(R.id.id_textView_Speed);
-        TVSpeedUM = (TextView) view.findViewById(R.id.id_textView_SpeedUM);
-        TVBearing = (TextView) view.findViewById(R.id.id_textView_Bearing);
-        TVAccuracy = (TextView) view.findViewById(R.id.id_textView_Accuracy);
-        TVAccuracyUM = (TextView) view.findViewById(R.id.id_textView_AccuracyUM);
-        TVGPSFixStatus = (TextView) view.findViewById(R.id.id_textView_GPSFixStatus);
-        TVDirectionUM = (TextView) view.findViewById(R.id.id_textView_BearingUM);
-        TVTime = (TextView) view.findViewById(R.id.id_textView_Time);
-        TVSatellites = (TextView) view.findViewById(R.id.id_textView_Satellites);
-
-        TLCoordinates = (TableLayout) view.findViewById(R.id.id_TableLayout_Coordinates) ;
-        TLAltitude = (TableLayout) view.findViewById(R.id.id_TableLayout_Altitude);
-        TLSpeed = (TableLayout) view.findViewById(R.id.id_TableLayout_Speed);
-        TLBearing = (TableLayout) view.findViewById(R.id.id_TableLayout_Bearing);
-        TLAccuracy = (TableLayout) view.findViewById(R.id.id_TableLayout_Accuracy);
-        TLTime = (TableLayout) view.findViewById(R.id.id_TableLayout_Time);
-        TLSatellites = (TableLayout) view.findViewById(R.id.id_TableLayout_Satellites);
-
-        LLTimeSatellites = (LinearLayout) view.findViewById(R.id.id_linearLayout_Time_Satellites);
+        // LinearLayouts
+        LLTimeSatellites    = view.findViewById(R.id.id_linearLayout_Time_Satellites);
 
         TVGPSFixStatus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,8 +223,8 @@ public class FragmentGPSFix extends Fragment {
 
                 // Colorize the Altitude textview depending on the altitude EGM Correction
                 isValidAltitude = EGMAltitudeCorrection && (location.getAltitudeEGM96Correction() != NOT_AVAILABLE);
-                TVAltitude.setTextColor(isValidAltitude ? getResources().getColor(indexOftextColorPrimary) : getResources().getColor(indexOftextColorSecondary));
-                TVAltitudeUM.setTextColor(isValidAltitude ? getResources().getColor(indexOftextColorPrimary) : getResources().getColor(indexOftextColorSecondary));
+                TVAltitude.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
+                TVAltitudeUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
 
                 TVGPSFixStatus.setVisibility(View.GONE);
 

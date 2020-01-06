@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ fragment_job_progress.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/1/2019
+  ~ card_foreground.xml
+  ~ Created by G.Capelli (BasicAirData) on 5/1/2020
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -18,17 +18,18 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="eu.basicairdata.graziano.gpslogger.FragmentJobProgress">
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="2dp"
+    android:insetRight="2dp"
+    android:insetTop="4dp"
+    android:insetBottom="4dp">
 
-    <ProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/id_jobProgressBar"
-        style="@style/ProgressBar"
-        android:progress="0"
-        android:max="1000"/>
-</FrameLayout>
+    <selector>
+        <item android:state_selected="true">
+            <shape android:shape="rectangle">
+                <solid android:color="@color/colorCardBackground_Selected"/>
+                <corners android:radius="2dp" />
+            </shape>
+        </item>
+    </selector>
+</inset>

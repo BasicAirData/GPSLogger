@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ colors.xml
+  ~ colors.xml (notnight)
   ~ Created by G.Capelli (BasicAirData) on 5/1/2020
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -20,39 +20,32 @@
 
 <resources>
 
-    <!-- ======[ COLORS TO BE OVERWRITTEN in night/notnight ]================================== -->
+    <!-- ======[ LIGHT THEME ]================================================================= -->
 
     <color name="colorPrimary">#880000</color>
     <color name="colorPrimaryDark">#550000</color>
     <color name="colorPrimaryLight">#b51111</color>
-    <color name="textColorPrimary">#ffffff</color>
-    <color name="textColorCardTitle">#d7d7d7</color>
+    <color name="textColorPrimary">#111111</color>
+    <color name="textColorCardTitle">#272727</color>
     <color name="textColorSecondary">#888888</color>
-    <color name="colorBackground">#111111</color>
+    <color name="colorBackground">#e8e8e8</color>
 
-    <color name="colorRecControlBackground">#282828</color>
+    <color name="colorRecControlBackground">#666666</color>
     <color name="textColorRecControlPrimary">#ffffff</color>
     <color name="textColorRecControlSecondary">#cccccc</color>
 
-    <color name="colorRoundedCornerDarktop">#202020</color>
-    <color name="colorRoundedCornerDarkBottom">#161616</color>
-    <color name="colorRoundedCornerDarkBorder">#707070</color>
+    <color name="colorRoundedCornerDarkBottom">#eeeeee</color>
+    <color name="colorRoundedCornerDarktop">#ffffff</color>
+    <color name="colorRoundedCornerDarkBorder">#cccccc</color>
 
-    <color name="colorCardBackground_Title">#16ffffff</color>
-    <color name="colorCardBackground_Line">#58ffffff</color>
-    <color name="colorCardBackground_Data">#0affffff</color>
-    <color name="colorCardBackground">#2b2b2b</color>
-    <color name="colorCardBackground_Selected">#3fff3333</color>
+    <color name="colorCardBackground_Title">#12000000</color>
+    <color name="colorCardBackground_Line">#4f000000</color>
+    <color name="colorCardBackground_Data">#07000000</color>
+    <color name="colorCardBackground">#ffffff</color>
+    <color name="colorCardBackground_Selected">#42ff2f2f</color>
 
-    <color name="colorAccent">#dddddd</color>
-    <color name="preference_accent">#ca2222</color>
+    <color name="colorAccent">#ffffff</color>
+    <color name="preference_accent">#880000</color>
     <color name="preference_fallback_accent_color">#ca2222</color>
-
-
-
-
-    <!-- ======[ SHARED COLORS ]=============================================================== -->
-
-    <color name="colorThumbnailLineColor">#c9c9c9</color> <!-- DO NOT CHANGE THIS COLOR! -->
 
 </resources>

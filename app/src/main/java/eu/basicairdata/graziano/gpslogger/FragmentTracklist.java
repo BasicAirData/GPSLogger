@@ -22,7 +22,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.TypedArray;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -72,33 +72,34 @@ public class FragmentTracklist extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tracklist, container, false);
 
-        TVTracklistEmpty = (TextView) view.findViewById(R.id.id_textView_TracklistEmpty);
-        recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        TVTracklistEmpty    = view.findViewById(R.id.id_textView_TracklistEmpty);
+        recyclerView        = view.findViewById(R.id.my_recycler_view);
+
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.getItemAnimator().setChangeDuration(0);
         adapter = new TrackAdapter(data);
+
+        switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                // Night mode is not active, we're in day time
+                adapter.isLightTheme = true;
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                // Night mode is active, we're at night!
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                // We don't know what mode we're in, assume notnight
+                adapter.isLightTheme = false;
+                break;
+        }
+
         recyclerView.setAdapter(adapter);
-
-        int[] attrs1 = {R.attr.colorCardBackground};
-        TypedArray ta1 = getContext().obtainStyledAttributes(attrs1);
-        adapter.indexOfcolorCardBackground = ta1.getResourceId(0, android.R.color.black);
-        ta1.recycle();
-
-        int[] attrs2 = {R.attr.colorCardBackground_Selected};
-        TypedArray ta2 = getContext().obtainStyledAttributes(attrs2);
-        adapter.indexOfcolorCardBackground_Selected = ta2.getResourceId(0, android.R.color.black);
-        ta2.recycle();
-
-        int[] attrs3 = {R.attr.isLightTheme};
-        TypedArray ta3 = getContext().obtainStyledAttributes(attrs3);
-        adapter.isLightTheme = ta3.getBoolean(0, false);
-        ta3.recycle();
 
         return view;
     }

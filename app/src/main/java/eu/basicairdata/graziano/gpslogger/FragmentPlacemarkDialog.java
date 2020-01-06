@@ -21,6 +21,9 @@ package eu.basicairdata.graziano.gpslogger;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -41,9 +44,28 @@ public class FragmentPlacemarkDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity(), R.style.StyledDialog);
-
         createPlacemarkAlert.setTitle(R.string.dlg_add_placemark);
-        createPlacemarkAlert.setIcon(R.mipmap.ic_add_location_white_24dp);
+        Drawable icon = getResources().getDrawable(R.mipmap.ic_add_location_white_24dp);
+
+        // Set the right icon color, basing on the day/night theme active
+        switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                // Night mode is not active, we're in day time
+                final float[] NEGATIVE = {
+                        -1.0f,      0,      0,     0,  255, // red
+                            0,  -1.0f,      0,     0,  255, // green
+                            0,      0,  -1.0f,     0,  255, // blue
+                            0,      0,      0, 1.00f,    0  // alpha
+                };
+                icon.setColorFilter(new ColorMatrixColorFilter(NEGATIVE));
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                // Night mode is active, we're at night!
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                // We don't know what mode we're in, assume notnight
+                break;
+        }
+        createPlacemarkAlert.setIcon(icon);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = (View) inflater.inflate(R.layout.fragment_placemark_dialog, null);

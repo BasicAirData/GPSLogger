@@ -21,7 +21,6 @@ package eu.basicairdata.graziano.gpslogger;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -40,12 +39,8 @@ public class FragmentAboutDialog extends DialogFragment {
     //@SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        int[] attrs1 = {R.attr.MyMaterialThemeAbout_ref};
-        TypedArray ta1 = getContext().obtainStyledAttributes(attrs1);
-        int indexOfMaterialThemeAboutStyle = ta1.getResourceId(0, R.style.MyMaterialThemeAbout);
-        ta1.recycle();
 
-        AlertDialog.Builder createAboutAlert = new AlertDialog.Builder(getActivity(), indexOfMaterialThemeAboutStyle);
+        AlertDialog.Builder createAboutAlert = new AlertDialog.Builder(getActivity(), R.style.MyMaterialThemeAbout);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_about_dialog, null);

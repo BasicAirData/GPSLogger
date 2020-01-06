@@ -18,7 +18,6 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,9 +31,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class FragmentTrack extends Fragment {
-
-    int indexOftextColorPrimary = 0;
-    int indexOftextColorSecondary = 0;
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
@@ -91,40 +87,30 @@ public class FragmentTrack extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_track, container, false);
 
-        int[] attrs1 = {R.attr.textColorPrimary};
-        TypedArray ta1 = getContext().obtainStyledAttributes(attrs1);
-        indexOftextColorPrimary = ta1.getResourceId(0, android.R.color.black);
-        ta1.recycle();
+        // TextViews
+        TVDuration          = view.findViewById(R.id.id_textView_Duration);
+        TVTrackID           = view.findViewById(R.id.id_textView_TrackIDLabel);
+        TVTrackName         = view.findViewById(R.id.id_textView_TrackName);
+        TVDistance          = view.findViewById(R.id.id_textView_Distance);
+        TVMaxSpeed          = view.findViewById(R.id.id_textView_SpeedMax);
+        TVAverageSpeed      = view.findViewById(R.id.id_textView_SpeedAvg);
+        TVAltitudeGap       = view.findViewById(R.id.id_textView_AltitudeGap);
+        TVOverallDirection  = view.findViewById(R.id.id_textView_OverallDirection);
+        TVTrackStatus       = view.findViewById(R.id.id_textView_TrackStatus);
+        TVDirectionUM       = view.findViewById(R.id.id_textView_OverallDirectionUM);
+        TVDistanceUM        = view.findViewById(R.id.id_textView_DistanceUM);
+        TVMaxSpeedUM        = view.findViewById(R.id.id_textView_SpeedMaxUM);
+        TVAverageSpeedUM    = view.findViewById(R.id.id_textView_SpeedAvgUM);
+        TVAltitudeGapUM     = view.findViewById(R.id.id_textView_AltitudeGapUM);
 
-        int[] attrs2 = {R.attr.textColorSecondary};
-        TypedArray ta2 = getContext().obtainStyledAttributes(attrs2);
-        indexOftextColorSecondary = ta2.getResourceId(0, android.R.color.black);
-        ta2.recycle();
-
-        TVDuration = (TextView) view.findViewById(R.id.id_textView_Duration);
-        TVTrackID = (TextView) view.findViewById(R.id.id_textView_TrackIDLabel);
-        TVTrackName = (TextView) view.findViewById(R.id.id_textView_TrackName);
-        TVDistance = (TextView) view.findViewById(R.id.id_textView_Distance);
-        TVMaxSpeed = (TextView) view.findViewById(R.id.id_textView_SpeedMax);
-        TVAverageSpeed = (TextView) view.findViewById(R.id.id_textView_SpeedAvg);
-        TVAltitudeGap = (TextView) view.findViewById(R.id.id_textView_AltitudeGap);
-        TVOverallDirection = (TextView) view.findViewById(R.id.id_textView_OverallDirection);
-        TVTrackStatus = (TextView) view.findViewById(R.id.id_textView_TrackStatus);
-        TVDirectionUM = (TextView) view.findViewById(R.id.id_textView_OverallDirectionUM);
-
-        TVDistanceUM = (TextView) view.findViewById(R.id.id_textView_DistanceUM);
-        TVMaxSpeedUM = (TextView) view.findViewById(R.id.id_textView_SpeedMaxUM);
-        TVAverageSpeedUM = (TextView) view.findViewById(R.id.id_textView_SpeedAvgUM);
-        TVAltitudeGapUM = (TextView) view.findViewById(R.id.id_textView_AltitudeGapUM);
-
-        TLTrack = (TableLayout) view.findViewById(R.id.id_tableLayout_TrackName) ;
-        TLDuration = (TableLayout) view.findViewById(R.id.id_tableLayout_Duration) ;
-        TLSpeedMax = (TableLayout) view.findViewById(R.id.id_tableLayout_SpeedMax) ;
-        TLDistance = (TableLayout) view.findViewById(R.id.id_tableLayout_Distance) ;
-        TLSpeedAvg = (TableLayout) view.findViewById(R.id.id_tableLayout_SpeedAvg) ;
-        TLAltitudeGap = (TableLayout) view.findViewById(R.id.id_tableLayout_AltitudeGap) ;
-        TLOverallDirection = (TableLayout) view.findViewById(R.id.id_tableLayout_OverallDirection) ;
-
+        // TableLayouts
+        TLTrack             = view.findViewById(R.id.id_tableLayout_TrackName) ;
+        TLDuration          = view.findViewById(R.id.id_tableLayout_Duration) ;
+        TLSpeedMax          = view.findViewById(R.id.id_tableLayout_SpeedMax) ;
+        TLDistance          = view.findViewById(R.id.id_tableLayout_Distance) ;
+        TLSpeedAvg          = view.findViewById(R.id.id_tableLayout_SpeedAvg) ;
+        TLAltitudeGap       = view.findViewById(R.id.id_tableLayout_AltitudeGap) ;
+        TLOverallDirection  = view.findViewById(R.id.id_tableLayout_OverallDirection) ;
 
         return view;
     }
@@ -189,8 +175,8 @@ public class FragmentTrack extends Fragment {
 
                 // Colorize the Altitude Gap textview depending on the altitude filter
                 isValidAltitude = track.isValidAltitude();
-                TVAltitudeGap.setTextColor(isValidAltitude ? getResources().getColor(indexOftextColorPrimary) : getResources().getColor(indexOftextColorSecondary));
-                TVAltitudeGapUM.setTextColor(isValidAltitude ? getResources().getColor(indexOftextColorPrimary) : getResources().getColor(indexOftextColorSecondary));
+                TVAltitudeGap.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
+                TVAltitudeGapUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
 
                 TVTrackStatus.setVisibility(View.INVISIBLE);
 

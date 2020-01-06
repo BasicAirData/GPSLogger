@@ -28,7 +28,8 @@
     android:layout_height="wrap_content"
     android:layout_marginRight="2dp"
     android:layout_marginLeft="2dp"
-    card_view:cardBackgroundColor="?attr/colorCardBackground"
+    android:foreground="@drawable/card_foreground"
+    card_view:cardBackgroundColor="@color/colorCardBackground"
     card_view:cardCornerRadius="2dp"
     card_view:cardElevation="3dp"
     card_view:cardPreventCornerOverlap="false"
@@ -64,13 +65,13 @@
             android:layout_toEndOf="@+id/id_imageView_card_minimap"
             android:padding="5dp"
             android:paddingBottom="7dp"
-            android:background="?attr/colorCardBackground_Title">
+            android:background="@color/colorCardBackground_Title">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="?attr/textColorCardTitle"
+                android:textColor="@color/textColorCardTitle"
                 android:id="@+id/id_textView_card_TrackName"
                 android:textStyle="bold"
                 android:paddingTop="1dp" />
@@ -98,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/id_card_separator"
-            android:background="?attr/colorCardBackground_Line"
+            android:background="@color/colorCardBackground_Line"
             android:layout_margin="0dp"
             android:minHeight="1.7dp"
             android:layout_toRightOf="@+id/id_imageView_card_minimap"
@@ -109,7 +110,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorCardBackground_Data"
+            android:background="@color/colorCardBackground_Data"
             android:baselineAligned="false"
             android:weightSum="3"
             android:padding="5dp"
@@ -168,7 +169,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_length"
                         android:layout_marginTop="2dp"
-                        android:textColor="?attr/textColorPrimary"
+                        android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
                     <TextView
@@ -177,7 +178,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_duration"
                         android:layout_marginTop="3dp"
-                        android:textColor="?attr/textColorPrimary"
+                        android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
                     <TextView
@@ -186,7 +187,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_altitudegap"
                         android:layout_marginTop="3dp"
-                        android:textColor="?attr/textColorPrimary"
+                        android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
                 </LinearLayout>
@@ -235,7 +236,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_maxspeed"
                         android:layout_marginTop="2dp"
-                        android:textColor="?attr/textColorPrimary"
+                        android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
                     <TextView
@@ -244,7 +245,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_averagespeed"
                         android:layout_marginTop="3dp"
-                        android:textColor="?attr/textColorPrimary"
+                        android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
                 </LinearLayout>
@@ -291,7 +292,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_geopoints"
                         android:layout_marginTop="2dp"
-                        android:textColor="?attr/textColorPrimary"
+                        android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
 
                     <TextView
@@ -300,7 +301,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_placemarks"
                         android:layout_marginTop="3dp"
-                        android:textColor="?attr/textColorPrimary"
+                        android:textColor="@color/textColorPrimary"
                         android:maxLines="1" />
                 </LinearLayout>
 

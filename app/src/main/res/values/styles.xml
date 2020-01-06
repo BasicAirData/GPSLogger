@@ -20,13 +20,11 @@
 
 <resources>
 
-    <!-- ======[ DARK THEME ]================================================================== -->
-
-    <!-- The Theme of GPSActivity -->
+    <!-- Overall Styles -->
     <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
     </style>
 
-    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat">
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.DayNight">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -38,109 +36,6 @@
         <item name="windowActionModeOverlay">true</item>
         <!--  For Custom Action Mode Background Color/Drawable -->
         <item name="actionModeBackground">@color/colorPrimaryDark</item>
-
-        <!--  Attrs -->
-        <item name="colorRecControlBackground">@color/colorRecControlBackground</item>
-        <item name="colorCardBackground">@color/colorCardBackground</item>
-        <item name="colorCardBackground_Selected">@color/colorCardBackground_Selected</item>
-        <item name="colorCardBackground_Title">@color/colorCardBackground_Title</item>
-        <item name="colorCardBackground_Line">@color/colorCardBackground_Line</item>
-        <item name="colorCardBackground_Data">@color/colorCardBackground_Data</item>
-        <item name="backgroundColor">@color/colorBackground</item>
-
-        <item name="textColorPrimary">@color/textColorPrimary</item>
-        <item name="textColorSecondary">@color/textColorSecondary</item>
-        <item name="textColorCardTitle">@color/textColorCardTitle</item>
-        <item name="textColorRecControlPrimary">@color/textColorRecControlPrimary</item>
-        <item name="textColorRecControlSecondary">@color/textColorRecControlSecondary</item>
-
-        <item name="MyMaterialThemeAbout_ref">@style/MyMaterialThemeAbout</item>
-        <item name="TileDrawable_ref">@drawable/rounded_corner_dark</item>
-        <item name="isLightTheme">false</item>
-    </style>
-
-    <style name="MyMaterialThemeAbout" parent="MyMaterialTheme.Base">
-        <item name="android:windowBackground">@color/colorRecControlBackground</item>
-        <item name="android:windowAnimationStyle">@style/MyAboutAnimation.Window</item>
-    </style>
-
-    <!-- The Theme of SettingsActivity -->
-    <style name="MySettingsTheme" parent="MyMaterialTheme">
-        <item name="colorAccent">@color/textColorPrimary</item>
-    </style>
-
-
-
-
-    <!-- ======[ LIGHT THEME ]================================================================= -->
-
-    <!-- The Theme of GPSActivity -->
-    <style name="MyMaterialTheme_Light" parent="MyMaterialTheme_Light.Base">
-    </style>
-
-    <style name="MyMaterialTheme_Light.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="colorPrimary">@color/colorPrimary_Light</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark_Light</item>
-        <item name="colorAccent">@color/colorAccent_Light</item>
-        <item name="preferenceTheme">@style/MyPreferenceThemeOverlay</item>
-        <item name="android:windowBackground">@color/colorBackground_Light</item>
-        <!--  It should be true otherwise action mode will not overlay toolbar -->
-        <item name="windowActionModeOverlay">true</item>
-        <!--  For Custom Action Mode Background Color/Drawable -->
-        <item name="actionModeBackground">@color/colorPrimaryDark_Light</item>
-
-        <!--  Attrs -->
-        <item name="colorRecControlBackground">@color/colorRecControlBackground_Light</item>
-        <item name="colorCardBackground">@color/colorCardBackground_Light</item>
-        <item name="colorCardBackground_Selected">@color/colorCardBackground_Selected_Light</item>
-        <item name="colorCardBackground_Title">@color/colorCardBackground_Title_Light</item>
-        <item name="colorCardBackground_Line">@color/colorCardBackground_Line_Light</item>
-        <item name="colorCardBackground_Data">@color/colorCardBackground_Data_Light</item>
-        <item name="backgroundColor">@color/colorBackground_Light</item>
-
-        <item name="textColorPrimary">@color/textColorPrimary_Light</item>
-        <item name="textColorSecondary">@color/textColorSecondary_Light</item>
-        <item name="textColorCardTitle">@color/textColorCardTitle_Light</item>
-        <item name="textColorRecControlPrimary">@color/textColorRecControlPrimary_Light</item>
-        <item name="textColorRecControlSecondary">@color/textColorRecControlSecondary_Light</item>
-
-        <item name="MyMaterialThemeAbout_ref">@style/MyMaterialThemeAbout_Light</item>
-        <item name="TileDrawable_ref">@drawable/rounded_corner_light</item>
-        <item name="isLightTheme">true</item>
-    </style>
-
-    <style name="MyMaterialThemeAbout_Light" parent="MyMaterialTheme_Light.Base">
-        <item name="colorAccent">@color/textColorPrimary_Light</item>
-        <item name="android:windowBackground">@color/colorCardBackground_Light</item>
-        <item name="android:windowAnimationStyle">@style/MyAboutAnimation.Window</item>
-    </style>
-
-    <!-- The Theme of SettingsActivity -->
-    <style name="MySettingsTheme_Light" parent="MyMaterialTheme_Light">
-        <item name="colorAccent">@color/textColorPrimary_Light</item>
-    </style>
-
-
-
-
-    <!-- ======[ SHARED STYLES ]=============================================================== -->
-
-    <style name="StyledDialog" parent="Theme.AppCompat.Dialog">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MyPreferenceCategory" parent="@style/Preference.Category">
-        <item name="android:textColor">@color/preference_accent</item>
-    </style>
-
-    <style name="MyPreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay.v14.Material">
-        <item name="android:listSeparatorTextViewStyle">@style/ListSeparatorTextView</item>
-        <item name="preferenceCategoryStyle">@style/MyPreferenceCategory</item>
-        <item name="divider">@color/colorAccent</item>
     </style>
 
     <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
@@ -155,18 +50,48 @@
     </style>
 
     <style name="TextAppearanceLargeNumbers" parent="@android:style/TextAppearance.Large">
-        <item name="android:textColor">?attr/textColorPrimary</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
         <item name="android:textSize">@dimen/TextAppearanceLargeNumbersSize</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextAppearanceLargeUM" parent="@android:style/TextAppearance.Small">
-        <item name="android:textColor">?attr/textColorPrimary</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
         <item name="android:textSize">@dimen/TextAppearanceTextUMSize</item>
     </style>
 
     <style name="TextAppearanceCardSmall" parent="@android:style/TextAppearance.Small">
         <item name="android:textSize">@dimen/TextAppearanceSmallTextSize</item>
+    </style>
+
+
+    <!-- Dialogs -->
+    <style name="StyledDialog" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/textColorPrimary</item>
+    </style>
+
+    <style name="MyEditText" parent="Theme.AppCompat.DayNight">
+        <item name="colorAccent">@color/textColorPrimary</item>
+        <item name="colorControlNormal">@color/textColorSecondary</item>
+        <item name="colorControlActivated">@color/textColorSecondary</item>
+    </style>
+
+
+    <!-- SettingsActivity -->
+    <style name="MySettingsTheme" parent="MyMaterialTheme">
+        <item name="colorAccent">@color/textColorPrimary</item>
+    </style>
+
+    <style name="MyPreferenceCategory" parent="@style/Preference.Category">
+        <item name="android:textColor">@color/preference_accent</item>
+    </style>
+
+    <style name="MyPreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="android:listSeparatorTextViewStyle">@style/ListSeparatorTextView</item>
+        <item name="preferenceCategoryStyle">@style/MyPreferenceCategory</item>
+        <item name="divider">@color/colorAccent</item>
     </style>
 
     <style name="ListSeparatorTextView">
@@ -175,6 +100,14 @@
         <item name="android:textColor">@color/preference_accent</item>
         <item name="android:paddingTop">16dp</item>
         <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+
+    <!-- About Screen -->
+    <style name="MyMaterialThemeAbout" parent="MyMaterialTheme.Base">
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="colorAccent">@color/textColorPrimary</item>
+        <item name="android:windowAnimationStyle">@style/MyAboutAnimation.Window</item>
     </style>
 
     <style name="MyAboutAnimation.Window" parent="@android:style/Animation.Activity">

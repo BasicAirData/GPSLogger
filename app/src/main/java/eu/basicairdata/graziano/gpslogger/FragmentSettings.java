@@ -27,6 +27,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -162,6 +163,15 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     SharedPreferences.Editor editor1 = settings.edit();
                     editor1.putBoolean("prefLightColorTheme", sharedPreferences.getBoolean(key, false));
                     editor1.commit();
+
+                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("prefLightColorTheme", false)) {
+                        AppCompatDelegate.setDefaultNightMode(
+                                AppCompatDelegate.MODE_NIGHT_NO);
+                    }
+                    else {
+                        AppCompatDelegate.setDefaultNightMode(
+                                AppCompatDelegate.MODE_NIGHT_YES);
+                    }
 
                     getActivity().recreate();
                 }
