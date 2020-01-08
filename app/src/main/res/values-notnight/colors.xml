@@ -38,14 +38,14 @@
     <color name="colorRoundedCornerDarktop">#ffffff</color>
     <color name="colorRoundedCornerDarkBorder">#cccccc</color>
 
-    <color name="colorCardBackground_Title">#12000000</color>
-    <color name="colorCardBackground_Line">#4f000000</color>
-    <color name="colorCardBackground_Data">#07000000</color>
-    <color name="colorCardBackground">#ffffff</color>
-    <color name="colorCardBackground_Selected">#42ff2f2f</color>
+    <color name="colorCardBackground_Title">#ffffff</color>
+    <color name="colorCardBackground_Line">#b0b0b0</color>
+    <color name="colorCardBackground_Data">#f5f5f5</color>
+    <color name="colorCardBackground">#ededed</color>
+    <color name="colorCardBackground_Selected">#2fff1818</color>
 
     <color name="colorAccent">#ffffff</color>
-    <color name="preference_accent">#880000</color>
-    <color name="preference_fallback_accent_color">#ca2222</color>
+    <color name="preference_accent">#b51111</color>
+    <color name="preference_fallback_accent_color">#b51111</color>
 
 </resources>

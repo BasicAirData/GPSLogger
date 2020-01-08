@@ -35,13 +35,13 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
-
         if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
+
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_settings);
 

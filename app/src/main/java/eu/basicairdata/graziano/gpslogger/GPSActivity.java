@@ -88,13 +88,13 @@ public class GPSActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
-
         if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false)) {
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         } else {
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
+
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_gps);
         toolbar = findViewById(R.id.id_toolbar);

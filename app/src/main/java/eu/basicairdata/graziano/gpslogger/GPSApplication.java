@@ -614,7 +614,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     @Override
     public void onCreate() {
-        super.onCreate();
 
         if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false)) {
             AppCompatDelegate.setDefaultNightMode(
@@ -624,6 +623,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_YES);
         }
+
+        super.onCreate();
 
         singleton = this;
 
