@@ -158,21 +158,14 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     }
                 }
 
-                if (key.equals("prefLightColorTheme")) {
+                if (key.equals("prefColorTheme")) {
                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
                     SharedPreferences.Editor editor1 = settings.edit();
-                    editor1.putBoolean("prefLightColorTheme", sharedPreferences.getBoolean(key, false));
+                    editor1.putString(key, sharedPreferences.getString(key, "2"));
                     editor1.commit();
 
-                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("prefLightColorTheme", false)) {
-                        AppCompatDelegate.setDefaultNightMode(
-                                AppCompatDelegate.MODE_NIGHT_NO);
-                    }
-                    else {
-                        AppCompatDelegate.setDefaultNightMode(
-                                AppCompatDelegate.MODE_NIGHT_YES);
-                    }
-
+                    AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
+                    getActivity().getWindow().setWindowAnimations(R.style.MyCrossfadeAnimation_Window);
                     getActivity().recreate();
                 }
 
@@ -218,6 +211,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         ListPreference pShowTrackStatsType = (ListPreference) findPreference("prefShowTrackStatsType");
         ListPreference pShowDirections = (ListPreference) findPreference("prefShowDirections");
         ListPreference pViewTracksWith = (ListPreference) findPreference("prefViewTracksWith");
+        ListPreference pColorTheme = (ListPreference) findPreference("prefColorTheme");
         EditTextPreference pAltitudeCorrection = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
 
         altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
@@ -244,6 +238,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         Log.w("myApp", "[#] FragmentSettings.java - prefAltitudeCorrection = " + prefs.getString("prefAltitudeCorrection", "0")) ;
 
         // Set all summaries
+        pColorTheme.setSummary(pColorTheme.getEntry());
         pUMSpeed.setSummary(pUMSpeed.getEntry());
         pUM.setSummary(pUM.getEntry());
         pGPSDistance.setSummary(pGPSDistance.getEntry());

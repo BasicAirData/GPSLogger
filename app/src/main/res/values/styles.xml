@@ -65,6 +65,11 @@
         <item name="android:textSize">@dimen/TextAppearanceSmallTextSize</item>
     </style>
 
+    <style name="MyCrossfadeAnimation.Window" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
 
     <!-- Dialogs -->
     <style name="StyledDialog" parent="Theme.AppCompat.DayNight.Dialog">

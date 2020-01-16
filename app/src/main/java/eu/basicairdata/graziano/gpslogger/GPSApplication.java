@@ -180,7 +180,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     public int JobType = JOB_TYPE_NONE;                     // The type of job that is pending
     private boolean DeleteAlsoExportedFiles = false;        // When true, the deletion of some tracks will delete also the exported files of the tracks
 
-    public boolean isGPSActivityDarkTheme;
+    public int GPSActivityColorTheme;
 
     private int _Stabilizer = StabilizingSamples;
     private int HandlerTimer = DEFAULTHANDLERTIMER;
@@ -617,14 +617,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     @Override
     public void onCreate() {
 
-        if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            isGPSActivityDarkTheme = false;
-        }
-        else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            isGPSActivityDarkTheme = true;
-        }
+        AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")));
 
         super.onCreate();
 

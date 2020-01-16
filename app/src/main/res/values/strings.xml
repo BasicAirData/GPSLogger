@@ -129,8 +129,9 @@
     <string name="pref_category_interface">INTERFACE</string>
     <string name="pref_keep_screen_on">Keep Screen On</string>
     <string name="pref_keep_screen_on_summary">Battery drains faster</string>
-    <string name="pref_light_color_theme">Light colored Theme</string>
-    <string name="pref_light_color_theme_summary">Useful in bright Environments</string>
+    <string name="pref_color_theme">Color Theme</string>
+    <string name="pref_color_theme_dark">Dark</string>
+    <string name="pref_color_theme_light">Light</string>
     <string name="pref_show_decimal_coordinates">Show Decimal Coordinates</string>
     <string name="pref_show_decimal_coordinates_summary">Fractional part in decimal notation</string>
     <string name="pref_show_directions">Show Directions using</string>

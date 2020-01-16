@@ -78,7 +78,7 @@ public class GPSActivity extends AppCompatActivity {
 
     private boolean prefKeepScreenOn = true;
     private boolean show_toast_grant_storage_permission = false;
-    private boolean lighttheme;
+    private int theme;
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
@@ -91,13 +91,7 @@ public class GPSActivity extends AppCompatActivity {
         setTheme(R.style.MyMaterialTheme);
         Log.w("myApp", "[#] GPSActivity.java - onCreate()");
 
-        if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false)) {
-            lighttheme = true;
-            //getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            lighttheme = false;
-            //getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
+        theme = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2"));
 
         super.onCreate(savedInstanceState);
 
@@ -149,7 +143,7 @@ public class GPSActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false) != lighttheme) {
+        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
             finish();
             startActivity(new Intent(this, getClass()));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
