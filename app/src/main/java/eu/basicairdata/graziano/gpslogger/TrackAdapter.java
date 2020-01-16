@@ -42,9 +42,9 @@ import java.util.List;
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     private static final float[] NEGATIVE = {
-            -1.0f,      0,      0,     0,  235, // red
-                0,  -1.0f,      0,     0,  235, // green
-                0,      0,  -1.0f,     0,  235, // blue
+            -1.0f,      0,      0,     0,  245, // red
+                0,  -1.0f,      0,     0,  245, // green
+                0,      0,  -1.0f,     0,  245, // blue
                 0,      0,      0, 1.00f,    0  // alpha
     };
     private ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(NEGATIVE);

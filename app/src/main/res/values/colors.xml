@@ -30,15 +30,15 @@
     <color name="textColorSecondary">#888888</color>
     <color name="colorBackground">#e8e8e8</color>
 
-    <color name="colorRecControlBackground">#7f7f7f</color>
+    <color name="colorRecControlBackground">#828282</color>
     <color name="textColorRecControlPrimary">#ffffff</color>
     <color name="textColorRecControlSecondary">#cccccc</color>
 
     <color name="colorCardBackground_Title">#ffffff</color>
-    <color name="colorCardBackground_Line">#b0b0b0</color>
-    <color name="colorCardBackground_Data">#f5f5f5</color>
-    <color name="colorCardBackground">#efefef</color>
-    <color name="colorCardBackground_Selected">#31ff1818</color>
+    <color name="colorCardBackground_Line">#c0c0c0</color>
+    <color name="colorCardBackground_Data">#fafafa</color>
+    <color name="colorCardBackground">#f5f5f5</color>
+    <color name="colorCardBackground_Selected">#47ff7070</color>
 
     <color name="colorAccent">#ffffff</color>
     <color name="preference_accent">#b51111</color>
@@ -57,6 +57,6 @@
 
     <color name="colorRoundedCornerBottom_Light">#eeeeee</color>
     <color name="colorRoundedCornerTop_Light">#ffffff</color>
-    <color name="colorRoundedCornerBorder_Light">#cccccc</color>
+    <color name="colorRoundedCornerBorder_Light">#bfbfbf</color>
 
 </resources>
