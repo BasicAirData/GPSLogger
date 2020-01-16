@@ -34,10 +34,6 @@
     <color name="textColorRecControlPrimary">#ffffff</color>
     <color name="textColorRecControlSecondary">#cccccc</color>
 
-    <color name="colorRoundedCornerDarktop">#202020</color>
-    <color name="colorRoundedCornerDarkBottom">#161616</color>
-    <color name="colorRoundedCornerDarkBorder">#707070</color>
-
     <color name="colorCardBackground_Title">#3d3d3d</color>
     <color name="colorCardBackground_Line">#747474</color>
     <color name="colorCardBackground_Data">#333333</color>

@@ -41,7 +41,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.view.ActionMode;
 import android.support.v7.view.ContextThemeWrapper;
@@ -79,6 +78,7 @@ public class GPSActivity extends AppCompatActivity {
 
     private boolean prefKeepScreenOn = true;
     private boolean show_toast_grant_storage_permission = false;
+    private boolean lighttheme;
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
@@ -88,10 +88,15 @@ public class GPSActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        setTheme(R.style.MyMaterialTheme);
+        Log.w("myApp", "[#] GPSActivity.java - onCreate()");
+
         if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false)) {
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            lighttheme = true;
+            //getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         } else {
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            lighttheme = false;
+            //getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
 
         super.onCreate(savedInstanceState);
@@ -143,6 +148,12 @@ public class GPSActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("prefLightColorTheme", false) != lighttheme) {
+            finish();
+            startActivity(new Intent(this, getClass()));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
 
         // Workaround for Nokia Devices, Android 9
         // https://github.com/BasicAirData/GPSLogger/issues/77

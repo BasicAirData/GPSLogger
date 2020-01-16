@@ -20,6 +20,7 @@
 
 <resources>
 
+
     <!-- Overall Styles -->
     <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
     </style>
@@ -113,6 +114,14 @@
     <style name="MyAboutAnimation.Window" parent="@android:style/Animation.Activity">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+    </style>
+
+
+    <!-- Launch Screen -->
+    <style name="LaunchScreenTheme" parent="Theme.AppCompat">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+        <item name="colorPrimary">@android:color/black</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
     </style>
 
 </resources>
