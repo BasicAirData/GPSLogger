@@ -86,6 +86,22 @@ public class GPSActivity extends AppCompatActivity {
 
 
     @Override
+    public void onRestart(){
+
+        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
+            Log.w("myApp", "[#] GPSActivity.java - it needs to be recreated (Theme changed)");
+            //this.recreate();
+            finish();
+            startActivity(new Intent(this, getClass()));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
+        super.onRestart();
+
+        Log.w("myApp", "[#] GPSActivity.java - onRestart()");
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         setTheme(R.style.MyMaterialTheme);
@@ -142,12 +158,6 @@ public class GPSActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-
-        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
-            finish();
-            startActivity(new Intent(this, getClass()));
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        }
 
         // Workaround for Nokia Devices, Android 9
         // https://github.com/BasicAirData/GPSLogger/issues/77
