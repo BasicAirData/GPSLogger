@@ -87,26 +87,31 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     public void onRestart(){
+        Log.w("myApp", "[#] " + this + " - onRestart()");
 
         if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
             Log.w("myApp", "[#] GPSActivity.java - it needs to be recreated (Theme changed)");
-            //this.recreate();
-            finish();
-            startActivity(new Intent(this, getClass()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                // Normal behaviour for Android 5 +
+                this.recreate();
+            } else {
+                // Workaround to a bug on Android 4.4.X platform (google won't fix because Android 4.4 is obsolete)
+                // Android 4.4.X: taskAffinity & launchmode='singleTask' violating Activity's lifecycle
+                // https://issuetracker.google.com/issues/36998700
+                finish();
+                startActivity(new Intent(this, getClass()));
+            }
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
         super.onRestart();
-
-        Log.w("myApp", "[#] GPSActivity.java - onRestart()");
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.w("myApp", "[#] " + this + " - onCreate()");
 
         setTheme(R.style.MyMaterialTheme);
-        Log.w("myApp", "[#] GPSActivity.java - onCreate()");
-
         theme = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2"));
 
         super.onCreate(savedInstanceState);
@@ -147,16 +152,23 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     public void onStart() {
+        Log.w("myApp", "[#] " + this + " - onStart()");
         super.onStart();
-
-        //Log.w("myApp", "[#] GPSActivity.java - onStart()");
         activeTab = tabLayout.getSelectedTabPosition();
         GPSApp.setGPSActivity_activeTab(activeTab);
     }
 
 
     @Override
+    public void onStop() {
+        Log.w("myApp", "[#] " + this + " - onStop()");
+        super.onStop();
+    }
+
+
+    @Override
     public void onResume() {
+        Log.w("myApp", "[#] " + this + " - onResume()");
         super.onResume();
 
         // Workaround for Nokia Devices, Android 9
@@ -167,7 +179,6 @@ public class GPSActivity extends AppCompatActivity {
         }
 
         EventBus.getDefault().register(this);
-        Log.w("myApp", "[#] GPSActivity.java - onResume()");
         LoadPreferences();
         EventBus.getDefault().post(EventBusMSG.APP_RESUME);
         if (menutrackfinished != null) menutrackfinished.setVisible(!GPSApp.getCurrentTrack().getName().equals(""));
@@ -226,18 +237,21 @@ public class GPSActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public void onPause() {
+        Log.w("myApp", "[#] " + this + " - onPause()");
         EventBus.getDefault().post(EventBusMSG.APP_PAUSE);
-        Log.w("myApp", "[#] GPSActivity.java - onPause()");
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
+
 
     @Override
     public void onBackPressed() {
         ShutdownApp();
     }
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -245,11 +259,13 @@ public class GPSActivity extends AppCompatActivity {
         updateBottomSheetPosition();
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -257,6 +273,7 @@ public class GPSActivity extends AppCompatActivity {
         menutrackfinished.setVisible(!GPSApp.getCurrentTrack().getName().equals(""));
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
