@@ -18,7 +18,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- ======[ LIGHT THEME ]================================================================= -->
 
@@ -35,14 +35,14 @@
     <color name="textColorRecControlSecondary">#cccccc</color>
 
     <color name="colorCardBackground_Title">#ffffff</color>
-    <color name="colorCardBackground_Line">#c7c7c7</color>
+    <color name="colorCardBackground_Line">#ededed</color>
     <color name="colorCardBackground_Data">#fbfbfb</color>
-    <color name="colorCardBackground">#f6f6f6</color>
-    <color name="colorCardBackground_Selected">#57ff7777</color>
+    <color name="colorCardBackground">#f4f4f4</color>
+    <color name="colorCardBackground_Selected">#4bff7777</color>
 
     <color name="colorAccent">#ffffff</color>
     <color name="preference_accent">#b51111</color>
-    <color name="preference_fallback_accent_color">#b51111</color>
+    <color name="preference_fallback_accent_color" tools:override="true">#b51111</color>
 
 
 
