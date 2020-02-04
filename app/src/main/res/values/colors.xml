@@ -30,9 +30,11 @@
     <color name="textColorSecondary">#888888</color>
     <color name="colorBackground">#e8e8e8</color>
 
-    <color name="colorRecControlBackground">#777777</color>
-    <color name="textColorRecControlPrimary">#ffffff</color>
-    <color name="textColorRecControlSecondary">#cccccc</color>
+    <color name="colorRecControlBackground">#c9c9c9</color>
+    <color name="textColorRecControlPrimary">#111111</color>
+    <color name="textColorRecControlSecondary">#555555</color>
+    <color name="textColorRecControlPrimary_Active">#ffffff</color>
+    <color name="textColorRecControlSecondary_Active">#cccccc</color>
 
     <color name="colorCardBackground_Title">#ffffff</color>
     <color name="colorCardBackground_Line">#ededed</color>

@@ -44,6 +44,8 @@ public class FragmentRecordingControls extends Fragment{
 
     private TextView TVGeoPoints;
     private TextView TVPlacemarks;
+    private TextView TVGeoPointsLabel;
+    private TextView TVPlacemarksLabel;
 
     final GPSApplication gpsApplication = GPSApplication.getInstance();
 
@@ -76,6 +78,8 @@ public class FragmentRecordingControls extends Fragment{
 
         TVGeoPoints = (TextView) view.findViewById(R.id.id_textView_GeoPoints);
         TVPlacemarks = (TextView) view.findViewById(R.id.id_textView_Placemarks);
+        TVGeoPointsLabel = (TextView) view.findViewById(R.id.id_textView_GeoPointsLabel);
+        TVPlacemarksLabel = (TextView) view.findViewById(R.id.id_textView_PlacemarksLabel);
 
         return view;
     }
@@ -108,6 +112,8 @@ public class FragmentRecordingControls extends Fragment{
             gpsApplication.setRecording(newRecordingState);
             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
             tableLayoutGeoPoints.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+            TVGeoPoints.setTextColor(getResources().getColor(newRecordingState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+            TVGeoPointsLabel.setTextColor(getResources().getColor(newRecordingState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
         }
     }
 
@@ -117,6 +123,9 @@ public class FragmentRecordingControls extends Fragment{
             boolean newPlacemarkRequestState = !pr;
             gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
             tableLayoutPlacemarks.setBackgroundColor(newPlacemarkRequestState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+            TVPlacemarks.setTextColor(getResources().getColor(newPlacemarkRequestState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+            TVPlacemarksLabel.setTextColor(getResources().getColor(newPlacemarkRequestState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
+
         }
     }
 
@@ -133,14 +142,14 @@ public class FragmentRecordingControls extends Fragment{
             final Boolean grs = gpsApplication.getRecording();
             final Boolean pr = gpsApplication.getPlacemarkRequest();
             if (track != null) {
-                if (TVGeoPoints != null)
-                    TVGeoPoints.setText(String.valueOf(track.getNumberOfLocations()));
-                if (TVPlacemarks != null)
-                    TVPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
-                if (tableLayoutGeoPoints != null)
-                    tableLayoutGeoPoints.setBackgroundColor(grs ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-                if (tableLayoutPlacemarks != null)
-                    tableLayoutPlacemarks.setBackgroundColor(pr ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+                if (TVGeoPoints != null)            TVGeoPoints.setText(String.valueOf(track.getNumberOfLocations()));
+                if (TVPlacemarks != null)           TVPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
+                if (tableLayoutGeoPoints != null)   tableLayoutGeoPoints.setBackgroundColor(grs ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+                if (tableLayoutPlacemarks != null)  tableLayoutPlacemarks.setBackgroundColor(pr ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+                if (TVPlacemarks != null)           TVPlacemarks.setTextColor(getResources().getColor(pr ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+                if (TVPlacemarksLabel != null)      TVPlacemarksLabel.setTextColor(getResources().getColor(pr ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
+                if (TVGeoPoints != null)            TVGeoPoints.setTextColor(getResources().getColor(grs ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+                if (TVGeoPointsLabel != null)       TVGeoPointsLabel.setTextColor(getResources().getColor(grs ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
             }
         }
     }
