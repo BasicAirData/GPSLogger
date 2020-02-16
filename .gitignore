@@ -22,6 +22,7 @@ local.properties
 
 
 /out
+/*/release
 /*/build
 /*/*.iml
 *.iws
