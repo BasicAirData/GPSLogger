@@ -35,7 +35,7 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 
 ## Frequently Asked Questions
 <b>Q</b> - <i>I've just installed the App, but it doesn't read the GPS Signal.</i><br>
-<b>A</b> - Please try to reboot your Device. Check also that the GPS Signal is strong enough and, if not, go in an open Area.
+<b>A</b> - Please reboot your Device, go in an open Area and try to repeat your test.
 
 <b>Q</b> - <i>The Location is active, but the App sees "GPS disabled".</i><br>
 <b>A</b> - Please go on Location Section of your Android Settings: the Phone could be set to use the "Battery saving" Locating Method. This Method uses Wi-Fi & Mobile Networks to estimate your Location, without turn on the GPS. In case please switch to "Phone only" or "High accuracy" Method to enable the GPS Sensor.
@@ -53,4 +53,4 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 <b>A</b> - 1) Please check in Android System Settings that Earth has the Storage Permission granted; 2) GPS Logger might be set to show the Track in 3D, and the Track may be hidden under the Terrain. Please go in the Exportation Settings, switch the Altitude Mode to "Projected to ground" and try again.
 
 <b>Q</b> - <i>The App sometimes stops recording when running in Background.</i><br>
-<b>A</b> - The App could be closed by the System during the Background Recording. To avoid it, you have to go on the Android Settings and turn off all Battery Monitoring and Optimizations for GPS Logger. On Android 9 check also that the Application is NOT Background Restricted. Sadly any Device Brand implemented in a different Way the Settings to keep safe the Background Apps, so a small Research must be done. Furthermore, Anti-Viruses (like Avast) are very aggressive with long running Apps, and must be correctly set.
+<b>A</b> - The App could be closed by the System during the Background Recording. To avoid it, as first step, go on the Android Settings and turn off all Battery Monitoring and Optimizations for GPS Logger. On Android 9 check also that the Application is NOT Background Restricted. Sadly any Device Brand implemented in a different Way the Settings to keep safe the Background Apps, so a small Research must be done. For example, for some brands you have to whitelist the background apps, whilst for some others you have to set the "high performances" power saving mode. Moreover some Anti-Viruses are very aggressive with long running Apps, and must be correctly set.
