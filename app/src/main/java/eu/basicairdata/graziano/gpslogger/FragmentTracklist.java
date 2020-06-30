@@ -22,6 +22,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -355,19 +357,19 @@ public class FragmentTracklist extends Fragment {
                 String fname = track.getName() + ".kml";
                 file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
                 if (file.exists () && GPSApplication.getInstance().getPrefExportKML()) {
-                    Uri uri = Uri.fromFile(file);
+                    Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
                 fname = track.getName() + ".gpx";
                 file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
                 if (file.exists ()  && GPSApplication.getInstance().getPrefExportGPX()) {
-                    Uri uri = Uri.fromFile(file);
+                    Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
                 fname = track.getName() + ".txt";
                 file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
                 if (file.exists ()  && GPSApplication.getInstance().getPrefExportTXT()) {
-                    Uri uri = Uri.fromFile(file);
+                    Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
                 i++;
@@ -375,6 +377,18 @@ public class FragmentTracklist extends Fragment {
             intent.putExtra(Intent.EXTRA_SUBJECT, extraSubject.toString());
             intent.putExtra(Intent.EXTRA_TEXT, (CharSequence) (extraText.toString()));
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Grant Read and Write permissions for all the app that handle the intent for all files of the list
+            // it must be done manually because it is the compat version of FileProvider
+            List<ResolveInfo> resInfoList = getContext().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                for (Uri U : files) {
+                    GPSApplication.getInstance().getApplicationContext().grantUriPermission(packageName, U, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+            }
+
             // Create intent to show chooser
             Intent chooser = Intent.createChooser(intent, getString(R.string.card_menu_share));
             // Verify the intent will resolve to at least one activity

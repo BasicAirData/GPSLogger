@@ -38,6 +38,7 @@
         android:label="@string/app_name"
         android:theme="@style/LaunchScreenTheme"
         android:supportsRtl="true">
+
         <activity android:name=".GPSActivity"
             android:label="@string/app_name"
             android:exported="true"
@@ -47,6 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".SettingsActivity"
             android:theme="@style/MySettingsTheme"
             android:label="@string/menu_settings"
@@ -56,6 +58,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GPSActivity" />
         </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="eu.basicairdata.graziano.gpslogger.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
         <service
             android:name=".GPSService"
             android:exported="true">
@@ -63,6 +76,7 @@
                 <action android:name="eu.basicairdata.graziano.gpslogger.GPSService" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>
