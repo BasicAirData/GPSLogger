@@ -24,10 +24,21 @@
     android:layout_height="wrap_content"
     tools:context="eu.basicairdata.graziano.gpslogger.FragmentRecordingControls"
     android:id="@+id/id_fragmentrecordingcontrols"
-    android:background="@color/colorRecControlBackground"
-    android:orientation="horizontal"
-    android:weightSum="3"
+    android:orientation="vertical"
     android:baselineAligned="false">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:background="@drawable/shadow"
+        android:layout_height="6dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorRecControlBackground"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:baselineAligned="false">
 
 
     <TableLayout
@@ -100,5 +111,5 @@
             android:gravity="center_horizontal"/>
 
     </TableLayout>
-
+    </LinearLayout>
 </LinearLayout>

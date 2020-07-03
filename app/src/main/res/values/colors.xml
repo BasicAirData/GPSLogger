@@ -30,7 +30,7 @@
     <color name="textColorSecondary">#777777</color>
     <color name="colorBackground">#e9e9e9</color>
 
-    <color name="colorRecControlBackground">#c4c4c4</color>
+    <color name="colorRecControlBackground">#ffffff</color>
     <color name="textColorRecControlPrimary">#111111</color>
     <color name="textColorRecControlSecondary">#555555</color>
     <color name="textColorRecControlPrimary_Active">#ffffff</color>
