@@ -110,7 +110,7 @@
     <string name="pref_category_interface">INTERFACE</string>
     <string name="pref_keep_screen_on">Maintenir l’écran allumé</string>
     <string name="pref_keep_screen_on_summary">La batterie se videra plus vite</string>
-    <string name="pref_color_theme">Thème de couleur</string>
+    <string name="pref_color_theme">Couleur du thème</string>
     <string name="pref_color_theme_dark">Sombre</string>
     <string name="pref_color_theme_light">Claire</string>
     <string name="pref_show_decimal_coordinates">Afficher les coordonnées décimales</string>

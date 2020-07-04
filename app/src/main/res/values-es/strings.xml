@@ -62,7 +62,7 @@
     <string name="overall_direction">Rumbo</string>
     <string name="altitude_gap">Dif altitud</string>
     <!-- Track Status message -->
-    <string name="track_empty">Nuevo itinerario\n\nEmpezar la grabación\no añadir una marca de posición\nseleccionar uno de los botones de la barra inferior</string>
+    <string name="track_empty">Nuevo itinerario\n\nEmpezar la grabación\no añadir una marca de posición\nseleccionando uno de los botones de la barra inferior</string>
     <!-- Recording buttons (bottom side) -->
     <string name="placemarks">Marcadores</string>
     <string name="trackpoints">Pos. GPS</string>
@@ -73,14 +73,14 @@
     <string name="toast_track_saved_into_tracklist">Itinerario archivado</string>
     <string name="toast_track_exported">Itinerarios exportados en la carpeta /GPSLogger</string>
     <string name="menu_about">Acerca de</string>
-    <string name="menu_shutdown">Apagar</string>
+    <string name="menu_shutdown">Salir</string>
     <!-- Placemark Creation dialog -->
     <string name="dlg_add_placemark">Añadir marcador</string>
     <string name="dlg_placemark_description">Introduce la descripción</string>
     <string name="dlg_button_add">Añadir</string>
     <string name="dlg_button_cancel">Cancelar</string>
     <!-- Tracklist -->
-    <string name="tracklist_empty">Archivo vacio</string>
+    <string name="tracklist_empty">Archivo vacío</string>
     <string name="card_trackinfo_length">Distancia</string>
     <string name="card_trackinfo_duration">Duración</string>
     <string name="card_trackinfo_altitude_gap">Dif alt</string>
@@ -109,7 +109,7 @@
     <!-- Preferences -->
     <string name="pref_category_interface">INTERFAZ</string>
     <string name="pref_keep_screen_on">Mantener la pantalla encendida</string>
-    <string name="pref_keep_screen_on_summary">Meno autonomia de la batería</string>
+    <string name="pref_keep_screen_on_summary">Menor autonomía de la batería</string>
     <string name="pref_color_theme">Color del tema</string>
     <string name="pref_color_theme_dark">Oscuro</string>
     <string name="pref_color_theme_light">Claro</string>
@@ -123,7 +123,7 @@
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Aéreo / Náutico</string>
     <string name="pref_unit_of_measurement_speed">Mostrar velocidades en</string>
-    <string name="pref_view_tracks_with">Visualizar el itinerarion con</string>
+    <string name="pref_view_tracks_with">Visualizar el itinerario con</string>
     <string name="pref_view_tracks_with_KML">Visualizador KML</string>
     <string name="pref_view_tracks_with_GPX">Visualizador GPX</string>
     <string name="pref_category_tracking">SEGUIMIENTO</string>
@@ -152,13 +152,13 @@
     <string name="pref_AltitudeCorrection_summary_offset">Desplazamiento</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">Desplazamiento no definido</string>
     <string name="pref_category_exporting">EXPORTACIÓN</string>
-    <string name="pref_export_TXT">Exporta itinerarios en TXT</string>
+    <string name="pref_export_TXT">Exportar itinerarios a TXT</string>
     <string name="pref_export_TXT_summary">Archivo de texto de valores separados por comas</string>
     <string name="pref_TXT_system_of_measurement">TXT Sistema de unidades</string>
     <string name="pref_TXT_system_of_measurement_follows_app_settings">Seguir configuración de interfaz</string>
-    <string name="pref_export_KML">Exporta itinerarios a KML</string>
+    <string name="pref_export_KML">Exportar itinerarios a KML</string>
     <string name="pref_export_KML_summary">Keyhole Markup Language (v.2.2)</string>
-    <string name="pref_export_GPX">Exporta itinerarios a GPX</string>
+    <string name="pref_export_GPX">Exportar itinerarios a GPX</string>
     <string name="pref_export_GPX_summary">Estándar GPS eXchange Format (v.1.0)</string>
     <string name="pref_GPX_version">Estándar del GPX</string>
     <string name="pref_GPX_version_1_0">GPX 1.0</string>
@@ -176,10 +176,10 @@
     <string name="toast_active_track_not_empty">El itinerario actual no está vacío</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra itinerarios usando la posicion GPS. El itinerario se puede visualizar en tu app preferida, compartir y exportar a una carpeta de su dispositivo en formatos KML, GPX y TXT.\n\nEs un software libre, publicado bajo los términos de la licencia GNU General Public.\nMás detalles en el enlace: http://www.gnu.org/licenses/gpl.txt\n\nEl aviso legal del archivo EGM96: http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra itinerarios usando la posicion GPS. El itinerario se puede visualizar en tu app preferida, compartir y exportar a una carpeta de su dispositivo en formatos KML, GPX y TXT.\n\nEs un software libre, publicado bajo los términos de la licencia GNU General Public.\nMás detalles en el enlace: http://www.gnu.org/licenses/gpl.txt\n\nEl aviso legal del archivo EGM96: http://earth-info.nga.mil/GandG/disclaim.html\n\n Disfrute de esta aplicación, por favor tome un momento para votar GPS Logger en el Google Store.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra itinerarios usando la posición GPS. El itinerario se puede visualizar en su app preferida, compartir y exportar a una carpeta de su dispositivo en formatos KML, GPX y TXT.\n\nEs un software libre, publicado bajo los términos de la licencia GNU General Public.\nMás detalles en el enlace: http://www.gnu.org/licenses/gpl.txt\n\nEl aviso legal del archivo EGM96: http://earth-info.nga.mil/GandG/disclaim.html</string>
+    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra itinerarios usando la posición GPS. El itinerario se puede visualizar en su app preferida, compartir y exportar a una carpeta de su dispositivo en formatos KML, GPX y TXT.\n\nEs un software libre, publicado bajo los términos de la licencia GNU General Public.\nMás detalles en el enlace: http://www.gnu.org/licenses/gpl.txt\n\nEl aviso legal del archivo EGM96: http://earth-info.nga.mil/GandG/disclaim.html\n\n Disfrute de esta aplicación, por favor, tome un momento para calificar GPS Logger en la Play Store.</string>
     <string name="about_ok">Cerrar</string>
-    <string name="about_rate_this_app">¡Comenta app!</string>
+    <string name="about_rate_this_app">Valorar app</string>
     <string name="about_unable_to_rate">Imposible conectar con el Store</string>
     <!-- Notification icon -->
     <string name="notification_contenttext">activo</string>

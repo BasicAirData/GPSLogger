@@ -49,9 +49,9 @@
     <!-- GPS Status messages -->
     <string name="gps_disabled">GPS deaktiviert</string>
     <string name="gps_disabled_with_hint">GPS deaktiviert\n\nDoppelklicken Sie hier,\num den Ortungsdienst zu aktivieren\nund eine Ortungsmethode festzulegen,\ndie den GPS-Sensor verwendet.</string>
-    <string name="gps_out_of_service">GPS außer Betrieb</string>
+    <string name="gps_out_of_service">GPS nicht verfügbar</string>
     <string name="gps_temporary_unavailable">GPS vorübergehend nicht verfügbar</string>
-    <string name="gps_searching">GPS wird gesucht</string>
+    <string name="gps_searching">GPS-Signal wird gesucht</string>
     <string name="gps_stabilizing">Signal wird stabilisiert</string>
     <!-- Track -->
     <string name="track_id">Track</string>
@@ -104,7 +104,7 @@
     <string name="please_grant_storage_permission">Bitte Zugriff auf Speicher erlauben, um auf diese Funktion zugreifen zu können</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">Die App wurde während der Hintergrundaufzeichnung gekillt.</string>
-    <string name="dlg_app_killed_description">Bitte überprüfen Sie in den Android-Einstellungen, ob für die App Akkuoptimierungen gelten und nicht auch die Nutzung im Hintergrund eingeschränkt ist.</string>
+    <string name="dlg_app_killed_description">Bitte prüfen sie in den Android-Einstellungen, dass die App nicht batterieoptimiert und die Nutzung im Hintergrund nicht eingeschränkt ist.</string>
     <string name="open_android_app_settings">Einstellungen öffnen</string>
     <!-- Preferences -->
     <string name="pref_category_interface">SCHNITTSTELLE</string>
