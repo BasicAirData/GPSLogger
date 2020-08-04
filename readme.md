@@ -54,3 +54,6 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 
 <b>Q</b> - <i>The App sometimes stops recording when running in Background.</i><br>
 <b>A</b> - The App could be closed by the System during the Background Recording. To avoid it, as first step, go on the Android Settings and turn off all Battery Monitoring and Optimizations for GPS Logger. On Android 9 check also that the Application is NOT Background Restricted and verify that the Background Activity is allowed. Unfortunately any Device Brand implemented in a different Way the Settings to keep safe the Background Apps, so a small Research must be done. For example, for some brands you have to whitelist the background apps, whilst for some others you have to set the "high performances" power saving mode. Moreover some Anti-Viruses are very aggressive with long running Apps, and must be correctly set.
+
+<b>Q</b> - <i>Why is GPS Time different from the time of my Android Device?</i><br>
+<b>A</b> - The App shows in "GPS FIX" tab the time received by the GPS, that refers to GMT. Your local time may differ from UTC time depending on Time Zone and on daylight saving. Speaking of dates, it is important to point out that the app exports all the Timestamps in UTC, as required by KML and GPX standards. The local Time is used only for Track Names, for user convenience.
