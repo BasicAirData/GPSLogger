@@ -24,9 +24,11 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -219,6 +221,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private final int MAX_ACTIVE_EXPORTER_THREADS = 3;      // The maximum number of Exporter threads to run simultaneously
 
     private List<ExportingTask> ExportingTaskList = new ArrayList<>();
+
+    BroadcastReceiver sReceiver = new ShutdownReceiver();   // The BroadcastReceiver for SHUTDOWN event
 
 
     // The handler that checks the progress of an exportation:
@@ -716,6 +720,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         // OutOfMemory exception. Stored in kilobytes as LruCache takes an
         // int in its constructor.
         //Log.w("myApp", "[#] GPSApplication.java - Max available VM memory = " + (int) (Runtime.getRuntime().maxMemory() / 1024) + " kbytes");
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
+        registerReceiver(sReceiver, filter);
     }
 
 
@@ -724,6 +731,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         Log.w("myApp", "[#] GPSApplication.java - onTerminate");
         EventBus.getDefault().unregister(this);
         StopAndUnbindGPSService();
+        unregisterReceiver(sReceiver);
         super.onTerminate();
     }
 
@@ -769,6 +777,29 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         if (msg == EventBusMSG.UPDATE_SETTINGS) {
             MustUpdatePrefs = true;
             return;
+        }
+    }
+
+
+    public void onShutdown() {
+        if (AsyncTODOQueue != null) {
+            GPSStatus = GPS_SEARCHING;
+
+            Log.w("myApp", "[#] GPSApplication.java - onShutdown()");
+            AsyncTODO ast = new AsyncTODO();
+            ast.TaskType = "TASK_SHUTDOWN";
+            ast.location = null;
+            AsyncTODOQueue.add(ast);
+
+            if (asyncUpdateThread.isAlive()) {
+                try {
+                    Log.w("myApp", "[#] GPSApplication.java - onShutdown(): asyncUpdateThread isAlive. join...");
+                    asyncUpdateThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Log.w("myApp", "[#] GPSApplication.java - onShutdown() InterruptedException: " + e);
+                }
+            }
         }
     }
 
@@ -1327,14 +1358,26 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             }
             // ----------------------------------------------------------------------------------------
 
+            boolean shutdown = false;
 
-            while (true) {
+            while (!shutdown) {
                 AsyncTODO asyncTODO;
                 try {
                     asyncTODO = AsyncTODOQueue.take();
                 } catch (InterruptedException e) {
                     Log.w("myApp", "[!] Buffer not available: " + e.getMessage());
                     break;
+                }
+
+                // Task: Safely Shutdown
+                if (asyncTODO.TaskType.equals("TASK_SHUTDOWN")) {
+                    shutdown = true;
+                    GPSDataBase.close();
+//                    File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/Shutdown");
+//                    if (!sd.exists()) {
+//                        sd.mkdir();
+//                    }
+                    Log.w("myApp", "[#] GPSApplication.java - AsyncUpdateThreadClass: Database Connection closed.");
                 }
 
                 // Task: Create new track (if needed)

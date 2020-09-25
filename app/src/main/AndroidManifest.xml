@@ -69,6 +69,12 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
+        <receiver android:name=".ShutdownReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".GPSService"
             android:exported="true">
