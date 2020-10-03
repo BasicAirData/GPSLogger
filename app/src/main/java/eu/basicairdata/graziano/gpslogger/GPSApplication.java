@@ -1091,7 +1091,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             if (!externalViewerChecker.isEmpty()) {
                 isContextMenuViewVisible = true;
                 for (AppInfo ai : externalViewerChecker.appInfoList) {
-                    if (ai.PackageName.equals(pn)) {
+                    if ((ai.PackageName.equals(pn)) || (externalViewerChecker.size() == 1)) {
                         ViewInApp = ai.Label;
 
                         // Set View Icon
