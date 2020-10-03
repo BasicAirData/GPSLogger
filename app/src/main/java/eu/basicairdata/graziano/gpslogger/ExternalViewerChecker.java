@@ -23,67 +23,41 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ExternalViewerChecker {
-
-//    private static ExternalViewerChecker singleton;
-//    public static ExternalViewerChecker getInstance(){
-//        return singleton;
-//    }
 
     private Context context;
     private boolean isAppInfoListMade = false;
 
     public ArrayList<AppInfo> appInfoList = new ArrayList<>();
 
+    static private class CustomComparator implements Comparator<AppInfo> {
+        @Override
+        public int compare(AppInfo o1, AppInfo o2) {
+            return o1.Label.compareTo(o2.Label);
+        }
+    }
+
+    private CustomComparator Comparator = new CustomComparator();
+
 
     public ExternalViewerChecker(Context context) {
         this.context = context;
     }
 
-    public boolean isAppInfoListMade() {
-        return isAppInfoListMade;
-    }
 
     public int size() {
         return appInfoList.size();
     }
 
+
     public boolean isEmpty() {
         return (appInfoList.isEmpty());
-    }
-
-
-    public String getLabel (int index) {
-        if (index < size()) return appInfoList.get(index).Label;
-        else return "";
-    }
-
-    public Drawable getIcon (int index) {
-        if (index < size()) return appInfoList.get(index).Icon;
-        else return null;
-    }
-
-
-    public String getPackageName (int index) {
-        if (index < size()) return appInfoList.get(index).PackageName;
-        else return "";
-    }
-
-
-    public boolean getKML (int index) {
-        if (index < size()) return appInfoList.get(index).KML;
-        else return false;
-    }
-
-
-    public boolean getGPX (int index) {
-        if (index < size()) return appInfoList.get(index).GPX;
-        else return false;
     }
 
 
@@ -131,7 +105,6 @@ public class ExternalViewerChecker {
             ainfo.Icon =  tmpri.activityInfo.applicationInfo.loadIcon(pm);
             ainfo.KML = true;
             ainfo.GPX = false;
-            //ainfo.DialogLabel = ainfo.PackageName + " (" + (ainfo.GPX ? "GPX)" : "KML)");
 
             boolean found = false;
 
@@ -146,13 +119,7 @@ public class ExternalViewerChecker {
             }
         }
 
-
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPSApplication.getInstance().getApplicationContext());
-
-//        prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
-//        prefViewTracksPackageName = preferences.getString("prefViewTracksPackageName", "");
-
-
+        if (appInfoList.size() > 1) Collections.sort(appInfoList, Comparator);
 
         isAppInfoListMade = true;
     }
