@@ -37,6 +37,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -50,6 +53,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatDelegate;
@@ -135,6 +139,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean isCurrentTrackVisible = false;
     private boolean isContextMenuShareVisible = false;          // True if "Share with ..." menu is visible
     private boolean isContextMenuViewVisible = false;           // True if "View in *" menu is visible
+    private Drawable ViewInAppIcon = null;
     private String ViewInApp = "";                              // The string of default app name for "View"
                                                                 // "" in case of selector
 
@@ -425,6 +430,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         return ViewInApp;
     }
 
+    public Drawable getViewInAppIcon() {
+        return ViewInAppIcon;
+    }
+
     public boolean isLocationPermissionChecked() {
         return LocationPermissionChecked;
     }
@@ -620,7 +629,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
 
     public void FlagRemove (String flag) {
-        SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup",Context.MODE_PRIVATE);
+        SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences_nobackup.edit();
         editor.remove(flag);
         editor.commit();
@@ -1031,6 +1040,30 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public Bitmap getBitmap(Drawable d) {
+        if (d instanceof BitmapDrawable) {
+            Log.w("myApp", "[#] GPSApplication.java - getBitmap: instanceof BitmapDrawable");
+            return ((BitmapDrawable) d).getBitmap();
+        } else if ((Build.VERSION.SDK_INT >= 26) && (d instanceof AdaptiveIconDrawable)) {
+            Log.w("myApp", "[#] GPSApplication.java - getBitmap: instanceof AdaptiveIconDrawable");
+            AdaptiveIconDrawable icon = ((AdaptiveIconDrawable) d);
+            int w = icon.getIntrinsicWidth();
+            int h = icon.getIntrinsicHeight();
+            Bitmap result = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            icon.setBounds(0, 0, w, h);
+            icon.draw(canvas);
+            return result;
+        }
+        float density = getApplicationContext().getResources().getDisplayMetrics().density;
+        int defaultWidth = (int) (24 * density);
+        int defaultHeight = (int) (24 * density);
+        Log.w("myApp", "[#] GPSApplication.java - getBitmap: !(Build.VERSION.SDK_INT >= 26) && (d instanceof AdaptiveIconDrawable)");
+        return Bitmap.createBitmap(defaultWidth, defaultHeight, Bitmap.Config.ARGB_8888);
+    }
+
+
     private class AsyncPrepareTracklistContextMenu extends Thread {
 
         public AsyncPrepareTracklistContextMenu() {
@@ -1040,6 +1073,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             isContextMenuShareVisible = false;
             isContextMenuViewVisible = false;
             ViewInApp = "";
+            ViewInAppIcon = null;
 
             final PackageManager pm = getPackageManager();
 
@@ -1057,7 +1091,20 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             if (!externalViewerChecker.isEmpty()) {
                 isContextMenuViewVisible = true;
                 for (AppInfo ai : externalViewerChecker.appInfoList) {
-                    if (ai.PackageName.equals(pn)) ViewInApp = ai.Label;
+                    if (ai.PackageName.equals(pn)) {
+                        ViewInApp = ai.Label;
+
+                        // Set View Icon
+                        Bitmap bitmap;
+                        if (Build.VERSION.SDK_INT >= 26) {
+                            bitmap = getBitmap(ai.Icon);
+                        } else {
+                            bitmap = ((BitmapDrawable) ai.Icon).getBitmap();
+                        }
+                        ViewInAppIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap,
+                                (int) (24 * getResources().getDisplayMetrics().density),
+                                (int) (24 * getResources().getDisplayMetrics().density), true));
+                    }
                 }
             }
             else isContextMenuViewVisible = false;
