@@ -32,7 +32,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -52,6 +51,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -105,7 +105,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     // Preferences Variables
     // private boolean prefKeepScreenOn = true;                 // DONE in GPSActivity
     private boolean prefShowDecimalCoordinates  = false;
-    private int     prefViewTracksWith          = 0;
+    // private int     prefViewTracksWith          = 0;
     private int     prefUM                      = UM_METRIC_KMH;
     private float   prefGPSdistance             = 0f;
     private long    prefGPSupdatefrequency      = 1000L;
@@ -137,6 +137,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private boolean isContextMenuViewVisible = false;           // True if "View in *" menu is visible
     private String ViewInApp = "";                              // The string of default app name for "View"
                                                                 // "" in case of selector
+
+    private AppInfo TrackViewer = new AppInfo();
 
     // Singleton instance
     private static GPSApplication singleton;
@@ -221,6 +223,9 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
     private final int MAX_ACTIVE_EXPORTER_THREADS = 3;      // The maximum number of Exporter threads to run simultaneously
 
     private List<ExportingTask> ExportingTaskList = new ArrayList<>();
+
+    private ExternalViewerChecker externalViewerChecker;
+                                                            // The manager of the External Viewers
 
     BroadcastReceiver sReceiver = new ShutdownReceiver();   // The BroadcastReceiver for SHUTDOWN event
 
@@ -571,6 +576,18 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         isJustStarted = justStarted;
     }
 
+    public ExternalViewerChecker getExternalViewerChecker() {
+        return externalViewerChecker;
+    }
+
+    public AppInfo getTrackViewer() {
+        return TrackViewer;
+    }
+
+    public void setTrackViewer(AppInfo trackViewer) {
+        TrackViewer = trackViewer;
+    }
+
     // ------------------------------------------------------------------------ Utility
 
     private void DeleteFile(String filename) {
@@ -709,6 +726,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             isFirstRun = true;
         }
         _currentTrack = GPSDataBase.getLastTrack();                                     // Get the last track
+
+        externalViewerChecker = new ExternalViewerChecker(getApplicationContext());
 
         LoadPreferences();                                                              // Load Settings
 
@@ -872,24 +891,24 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
 
     private void ViewTrack(ExportingTask exportingTask) {
-        if (prefViewTracksWith == 0) {              // KML Viewer
-            File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".kml");
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setDataAndType(Uri.fromFile(file), "application/vnd.google-earth.kml+xml");
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                Log.w("myApp", "[#] GPSApplication.java - ViewTrack: Unable to view the track: " + e);
-                AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
-                asyncPrepareTracklistContextMenu.start();
-            }
-        }
-        if (prefViewTracksWith == 1) {              // GPX Viewer
-            File file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".gpx");
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        File file;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setPackage(TrackViewer.PackageName);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (TrackViewer.GPX) {
+            // GPX Viewer
+            file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".gpx");
+            Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
+            getApplicationContext().grantUriPermission(TrackViewer.PackageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(Uri.fromFile(file), "gpx+xml");
+        } else if (TrackViewer.KML) {
+            // KML Viewer
+            file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".kml");
+            Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
+            getApplicationContext().grantUriPermission(TrackViewer.PackageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(uri, "application/vnd.google-earth.kml+xml");
+        }
+        if (TrackViewer.KML || TrackViewer.GPX) {
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
@@ -967,8 +986,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 Ex.start();
                 break;
             case JOB_TYPE_VIEW:
-                if (prefViewTracksWith == 0) Ex = new Exporter(exportingTask, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-                if (prefViewTracksWith == 1) Ex = new Exporter(exportingTask, false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                if (TrackViewer.GPX) Ex = new Exporter(exportingTask, false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                else if (TrackViewer.KML) Ex = new Exporter(exportingTask, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
                 Ex.start();
                 break;
             case JOB_TYPE_SHARE:
@@ -1025,37 +1044,24 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             final PackageManager pm = getPackageManager();
 
             // ----- menu share
+
             Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setType("text/xml");
-            // Verify the intent will resolve to at least one activity
-            if ((intent.resolveActivity(pm) != null)) isContextMenuShareVisible = true;
+            if ((intent.resolveActivity(pm) != null)) isContextMenuShareVisible = true;     // Verify the intent will resolve to at least one activity
 
             // ----- menu view
-            intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setType("application/vnd.google-earth.kml+xml");
 
-            if (prefViewTracksWith == 0) {              // KML Viewer
-                intent.setType("application/vnd.google-earth.kml+xml");
-            }
-            if (prefViewTracksWith == 1) {              // GPX Viewer
-                intent.setType("application/gpx+xml");
-            }
-            ResolveInfo ri = pm.resolveActivity(intent, 0); // Find default app
-            if (ri != null) {
-                //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-                List<ResolveInfo> lri = pm.queryIntentActivities(intent, 0);
-                //Log.w("myApp", "[#] GPSApplication.java - Found " + lri.size() + " viewers:");
-                for (ResolveInfo tmpri : lri) {
-                    //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
-                    if (ri.activityInfo.applicationInfo.packageName.equals(tmpri.activityInfo.applicationInfo.packageName)) {
-                        ViewInApp = ri.activityInfo.applicationInfo.loadLabel(pm).toString();
-                        //Log.w("myApp", "[#]                              DEFAULT --> " + tmpri.activityInfo.applicationInfo.loadLabel(getPackageManager()));
-                    }   //else Log.w("myApp", "[#]                                          " + tmpri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-                }
+            externalViewerChecker.makeAppInfoList();
+            String pn = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefTracksViewer", "");
+            if (!externalViewerChecker.isEmpty()) {
                 isContextMenuViewVisible = true;
+                for (AppInfo ai : externalViewerChecker.appInfoList) {
+                    if (ai.PackageName.equals(pn)) ViewInApp = ai.Label;
+                }
             }
+            else isContextMenuViewVisible = false;
+
             Log.w("myApp", "[#] GPSApplication.java - Tracklist ContextMenu prepared");
             EventBus.getDefault().post(EventBusMSG.UPDATE_ACTIONBAR);
         }
@@ -1272,7 +1278,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         //prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
         prefGPSWeekRolloverCorrected = preferences.getBoolean("prefGPSWeekRolloverCorrected", false);
         prefShowDecimalCoordinates = preferences.getBoolean("prefShowDecimalCoordinates", false);
-        prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
+        //prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
         prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
         prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
         prefEGM96AltitudeCorrection = preferences.getBoolean("prefEGM96AltitudeCorrection", false);

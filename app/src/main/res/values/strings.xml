@@ -142,9 +142,10 @@
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Aerial / Nautical</string>
     <string name="pref_unit_of_measurement_speed">Show Speeds in</string>
-    <string name="pref_view_tracks_with">View Tracks with</string>
-    <string name="pref_view_tracks_with_KML">KML viewer</string>
-    <string name="pref_view_tracks_with_GPX">GPX viewer</string>
+
+    <string name="pref_track_viewer">Track Viewer</string>
+    <string name="pref_track_viewer_not_installed">No Viewer installed on this Device</string>
+    <string name="pref_track_viewer_select_every_time">Select every Time</string>
 
     <string name="pref_category_tracking">TRACKING</string>
     <string name="pref_GPS_distance">Collecting Density</string>

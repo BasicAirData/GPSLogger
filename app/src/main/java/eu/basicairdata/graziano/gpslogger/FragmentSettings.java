@@ -18,6 +18,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,10 +31,15 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,6 +55,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -111,6 +118,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                Log.w("myApp", "[#] FragmentSettings.java - SharedPreferences.OnSharedPreferenceChangeListener, key = " + key);
                 if (key.equals("prefUM")) {
                     altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
                     altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
@@ -183,6 +191,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         prefs.registerOnSharedPreferenceChangeListener(prefListener);
         //Log.w("myApp", "[#] FragmentSettings.java - onResume");
+        GPSApplication.getInstance().getExternalViewerChecker().makeAppInfoList();
         SetupPreferences();
     }
 
@@ -210,9 +219,75 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         ListPreference pGPXVersion = (ListPreference) findPreference("prefGPXVersion");
         ListPreference pShowTrackStatsType = (ListPreference) findPreference("prefShowTrackStatsType");
         ListPreference pShowDirections = (ListPreference) findPreference("prefShowDirections");
-        ListPreference pViewTracksWith = (ListPreference) findPreference("prefViewTracksWith");
         ListPreference pColorTheme = (ListPreference) findPreference("prefColorTheme");
         EditTextPreference pAltitudeCorrection = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
+        Preference pTracksViewer = (Preference) findPreference("prefTracksViewer");
+
+        // Track Viewer
+        pTracksViewer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                //Log.w("myApp", "[#] FragmentSettings.java - prefTracksViewer");
+                ExternalViewerChecker externalViewerChecker = GPSApplication.getInstance().getExternalViewerChecker();
+                if (externalViewerChecker.size() > 1) {
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
+                    ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
+
+                    AppInfo askai = new AppInfo();
+                    askai.Label = getString(R.string.pref_track_viewer_select_every_time);
+                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2").equals("1")) {
+                        askai.Icon = getResources().getDrawable(R.mipmap.ic_visibility_black_24dp);
+                        askai.Icon.setAlpha(150);
+                    } else {
+                        askai.Icon = getResources().getDrawable(R.mipmap.ic_visibility_white_24dp);
+                    }
+
+                    final ArrayList<AppInfo> ail = new ArrayList<>();
+                    ail.add(askai);
+                    ail.addAll(externalViewerChecker.appInfoList);
+
+                    AppDialogList clad = new AppDialogList(getActivity(), ail);
+
+                    lv.setAdapter(clad);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            // TODO: Set Preference
+                            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+                            SharedPreferences.Editor editor1 = settings.edit();
+                            editor1.putString("prefTracksViewer", ail.get(position).PackageName);
+                            editor1.commit();
+                            SetupPreferences();
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setContentView(view);
+                    dialog.show();
+                }
+                return true;
+            }
+        });
+        // ------------
+
+        if (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.isEmpty())
+            pTracksViewer.setSummary(R.string.pref_track_viewer_not_installed);                                        // no Viewers installed
+        else if (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.size() == 1)
+            pTracksViewer.setSummary(GPSApplication.getInstance().getExternalViewerChecker().appInfoList.get(0).Label
+                    + (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.get(0).GPX ?
+                    " (GPX)" : " (KML)"));                                                                              // 1 Viewer installed
+        else {
+            pTracksViewer.setSummary(R.string.pref_track_viewer_select_every_time);                                       // ask every time
+            String pn = prefs.getString("prefTracksViewer", "");
+            Log.w("myApp", "[#] FragmentSettings.java - prefTracksViewer = " + pn);
+            for (AppInfo ai : GPSApplication.getInstance().getExternalViewerChecker().appInfoList) {
+                if (ai.PackageName.equals(pn)) {
+                    //Log.w("myApp", "[#] FragmentSettings.java - Found " + ai.Label);
+                    pTracksViewer.setSummary(ai.Label + (ai.GPX ? " (GPX)" : " (KML)"));                                // Default Viewer available!
+                }
+            }
+        }
+
 
         altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
         altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
@@ -247,7 +322,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         pGPXVersion.setSummary(pGPXVersion.getEntry());
         pShowTrackStatsType.setSummary(pShowTrackStatsType.getEntry());
         pShowDirections.setSummary(pShowDirections.getEntry());
-        pViewTracksWith.setSummary(pViewTracksWith.getEntry());
+        //pViewTracksWith.setSummary(pViewTracksWith.getEntry());
     }
 
 

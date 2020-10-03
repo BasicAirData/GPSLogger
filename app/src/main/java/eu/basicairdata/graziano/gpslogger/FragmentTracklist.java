@@ -19,6 +19,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,6 +28,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -40,6 +42,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -217,11 +222,57 @@ public class FragmentTracklist extends Fragment {
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
-            GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_VIEW);
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                CheckStoragePermission();   // Ask for storage permission
-            } else GPSApplication.getInstance().ExecuteJob();
-            GPSApplication.getInstance().DeselectAllTracks();
+            final ExternalViewerChecker externalViewerChecker = GPSApplication.getInstance().getExternalViewerChecker();
+            if (!externalViewerChecker.isEmpty()) {
+
+                if (externalViewerChecker.appInfoList.isEmpty()) {
+                    // No Viewers installed
+                    return;
+                }
+                else if (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.size() == 1) {
+                    // 1 Viewer installed, let's use it
+                    GPSApplication.getInstance().setTrackViewer(externalViewerChecker.appInfoList.get(0));
+                    OpenTrack();
+                }
+                else {
+                    // 2 or more viewers installed
+                    // Search the Default Track Viewer selected on Preferences
+
+                    String pn = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefTracksViewer", "");
+                    boolean foundDefault = false;
+                    for (AppInfo ai : externalViewerChecker.appInfoList) {
+                        if (ai.PackageName.equals(pn)) {
+                            // Default Viewer available!
+                            GPSApplication.getInstance().setTrackViewer(ai);
+                            foundDefault = true;
+                        }
+                    }
+                    if (!foundDefault) {
+                        // The default Track Viewer hasn't been found
+                        final Dialog dialog = new Dialog(getActivity());
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
+                        ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
+
+                        AppDialogList clad = new AppDialogList(getActivity(), externalViewerChecker.appInfoList);
+
+                        lv.setAdapter(clad);
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                GPSApplication.getInstance().setTrackViewer(GPSApplication.getInstance().getExternalViewerChecker().getAppInfo(position));
+                                OpenTrack();
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.setContentView(view);
+                        dialog.show();
+                    } else {
+                        // Default Track Viewer found! Let's use it.
+                        OpenTrack();
+                    }
+                }
+            }
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_EXPORT_TRACKS) {
@@ -400,6 +451,15 @@ public class FragmentTracklist extends Fragment {
                 //Log.w("myApp", "[#] FragmentTracklist.java - Unable to start the Activity");
             }
         }
+    }
+
+
+    public void OpenTrack() {
+        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_VIEW);
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            CheckStoragePermission();   // Ask for storage permission
+        } else GPSApplication.getInstance().ExecuteJob();
+        GPSApplication.getInstance().DeselectAllTracks();
     }
 
 

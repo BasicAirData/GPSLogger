@@ -30,11 +30,11 @@
             android:summary="@string/pref_keep_screen_on_summary"
             android:defaultValue="true" />
 
-        <android.support.v7.preference.SwitchPreferenceCompat
-            android:key="prefShowDecimalCoordinates"
-            android:title="@string/pref_show_decimal_coordinates"
-            android:summary="@string/pref_show_decimal_coordinates_summary"
-            android:defaultValue="false" />
+        <android.support.v7.preference.Preference
+            android:key="prefTracksViewer"
+            android:title="@string/pref_track_viewer"
+            android:summary=" "
+            android:defaultValue="" />
 
         <android.support.v7.preference.ListPreference
             android:key="prefColorTheme"
@@ -43,14 +43,6 @@
             android:entries="@array/ColorTheme"
             android:entryValues="@array/ColorThemeValues"
             android:defaultValue="2" />
-
-        <android.support.v7.preference.ListPreference
-            android:key="prefShowDirections"
-            android:title="@string/pref_show_directions"
-            android:summary=" "
-            android:entries="@array/ShowDirections"
-            android:entryValues="@array/ShowDirectionsValues"
-            android:defaultValue="0" />
 
         <android.support.v7.preference.ListPreference
             android:key="prefShowTrackStatsType"
@@ -77,12 +69,18 @@
             android:defaultValue="1" />
 
         <android.support.v7.preference.ListPreference
-            android:key="prefViewTracksWith"
-            android:title="@string/pref_view_tracks_with"
+            android:key="prefShowDirections"
+            android:title="@string/pref_show_directions"
             android:summary=" "
-            android:entries="@array/ViewTracksWith"
-            android:entryValues="@array/ViewTracksWithValues"
+            android:entries="@array/ShowDirections"
+            android:entryValues="@array/ShowDirectionsValues"
             android:defaultValue="0" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="prefShowDecimalCoordinates"
+            android:title="@string/pref_show_decimal_coordinates"
+            android:summary="@string/pref_show_decimal_coordinates_summary"
+            android:defaultValue="false" />
 
     </android.support.v7.preference.PreferenceCategory>
 
