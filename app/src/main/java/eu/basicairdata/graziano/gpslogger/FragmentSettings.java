@@ -38,6 +38,7 @@ import android.support.v7.preference.SwitchPreferenceCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -222,6 +223,10 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         ListPreference pColorTheme = (ListPreference) findPreference("prefColorTheme");
         EditTextPreference pAltitudeCorrection = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
         Preference pTracksViewer = (Preference) findPreference("prefTracksViewer");
+
+        // Keep Screen On Flag
+        if (prefs.getBoolean("prefKeepScreenOn", true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Track Viewer
         pTracksViewer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
