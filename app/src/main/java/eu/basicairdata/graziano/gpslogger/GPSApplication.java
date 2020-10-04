@@ -1092,7 +1092,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 isContextMenuViewVisible = true;
                 for (AppInfo ai : externalViewerChecker.appInfoList) {
                     if ((ai.PackageName.equals(pn)) || (externalViewerChecker.size() == 1)) {
-                        ViewInApp = ai.Label;
+                        ViewInApp = ai.Label + (ai.GPX ? " (GPX)" : " (KML)");
 
                         // Set View Icon
                         Bitmap bitmap;
