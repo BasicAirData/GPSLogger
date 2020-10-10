@@ -125,9 +125,10 @@ public class ExternalViewerChecker {
 
             // Apply Exceptions
             for (AppInfo a : appInfoList) {
-                if (a.PackageName.equals("at.xylem.mapin") && (a.KML)) {
+                if (a.PackageName.equals("at.xylem.mapin")) {
                     // MAPinr is not opening GPX correctly!
                     a.GPX = false;
+                    a.KML = true;
                 }
                 if (a.PackageName.equals("com.google.earth")) {
                     // Google Earth opens file with fileProvider only
