@@ -254,13 +254,15 @@ public class FragmentTracklist extends Fragment {
                         View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
                         ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
 
-                        AppDialogList clad = new AppDialogList(getActivity(), externalViewerChecker.appInfoList);
+                        final ArrayList<AppInfo> ail = new ArrayList<>();
+                        if (!externalViewerChecker.appInfoList.isEmpty()) ail.addAll(externalViewerChecker.appInfoList);
+                        AppDialogList clad = new AppDialogList(getActivity(), ail);
 
                         lv.setAdapter(clad);
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                GPSApplication.getInstance().setTrackViewer(GPSApplication.getInstance().getExternalViewerChecker().getAppInfo(position));
+                                GPSApplication.getInstance().setTrackViewer(ail.get(position));
                                 OpenTrack();
                                 dialog.dismiss();
                             }
