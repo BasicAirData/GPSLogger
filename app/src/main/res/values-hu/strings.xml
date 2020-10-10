@@ -123,9 +123,9 @@
     <string name="pref_unit_of_measurement_imperial">Angolszász</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Légi / Tengeri</string>
     <string name="pref_unit_of_measurement_speed">Sebesség mértékegység</string>
-    <string name="pref_view_tracks_with">Útvonal megtekintése</string>
-    <string name="pref_view_tracks_with_KML">KML megjelenítő</string>
-    <string name="pref_view_tracks_with_GPX">GPX megjelenítő</string>
+    <string name="pref_track_viewer">Útvonal néző</string>
+    <string name="pref_track_viewer_not_installed">Nincs GPX/KML néző telepítve</string>
+    <string name="pref_track_viewer_select_every_time">Választás mindig</string>
     <string name="pref_category_tracking">Útvonal rögzítés</string>
     <string name="pref_GPS_distance">Rögzítési sűrűség</string>
     <string name="pref_GPS_distance_max">Maximum</string>

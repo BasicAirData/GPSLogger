@@ -104,7 +104,7 @@
     <string name="please_grant_storage_permission">Bitte Zugriff auf Speicher erlauben, um auf diese Funktion zugreifen zu können</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">Die App wurde während der Hintergrundaufzeichnung gekillt.</string>
-    <string name="dlg_app_killed_description">Bitte prüfen sie in den Android-Einstellungen, dass die App nicht batterieoptimiert und die Nutzung im Hintergrund nicht eingeschränkt ist.</string>
+    <string name="dlg_app_killed_description">Bitte prüfen Sie in den Android-Einstellungen, dass die App nicht batterieoptimiert und die Nutzung im Hintergrund nicht eingeschränkt ist.</string>
     <string name="open_android_app_settings">Einstellungen öffnen</string>
     <!-- Preferences -->
     <string name="pref_category_interface">SCHNITTSTELLE</string>
@@ -123,9 +123,9 @@
     <string name="pref_unit_of_measurement_imperial">Angloamerikanisch</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Flug / Nautik</string>
     <string name="pref_unit_of_measurement_speed">Zeige Geschwindigkeit in</string>
-    <string name="pref_view_tracks_with">Tracks anzeigen mit</string>
-    <string name="pref_view_tracks_with_KML">KML-Betrachter</string>
-    <string name="pref_view_tracks_with_GPX">GPX-Betrachter</string>
+    <string name="pref_track_viewer">Track Betrachter</string>
+    <string name="pref_track_viewer_not_installed">Kein GPX/KML-Betrachter installiert</string>
+    <string name="pref_track_viewer_select_every_time">Jedes Mal auswählen</string>
     <string name="pref_category_tracking">TRACKING</string>
     <string name="pref_GPS_distance">Sammeldichte</string>
     <string name="pref_GPS_distance_max">Maximum</string>

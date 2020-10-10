@@ -123,9 +123,9 @@
     <string name="pref_unit_of_measurement_imperial">英制</string>
     <string name="pref_unit_of_measurement_aerial_nautical">空中/航海</string>
     <string name="pref_unit_of_measurement_speed">显示速度单位</string>
-    <string name="pref_view_tracks_with">查看轨迹使用</string>
-    <string name="pref_view_tracks_with_KML">KML查看器</string>
-    <string name="pref_view_tracks_with_GPX">GPX查看器</string>
+    <string name="pref_track_viewer">轨迹查看器</string>
+    <string name="pref_track_viewer_not_installed">未安装 GPX/KML 查看器</string>
+    <string name="pref_track_viewer_select_every_time">每次选择</string>
     <string name="pref_category_tracking">轨迹记录</string>
     <string name="pref_GPS_distance">记录密度</string>
     <string name="pref_GPS_distance_max">最大值</string>

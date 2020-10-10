@@ -123,9 +123,9 @@
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Aéreo / Náutico</string>
     <string name="pref_unit_of_measurement_speed">Mostrar velocidades en</string>
-    <string name="pref_view_tracks_with">Visualizar el itinerario con</string>
-    <string name="pref_view_tracks_with_KML">Visualizador KML</string>
-    <string name="pref_view_tracks_with_GPX">Visualizador GPX</string>
+    <string name="pref_track_viewer">Visor de itinerarios</string>
+    <string name="pref_track_viewer_not_installed">Ningún visor GPX/KML instalado</string>
+    <string name="pref_track_viewer_select_every_time">Seleccionar cada vez</string>
     <string name="pref_category_tracking">SEGUIMIENTO</string>
     <string name="pref_GPS_distance">Densidad espacial</string>
     <string name="pref_GPS_distance_max">Máxima</string>

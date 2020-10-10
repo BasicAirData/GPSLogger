@@ -123,9 +123,9 @@
     <string name="pref_unit_of_measurement_imperial">ヤード・ポンド法</string>
     <string name="pref_unit_of_measurement_aerial_nautical">航空 / 航海</string>
     <string name="pref_unit_of_measurement_speed">速度の表示</string>
-    <string name="pref_view_tracks_with">追跡の表示…</string>
-    <string name="pref_view_tracks_with_KML">KML ビューアー</string>
-    <string name="pref_view_tracks_with_GPX">GPX ビューアー</string>
+    <string name="pref_track_viewer">追跡ビューアー</string>
+    <string name="pref_track_viewer_not_installed">GPX/KML ビューアーがインストールされていません</string>
+    <string name="pref_track_viewer_select_every_time">毎回選択</string>
     <string name="pref_category_tracking">追跡</string>
     <string name="pref_GPS_distance">収集密度</string>
     <string name="pref_GPS_distance_max">最大</string>
