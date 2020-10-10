@@ -229,50 +229,67 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Track Viewer
-        pTracksViewer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                //Log.w("myApp", "[#] FragmentSettings.java - prefTracksViewer");
-                ExternalViewerChecker externalViewerChecker = GPSApplication.getInstance().getExternalViewerChecker();
-                if (externalViewerChecker.size() > 1) {
-                    final Dialog dialog = new Dialog(getActivity());
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
-                    ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
+        switch (GPSApplication.getInstance().getExternalViewerChecker().size()) {
+            case 0:
+                pTracksViewer.setEnabled(false);    // No viewers installed
+                pTracksViewer.setOnPreferenceClickListener(null);
+                break;
 
-                    AppInfo askai = new AppInfo();
-                    askai.Label = getString(R.string.pref_track_viewer_select_every_time);
-                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2").equals("1")) {
-                        askai.Icon = getResources().getDrawable(R.mipmap.ic_visibility_black_24dp);
-                        askai.Icon.setAlpha(150);
-                    } else {
-                        askai.Icon = getResources().getDrawable(R.mipmap.ic_visibility_white_24dp);
-                    }
+            case 1:
+                pTracksViewer.setEnabled(true);     // 1 viewer installed
+                pTracksViewer.setOnPreferenceClickListener(null);
+                break;
 
-                    final ArrayList<AppInfo> ail = new ArrayList<>();
-                    ail.add(askai);
-                    ail.addAll(externalViewerChecker.appInfoList);
+            default:
+                pTracksViewer.setEnabled(true);     // 2 or more viewers installed
+                pTracksViewer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        //Log.w("myApp", "[#] FragmentSettings.java - prefTracksViewer");
+                        ExternalViewerChecker externalViewerChecker = GPSApplication.getInstance().getExternalViewerChecker();
+                        if (externalViewerChecker.size() >= 1) {
+                            final Dialog dialog = new Dialog(getActivity());
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
+                            ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
 
-                    AppDialogList clad = new AppDialogList(getActivity(), ail);
+                            final ArrayList<AppInfo> ail = new ArrayList<>();
 
-                    lv.setAdapter(clad);
-                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            // TODO: Set Preference
-                            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
-                            SharedPreferences.Editor editor1 = settings.edit();
-                            editor1.putString("prefTracksViewer", ail.get(position).PackageName);
-                            editor1.commit();
-                            SetupPreferences();
-                            dialog.dismiss();
+                            // Add "Select every Time" menu item
+                            AppInfo askai = new AppInfo();
+                            askai.Label = getString(R.string.pref_track_viewer_select_every_time);
+                            if (PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2").equals("1")) {
+                                askai.Icon = getResources().getDrawable(R.mipmap.ic_visibility_black_24dp);
+                                askai.Icon.setAlpha(150);
+                            } else {
+                                askai.Icon = getResources().getDrawable(R.mipmap.ic_visibility_white_24dp);
+                                askai.Icon.setAlpha(255);
+                            }
+                            ail.add(askai);
+
+                            ail.addAll(externalViewerChecker.appInfoList);
+
+                            AppDialogList clad = new AppDialogList(getActivity(), ail);
+
+                            lv.setAdapter(clad);
+                            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    // TODO: Set Preference
+                                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                    SharedPreferences.Editor editor1 = settings.edit();
+                                    editor1.putString("prefTracksViewer", ail.get(position).PackageName);
+                                    editor1.commit();
+                                    SetupPreferences();
+                                    dialog.dismiss();
+                                }
+                            });
+                            dialog.setContentView(view);
+                            dialog.show();
                         }
-                    });
-                    dialog.setContentView(view);
-                    dialog.show();
-                }
-                return true;
-            }
-        });
+                        return true;
+                    }
+                });
+        }
         // ------------
 
         if (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.isEmpty())

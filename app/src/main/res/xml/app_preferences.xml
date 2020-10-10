@@ -30,12 +30,6 @@
             android:summary="@string/pref_keep_screen_on_summary"
             android:defaultValue="true" />
 
-        <android.support.v7.preference.Preference
-            android:key="prefTracksViewer"
-            android:title="@string/pref_track_viewer"
-            android:summary=" "
-            android:defaultValue="" />
-
         <android.support.v7.preference.ListPreference
             android:key="prefColorTheme"
             android:title="@string/pref_color_theme"
@@ -43,6 +37,12 @@
             android:entries="@array/ColorTheme"
             android:entryValues="@array/ColorThemeValues"
             android:defaultValue="2" />
+
+        <android.support.v7.preference.Preference
+            android:key="prefTracksViewer"
+            android:title="@string/pref_track_viewer"
+            android:summary=" "
+            android:defaultValue="" />
 
         <android.support.v7.preference.ListPreference
             android:key="prefShowTrackStatsType"
