@@ -903,22 +903,33 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         File file;
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setPackage(TrackViewer.PackageName);
+        Log.w("myApp", "[#] GPSApplication.java - ViewTrack with " + TrackViewer.PackageName);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (TrackViewer.GPX) {
             // GPX Viewer
             file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".gpx");
-            Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
-            getApplicationContext().grantUriPermission(TrackViewer.PackageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(Uri.fromFile(file), "gpx+xml");
+            if (TrackViewer.requiresFileProvider) {
+                Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
+                getApplicationContext().grantUriPermission(TrackViewer.PackageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(uri, "application/gpx+xml");
+            } else {
+                intent.setDataAndType(Uri.fromFile(file), "application/gpx+xml");
+            }
         } else if (TrackViewer.KML) {
             // KML Viewer
             file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".kml");
-            Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
-            getApplicationContext().grantUriPermission(TrackViewer.PackageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(uri, "application/vnd.google-earth.kml+xml");
+            if (TrackViewer.requiresFileProvider) {
+                Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
+                getApplicationContext().grantUriPermission(TrackViewer.PackageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(uri, "application/vnd.google-earth.kml+xml");
+            } else {
+                intent.setDataAndType(Uri.fromFile(file), "application/vnd.google-earth.kml+xml");
+            }
         }
         if (TrackViewer.KML || TrackViewer.GPX) {
             try {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 Log.w("myApp", "[#] GPSApplication.java - ViewTrack: Unable to view the track: " + e);

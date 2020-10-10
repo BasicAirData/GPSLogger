@@ -25,5 +25,6 @@ public class AppInfo {
     String PackageName = "";
     boolean KML = false;
     boolean GPX = false;
+    boolean requiresFileProvider = false;
     Drawable Icon = null;
 }

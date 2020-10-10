@@ -119,7 +119,22 @@ public class ExternalViewerChecker {
             }
         }
 
-        if (appInfoList.size() > 1) Collections.sort(appInfoList, Comparator);
+        if (appInfoList.size() > 1) {
+            // Sort List by Package Name
+            Collections.sort(appInfoList, Comparator);
+
+            // Apply Exceptions
+            for (AppInfo a : appInfoList) {
+                if (a.PackageName.equals("at.xylem.mapin") && (a.KML)) {
+                    // MAPinr is not opening GPX correctly!
+                    a.GPX = false;
+                }
+                if (a.PackageName.equals("com.google.earth")) {
+                    // Google Earth opens file with fileProvider only
+                    a.requiresFileProvider = true;
+                }
+            }
+        }
 
         isAppInfoListMade = true;
     }
