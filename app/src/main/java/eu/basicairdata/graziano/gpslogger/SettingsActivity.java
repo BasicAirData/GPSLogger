@@ -46,11 +46,13 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.menu_settings);
 
-        FragmentSettings wvf = new FragmentSettings();
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.id_preferences, wvf);
-        ft.commit();
+        if (savedInstanceState == null) {
+            FragmentSettings wvf = new FragmentSettings();
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.id_preferences, wvf);
+            ft.commit();
+        }
     }
 
     @Override
