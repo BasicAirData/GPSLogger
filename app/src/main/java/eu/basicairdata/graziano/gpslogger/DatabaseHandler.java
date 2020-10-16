@@ -329,12 +329,15 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
         trkvalues.put(KEY_TRACK_VALIDMAP, track.getValidMap());
 
-        db.beginTransaction();
-        db.insert(TABLE_LOCATIONS, null, locvalues);                // Insert the new Location
-        db.update(TABLE_TRACKS, trkvalues, KEY_ID + " = ?",
-                new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        try {
+            db.beginTransaction();
+            db.insert(TABLE_LOCATIONS, null, locvalues);                // Insert the new Location
+            db.update(TABLE_TRACKS, trkvalues, KEY_ID + " = ?",
+                    new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
 
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
@@ -416,12 +419,15 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
         trkvalues.put(KEY_TRACK_VALIDMAP, track.getValidMap());
 
-        db.beginTransaction();
-        db.insert(TABLE_PLACEMARKS, null, locvalues);                // Insert the new Location
-        db.update(TABLE_TRACKS, trkvalues, KEY_ID + " = ?",
-                new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        try {
+            db.beginTransaction();
+            db.insert(TABLE_PLACEMARKS, null, locvalues);                // Insert the new Location
+            db.update(TABLE_TRACKS, trkvalues, KEY_ID + " = ?",
+                    new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
 
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
@@ -684,15 +690,18 @@ class DatabaseHandler extends SQLiteOpenHelper {
     // The method deletes also Placemarks and Locations associated to the specified track
     public void DeleteTrack(long TrackID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-        db.delete(TABLE_PLACEMARKS, KEY_TRACK_ID + " = ?",
-                new String[] { String.valueOf(TrackID) });    // Delete track's Placemarks
-        db.delete(TABLE_LOCATIONS, KEY_TRACK_ID + " = ?",
-                new String[] { String.valueOf(TrackID) });    // Delete track's Locations
-        db.delete(TABLE_TRACKS, KEY_ID + " = ?",
-                new String[] { String.valueOf(TrackID) });    // Delete track
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        try {
+            db.beginTransaction();
+            db.delete(TABLE_PLACEMARKS, KEY_TRACK_ID + " = ?",
+                    new String[] { String.valueOf(TrackID) });    // Delete track's Placemarks
+            db.delete(TABLE_LOCATIONS, KEY_TRACK_ID + " = ?",
+                    new String[] { String.valueOf(TrackID) });    // Delete track's Locations
+            db.delete(TABLE_TRACKS, KEY_ID + " = ?",
+                    new String[] { String.valueOf(TrackID) });    // Delete track
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
 
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
