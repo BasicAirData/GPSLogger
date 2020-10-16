@@ -1436,12 +1436,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 // Task: Safely Shutdown
                 if (asyncTODO.TaskType.equals("TASK_SHUTDOWN")) {
                     shutdown = true;
-                    GPSDataBase.close();
-//                    File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/Shutdown");
-//                    if (!sd.exists()) {
-//                        sd.mkdir();
-//                    }
-                    Log.w("myApp", "[#] GPSApplication.java - AsyncUpdateThreadClass: Database Connection closed.");
+                    Log.w("myApp", "[#] GPSApplication.java - AsyncUpdateThreadClass: SHUTDOWN EVENT.");
                 }
 
                 // Task: Create new track (if needed)
