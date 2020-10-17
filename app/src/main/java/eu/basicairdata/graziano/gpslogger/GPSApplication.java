@@ -1109,7 +1109,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
             String pn = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefTracksViewer", "");
             if (!externalViewerChecker.isEmpty()) {
                 isContextMenuViewVisible = true;
-                for (AppInfo ai : externalViewerChecker.appInfoList) {
+                for (AppInfo ai : externalViewerChecker.getAppInfoList()) {
                     if ((ai.PackageName.equals(pn)) || (externalViewerChecker.size() == 1)) {
                         ViewInApp = ai.Label + (ai.GPX ? " (GPX)" : " (KML)");
 

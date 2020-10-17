@@ -222,16 +222,12 @@ public class FragmentTracklist extends Fragment {
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
-            final ExternalViewerChecker externalViewerChecker = GPSApplication.getInstance().getExternalViewerChecker();
-            if (!externalViewerChecker.isEmpty()) {
+            final ArrayList<AppInfo> ail = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getAppInfoList());
 
-                if (externalViewerChecker.appInfoList.isEmpty()) {
-                    // No Viewers installed
-                    return;
-                }
-                else if (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.size() == 1) {
+            if (!ail.isEmpty()) {
+                if (ail.size() == 1) {
                     // 1 Viewer installed, let's use it
-                    GPSApplication.getInstance().setTrackViewer(externalViewerChecker.appInfoList.get(0));
+                    GPSApplication.getInstance().setTrackViewer(ail.get(0));
                     OpenTrack();
                 }
                 else {
@@ -240,7 +236,7 @@ public class FragmentTracklist extends Fragment {
 
                     String pn = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefTracksViewer", "");
                     boolean foundDefault = false;
-                    for (AppInfo ai : externalViewerChecker.appInfoList) {
+                    for (AppInfo ai : ail) {
                         if (ai.PackageName.equals(pn)) {
                             // Default Viewer available!
                             GPSApplication.getInstance().setTrackViewer(ai);
@@ -254,8 +250,6 @@ public class FragmentTracklist extends Fragment {
                         View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
                         ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
 
-                        final ArrayList<AppInfo> ail = new ArrayList<>();
-                        if (!externalViewerChecker.appInfoList.isEmpty()) ail.addAll(externalViewerChecker.appInfoList);
                         AppDialogList clad = new AppDialogList(getActivity(), ail);
 
                         lv.setAdapter(clad);

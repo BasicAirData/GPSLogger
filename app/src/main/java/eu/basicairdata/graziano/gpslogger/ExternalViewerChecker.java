@@ -31,10 +31,9 @@ import java.util.List;
 
 public class ExternalViewerChecker {
 
-    private Context context;
-    private boolean isAppInfoListMade = false;
+    private final Context context;
 
-    public ArrayList<AppInfo> appInfoList = new ArrayList<>();
+    private ArrayList<AppInfo> appInfoList = new ArrayList<>();
 
     static private class CustomComparator implements Comparator<AppInfo> {
         @Override
@@ -43,7 +42,12 @@ public class ExternalViewerChecker {
         }
     }
 
-    private CustomComparator Comparator = new CustomComparator();
+
+    public ArrayList<AppInfo> getAppInfoList() {
+        return appInfoList;
+    }
+
+    private final CustomComparator Comparator = new CustomComparator();
 
 
     public ExternalViewerChecker(Context context) {
@@ -58,12 +62,6 @@ public class ExternalViewerChecker {
 
     public boolean isEmpty() {
         return (appInfoList.isEmpty());
-    }
-
-
-    public AppInfo getAppInfo (int index) {
-        if (index < size()) return appInfoList.get(index);
-        else return null;
     }
 
 
@@ -137,7 +135,5 @@ public class ExternalViewerChecker {
                 }
             }
         }
-
-        isAppInfoListMade = true;
     }
 }
