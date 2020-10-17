@@ -229,6 +229,7 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     private List<ExportingTask> ExportingTaskList = new ArrayList<>();
 
+    private AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu;
     private ExternalViewerChecker externalViewerChecker;
                                                             // The manager of the External Viewers
 
@@ -736,6 +737,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         _currentTrack = GPSDataBase.getLastTrack();                                     // Get the last track
 
+        asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
+
         externalViewerChecker = new ExternalViewerChecker(getApplicationContext());
 
         LoadPreferences();                                                              // Load Settings
@@ -790,8 +793,11 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         }
         if (msg == EventBusMSG.APP_RESUME) {
             //Log.w("myApp", "[#] GPSApplication.java - Received EventBusMSG.APP_RESUME");
-            AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
-            asyncPrepareTracklistContextMenu.start();
+            if (!asyncPrepareTracklistContextMenu.isAlive()) {
+                asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
+                asyncPrepareTracklistContextMenu.start();
+            } else Log.w("myApp", "[#] GPSApplication.java - asyncPrepareTracklistContextMenu already alive");
+
             handler.removeCallbacks(r);                 // Cancel the switch-off handler
             setHandlerTimer(DEFAULTHANDLERTIMER);
             setGPSLocationUpdates(true);
@@ -933,8 +939,10 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 Log.w("myApp", "[#] GPSApplication.java - ViewTrack: Unable to view the track: " + e);
-                AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
-                asyncPrepareTracklistContextMenu.start();
+                if (!asyncPrepareTracklistContextMenu.isAlive()) {
+                    asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
+                    asyncPrepareTracklistContextMenu.start();
+                } else Log.w("myApp", "[#] GPSApplication.java - asyncPrepareTracklistContextMenu already alive");
             }
         }
     }

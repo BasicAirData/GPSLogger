@@ -70,7 +70,7 @@ public class ExternalViewerChecker {
     public void makeAppInfoList() {
         final PackageManager pm = context.getPackageManager();
 
-        appInfoList.clear();
+        appInfoList = new ArrayList<>();
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,6 +112,7 @@ public class ExternalViewerChecker {
                 if (a.Label.equals(ainfo.Label) && a.PackageName.equals(ainfo.PackageName)) {
                     found = true;
                     //a.KML = true;
+                    break;
                 }
             }
             if (!found) {
