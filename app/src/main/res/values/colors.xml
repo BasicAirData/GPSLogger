@@ -27,20 +27,20 @@
     <color name="colorPrimaryLight">#b51111</color>
     <color name="textColorPrimary">#111111</color>
     <color name="textColorCardTitle">#272727</color>
-    <color name="textColorSecondary">#777777</color>
+    <color name="textColorSecondary">#666666</color>
     <color name="colorBackground">#e9e9e9</color>
 
-    <color name="colorRecControlBackground">#f5f5f5</color>
+    <color name="colorRecControlBackground">#f4f4f4</color>
     <color name="textColorRecControlPrimary">#111111</color>
-    <color name="textColorRecControlSecondary">#555555</color>
+    <color name="textColorRecControlSecondary">#666666</color>
     <color name="textColorRecControlPrimary_Active">#ffffff</color>
-    <color name="textColorRecControlSecondary_Active">#cccccc</color>
+    <color name="textColorRecControlSecondary_Active">#eeeeee</color>
 
     <color name="colorCardBackground_Title">#ffffff</color>
-    <color name="colorCardBackground_Line">#f2f2f2</color>
+    <color name="colorCardBackground_Line">#f4f4f4</color>
     <color name="colorCardBackground_Data">#fbfbfb</color>
     <color name="colorCardBackground">#f7f7f7</color>
-    <color name="colorCardBackground_Selected">#5fff6666</color>
+    <color name="colorCardBackground_Selected">#5fff9999</color>
 
     <color name="colorAccent">#ffffff</color>
     <color name="preference_accent">#b51111</color>
