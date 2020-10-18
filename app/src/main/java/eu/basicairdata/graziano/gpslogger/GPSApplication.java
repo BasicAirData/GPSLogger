@@ -40,6 +40,7 @@ import android.graphics.Path;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.GnssStatus;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -72,7 +73,7 @@ import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class GPSApplication extends Application implements GpsStatus.Listener, LocationListener {
+public class GPSApplication extends Application implements LocationListener {
 
     //private static final float M_TO_FT = 3.280839895f;
     private static final int NOT_AVAILABLE = -100000;
@@ -131,6 +132,8 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
+
+    private MyGPSStatus myGPSStatusListener;
 
     private LocationExtended PrevRecordedFix = null;
 
@@ -324,6 +327,53 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
     void stopExportingStatusChecker() {
         ExportingStatusCheckHandler.removeCallbacks(ExportingStatusChecker);
+    }
+
+
+    // ------------------------------------------------------------------------------------ GPSStatus
+    private class MyGPSStatus {
+        private GpsStatus.Listener gpsStatusListener;
+        private GnssStatus.Callback mGnssStatusListener;
+
+        public MyGPSStatus() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                mGnssStatusListener = new GnssStatus.Callback() {
+                    @Override
+                    public void onSatelliteStatusChanged(GnssStatus status) {
+                        super.onSatelliteStatusChanged (status);
+                        updateGNSSStatus(status);
+                    }
+                };
+            } else {
+                gpsStatusListener = new GpsStatus.Listener() {
+                    @Override
+                    public void onGpsStatusChanged(int event) {
+                        switch (event) {
+                            case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+                                // TODO: get here the status of the GPS, and save into a GpsStatus to be used for satellites visualization;
+                                // Use GpsStatus getGpsStatus (GpsStatus status)
+                                // https://developer.android.com/reference/android/location/LocationManager.html#getGpsStatus(android.location.GpsStatus)
+                                updateGPSStatus();
+                                break;
+                        }
+                    }
+                };
+            }
+        }
+
+        public void enable() {
+            if (ContextCompat.checkSelfPermission(GPSApplication.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) mlocManager.registerGnssStatusCallback(mGnssStatusListener);
+                else mlocManager.addGpsStatusListener(gpsStatusListener);
+            }
+        }
+
+        public void disable() {
+            if (ContextCompat.checkSelfPermission(GPSApplication.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) mlocManager.unregisterGnssStatusCallback(mGnssStatusListener);
+                else mlocManager.removeGpsStatusListener(gpsStatusListener);
+            }
+        }
     }
 
 
@@ -689,9 +739,13 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         //if (file.exists ()) file.delete();
         // -----------------------
 
+        //EventBus eventBus = EventBus.builder().addIndex(new EventBusIndex()).build();
+        EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
         EventBus.getDefault().register(this);
 
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
+
+        myGPSStatusListener = new MyGPSStatus();                                        // GPS Satellites
 
         File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");   // Create the Directories if not exist
         if (!sd.exists()) {
@@ -843,14 +897,14 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         if (!state && !getRecording() && isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             GPSStatus = GPS_SEARCHING;
-            mlocManager.removeGpsStatusListener(this);
+            myGPSStatusListener.disable();
             mlocManager.removeUpdates(this);
             isGPSLocationUpdatesActive = false;
             //Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = false");
         }
         if (state && !isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            mlocManager.addGpsStatusListener(this);
+            myGPSStatusListener.enable();
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this); // Requires Location update
             isGPSLocationUpdatesActive = true;
             //Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
@@ -863,16 +917,17 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
         if (isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             //Log.w("myApp", "[#] GPSApplication.java - updateGPSLocationFrequency");
-            mlocManager.removeGpsStatusListener(this);
+            myGPSStatusListener.disable();
             mlocManager.removeUpdates(this);
             if (prefGPSupdatefrequency >= 1000) StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / prefGPSupdatefrequency);
             else StabilizingSamples = (int) Math.ceil(STABILIZERVALUE / 1000);
-            mlocManager.addGpsStatusListener(this);
+            myGPSStatusListener.enable();
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this);
         }
     }
 
-    public void updateSats() {
+
+    public void updateGPSStatus() {
         try {
             if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
                 GpsStatus gs = mlocManager.getGpsStatus(null);
@@ -885,6 +940,41 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
                         sats_inview++;
                         if (sat.usedInFix()) sats_used++;
                         //Log.w("myApp", "[#] GPSApplication.java - updateSats: i=" + i);
+                    }
+                    _NumberOfSatellites = sats_inview;
+                    _NumberOfSatellitesUsedInFix = sats_used;
+                } else {
+                    _NumberOfSatellites = NOT_AVAILABLE;
+                    _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                }
+            } else {
+                _NumberOfSatellites = NOT_AVAILABLE;
+                _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+            }
+        } catch (NullPointerException e) {
+            _NumberOfSatellites = NOT_AVAILABLE;
+            _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+            //Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
+        }
+        //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void updateGNSSStatus(android.location.GnssStatus status) {
+        try {
+            if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+                int sats_inview = 0;    // Satellites in view;
+                int sats_used = 0;      // Satellites used in fix;
+
+                if (status != null) {
+                    sats_inview = status.getSatelliteCount();
+                    sats_used = 0;
+                    int svCount = 0;
+
+                    while (svCount < sats_inview) {
+                        if (status.usedInFix(svCount)) sats_used++;
+                        svCount++;
                     }
                     _NumberOfSatellites = sats_inview;
                     _NumberOfSatellitesUsedInFix = sats_used;
@@ -1130,20 +1220,6 @@ public class GPSApplication extends Application implements GpsStatus.Listener, L
 
             Log.w("myApp", "[#] GPSApplication.java - Tracklist ContextMenu prepared");
             EventBus.getDefault().post(EventBusMSG.UPDATE_ACTIONBAR);
-        }
-    }
-
-
-    // ------------------------------------------------------------------------- GpsStatus.Listener
-    @Override
-    public void onGpsStatusChanged(final int event) {
-        switch (event) {
-            case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-                // TODO: get here the status of the GPS, and save into a GpsStatus to be used for satellites visualization;
-                // Use GpsStatus getGpsStatus (GpsStatus status)
-                // https://developer.android.com/reference/android/location/LocationManager.html#getGpsStatus(android.location.GpsStatus)
-                updateSats();
-                break;
         }
     }
 
