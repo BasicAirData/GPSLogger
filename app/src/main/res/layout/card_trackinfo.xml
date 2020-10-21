@@ -74,14 +74,20 @@
                 android:id="@+id/id_textView_card_TrackName"
                 android:textColor="@color/textColorCardTitle"
                 android:textStyle="bold"
+                android:textDirection="locale"
+                android:gravity="start"
+                android:textAlignment="viewStart"
                 android:paddingTop="1dp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearanceCardSmall"
                 android:id="@+id/id_textView_card_TrackDesc"
                 android:textStyle="italic"
+                android:textDirection="locale"
+                android:gravity="start"
+                android:textAlignment="viewStart"
                 android:paddingBottom="2dp"
                 android:layout_below="@id/id_textView_card_TrackName"/>
         </RelativeLayout>

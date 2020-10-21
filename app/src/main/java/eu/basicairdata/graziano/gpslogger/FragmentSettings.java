@@ -229,6 +229,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Track Viewer
+
+        final ArrayList<AppInfo> ail = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getAppInfoList());
         switch (GPSApplication.getInstance().getExternalViewerChecker().size()) {
             case 0:
                 pTracksViewer.setEnabled(false);    // No viewers installed
@@ -252,7 +254,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                             View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
                             ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
 
-                            final ArrayList<AppInfo> ail = new ArrayList<>();
+                            final ArrayList<AppInfo> aild = new ArrayList<>();
 
                             // Add "Select every Time" menu item
                             AppInfo askai = new AppInfo();
@@ -264,11 +266,10 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                                 askai.Icon = getResources().getDrawable(R.mipmap.ic_visibility_white_24dp);
                                 askai.Icon.setAlpha(255);
                             }
-                            ail.add(askai);
+                            aild.add(askai);
+                            aild.addAll(ail);
 
-                            ail.addAll(externalViewerChecker.appInfoList);
-
-                            AppDialogList clad = new AppDialogList(getActivity(), ail);
+                            AppDialogList clad = new AppDialogList(getActivity(), aild);
 
                             lv.setAdapter(clad);
                             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -277,7 +278,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                                     // TODO: Set Preference
                                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
                                     SharedPreferences.Editor editor1 = settings.edit();
-                                    editor1.putString("prefTracksViewer", ail.get(position).PackageName);
+                                    editor1.putString("prefTracksViewer", aild.get(position).PackageName);
                                     editor1.commit();
                                     SetupPreferences();
                                     dialog.dismiss();
@@ -292,17 +293,15 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         }
         // ------------
 
-        if (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.isEmpty())
+        if (ail.isEmpty())
             pTracksViewer.setSummary(R.string.pref_track_viewer_not_installed);                                        // no Viewers installed
-        else if (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.size() == 1)
-            pTracksViewer.setSummary(GPSApplication.getInstance().getExternalViewerChecker().appInfoList.get(0).Label
-                    + (GPSApplication.getInstance().getExternalViewerChecker().appInfoList.get(0).GPX ?
-                    " (GPX)" : " (KML)"));                                                                              // 1 Viewer installed
+        else if (ail.size() == 1)
+            pTracksViewer.setSummary(ail.get(0).Label + (ail.get(0).GPX ? " (GPX)" : " (KML)"));                                                                              // 1 Viewer installed
         else {
             pTracksViewer.setSummary(R.string.pref_track_viewer_select_every_time);                                       // ask every time
             String pn = prefs.getString("prefTracksViewer", "");
             Log.w("myApp", "[#] FragmentSettings.java - prefTracksViewer = " + pn);
-            for (AppInfo ai : GPSApplication.getInstance().getExternalViewerChecker().appInfoList) {
+            for (AppInfo ai : ail) {
                 if (ai.PackageName.equals(pn)) {
                     //Log.w("myApp", "[#] FragmentSettings.java - Found " + ai.Label);
                     pTracksViewer.setSummary(ai.Label + (ai.GPX ? " (GPX)" : " (KML)"));                                // Default Viewer available!

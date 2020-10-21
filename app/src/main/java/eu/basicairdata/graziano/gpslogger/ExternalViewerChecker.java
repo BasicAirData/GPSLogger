@@ -31,10 +31,9 @@ import java.util.List;
 
 public class ExternalViewerChecker {
 
-    private Context context;
-    private boolean isAppInfoListMade = false;
+    private final Context context;
 
-    public ArrayList<AppInfo> appInfoList = new ArrayList<>();
+    private ArrayList<AppInfo> appInfoList = new ArrayList<>();
 
     static private class CustomComparator implements Comparator<AppInfo> {
         @Override
@@ -43,7 +42,12 @@ public class ExternalViewerChecker {
         }
     }
 
-    private CustomComparator Comparator = new CustomComparator();
+
+    public ArrayList<AppInfo> getAppInfoList() {
+        return appInfoList;
+    }
+
+    private final CustomComparator Comparator = new CustomComparator();
 
 
     public ExternalViewerChecker(Context context) {
@@ -61,16 +65,10 @@ public class ExternalViewerChecker {
     }
 
 
-    public AppInfo getAppInfo (int index) {
-        if (index < size()) return appInfoList.get(index);
-        else return null;
-    }
-
-
     public void makeAppInfoList() {
         final PackageManager pm = context.getPackageManager();
 
-        appInfoList.clear();
+        appInfoList = new ArrayList<>();
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,6 +110,7 @@ public class ExternalViewerChecker {
                 if (a.Label.equals(ainfo.Label) && a.PackageName.equals(ainfo.PackageName)) {
                     found = true;
                     //a.KML = true;
+                    break;
                 }
             }
             if (!found) {
@@ -136,7 +135,5 @@ public class ExternalViewerChecker {
                 }
             }
         }
-
-        isAppInfoListMade = true;
     }
 }
