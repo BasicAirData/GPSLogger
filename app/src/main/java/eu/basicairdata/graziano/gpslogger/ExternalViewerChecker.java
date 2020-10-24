@@ -118,11 +118,13 @@ public class ExternalViewerChecker {
             }
         }
 
+        // Sort List by Package Name
         if (appInfoList.size() > 1) {
-            // Sort List by Package Name
             Collections.sort(appInfoList, Comparator);
+        }
 
-            // Apply Exceptions
+        // Apply Exceptions
+        if (appInfoList.size() > 0) {
             for (AppInfo a : appInfoList) {
                 if (a.PackageName.equals("at.xylem.mapin")) {
                     // MAPinr is not opening GPX correctly!
