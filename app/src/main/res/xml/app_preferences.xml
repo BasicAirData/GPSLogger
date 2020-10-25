@@ -77,6 +77,12 @@
             android:defaultValue="0" />
 
         <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="prefShowLocalTime"
+            android:title="@string/pref_show_gps_time_local"
+            android:summary="@string/pref_show_gps_time_local_summary"
+            android:defaultValue="true" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="prefShowDecimalCoordinates"
             android:title="@string/pref_show_decimal_coordinates"
             android:summary="@string/pref_show_decimal_coordinates_summary"
