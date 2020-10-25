@@ -41,10 +41,10 @@ Join Us on [Crowdin](https://crowdin.com/project/gpslogger) and help to translat
 <b>A</b> - Please go on Location Section of your Android Settings: the Phone could be set to use the "Battery saving" Locating Method. This Method uses Wi-Fi & Mobile Networks to estimate your Location, without turn on the GPS. In case please switch to "Phone only" or "High accuracy" Method to enable the GPS Sensor.
 
 <b>Q</b> - <i>How can I view my recorded Tracks?</i><br>
-<b>A</b> - You can view your Tracks by going on Tracklist Tab and clicking on it. An Actionbar will appear, that should contain an Eye Icon. A KML/GPX viewer must be installed on your device; if not (in this case the Eye Icon will not be visible), please install it. In GPS Logger's Settings you can choose to use a GPX or a KML Viewer. A good Viewer for Android is GPX Viewer, but there are lots of good Alternatives around.
+<b>A</b> - You can view your Tracks by going on Tracklist Tab and clicking on it. An Actionbar will appear, that should contain an Eye Icon or the Icon of a KML/GPX Viewer. At least one KML/GPX viewer must be installed on your device; if not (in this case the Icon will not be visible), please install it. If You installed more than one Viewer, into GPS Logger's Settings you can choose which one to use. A good Viewer for Android is GPX Viewer, but there are lots of good Alternatives around.
 
 <b>Q</b> - <i>The "View" Icon is not visible on Actionbar.</i><br>
-<b>A</b> - The "View" Icon is visible, by selecting one single Track of the Tracklist, if you have at least one external Viewer installed on your Device. In GPS Logger's Settings you can choose to use a GPX or a KML Viewer. A good Viewer for Android is GPX Viewer, but there are lots of good Alternatives around.
+<b>A</b> - The "View" Icon is visible, by selecting one single Track of the Tracklist, if you have at least one external Viewer installed on your Device. If You installed more than one Viewer, into GPS Logger's Settings you can choose which one to use. A good Viewer for Android is GPX Viewer, but there are lots of good Alternatives around.
 
 <b>Q</b> - <i>The "Share" Icon is not visible on Actionbar.</i><br>
 <b>A</b> - The "Share" Icon is visible, by selecting some Tracks of the Tracklist, if you have at least one Application installed on your Device with which to Share the Files. The Formats you will share are set on Exporting Section of GPS Logger's Settings, please check that at least one Exportation Format is selected.
