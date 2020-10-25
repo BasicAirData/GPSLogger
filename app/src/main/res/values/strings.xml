@@ -134,7 +134,7 @@
     <string name="pref_color_theme_light">Light</string>
     <string name="pref_show_decimal_coordinates">Show Decimal Coordinates</string>
     <string name="pref_show_decimal_coordinates_summary">Fractional part in decimal notation</string>
-    <string name="pref_show_gps_time_local">Show GPS Time of local Timezone</string>
+    <string name="pref_show_gps_time_local">Show GPS Time in local Timezone</string>
     <string name="pref_show_gps_time_local_summary">instead of global GPS Time</string>
     <string name="pref_show_directions">Show Directions using</string>
     <string name="pref_show_directions_angle">Degrees East of North</string>
@@ -180,8 +180,6 @@
     <string name="pref_category_exporting">EXPORTATION</string>
     <string name="pref_export_TXT">Export Tracks in TXT</string>
     <string name="pref_export_TXT_summary">Plain text, comma-separated values</string>
-    <string name="pref_TXT_system_of_measurement">TXT Units of measurement</string>
-    <string name="pref_TXT_system_of_measurement_follows_app_settings">Follow interface settings</string>
     <string name="pref_export_KML">Export Tracks in KML</string>
     <string name="pref_export_KML_summary">Keyhole Markup Language (v.2.2)</string>
     <string name="pref_export_GPX">Export Tracks in GPX</string>
@@ -194,7 +192,7 @@
     <string name="pref_KML_altitude_mode_projected">Projected to Ground</string>
     <string name="pref_track_stats">Track Stats based on</string>
     <string name="pref_track_stats_totaltime">Total time</string>
-    <string name="pref_track_stats_movingtime">Moving time</string>
+    <string name="pref_track_stats_movingtime">Time in Movement</string>
 
     <!-- Preferences toasts -->
     <string name="toast_download_error">Download error</string>
