@@ -124,6 +124,7 @@ public class GPSApplication extends Application implements LocationListener {
     private int     prefShowTrackStatsType      = 0;
     private int     prefShowDirections          = 0;
     private boolean prefGPSWeekRolloverCorrected= false;
+    private boolean prefShowLocalTime           = true;
 
     private boolean LocationPermissionChecked   = false;          // If the flag is false the GPSActivity will check for Location Permission
     private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
@@ -547,6 +548,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public int getPrefShowDirections() {
         return prefShowDirections;
+    }
+
+    public boolean getPrefShowLocalTime() {
+        return prefShowLocalTime;
     }
 
     public LocationExtended getCurrentLocationExtended() {
