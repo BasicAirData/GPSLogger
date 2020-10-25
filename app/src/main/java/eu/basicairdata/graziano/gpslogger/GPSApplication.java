@@ -124,6 +124,7 @@ public class GPSApplication extends Application implements LocationListener {
     private int     prefShowTrackStatsType      = 0;
     private int     prefShowDirections          = 0;
     private boolean prefGPSWeekRolloverCorrected= false;
+    private boolean prefShowLocalTime           = true;
 
     private boolean LocationPermissionChecked   = false;          // If the flag is false the GPSActivity will check for Location Permission
     private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
@@ -547,6 +548,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public int getPrefShowDirections() {
         return prefShowDirections;
+    }
+
+    public boolean getPrefShowLocalTime() {
+        return prefShowLocalTime;
     }
 
     public LocationExtended getCurrentLocationExtended() {
@@ -1420,6 +1425,7 @@ public class GPSApplication extends Application implements LocationListener {
         //prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
         prefGPSWeekRolloverCorrected = preferences.getBoolean("prefGPSWeekRolloverCorrected", false);
         prefShowDecimalCoordinates = preferences.getBoolean("prefShowDecimalCoordinates", false);
+        prefShowLocalTime = preferences.getBoolean("prefShowLocalTime", true);
         //prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
         prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
         prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));

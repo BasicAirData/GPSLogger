@@ -134,6 +134,8 @@
     <string name="pref_color_theme_light">Light</string>
     <string name="pref_show_decimal_coordinates">Show Decimal Coordinates</string>
     <string name="pref_show_decimal_coordinates_summary">Fractional part in decimal notation</string>
+    <string name="pref_show_gps_time_local">Show GPS Time of local Timezone</string>
+    <string name="pref_show_gps_time_local_summary">instead of global GPS Time</string>
     <string name="pref_show_directions">Show Directions using</string>
     <string name="pref_show_directions_angle">Degrees East of North</string>
     <string name="pref_show_directions_cardinal">Cardinal Points</string>
