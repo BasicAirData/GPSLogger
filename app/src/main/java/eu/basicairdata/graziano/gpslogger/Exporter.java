@@ -487,6 +487,33 @@ class Exporter extends Thread {
                 }
                 if (ExportGPX) {
                     GPXbw.write("<trk>" + newLine);
+
+                    PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+                    PhysicalData phdDuration;
+                    PhysicalData phdDurationMoving;
+                    PhysicalData phdSpeedMax;
+                    PhysicalData phdSpeedAvg;
+                    PhysicalData phdSpeedAvgMoving;
+                    PhysicalData phdDistance;
+                    PhysicalData phdAltitudeGap;
+                    PhysicalData phdOverallDirection;
+                    phdDuration = phdformatter.format(track.getDuration(),PhysicalDataFormatter.FORMAT_DURATION);
+                    phdDurationMoving = phdformatter.format(track.getDuration_Moving(),PhysicalDataFormatter.FORMAT_DURATION);
+                    phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
+                    phdSpeedAvg = phdformatter.format(track.getSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                    phdSpeedAvgMoving = phdformatter.format(track.getSpeedAverageMoving(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                    phdDistance = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
+                    phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(GPSApp.getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
+                    phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
+
+                    if (!phdDistance.Value.isEmpty()) GPXbw.write(" <!-- Distance = " + phdDistance.Value + " " + phdDistance.UM + " -->" + newLine);
+                    if (!phdDuration.Value.isEmpty()) GPXbw.write(" <!-- Duration = " + phdDuration.Value + " | " + phdDurationMoving.Value + " -->" + newLine);
+                    if (!phdAltitudeGap.Value.isEmpty()) GPXbw.write(" <!-- Altitude Gap = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM + " -->" + newLine);
+                    if (!phdSpeedMax.Value.isEmpty()) GPXbw.write(" <!-- Max Speed = " + phdSpeedMax.Value + " " + phdSpeedMax.UM + " -->" + newLine);
+                    if (!phdSpeedAvg.Value.isEmpty()) GPXbw.write(" <!-- Avg Speed = " + phdSpeedAvg.Value + " | " + phdSpeedAvgMoving.Value + " " + phdSpeedAvg.UM + " -->" + newLine);
+                    if (!phdOverallDirection.Value.isEmpty()) GPXbw.write(" <!-- Direction = " + phdOverallDirection.Value + phdOverallDirection.UM + " -->" + newLine);
+                    GPXbw.write(" <!-- " + track.getNumberOfLocations() + " Trackpoints -->" + newLine);
+
                     GPXbw.write(" <name>" + GPSApp.getApplicationContext().getString(R.string.tab_track) + " " + track.getName() + "</name>" + newLine);
                     GPXbw.write(" <trkseg>" + newLine);
                 }
