@@ -34,7 +34,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 33
-        versionName '2.2.10b_20201025'
+        versionName '2.2.10b_20201027'
 
         javaCompileOptions {
             annotationProcessorOptions {

@@ -41,7 +41,6 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.GnssStatus;
-import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -155,6 +154,7 @@ public class GPSApplication extends Application implements LocationListener {
         return singleton;
     }
 
+    private Satellites satellites;
 
     DatabaseHandler GPSDataBase;
     private String PlacemarkDescription = "";
@@ -351,9 +351,6 @@ public class GPSApplication extends Application implements LocationListener {
                     public void onGpsStatusChanged(int event) {
                         switch (event) {
                             case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-                                // TODO: get here the status of the GPS, and save into a GpsStatus to be used for satellites visualization;
-                                // Use GpsStatus getGpsStatus (GpsStatus status)
-                                // https://developer.android.com/reference/android/location/LocationManager.html#getGpsStatus(android.location.GpsStatus)
                                 updateGPSStatus();
                                 break;
                         }
@@ -748,6 +745,8 @@ public class GPSApplication extends Application implements LocationListener {
         EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
         EventBus.getDefault().register(this);
 
+        satellites = new Satellites();                                                  // Satellites
+
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
 
         myGPSStatusListener = new MyGPSStatus();                                        // GPS Satellites
@@ -935,23 +934,9 @@ public class GPSApplication extends Application implements LocationListener {
     public void updateGPSStatus() {
         try {
             if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-                GpsStatus gs = mlocManager.getGpsStatus(null);
-                int sats_inview = 0;    // Satellites in view;
-                int sats_used = 0;      // Satellites used in fix;
-
-                if (gs != null) {
-                    Iterable<GpsSatellite> sats = gs.getSatellites();
-                    for (GpsSatellite sat : sats) {
-                        sats_inview++;
-                        if (sat.usedInFix()) sats_used++;
-                        //Log.w("myApp", "[#] GPSApplication.java - updateSats: i=" + i);
-                    }
-                    _NumberOfSatellites = sats_inview;
-                    _NumberOfSatellitesUsedInFix = sats_used;
-                } else {
-                    _NumberOfSatellites = NOT_AVAILABLE;
-                    _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
-                }
+                satellites.updateStatus(mlocManager.getGpsStatus(null));
+                _NumberOfSatellites = satellites.getNumSatsInView();
+                _NumberOfSatellitesUsedInFix = satellites.getNumSatsUsedInFix();
             } else {
                 _NumberOfSatellites = NOT_AVAILABLE;
                 _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
@@ -969,24 +954,9 @@ public class GPSApplication extends Application implements LocationListener {
     public void updateGNSSStatus(android.location.GnssStatus status) {
         try {
             if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-                int sats_inview = 0;    // Satellites in view;
-                int sats_used = 0;      // Satellites used in fix;
-
-                if (status != null) {
-                    sats_inview = status.getSatelliteCount();
-                    sats_used = 0;
-                    int svCount = 0;
-
-                    while (svCount < sats_inview) {
-                        if (status.usedInFix(svCount)) sats_used++;
-                        svCount++;
-                    }
-                    _NumberOfSatellites = sats_inview;
-                    _NumberOfSatellitesUsedInFix = sats_used;
-                } else {
-                    _NumberOfSatellites = NOT_AVAILABLE;
-                    _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
-                }
+                satellites.updateStatus(status);
+                _NumberOfSatellites = satellites.getNumSatsInView();
+                _NumberOfSatellitesUsedInFix = satellites.getNumSatsUsedInFix();
             } else {
                 _NumberOfSatellites = NOT_AVAILABLE;
                 _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
