@@ -184,8 +184,8 @@ public class GPSApplication extends Application implements LocationListener {
     };
 
     private LocationManager mlocManager = null;             // GPS LocationManager
-    private int _NumberOfSatellites = 0;
-    private int _NumberOfSatellitesUsedInFix = 0;
+    private int numberOfSatellitesTotal = 0;                // The total Number of Satellites
+    private int numberOfSatellitesUsedInFix = 0;            // The Number of Satellites used in Fix
 
     private int GPSActivity_activeTab = 0;                  // The active tab on GPSActivity
     private int JobProgress = 0;
@@ -563,12 +563,12 @@ public class GPSApplication extends Application implements LocationListener {
         return _currentTrack;
     }
 
-    public int getNumberOfSatellites() {
-        return _NumberOfSatellites;
+    public int getNumberOfSatellitesTotal() {
+        return numberOfSatellitesTotal;
     }
 
     public int getNumberOfSatellitesUsedInFix() {
-        return _NumberOfSatellitesUsedInFix;
+        return numberOfSatellitesUsedInFix;
     }
 
     public boolean getRecording() {
@@ -935,15 +935,15 @@ public class GPSApplication extends Application implements LocationListener {
         try {
             if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
                 satellites.updateStatus(mlocManager.getGpsStatus(null));
-                _NumberOfSatellites = satellites.getNumSatsInView();
-                _NumberOfSatellitesUsedInFix = satellites.getNumSatsUsedInFix();
+                numberOfSatellitesTotal = satellites.getNumSatsTotal();
+                numberOfSatellitesUsedInFix = satellites.getNumSatsUsedInFix();
             } else {
-                _NumberOfSatellites = NOT_AVAILABLE;
-                _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                numberOfSatellitesTotal = NOT_AVAILABLE;
+                numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             }
         } catch (NullPointerException e) {
-            _NumberOfSatellites = NOT_AVAILABLE;
-            _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+            numberOfSatellitesTotal = NOT_AVAILABLE;
+            numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             //Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
         }
         //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
@@ -955,15 +955,15 @@ public class GPSApplication extends Application implements LocationListener {
         try {
             if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
                 satellites.updateStatus(status);
-                _NumberOfSatellites = satellites.getNumSatsInView();
-                _NumberOfSatellitesUsedInFix = satellites.getNumSatsUsedInFix();
+                numberOfSatellitesTotal = satellites.getNumSatsTotal();
+                numberOfSatellitesUsedInFix = satellites.getNumSatsUsedInFix();
             } else {
-                _NumberOfSatellites = NOT_AVAILABLE;
-                _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                numberOfSatellitesTotal = NOT_AVAILABLE;
+                numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             }
         } catch (NullPointerException e) {
-            _NumberOfSatellites = NOT_AVAILABLE;
-            _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+            numberOfSatellitesTotal = NOT_AVAILABLE;
+            numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             //Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
         }
         //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
@@ -1207,8 +1207,8 @@ public class GPSApplication extends Application implements LocationListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {          // For API >= 18
                 if ((PrevFix == null) || (loc.isFromMockProvider()!=isMockProvider)) {  // Reset the number of satellites when the provider changes between GPS and MOCK
                     isMockProvider = loc.isFromMockProvider();
-                    _NumberOfSatellites = NOT_AVAILABLE;
-                    _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                    numberOfSatellitesTotal = NOT_AVAILABLE;
+                    numberOfSatellitesUsedInFix = NOT_AVAILABLE;
                     if (isMockProvider) Log.w("myApp", "[#] GPSApplication.java - Provider Type = MOCK PROVIDER");
                     else Log.w("myApp", "[#] GPSApplication.java - Provider Type = GPS PROVIDER");
                 }
@@ -1222,7 +1222,7 @@ public class GPSApplication extends Application implements LocationListener {
                 loc.setTime(loc.getTime() + 619315200000L);                             // Timestamp incremented by 1024×7×24×60×60×1000 = 619315200000 ms
                                                                                         // This value must be doubled every 1024 weeks !!!
             LocationExtended eloc = new LocationExtended(loc);
-            eloc.setNumberOfSatellites(getNumberOfSatellites());
+            eloc.setNumberOfSatellites(getNumberOfSatellitesTotal());
             eloc.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
             boolean ForceRecord = false;
 
@@ -1274,7 +1274,7 @@ public class GPSApplication extends Application implements LocationListener {
 
                 if (PlacemarkRequest) {
                     _currentPlacemark = new LocationExtended(loc);
-                    _currentPlacemark.setNumberOfSatellites(getNumberOfSatellites());
+                    _currentPlacemark.setNumberOfSatellites(getNumberOfSatellitesTotal());
                     _currentPlacemark.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
                     PlacemarkRequest = false;
                     EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);

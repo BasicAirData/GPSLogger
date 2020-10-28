@@ -30,7 +30,8 @@ public class Satellites {
     private static final int NOT_AVAILABLE = -100000;
     private static final float NO_DATA = 0.0f;
 
-    private int numSatsInView = NOT_AVAILABLE;
+    private int numSatsTotal = NOT_AVAILABLE;
+    //private int numSatsInView = NOT_AVAILABLE;
     private int numSatsUsedInFix = NOT_AVAILABLE;
 
 
@@ -38,11 +39,12 @@ public class Satellites {
         public int svid;
         public int constellationType;
         public boolean isUsedInFix = false;
+        //public boolean isInView = false;
     }
 
 
-    public int getNumSatsInView() {
-        return numSatsInView;
+    public int getNumSatsTotal() {
+        return numSatsTotal;
     }
 
 
@@ -51,19 +53,28 @@ public class Satellites {
     }
 
 
+//    public int getNumSatsInView() {
+//        return numSatsInView;
+//    }
+
+
     public void updateStatus(GpsStatus gpsStatus) {
         if (gpsStatus != null) {
-            int satsInView = 0;    // Satellites in view;
+            int satsTotal = 0;     // Total number of Satellites;
+            //int satsInView = 0;    // Satellites in view;
             int satsUsed = 0;      // Satellites used in fix;
             Iterable<GpsSatellite> sats = gpsStatus.getSatellites();
             for (GpsSatellite sat : sats) {
-                satsInView++;
+                satsTotal++;
                 if (sat.usedInFix()) satsUsed++;
+                //if (sat.getSnr() != NO_DATA) satsInView++;
             }
-            numSatsInView = satsInView;
+            numSatsTotal = satsTotal;
+            //numSatsInView = satsInView;
             numSatsUsedInFix = satsUsed;
         } else {
-            numSatsInView = NOT_AVAILABLE;
+            numSatsTotal = NOT_AVAILABLE;
+            //numSatsInView = NOT_AVAILABLE;
             numSatsUsedInFix = NOT_AVAILABLE;
         }
     }
@@ -74,35 +85,38 @@ public class Satellites {
         if (gnssStatus != null) {
             ArrayList <Satellite> satellites = new ArrayList<>();
             for (int i = 0; i < gnssStatus.getSatelliteCount(); i++) {
-                if (gnssStatus.getCn0DbHz(i) != NO_DATA) {
-                    // The Satellite is in View
+                // The Satellite is present
 
-                    Satellite sat = new Satellite();
-                    sat.svid = gnssStatus.getSvid(i);
-                    sat.constellationType = gnssStatus.getConstellationType(i);
-                    sat.isUsedInFix = gnssStatus.usedInFix(i);
+                Satellite sat = new Satellite();
+                sat.svid = gnssStatus.getSvid(i);
+                sat.constellationType = gnssStatus.getConstellationType(i);
+                sat.isUsedInFix = gnssStatus.usedInFix(i);
+                //if (gnssStatus.getCn0DbHz(i) != NO_DATA) sat.isInView = true;   // The Satellite is in View
 
-                    boolean found = false;
-                    for (Satellite s : satellites) {
-                        if ((s.svid == sat.svid) && (s.constellationType == sat.constellationType)) {
-                            // Another signal from the same Satellite found (dual freq GNSS)
-                            found = true;
-                            if (sat.isUsedInFix) s.isUsedInFix = true;
-                        }
-                    }
-                    if (!found) {
-                        // Add the new Satellite to the List
-                        satellites.add(sat);
+                boolean found = false;
+                for (Satellite s : satellites) {
+                    if ((s.svid == sat.svid) && (s.constellationType == sat.constellationType)) {
+                        // Another signal from the same Satellite found (dual freq GNSS)
+                        found = true;
+                        if (sat.isUsedInFix) s.isUsedInFix = true;
+                        //if (sat.isInView) s.isInView = true;
                     }
                 }
+                if (!found) {
+                    // Add the new Satellite to the List
+                    satellites.add(sat);
+                }
             }
-            numSatsInView = satellites.size();
+            numSatsTotal = satellites.size();
+            //numSatsInView = 0;
             numSatsUsedInFix = 0;
             for (Satellite s : satellites) {
+                //if (s.isInView) numSatsInView++;
                 if (s.isUsedInFix) numSatsUsedInFix++;
             }
         } else {
-            numSatsInView = NOT_AVAILABLE;
+            numSatsTotal = NOT_AVAILABLE;
+            //numSatsInView = NOT_AVAILABLE;
             numSatsUsedInFix = NOT_AVAILABLE;
         }
     }
