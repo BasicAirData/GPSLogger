@@ -115,6 +115,8 @@
     <string name="pref_color_theme_light">Hell</string>
     <string name="pref_show_decimal_coordinates">Dezimal-Koordinaten anzeigen</string>
     <string name="pref_show_decimal_coordinates_summary">Bruchteil in Dezimalschreibweise</string>
+    <string name="pref_show_gps_time_local">GPS-Zeit in lokaler Zeitzone anzeigen</string>
+    <string name="pref_show_gps_time_local_summary">anstelle der globalen GPS-Zeit</string>
     <string name="pref_show_directions">Richtungsanzeige</string>
     <string name="pref_show_directions_angle">Grad östlich von Norden</string>
     <string name="pref_show_directions_cardinal">Himmelsrichtungen</string>
@@ -154,8 +156,6 @@
     <string name="pref_category_exporting">EXPORT</string>
     <string name="pref_export_TXT">Tracks in TXT exportieren</string>
     <string name="pref_export_TXT_summary">Klartext, durch Komma getrennte Werte</string>
-    <string name="pref_TXT_system_of_measurement">Einheitensystem für Export in TXT</string>
-    <string name="pref_TXT_system_of_measurement_follows_app_settings">Folgen Sie den Schnittstelleneinstellungen</string>
     <string name="pref_export_KML">Tracks in KML exportieren</string>
     <string name="pref_export_KML_summary">Keyhole Markup Language (v.2.2)</string>
     <string name="pref_export_GPX">Tracks in GPX exportieren</string>

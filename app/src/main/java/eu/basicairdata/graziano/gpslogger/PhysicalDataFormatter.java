@@ -263,10 +263,18 @@ class PhysicalDataFormatter {
                 return(_PhysicalData);
 
             case FORMAT_TIME:   // Timestamps
-                SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss");        // date and time formatter
-                dfdTime.setTimeZone(TimeZone.getTimeZone("GMT"));
-                _PhysicalData.Value = dfdTime.format(Number);
-                return(_PhysicalData);
+                if (gpsApplication.getPrefShowLocalTime()) {
+                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss");        // date and time formatter
+                    SimpleDateFormat dfdTimeZone = new SimpleDateFormat("ZZZZZ");       // timezone formatter
+                    _PhysicalData.Value = dfdTime.format(Number);
+                    _PhysicalData.UM = dfdTimeZone.format(Number);
+                    return (_PhysicalData);
+                } else {
+                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss");        // date and time formatter
+                    dfdTime.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    _PhysicalData.Value = dfdTime.format(Number);
+                    return (_PhysicalData);
+                }
         }
         return(_PhysicalData);
     }

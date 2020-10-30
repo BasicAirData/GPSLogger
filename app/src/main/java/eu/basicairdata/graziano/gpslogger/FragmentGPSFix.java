@@ -64,6 +64,7 @@ public class FragmentGPSFix extends Fragment {
     private TextView TVGPSFixStatus;
     private TextView TVDirectionUM;
     private TextView TVTime;
+    private TextView TVTimeLabel;
     private TextView TVSatellites;
 
     private TableLayout TLCoordinates;
@@ -126,6 +127,7 @@ public class FragmentGPSFix extends Fragment {
         TVGPSFixStatus      = view.findViewById(R.id.id_textView_GPSFixStatus);
         TVDirectionUM       = view.findViewById(R.id.id_textView_BearingUM);
         TVTime              = view.findViewById(R.id.id_textView_Time);
+        TVTimeLabel         = view.findViewById(R.id.id_textView_TimeLabel);
         TVSatellites        = view.findViewById(R.id.id_textView_Satellites);
 
         // TableLayouts
@@ -219,6 +221,7 @@ public class FragmentGPSFix extends Fragment {
                 TVAccuracy.setText(phdAccuracy.Value);
                 TVAccuracyUM.setText(phdAccuracy.UM);
                 TVTime.setText(phdTime.Value);
+                TVTimeLabel.setText(phdTime.UM.isEmpty() ? getString(R.string.time) : String.format("%s (%s)", getString(R.string.time), phdTime.UM));
                 TVSatellites.setText(location.getNumberOfSatellitesUsedInFix() != NOT_AVAILABLE ? location.getNumberOfSatellitesUsedInFix() + "/" + location.getNumberOfSatellites() : "");
 
                 // Colorize the Altitude textview depending on the altitude EGM Correction

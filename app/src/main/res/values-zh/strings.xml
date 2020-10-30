@@ -115,6 +115,8 @@
     <string name="pref_color_theme_light">浅色主题</string>
     <string name="pref_show_decimal_coordinates">显示十进制坐标</string>
     <string name="pref_show_decimal_coordinates_summary">以十进制显示小数部分</string>
+    <string name="pref_show_gps_time_local">以本地时区显示GPS时间</string>
+    <string name="pref_show_gps_time_local_summary">而不是全球GPS时间</string>
     <string name="pref_show_directions">如何显示方向</string>
     <string name="pref_show_directions_angle">北偏东的角度</string>
     <string name="pref_show_directions_cardinal">基点</string>
@@ -154,8 +156,6 @@
     <string name="pref_category_exporting">导出设置</string>
     <string name="pref_export_TXT">以TXT格式导出轨迹</string>
     <string name="pref_export_TXT_summary">纯文本, 逗号分隔的值</string>
-    <string name="pref_TXT_system_of_measurement">TXT测量单位</string>
-    <string name="pref_TXT_system_of_measurement_follows_app_settings">按照界面设置</string>
     <string name="pref_export_KML">以KML格式导出轨迹</string>
     <string name="pref_export_KML_summary">Keyhole Markup 语言(v.2.2)</string>
     <string name="pref_export_GPX">以GPX格式导出轨迹</string>

@@ -41,7 +41,6 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.GnssStatus;
-import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -124,6 +123,7 @@ public class GPSApplication extends Application implements LocationListener {
     private int     prefShowTrackStatsType      = 0;
     private int     prefShowDirections          = 0;
     private boolean prefGPSWeekRolloverCorrected= false;
+    private boolean prefShowLocalTime           = true;
 
     private boolean LocationPermissionChecked   = false;          // If the flag is false the GPSActivity will check for Location Permission
     private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
@@ -154,6 +154,7 @@ public class GPSApplication extends Application implements LocationListener {
         return singleton;
     }
 
+    private Satellites satellites;
 
     DatabaseHandler GPSDataBase;
     private String PlacemarkDescription = "";
@@ -183,8 +184,8 @@ public class GPSApplication extends Application implements LocationListener {
     };
 
     private LocationManager mlocManager = null;             // GPS LocationManager
-    private int _NumberOfSatellites = 0;
-    private int _NumberOfSatellitesUsedInFix = 0;
+    private int numberOfSatellitesTotal = 0;                // The total Number of Satellites
+    private int numberOfSatellitesUsedInFix = 0;            // The Number of Satellites used in Fix
 
     private int GPSActivity_activeTab = 0;                  // The active tab on GPSActivity
     private int JobProgress = 0;
@@ -350,9 +351,6 @@ public class GPSApplication extends Application implements LocationListener {
                     public void onGpsStatusChanged(int event) {
                         switch (event) {
                             case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-                                // TODO: get here the status of the GPS, and save into a GpsStatus to be used for satellites visualization;
-                                // Use GpsStatus getGpsStatus (GpsStatus status)
-                                // https://developer.android.com/reference/android/location/LocationManager.html#getGpsStatus(android.location.GpsStatus)
                                 updateGPSStatus();
                                 break;
                         }
@@ -549,6 +547,10 @@ public class GPSApplication extends Application implements LocationListener {
         return prefShowDirections;
     }
 
+    public boolean getPrefShowLocalTime() {
+        return prefShowLocalTime;
+    }
+
     public LocationExtended getCurrentLocationExtended() {
         return _currentLocationExtended;
     }
@@ -561,12 +563,12 @@ public class GPSApplication extends Application implements LocationListener {
         return _currentTrack;
     }
 
-    public int getNumberOfSatellites() {
-        return _NumberOfSatellites;
+    public int getNumberOfSatellitesTotal() {
+        return numberOfSatellitesTotal;
     }
 
     public int getNumberOfSatellitesUsedInFix() {
-        return _NumberOfSatellitesUsedInFix;
+        return numberOfSatellitesUsedInFix;
     }
 
     public boolean getRecording() {
@@ -742,6 +744,8 @@ public class GPSApplication extends Application implements LocationListener {
         //EventBus eventBus = EventBus.builder().addIndex(new EventBusIndex()).build();
         EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
         EventBus.getDefault().register(this);
+
+        satellites = new Satellites();                                                  // Satellites
 
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
 
@@ -930,30 +934,16 @@ public class GPSApplication extends Application implements LocationListener {
     public void updateGPSStatus() {
         try {
             if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-                GpsStatus gs = mlocManager.getGpsStatus(null);
-                int sats_inview = 0;    // Satellites in view;
-                int sats_used = 0;      // Satellites used in fix;
-
-                if (gs != null) {
-                    Iterable<GpsSatellite> sats = gs.getSatellites();
-                    for (GpsSatellite sat : sats) {
-                        sats_inview++;
-                        if (sat.usedInFix()) sats_used++;
-                        //Log.w("myApp", "[#] GPSApplication.java - updateSats: i=" + i);
-                    }
-                    _NumberOfSatellites = sats_inview;
-                    _NumberOfSatellitesUsedInFix = sats_used;
-                } else {
-                    _NumberOfSatellites = NOT_AVAILABLE;
-                    _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
-                }
+                satellites.updateStatus(mlocManager.getGpsStatus(null));
+                numberOfSatellitesTotal = satellites.getNumSatsTotal();
+                numberOfSatellitesUsedInFix = satellites.getNumSatsUsedInFix();
             } else {
-                _NumberOfSatellites = NOT_AVAILABLE;
-                _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                numberOfSatellitesTotal = NOT_AVAILABLE;
+                numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             }
         } catch (NullPointerException e) {
-            _NumberOfSatellites = NOT_AVAILABLE;
-            _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+            numberOfSatellitesTotal = NOT_AVAILABLE;
+            numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             //Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
         }
         //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
@@ -964,31 +954,16 @@ public class GPSApplication extends Application implements LocationListener {
     public void updateGNSSStatus(android.location.GnssStatus status) {
         try {
             if ((mlocManager != null) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-                int sats_inview = 0;    // Satellites in view;
-                int sats_used = 0;      // Satellites used in fix;
-
-                if (status != null) {
-                    sats_inview = status.getSatelliteCount();
-                    sats_used = 0;
-                    int svCount = 0;
-
-                    while (svCount < sats_inview) {
-                        if (status.usedInFix(svCount)) sats_used++;
-                        svCount++;
-                    }
-                    _NumberOfSatellites = sats_inview;
-                    _NumberOfSatellitesUsedInFix = sats_used;
-                } else {
-                    _NumberOfSatellites = NOT_AVAILABLE;
-                    _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
-                }
+                satellites.updateStatus(status);
+                numberOfSatellitesTotal = satellites.getNumSatsTotal();
+                numberOfSatellitesUsedInFix = satellites.getNumSatsUsedInFix();
             } else {
-                _NumberOfSatellites = NOT_AVAILABLE;
-                _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                numberOfSatellitesTotal = NOT_AVAILABLE;
+                numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             }
         } catch (NullPointerException e) {
-            _NumberOfSatellites = NOT_AVAILABLE;
-            _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+            numberOfSatellitesTotal = NOT_AVAILABLE;
+            numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             //Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
         }
         //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
@@ -1232,8 +1207,8 @@ public class GPSApplication extends Application implements LocationListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {          // For API >= 18
                 if ((PrevFix == null) || (loc.isFromMockProvider()!=isMockProvider)) {  // Reset the number of satellites when the provider changes between GPS and MOCK
                     isMockProvider = loc.isFromMockProvider();
-                    _NumberOfSatellites = NOT_AVAILABLE;
-                    _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                    numberOfSatellitesTotal = NOT_AVAILABLE;
+                    numberOfSatellitesUsedInFix = NOT_AVAILABLE;
                     if (isMockProvider) Log.w("myApp", "[#] GPSApplication.java - Provider Type = MOCK PROVIDER");
                     else Log.w("myApp", "[#] GPSApplication.java - Provider Type = GPS PROVIDER");
                 }
@@ -1247,7 +1222,7 @@ public class GPSApplication extends Application implements LocationListener {
                 loc.setTime(loc.getTime() + 619315200000L);                             // Timestamp incremented by 1024×7×24×60×60×1000 = 619315200000 ms
                                                                                         // This value must be doubled every 1024 weeks !!!
             LocationExtended eloc = new LocationExtended(loc);
-            eloc.setNumberOfSatellites(getNumberOfSatellites());
+            eloc.setNumberOfSatellites(getNumberOfSatellitesTotal());
             eloc.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
             boolean ForceRecord = false;
 
@@ -1299,7 +1274,7 @@ public class GPSApplication extends Application implements LocationListener {
 
                 if (PlacemarkRequest) {
                     _currentPlacemark = new LocationExtended(loc);
-                    _currentPlacemark.setNumberOfSatellites(getNumberOfSatellites());
+                    _currentPlacemark.setNumberOfSatellites(getNumberOfSatellitesTotal());
                     _currentPlacemark.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
                     PlacemarkRequest = false;
                     EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
@@ -1420,6 +1395,7 @@ public class GPSApplication extends Application implements LocationListener {
         //prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
         prefGPSWeekRolloverCorrected = preferences.getBoolean("prefGPSWeekRolloverCorrected", false);
         prefShowDecimalCoordinates = preferences.getBoolean("prefShowDecimalCoordinates", false);
+        prefShowLocalTime = preferences.getBoolean("prefShowLocalTime", true);
         //prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
         prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
         prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));

@@ -115,6 +115,8 @@
     <string name="pref_color_theme_light">Világos</string>
     <string name="pref_show_decimal_coordinates">Decimális koordináta formátum</string>
     <string name="pref_show_decimal_coordinates_summary">Koordináta megjelenítése Decimális számrendszerben</string>
+    <string name="pref_show_gps_time_local">A GPS idő megjelenítése a helyi időzónában</string>
+    <string name="pref_show_gps_time_local_summary">a globális GPS idő helyett</string>
     <string name="pref_show_directions">Irány Megjelenítése</string>
     <string name="pref_show_directions_angle">Fok</string>
     <string name="pref_show_directions_cardinal">Égtáj</string>
@@ -154,8 +156,6 @@
     <string name="pref_category_exporting">EXPORTÁLÁS</string>
     <string name="pref_export_TXT">Útvonal exportálása TXT-be</string>
     <string name="pref_export_TXT_summary">Egyszerű szöveg, vesszővel tagolt értékek</string>
-    <string name="pref_TXT_system_of_measurement">TXT  mértékegységek</string>
-    <string name="pref_TXT_system_of_measurement_follows_app_settings">Kövesse a felhasználói felület beállításait</string>
     <string name="pref_export_KML">Útvonal exportálása KML-be</string>
     <string name="pref_export_KML_summary">Keyhole Markup nyelv (v.2.2)</string>
     <string name="pref_export_GPX">Útvonal exportálása GPX-be</string>
