@@ -115,6 +115,8 @@
     <string name="pref_color_theme_light">Claro</string>
     <string name="pref_show_decimal_coordinates">Mostrar coordenadas em decimal</string>
     <string name="pref_show_decimal_coordinates_summary">Parte fracionária em notação decimal</string>
+    <string name="pref_show_gps_time_local">Mostrar a hora do GPS no fuso horário local</string>
+    <string name="pref_show_gps_time_local_summary">ao invés da hora global do GPS</string>
     <string name="pref_show_directions">Mostrar as direções usando</string>
     <string name="pref_show_directions_angle">Graus Leste Norte</string>
     <string name="pref_show_directions_cardinal">Pontos cardeais</string>
@@ -154,8 +156,6 @@
     <string name="pref_category_exporting">EXPORTAÇÃO</string>
     <string name="pref_export_TXT">Exportar trajetos em TXT</string>
     <string name="pref_export_TXT_summary">Texto sem formatação, valores separados por vírgula</string>
-    <string name="pref_TXT_system_of_measurement">TXT Unidades de medida</string>
-    <string name="pref_TXT_system_of_measurement_follows_app_settings">Siga as configurações de interface</string>
     <string name="pref_export_KML">Exportar trajetos em KML</string>
     <string name="pref_export_KML_summary">Keyhole Markup Language (v.2.2)</string>
     <string name="pref_export_GPX">Exportar trajetos em GPX</string>

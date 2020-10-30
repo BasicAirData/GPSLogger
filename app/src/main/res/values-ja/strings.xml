@@ -115,6 +115,8 @@
     <string name="pref_color_theme_light">明るい</string>
     <string name="pref_show_decimal_coordinates">10 進座標を表示</string>
     <string name="pref_show_decimal_coordinates_summary">小数部分の 10 進表記</string>
+    <string name="pref_show_gps_time_local">GPS時刻をローカルタイムゾーンに表示</string>
+    <string name="pref_show_gps_time_local_summary">GPS時間の代わりに</string>
     <string name="pref_show_directions">方向の表示</string>
     <string name="pref_show_directions_angle">北を基準とした東周りの角度</string>
     <string name="pref_show_directions_cardinal">基本方位</string>
@@ -154,8 +156,6 @@
     <string name="pref_category_exporting">エクスポート</string>
     <string name="pref_export_TXT">TXT で追跡をエクスポート</string>
     <string name="pref_export_TXT_summary">テキスト形式、カンマ区切りの値</string>
-    <string name="pref_TXT_system_of_measurement">TXT 測定単位</string>
-    <string name="pref_TXT_system_of_measurement_follows_app_settings">インターフェイス設定に従う</string>
     <string name="pref_export_KML">KML で追跡をエクスポート</string>
     <string name="pref_export_KML_summary">キーホール マークアップ言語 (v.2.2)</string>
     <string name="pref_export_GPX">GPX で追跡をエクスポート</string>
