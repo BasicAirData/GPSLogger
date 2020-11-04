@@ -43,7 +43,7 @@ public class FragmentPlacemarkDialog extends DialogFragment {
     //@SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity(), R.style.StyledDialog);
+        AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity());
         createPlacemarkAlert.setTitle(R.string.dlg_add_placemark);
         Drawable icon = getResources().getDrawable(R.mipmap.ic_add_location_white_24dp);
 

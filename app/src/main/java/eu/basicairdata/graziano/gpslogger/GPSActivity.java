@@ -196,7 +196,7 @@ public class GPSActivity extends AppCompatActivity {
             Log.w("myApp", "[#] GPSActivity.java - THE APP HAS BEEN KILLED IN BACKGROUND DURING A RECORDING !!!");
             GPSApp.FlagRemove(GPSApp.FLAG_RECORDING);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.StyledDialog));
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 builder.setMessage(getResources().getString(R.string.dlg_app_killed) + "\n\n" + getResources().getString(R.string.dlg_app_killed_description));
                 builder.setNeutralButton(R.string.open_android_app_settings, new DialogInterface.OnClickListener() {
@@ -441,7 +441,7 @@ public class GPSActivity extends AppCompatActivity {
                 || (GPSApp.getRecording())
                 || (GPSApp.getPlacemarkRequest())) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.StyledDialog));
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getResources().getString(R.string.message_exit_finalizing));
             builder.setIcon(android.R.drawable.ic_menu_info_details);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

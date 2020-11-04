@@ -31,7 +31,7 @@
         android:id="@+id/id_appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/AppBarLayout">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/id_toolbar"

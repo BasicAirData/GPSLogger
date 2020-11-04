@@ -292,7 +292,7 @@ public class FragmentTracklist extends Fragment {
                 }
             }
             if (fileexist) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(getResources().getString(R.string.card_message_delete_also_exported));
                 builder.setIcon(android.R.drawable.ic_menu_info_details);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -319,7 +319,7 @@ public class FragmentTracklist extends Fragment {
                 AlertDialog dialog = builder.create();
                 dialog.show();
             } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
                 builder.setIcon(android.R.drawable.ic_menu_info_details);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

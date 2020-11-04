@@ -42,7 +42,7 @@
     <color name="colorCardBackground">#2b2b2b</color>
     <color name="colorCardBackground_Selected">#42ff4f4f</color>
 
-    <color name="colorAccent">#dddddd</color>
+    <color name="colorAccent">#ffffff</color>
     <color name="preference_accent">#ca2222</color>
     <color name="preference_fallback_accent_color" tools:override="true">#ca2222</color>
 

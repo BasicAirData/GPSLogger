@@ -28,7 +28,6 @@
 
         <EditText
             android:id="@+id/placemark_description"
-            android:theme="@style/MyEditText"
             android:inputType="textCapSentences"
             android:focusable="true"
             android:focusableInTouchMode="true"
