@@ -19,8 +19,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.3'
 
     lintOptions {
         //checkReleaseBuilds false
@@ -32,9 +32,12 @@ android {
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 29
+
+        // We use the Semantic Versioning (starting from v2.3.0)
+        // https://semver.org/
+        versionName '2.3.0-dev.20201101'
         versionCode 34
-        versionName '2.3.0b_20201101'
 
         javaCompileOptions {
             annotationProcessorOptions {
