@@ -18,7 +18,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/id_appbarlayout2"
@@ -27,7 +27,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     tools:context="eu.basicairdata.graziano.gpslogger.SettingsActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/id_toolbar2"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -43,4 +43,4 @@
 
     </RelativeLayout>
 
-</android.support.design.widget.AppBarLayout>
+</com.google.android.material.appbar.AppBarLayout>

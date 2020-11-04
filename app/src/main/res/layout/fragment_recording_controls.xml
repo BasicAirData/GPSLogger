@@ -27,7 +27,7 @@
     android:orientation="vertical"
     android:baselineAligned="false">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:background="@drawable/shadow"
         android:layout_height="6dp" />
