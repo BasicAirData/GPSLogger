@@ -25,9 +25,9 @@ import android.content.res.Configuration;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -43,7 +43,7 @@ public class FragmentPlacemarkDialog extends DialogFragment {
     //@SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity(), R.style.StyledDialog);
+        AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity());
         createPlacemarkAlert.setTitle(R.string.dlg_add_placemark);
         Drawable icon = getResources().getDrawable(R.mipmap.ic_add_location_white_24dp);
 

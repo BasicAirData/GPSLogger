@@ -28,15 +28,21 @@
     <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.DayNight">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
+
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+
         <item name="preferenceTheme">@style/MyPreferenceThemeOverlay</item>
         <item name="android:windowBackground">@color/colorBackground</item>
         <!--  It should be true otherwise action mode will not overlay toolbar -->
         <item name="windowActionModeOverlay">true</item>
         <!--  For Custom Action Mode Background Color/Drawable -->
         <item name="actionModeBackground">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppBarLayout" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorAccent">@android:color/white</item>
     </style>
 
     <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
@@ -71,32 +77,14 @@
     </style>
 
 
-    <!-- Dialogs -->
-    <style name="StyledDialog" parent="Theme.AppCompat.DayNight.Dialog">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/textColorPrimary</item>
-    </style>
-
-    <style name="MyEditText" parent="Theme.AppCompat.DayNight">
-        <item name="colorAccent">@color/textColorPrimary</item>
-        <item name="colorControlNormal">@color/textColorSecondary</item>
-        <item name="colorControlActivated">@color/textColorSecondary</item>
-    </style>
-
-
     <!-- SettingsActivity -->
     <style name="MySettingsTheme" parent="MyMaterialTheme">
-        <item name="colorAccent">@color/textColorPrimary</item>
-    </style>
-
-    <style name="MyPreferenceCategory" parent="@style/Preference.Category">
-        <item name="android:textColor">@color/preference_accent</item>
+        <item name="alertDialogTheme">@style/MyPreferenceDialog</item>
+        <item name="colorAccent">@color/preference_accent</item>
     </style>
 
     <style name="MyPreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay.v14.Material">
         <item name="android:listSeparatorTextViewStyle">@style/ListSeparatorTextView</item>
-        <item name="preferenceCategoryStyle">@style/MyPreferenceCategory</item>
         <item name="divider">@color/colorAccent</item>
     </style>
 
@@ -106,6 +94,12 @@
         <item name="android:textColor">@color/preference_accent</item>
         <item name="android:paddingTop">16dp</item>
         <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+    <style name="MyPreferenceDialog" parent="Theme.AppCompat.DayNight.Dialog">-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/textColorPrimary</item>
     </style>
 
 
