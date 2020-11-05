@@ -781,7 +781,7 @@ public class GPSApplication extends Application implements LocationListener {
             if (installer.equals("com.android.vending") || installer.equals("com.google.android.feedback"))
                 AppOrigin = APP_ORIGIN_GOOGLE_PLAY_STORE;                               // App installed from Google Play Store
             else AppOrigin = APP_ORIGIN_NOT_SPECIFIED;                                  // Otherwise
-        } catch (Throwable e) {
+        } catch (Exception e) {
             Log.w("myApp", "[#] GPSApplication.java - Exception trying to determine the package installer");
             AppOrigin = APP_ORIGIN_NOT_SPECIFIED;
         }

@@ -74,14 +74,14 @@ public class FragmentAboutDialog extends DialogFragment {
                         boolean marketfailed = false;
                         try {
                             getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
-                        } catch (Throwable e) {
+                        } catch (Exception e) {
                             // Unable to start the Google Play app for rating
                             marketfailed = true;
                         }
                         if (marketfailed) {
                             try {               // Try with the web browser
                                 getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
-                            } catch (Throwable e) {
+                            } catch (Exception e) {
                                 // Unable to start also the browser for rating
                                 Toast.makeText(getContext(), getString(R.string.about_unable_to_rate), Toast.LENGTH_SHORT).show();
                             }
