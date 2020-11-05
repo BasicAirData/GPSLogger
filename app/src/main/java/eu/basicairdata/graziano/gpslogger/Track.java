@@ -31,14 +31,14 @@ public class Track {
     private static final float STANDARD_ACCURACY = 10.0f;
     private static final float SECURITY_COEFF = 1.7f;
 
-    private final int TRACK_TYPE_STEADY   = 0;
-    private final int TRACK_TYPE_WALK     = 1;
-    private final int TRACK_TYPE_MOUNTAIN = 2;
-    private final int TRACK_TYPE_RUN      = 3;
-    private final int TRACK_TYPE_BICYCLE  = 4;
-    private final int TRACK_TYPE_CAR      = 5;
-    private final int TRACK_TYPE_FLIGHT   = 6;
-    private final int TRACK_TYPE_ND       = NOT_AVAILABLE;
+    private static final int TRACK_TYPE_STEADY   = 0;
+    private static final int TRACK_TYPE_WALK     = 1;
+    private static final int TRACK_TYPE_MOUNTAIN = 2;
+    private static final int TRACK_TYPE_RUN      = 3;
+    private static final int TRACK_TYPE_BICYCLE  = 4;
+    private static final int TRACK_TYPE_CAR      = 5;
+    private static final int TRACK_TYPE_FLIGHT   = 6;
+    private static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
 
     // Variables
     private long   id;                                              // Saved in DB

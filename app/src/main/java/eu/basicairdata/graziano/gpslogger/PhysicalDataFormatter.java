@@ -25,14 +25,14 @@ import java.util.TimeZone;
 
 class PhysicalDataFormatter {
 
-    private final int NOT_AVAILABLE = -100000;
+    private static final int NOT_AVAILABLE = -100000;
 
-    private final int UM_METRIC_MS       = 0;
-    private final int UM_METRIC_KMH      = 1;
-    private final int UM_IMPERIAL_FPS    = 8;
-    private final int UM_IMPERIAL_MPH    = 9;
-    private final int UM_NAUTICAL_KN     = 16;
-    private final int UM_NAUTICAL_MPH    = 17;
+    private static final int UM_METRIC_MS       = 0;
+    private static final int UM_METRIC_KMH      = 1;
+    private static final int UM_IMPERIAL_FPS    = 8;
+    private static final int UM_IMPERIAL_MPH    = 9;
+    private static final int UM_NAUTICAL_KN     = 16;
+    private static final int UM_NAUTICAL_MPH    = 17;
 
     static final byte FORMAT_LATITUDE    = 1;
     static final byte FORMAT_LONGITUDE   = 2;
@@ -45,12 +45,12 @@ class PhysicalDataFormatter {
     static final byte FORMAT_DISTANCE    = 9;
     static final byte FORMAT_TIME        = 10;
 
-    private final float M_TO_FT   = 3.280839895f;
-    private final float M_TO_NM   = 0.000539957f;
-    private final float MS_TO_MPH = 2.2369363f;
-    private final float MS_TO_KMH = 3.6f;
-    private final float MS_TO_KN  = 1.943844491f;
-    private final float KM_TO_MI  = 0.621371192237f;
+    private static final float M_TO_FT   = 3.280839895f;
+    private static final float M_TO_NM   = 0.000539957f;
+    private static final float MS_TO_MPH = 2.2369363f;
+    private static final float MS_TO_KMH = 3.6f;
+    private static final float MS_TO_KN  = 1.943844491f;
+    private static final float KM_TO_MI  = 0.621371192237f;
     
     //private PhysicalData _PhysicalData = new PhysicalData();
     private GPSApplication gpsApplication = GPSApplication.getInstance();

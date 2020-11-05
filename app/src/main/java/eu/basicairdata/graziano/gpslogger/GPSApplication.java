@@ -229,7 +229,7 @@ public class GPSApplication extends Application implements LocationListener {
         }
     };
 
-    private final int MAX_ACTIVE_EXPORTER_THREADS = 3;      // The maximum number of Exporter threads to run simultaneously
+    private static final int MAX_ACTIVE_EXPORTER_THREADS = 3;      // The maximum number of Exporter threads to run simultaneously
 
     private List<ExportingTask> ExportingTaskList = new ArrayList<>();
 
@@ -241,7 +241,7 @@ public class GPSApplication extends Application implements LocationListener {
 
 
     // The handler that checks the progress of an exportation:
-    private final int ExportingStatusCheckInterval = 16;          // The app updates the progress of exportation every 16 milliseconds
+    private static final int ExportingStatusCheckInterval = 16;          // The app updates the progress of exportation every 16 milliseconds
     final Handler ExportingStatusCheckHandler = new Handler();
 
     Runnable ExportingStatusChecker = new Runnable() {
