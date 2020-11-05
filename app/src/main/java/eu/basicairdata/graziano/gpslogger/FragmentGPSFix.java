@@ -39,12 +39,12 @@ public class FragmentGPSFix extends Fragment {
 
     private static final int NOT_AVAILABLE = -100000;
 
-    private final int GPS_DISABLED = 0;
-    private final int GPS_OUTOFSERVICE = 1;
-    private final int GPS_TEMPORARYUNAVAILABLE = 2;
-    private final int GPS_SEARCHING = 3;
-    private final int GPS_STABILIZING = 4;
-    private final int GPS_OK = 5;
+    private static final int GPS_DISABLED = 0;
+    private static final int GPS_OUTOFSERVICE = 1;
+    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
+    private static final int GPS_SEARCHING = 3;
+    private static final int GPS_STABILIZING = 4;
+    private static final int GPS_OK = 5;
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 

@@ -49,7 +49,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     };
     private ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(NEGATIVE);
 
-    private final static int NOT_AVAILABLE = -100000;
+    private static final int NOT_AVAILABLE = -100000;
 
     boolean isLightTheme = false;
 
