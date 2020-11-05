@@ -221,7 +221,7 @@ public class FragmentGPSFix extends Fragment {
                 TVAccuracy.setText(phdAccuracy.Value);
                 TVAccuracyUM.setText(phdAccuracy.UM);
                 TVTime.setText(phdTime.Value);
-                TVTimeLabel.setText(phdTime.UM.isEmpty() ? getString(R.string.time) : String.format("%s (%s)", getString(R.string.time), phdTime.UM));
+                TVTimeLabel.setText(String.format("%s (%s)", getString(R.string.time), phdTime.UM.isEmpty() ? "UTC" : phdTime.UM));
                 TVSatellites.setText(location.getNumberOfSatellitesUsedInFix() != NOT_AVAILABLE ? location.getNumberOfSatellitesUsedInFix() + "/" + location.getNumberOfSatellites() : "");
 
                 // Colorize the Altitude textview depending on the altitude EGM Correction
