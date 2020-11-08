@@ -20,6 +20,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -35,6 +36,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -105,6 +107,15 @@ public class GPSApplication extends Application implements LocationListener {
 
     public static final String FLAG_RECORDING   = "flagRecording";  // The persistent Flag is set when the app is recording, in order to detect Background Crashes
 
+    private static final float[] NEGATIVE = {
+            -1.0f,      0,      0,     0,  248,     // red
+            0,  -1.0f,      0,     0,  248,         // green
+            0,      0,  -1.0f,     0,  248,         // blue
+            0,      0,      0, 1.00f,    0          // alpha
+    };
+
+    public static final ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(NEGATIVE);
+
 
     // Preferences Variables
     // private boolean prefKeepScreenOn = true;                 // DONE in GPSActivity
@@ -129,6 +140,8 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
     private boolean isJustStarted               = true;           // True if the application has just been started
     private boolean isMockProvider              = false;          // True if the location is from mock provider
+
+    private boolean isBackgroundActivityRestricted = false;       // True if the App is Background Restricted
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
@@ -171,15 +184,6 @@ public class GPSApplication extends Application implements LocationListener {
         @Override
         public void run() {
             NewTrackFlag = false;
-        }
-    };
-
-    private boolean LocationSettingsFlag = false;           // The variable that handle the double-click on "Open Location Settings"
-    final Handler locationsettingshandler = new Handler();
-    Runnable locationsettingsr = new Runnable() {
-        @Override
-        public void run() {
-            LocationSettingsFlag = false;
         }
     };
 
@@ -452,21 +456,6 @@ public class GPSApplication extends Application implements LocationListener {
         }
     }
 
-    public boolean getLocationSettingsFlag() {
-        return LocationSettingsFlag;
-    }
-
-    public void setLocationSettingsFlag(boolean locationSettingsFlag) {
-        if (locationSettingsFlag) {
-            LocationSettingsFlag = true;
-            locationsettingshandler.removeCallbacks(locationsettingsr);   // Cancel the previous locationsettingsr handler
-            locationsettingshandler.postDelayed(locationsettingsr, 1000); // starts the new handler
-        } else {
-            LocationSettingsFlag = false;
-            locationsettingshandler.removeCallbacks(locationsettingsr);   // Cancel the previous locationsettingsr handler
-        }
-    }
-
     public boolean isContextMenuShareVisible() {
         return isContextMenuShareVisible;
     }
@@ -596,6 +585,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setisCurrentTrackVisible(boolean currentTrackVisible) {
         isCurrentTrackVisible = currentTrackVisible;
+    }
+
+    public boolean isBackgroundActivityRestricted() {
+        return isBackgroundActivityRestricted;
     }
 
     public int getAppOrigin() {
@@ -864,6 +857,20 @@ public class GPSApplication extends Application implements LocationListener {
                 LoadPreferences();
             }
             StartAndBindGPSService();
+
+            // Check if the App is Background Restricted
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ActivityManager activityManager = (ActivityManager)getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+                if ((activityManager != null) && (activityManager.isBackgroundRestricted())) {
+                    isBackgroundActivityRestricted = true;
+                    Log.w("myApp", "[#] GPSApplication.java - THE APP IS BACKGROUND RESTRICTED!");
+                } else {
+                    isBackgroundActivityRestricted = false;
+                }
+            } else {
+                isBackgroundActivityRestricted = false;
+            }
+
             return;
         }
         if (msg == EventBusMSG.UPDATE_SETTINGS) {
