@@ -105,7 +105,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences.Editor editor1 = settings.edit();
             editor1.putBoolean("prefEGM96AltitudeCorrection", false);
-            editor1.commit();
+            editor1.apply();
             SwitchPreferenceCompat EGM96 = (SwitchPreferenceCompat) super.findPreference("prefEGM96AltitudeCorrection");
             EGM96.setChecked(false);
         }
@@ -125,7 +125,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
-                    editor.commit();
+                    editor.apply();
                     EditTextPreference pAltitudeCorrection = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
                     pAltitudeCorrection.setText(prefs.getString("prefAltitudeCorrectionRaw", "0"));
                 }
@@ -145,7 +145,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     altcorm = prefs.getString("prefUM", "0").equals("0") ? altcor : altcor / M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrection", String.valueOf(altcorm));
-                    editor.commit();
+                    editor.apply();
                 }
 
                 if (key.equals("prefEGM96AltitudeCorrection")) {
@@ -171,7 +171,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
                     SharedPreferences.Editor editor1 = settings.edit();
                     editor1.putString(key, sharedPreferences.getString(key, "2"));
-                    editor1.commit();
+                    editor1.apply();
 
                     AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
                     getActivity().getWindow().setWindowAnimations(R.style.MyCrossfadeAnimation_Window);
@@ -279,7 +279,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
                                     SharedPreferences.Editor editor1 = settings.edit();
                                     editor1.putString("prefTracksViewer", aild.get(position).PackageName);
-                                    editor1.commit();
+                                    editor1.apply();
                                     SetupPreferences();
                                     dialog.dismiss();
                                 }
@@ -351,7 +351,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor1 = settings.edit();
         editor1.putBoolean("prefEGM96AltitudeCorrection", false);
-        editor1.commit();
+        editor1.apply();
         SwitchPreferenceCompat EGM96 = (SwitchPreferenceCompat) super.findPreference("prefEGM96AltitudeCorrection");
         EGM96.setChecked(false);
     }
@@ -360,7 +360,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor1 = settings.edit();
         editor1.putBoolean("prefEGM96AltitudeCorrection", true);
-        editor1.commit();
+        editor1.apply();
         SwitchPreferenceCompat EGM96 = (SwitchPreferenceCompat) super.findPreference("prefEGM96AltitudeCorrection");
         EGM96.setChecked(true);
     }
@@ -596,7 +596,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
                                     SharedPreferences.Editor editor1 = settings.edit();
                                     editor1.putString("prefKMLAltitudeMode", "0");
-                                    editor1.commit();
+                                    editor1.apply();
                                     ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
                                     pKMLAltitudeMode.setValue("0");
                                     pKMLAltitudeMode.setSummary(R.string.pref_KML_altitude_mode_absolute);

@@ -677,7 +677,7 @@ public class GPSApplication extends Application implements LocationListener {
         SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences_nobackup.edit();
         editor.putBoolean(flag, true);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -685,7 +685,7 @@ public class GPSApplication extends Application implements LocationListener {
         SharedPreferences preferences_nobackup = getSharedPreferences("prefs_nobackup", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences_nobackup.edit();
         editor.remove(flag);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -732,7 +732,7 @@ public class GPSApplication extends Application implements LocationListener {
         // TODO: Uncomment it to run the Week Rollover Tests (For Test Purpose)
         // SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
         // editor.putBoolean("prefGPSWeekRolloverCorrected", false);
-        // editor.commit();
+        // editor.apply();
         // -----------------------
 
         // -----------------------
@@ -1379,7 +1379,7 @@ public class GPSApplication extends Application implements LocationListener {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("prefUM", (imperialUM ? "8" : "0"));
             editor.remove("prefShowImperialUnits");
-            editor.commit();
+            editor.apply();
         }
 
         // ---------Remove the prefIsStoragePermissionChecked in preferences if present
@@ -1387,7 +1387,7 @@ public class GPSApplication extends Application implements LocationListener {
         if (preferences.contains("prefIsStoragePermissionChecked")) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.remove("prefIsStoragePermissionChecked");
-            editor.commit();
+            editor.apply();
         }
 
         // -----------------------------------------------------------------------
@@ -1420,7 +1420,7 @@ public class GPSApplication extends Application implements LocationListener {
         if (!prefExportKML && !prefExportGPX && !prefExportTXT) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("prefExportGPX", true);
-            editor.commit();
+            editor.apply();
             prefExportGPX = true;
         }
 
@@ -1478,7 +1478,7 @@ public class GPSApplication extends Application implements LocationListener {
                 prefGPSWeekRolloverCorrected = true;
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
                 editor.putBoolean("prefGPSWeekRolloverCorrected", true);
-                editor.commit();
+                editor.apply();
             }
             // ----------------------------------------------------------------------------------------
 
