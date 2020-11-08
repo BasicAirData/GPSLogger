@@ -51,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.id_preferences, wvf);
-            ft.apply();
+            ft.commit();
         }
     }
 
