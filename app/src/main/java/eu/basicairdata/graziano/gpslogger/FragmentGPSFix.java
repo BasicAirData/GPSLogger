@@ -53,7 +53,7 @@ public class FragmentGPSFix extends Fragment {
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
-    private boolean isTipClicked = false;
+    private boolean isAWarningClicked = false;
     private boolean isLightTheme = false;
 
     private Drawable drawableWarning;
@@ -162,28 +162,28 @@ public class FragmentGPSFix extends Fragment {
         // LinearLayouts
         LLTimeSatellites    = view.findViewById(R.id.id_linearLayout_Time_Satellites);
 
-        TVWarningGPSDisabled.setOnClickListener(new View.OnClickListener() {
+        CVWarningGPSDisabled.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isTipClicked && (GPSStatus == GPS_DISABLED)) {
-                    isTipClicked = true;
+                if (!isAWarningClicked && (GPSStatus == GPS_DISABLED)) {
+                    isAWarningClicked = true;
                     // Go to Settings screen
                     Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     try {
                         startActivityForResult(callGPSSettingIntent, 0);
                     } catch (Exception e) {
-                        isTipClicked = false;
+                        isAWarningClicked = false;
                         // Unable to open Intent
                     }
                 }
             }
         });
 
-        TVWarningBackgroundRestricted.setOnClickListener(new View.OnClickListener() {
+        CVWarningBackgroundRestricted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isTipClicked && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)) {
-                    isTipClicked = true;
+                if (!isAWarningClicked && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)) {
+                    isAWarningClicked = true;
                     // Go to Settings screen
                     Intent callAppSettingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package", getContext().getPackageName(), null);
@@ -192,7 +192,7 @@ public class FragmentGPSFix extends Fragment {
                     try {
                         startActivityForResult(callAppSettingIntent, 0);
                     } catch (Exception e) {
-                        isTipClicked = false;
+                        isAWarningClicked = false;
                         // Unable to open Intent
                     }
                 }
@@ -206,7 +206,7 @@ public class FragmentGPSFix extends Fragment {
     public void onResume() {
         super.onResume();
 
-        isTipClicked = false;
+        isAWarningClicked = false;
 
         switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
             case Configuration.UI_MODE_NIGHT_NO:
