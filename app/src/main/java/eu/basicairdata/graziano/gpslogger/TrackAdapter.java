@@ -41,14 +41,6 @@ import java.util.List;
 
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
-    private static final float[] NEGATIVE = {
-            -1.0f,      0,      0,     0,  248, // red
-                0,  -1.0f,      0,     0,  248, // green
-                0,      0,  -1.0f,     0,  248, // blue
-                0,      0,      0, 1.00f,    0  // alpha
-    };
-    private ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(NEGATIVE);
-
     private static final int NOT_AVAILABLE = -100000;
 
     boolean isLightTheme = false;
@@ -129,9 +121,9 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             imageViewIcon               = itemView.findViewById(R.id.id_imageView_card_tracktype);
 
             if (isLightTheme) {
-                imageViewThumbnail.setColorFilter(colorMatrixColorFilter);
-                imageViewPulse.setColorFilter(colorMatrixColorFilter);
-                imageViewIcon.setColorFilter(colorMatrixColorFilter);
+                imageViewThumbnail.setColorFilter(GPSApplication.colorMatrixColorFilter);
+                imageViewPulse.setColorFilter(GPSApplication.colorMatrixColorFilter);
+                imageViewIcon.setColorFilter(GPSApplication.colorMatrixColorFilter);
             }
         }
 
