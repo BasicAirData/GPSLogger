@@ -29,6 +29,37 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_warning_location_denied"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="2dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardBackgroundColor="@color/colorCardBackground"
+        android:clickable="true"
+        android:focusable="true"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="3dp"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true">
+
+        <TextView
+            android:id="@+id/id_warning_location_denied"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/warning_location_denied"
+            android:drawableLeft="@mipmap/ic_warning_24dp"
+            android:drawableStart="@mipmap/ic_warning_24dp"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="bottom"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/card_view_warning_background_restricted"
         android:visibility="gone"
         android:layout_width="match_parent"

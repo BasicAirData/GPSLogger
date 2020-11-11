@@ -19,13 +19,16 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -76,9 +79,8 @@ public class FragmentGPSFix extends Fragment {
     private TextView TVTime;
     private TextView TVTimeLabel;
     private TextView TVSatellites;
-    private TextView TVWarningGPSDisabled;
-    private TextView TVWarningBackgroundRestricted;
 
+    private CardView CVWarningLocationDenied;
     private CardView CVWarningGPSDisabled;
     private CardView CVWarningBackgroundRestricted;
 
@@ -145,8 +147,7 @@ public class FragmentGPSFix extends Fragment {
         TVTimeLabel         = view.findViewById(R.id.id_textView_TimeLabel);
         TVSatellites        = view.findViewById(R.id.id_textView_Satellites);
 
-        TVWarningGPSDisabled            = view.findViewById(R.id.id_warning_enable_location_service);
-        TVWarningBackgroundRestricted   = view.findViewById(R.id.id_warning_background_restricted);
+        CVWarningLocationDenied         = view.findViewById(R.id.card_view_warning_location_denied);
         CVWarningGPSDisabled            = view.findViewById(R.id.card_view_warning_enable_location_service);
         CVWarningBackgroundRestricted   = view.findViewById(R.id.card_view_warning_background_restricted);
 
@@ -199,6 +200,17 @@ public class FragmentGPSFix extends Fragment {
             }
         });
 
+        CVWarningLocationDenied.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isAWarningClicked) {
+                    //isAWarningClicked = true;
+                    GPSActivity gpsActivity = (GPSActivity) getActivity();
+                    gpsActivity.CheckLocationPermission();
+                }
+            }
+        });
+
         return view;
     }
 
@@ -224,7 +236,6 @@ public class FragmentGPSFix extends Fragment {
         if (isLightTheme) {
             drawableWarning = getResources().getDrawable(R.mipmap.ic_warning_24dp);
             drawableWarning.setColorFilter(GPSApplication.colorMatrixColorFilter);
-            TVGPSFixStatus.setCompoundDrawables(drawableWarning, null, null, null);
         }
 
         // Workaround for Nokia Devices, Android 9
@@ -333,6 +344,7 @@ public class FragmentGPSFix extends Fragment {
                 TVGPSFixStatus.setVisibility(View.INVISIBLE);
                 CVWarningBackgroundRestricted.setVisibility(View.GONE);
                 CVWarningGPSDisabled.setVisibility(View.GONE);
+                CVWarningLocationDenied.setVisibility(View.GONE);
             } else {
                 TLCoordinates.setVisibility(View.INVISIBLE);
                 TLAltitude.setVisibility(View.INVISIBLE);
@@ -369,6 +381,13 @@ public class FragmentGPSFix extends Fragment {
                     CVWarningBackgroundRestricted.setVisibility(View.VISIBLE);
                 } else {
                     CVWarningBackgroundRestricted.setVisibility(View.GONE);
+                }
+
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    TVGPSFixStatus.setText(R.string.gps_not_accessible);
+                    CVWarningLocationDenied.setVisibility(View.VISIBLE);
+                } else {
+                    CVWarningLocationDenied.setVisibility(View.GONE);
                 }
             }
         }
