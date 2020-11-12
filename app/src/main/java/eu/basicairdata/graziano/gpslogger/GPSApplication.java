@@ -197,8 +197,6 @@ public class GPSApplication extends Application implements LocationListener {
     public int JobType = JOB_TYPE_NONE;                     // The type of job that is pending
     private boolean DeleteAlsoExportedFiles = false;        // When true, the deletion of some tracks will delete also the exported files of the tracks
 
-    public int GPSActivityColorTheme;
-
     private int _Stabilizer = StabilizingSamples;
     private int HandlerTimer = DEFAULTHANDLERTIMER;
 
@@ -238,8 +236,7 @@ public class GPSApplication extends Application implements LocationListener {
     private List<ExportingTask> ExportingTaskList = new ArrayList<>();
 
     private AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu;
-    private ExternalViewerChecker externalViewerChecker;
-                                                            // The manager of the External Viewers
+    private ExternalViewerChecker externalViewerChecker;    // The manager of the External Viewers
 
     BroadcastReceiver sReceiver = new ShutdownReceiver();   // The BroadcastReceiver for SHUTDOWN event
 
@@ -330,9 +327,9 @@ public class GPSApplication extends Application implements LocationListener {
         ExportingStatusChecker.run();
     }
 
-    void stopExportingStatusChecker() {
-        ExportingStatusCheckHandler.removeCallbacks(ExportingStatusChecker);
-    }
+//    void stopExportingStatusChecker() {
+//        ExportingStatusCheckHandler.removeCallbacks(ExportingStatusChecker);
+//    }
 
 
     // ------------------------------------------------------------------------------------ GPSStatus
@@ -633,10 +630,6 @@ public class GPSApplication extends Application implements LocationListener {
 
     public ExternalViewerChecker getExternalViewerChecker() {
         return externalViewerChecker;
-    }
-
-    public AppInfo getTrackViewer() {
-        return TrackViewer;
     }
 
     public void setTrackViewer(AppInfo trackViewer) {
@@ -1333,8 +1326,6 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void UpdateTrackList() {
         long ID = GPSDataBase.getLastTrackID();
-        List<Track> _OldArrayListTracks = new ArrayList<Track>();
-        _OldArrayListTracks.addAll(_ArrayListTracks);
 
         if (ID > 0) {
             synchronized(_ArrayListTracks) {
