@@ -645,13 +645,13 @@ class Exporter extends Thread {
 
             if (ExportKML) {
                 KMLbw.write(" </Document>" + newLine);
-                KMLbw.write("</kml>");
+                KMLbw.write("</kml>" + newLine);
 
                 KMLbw.close();
                 KMLfw.close();
             }
             if (ExportGPX) {
-                GPXbw.write("</gpx>");
+                GPXbw.write("</gpx>" + newLine);
 
                 GPXbw.close();
                 GPXfw.close();
