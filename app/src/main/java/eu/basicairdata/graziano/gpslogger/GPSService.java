@@ -42,6 +42,9 @@ public class GPSService extends Service {
     private NotificationManager mNotificationManager;
     final String CHANNEL_ID = "GPSLoggerServiceChannel";
     final int ID = 1;
+
+    private boolean RecordingState = false;
+
     public static GPSService getInstance(){
         return singleton;
     }
@@ -59,9 +62,11 @@ public class GPSService extends Service {
 
     private Notification getNotification() {
 
+        RecordingState = isIconRecording();
+
         builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         //builder.setSmallIcon(R.drawable.ic_notification_24dp)
-        builder.setSmallIcon(R.mipmap.ic_notify_24dp)
+        builder.setSmallIcon(RecordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp)
                 .setColor(getResources().getColor(R.color.colorPrimaryLight))
                 .setContentTitle(getString(R.string.app_name))
                 .setShowWhen(false)
@@ -164,11 +169,22 @@ public class GPSService extends Service {
             String notificationText = composeContentText();
             if (!oldNotificationText.equals(notificationText)) {
                 builder.setContentText(notificationText);
+
+                if (isIconRecording() != RecordingState) {
+                    RecordingState = isIconRecording();
+                    builder.setSmallIcon(RecordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp);
+                }
+
                 mNotificationManager.notify(ID, builder.build());
                 oldNotificationText = notificationText;
                 //Log.w("myApp", "[#] GPSService.java - Update Notification Text");
             }
         }
+    }
+
+
+    private boolean isIconRecording () {
+        return ((GPSApplication.getInstance().getGPSStatus() == GPSApplication.GPS_OK) && GPSApplication.getInstance().getRecording());
     }
 
 
