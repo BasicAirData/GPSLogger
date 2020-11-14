@@ -35,38 +35,37 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class GPSService extends Service {
+
     // Singleton instance
     private static GPSService singleton;
-    private String oldNotificationText = "";
-    private NotificationCompat.Builder builder;
-    private NotificationManager mNotificationManager;
-    final String CHANNEL_ID = "GPSLoggerServiceChannel";
-    final int ID = 1;
-
-    private boolean RecordingState = false;
-
     public static GPSService getInstance(){
         return singleton;
     }
-    // IBinder
-    private final IBinder mBinder = new LocalBinder();
-    public class LocalBinder extends Binder {                                   //returns the instance of the service
+
+    private final int ID = 1;
+    private String oldNotificationText = "";
+    private NotificationCompat.Builder builder;
+    private NotificationManager mNotificationManager;
+    private boolean recordingState = false;
+
+    public class LocalBinder extends Binder {               // Returns the instance of the service
         public GPSService getServiceInstance(){
             return GPSService.this;
         }
     }
+    private final IBinder mBinder = new LocalBinder();      // IBinder
 
-    // PARTIAL_WAKELOCK
-    private PowerManager powerManager;
-    PowerManager.WakeLock wakeLock;
+    PowerManager.WakeLock wakeLock;                         // PARTIAL_WAKELOCK
+
 
     private Notification getNotification() {
+        final String CHANNEL_ID = "GPSLoggerServiceChannel";
 
-        RecordingState = isIconRecording();
+        recordingState = isIconRecording();
 
         builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         //builder.setSmallIcon(R.drawable.ic_notification_24dp)
-        builder.setSmallIcon(RecordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp)
+        builder.setSmallIcon(recordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp)
                 .setColor(getResources().getColor(R.color.colorPrimaryLight))
                 .setContentTitle(getString(R.string.app_name))
                 .setShowWhen(false)
@@ -89,32 +88,14 @@ public class GPSService extends Service {
         return builder.build();
     }
 
-    /* THREAD FOR DEBUG PURPOSE
-    Thread t = new Thread() {
-        public void run() {
-            boolean i = true;
-            while (i) {
-                try {
-                    sleep(1000);
-                    Log.w("myApp", "[#] GPSService.java - ** RUNNING **");
-                } catch (InterruptedException e) {
-                    i = false;
-                }
-            }
-        }
-    }; */
 
     @Override
     public void onCreate() {
         super.onCreate();
         singleton = this;
-        // THREAD FOR DEBUG PURPOSE
-        //if (!t.isAlive()) {
-        //    t.start();
-        //}
 
         // PARTIAL_WAKELOCK
-        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"GPSLogger:wakelock");
         Log.w("myApp", "[#] GPSService.java - CREATE = onCreate");
 
@@ -170,9 +151,9 @@ public class GPSService extends Service {
             if (!oldNotificationText.equals(notificationText)) {
                 builder.setContentText(notificationText);
 
-                if (isIconRecording() != RecordingState) {
-                    RecordingState = isIconRecording();
-                    builder.setSmallIcon(RecordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp);
+                if (isIconRecording() != recordingState) {
+                    recordingState = isIconRecording();
+                    builder.setSmallIcon(recordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp);
                 }
 
                 mNotificationManager.notify(ID, builder.build());
@@ -209,13 +190,15 @@ public class GPSService extends Service {
             case GPSApplication.GPS_OK:
                 if (GPSApplication.getInstance().getRecording() && (GPSApplication.getInstance().getCurrentTrack() != null)) {
                     PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
-                    // Duration
                     PhysicalData phdDuration;
+                    PhysicalData phdDistance;
+
+                    // Duration
                     phdDuration = phdformatter.format(GPSApplication.getInstance().getCurrentTrack().getPrefTime(), PhysicalDataFormatter.FORMAT_DURATION);
                     if (phdDuration.Value.isEmpty()) phdDuration.Value = "00:00";
                     notificationText = getString(R.string.duration) + ": " + phdDuration.Value;
+
                     // Distance (if available)
-                    PhysicalData phdDistance;
                     phdDistance = phdformatter.format(GPSApplication.getInstance().getCurrentTrack().getEstimatedDistance(), PhysicalDataFormatter.FORMAT_DISTANCE);
                     if (!phdDistance.Value.isEmpty()) {
                         notificationText += " - " + getString(R.string.distance) + ": " + phdDistance.Value + " " + phdDistance.UM;
