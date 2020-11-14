@@ -207,14 +207,19 @@ public class GPSService extends Service {
                 notificationText = getString(R.string.gps_stabilizing);
                 break;
             case GPSApplication.GPS_OK:
-                if (GPSApplication.getInstance().getRecording()) {
+                if (GPSApplication.getInstance().getRecording() && (GPSApplication.getInstance().getCurrentTrack() != null)) {
                     PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+                    // Duration
                     PhysicalData phdDuration;
-                    phdDuration = phdformatter.format(GPSApplication.getInstance().getCurrentTrack().getDuration(), PhysicalDataFormatter.FORMAT_DURATION);
+                    phdDuration = phdformatter.format(GPSApplication.getInstance().getCurrentTrack().getPrefTime(), PhysicalDataFormatter.FORMAT_DURATION);
+                    if (phdDuration.Value.isEmpty()) phdDuration.Value = "00:00";
+                    notificationText = getString(R.string.duration) + ": " + phdDuration.Value;
+                    // Distance (if available)
                     PhysicalData phdDistance;
-                    phdDistance = phdformatter.format(GPSApplication.getInstance().getCurrentTrack().getDistance(), PhysicalDataFormatter.FORMAT_DISTANCE);
-                    notificationText = getString(R.string.duration) + ": " + phdDuration.Value + " - "
-                            + getString(R.string.distance) + ": " + phdDistance.Value + " " + phdDistance.UM;
+                    phdDistance = phdformatter.format(GPSApplication.getInstance().getCurrentTrack().getEstimatedDistance(), PhysicalDataFormatter.FORMAT_DISTANCE);
+                    if (!phdDistance.Value.isEmpty()) {
+                        notificationText += " - " + getString(R.string.distance) + ": " + phdDistance.Value + " " + phdDistance.UM;
+                    }
                 } else {
                     notificationText = getString(R.string.notification_contenttext);
                 }
