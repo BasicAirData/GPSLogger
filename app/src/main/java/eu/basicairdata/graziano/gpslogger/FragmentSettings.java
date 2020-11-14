@@ -428,6 +428,17 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 connection.setInstanceFollowRedirects(true);
                 connection.connect();
 
+                // Redirection HTTP -> HTTPS is insecure.
+                //
+                // Unfortunately the July 2019 the National Geospatial-Intelligence Agency started to change
+                // its Website in a not predictable Way for Us (the EGM File started to return a HTTP 302) and,
+                // when we patched the Code, We decided to keep opened all the Possibilities in order to restore
+                // the Functionality and minimize the Possibility that the File could become unavailable again.
+                //
+                // We are watching if the remote Situation remains stable:
+                // The Plan is to completely remove the HTTP Request in favor of a direct HTTPS one,
+                // at least for Android 5+ that support TLS Protocol.
+
                 // expect HTTP 200 OK, so we don't mistakenly save error report
                 // instead of the file
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
