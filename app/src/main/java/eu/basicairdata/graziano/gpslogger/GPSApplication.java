@@ -89,12 +89,12 @@ public class GPSApplication extends Application implements LocationListener {
     private static final int GPSUNAVAILABLEHANDLERTIMER = 7000; // The "GPS temporary unavailable" timer
     private int StabilizingSamples = 3;
 
-    private static final int GPS_DISABLED = 0;
-    private static final int GPS_OUTOFSERVICE = 1;
-    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    private static final int GPS_SEARCHING = 3;
-    private static final int GPS_STABILIZING = 4;
-    private static final int GPS_OK = 5;
+    public static final int GPS_DISABLED = 0;
+    public static final int GPS_OUTOFSERVICE = 1;
+    public static final int GPS_TEMPORARYUNAVAILABLE = 2;
+    public static final int GPS_SEARCHING = 3;
+    public static final int GPS_STABILIZING = 4;
+    public static final int GPS_OK = 5;
 
     public static final int APP_ORIGIN_NOT_SPECIFIED     = 0;
     public static final int APP_ORIGIN_GOOGLE_PLAY_STORE = 1;  // The app is installed via the Google Play Store
