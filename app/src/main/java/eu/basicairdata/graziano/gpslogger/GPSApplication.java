@@ -89,12 +89,12 @@ public class GPSApplication extends Application implements LocationListener {
     private static final int GPSUNAVAILABLEHANDLERTIMER = 7000; // The "GPS temporary unavailable" timer
     private int StabilizingSamples = 3;
 
-    private static final int GPS_DISABLED = 0;
-    private static final int GPS_OUTOFSERVICE = 1;
-    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    private static final int GPS_SEARCHING = 3;
-    private static final int GPS_STABILIZING = 4;
-    private static final int GPS_OK = 5;
+    public static final int GPS_DISABLED = 0;
+    public static final int GPS_OUTOFSERVICE = 1;
+    public static final int GPS_TEMPORARYUNAVAILABLE = 2;
+    public static final int GPS_SEARCHING = 3;
+    public static final int GPS_STABILIZING = 4;
+    public static final int GPS_OK = 5;
 
     public static final int APP_ORIGIN_NOT_SPECIFIED     = 0;
     public static final int APP_ORIGIN_GOOGLE_PLAY_STORE = 1;  // The app is installed via the Google Play Store
@@ -169,6 +169,8 @@ public class GPSApplication extends Application implements LocationListener {
 
     private Satellites satellites;
 
+    private boolean isScreenOn = true;
+
     DatabaseHandler GPSDataBase;
     private String PlacemarkDescription = "";
     private boolean Recording = false;
@@ -238,7 +240,7 @@ public class GPSApplication extends Application implements LocationListener {
     private AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu;
     private ExternalViewerChecker externalViewerChecker;    // The manager of the External Viewers
 
-    BroadcastReceiver sReceiver = new ShutdownReceiver();   // The BroadcastReceiver for SHUTDOWN event
+    BroadcastReceiver sReceiver = new ActionsBroadcastReceiver();   // The BroadcastReceiver for SHUTDOWN event
 
 
     // The handler that checks the progress of an exportation:
@@ -797,6 +799,8 @@ public class GPSApplication extends Application implements LocationListener {
         //Log.w("myApp", "[#] GPSApplication.java - Max available VM memory = " + (int) (Runtime.getRuntime().maxMemory() / 1024) + " kbytes");
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
         registerReceiver(sReceiver, filter);
     }
 
@@ -893,6 +897,20 @@ public class GPSApplication extends Application implements LocationListener {
                 }
             }
         }
+    }
+
+
+    public void onScreenOff() {
+        isScreenOn = false;
+        Log.w("myApp", "[#] GPSApplication.java - SCREEN_OFF");
+    }
+
+
+    public void onScreenOn() {
+        Log.w("myApp", "[#] GPSApplication.java - SCREEN_ON");
+        isScreenOn = true;
+        EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
     }
 
 
@@ -1524,12 +1542,12 @@ public class GPSApplication extends Application implements LocationListener {
                     locationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
                     locationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
                     _currentLocationExtended = locationExtended;
-                    EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+                    if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                     track.add(locationExtended);
                     GPSDataBase.addLocationToTrack(locationExtended, track);
                     //Log.w("myApp", "[#] GPSApplication.java - TASK_ADDLOCATION: Added new Location in " + track.getId());
                     _currentTrack = track;
-                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+                    if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
                     if (_currentTrack.getNumberOfLocations() + _currentTrack.getNumberOfPlacemarks() == 1) UpdateTrackList();
                 }
 
@@ -1551,7 +1569,7 @@ public class GPSApplication extends Application implements LocationListener {
                     _currentLocationExtended = new LocationExtended(asyncTODO.location.getLocation());
                     _currentLocationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
                     _currentLocationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
-                    EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+                    if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 }
 
                 // Task: Delete some tracks

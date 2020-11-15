@@ -19,6 +19,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -26,39 +27,52 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import androidx.core.app.NotificationCompat;
+
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 public class GPSService extends Service {
+
     // Singleton instance
     private static GPSService singleton;
     public static GPSService getInstance(){
         return singleton;
     }
-    // IBinder
-    private final IBinder mBinder = new LocalBinder();
-    public class LocalBinder extends Binder {                                   //returns the instance of the service
+
+    private final int ID = 1;
+    private String oldNotificationText = "";
+    private NotificationCompat.Builder builder;
+    private NotificationManager mNotificationManager;
+    private boolean recordingState = false;
+
+    public class LocalBinder extends Binder {               // Returns the instance of the service
         public GPSService getServiceInstance(){
             return GPSService.this;
         }
     }
+    private final IBinder mBinder = new LocalBinder();      // IBinder
 
-    // PARTIAL_WAKELOCK
-    private PowerManager powerManager;
-    PowerManager.WakeLock wakeLock;
+    PowerManager.WakeLock wakeLock;                         // PARTIAL_WAKELOCK
+
 
     private Notification getNotification() {
         final String CHANNEL_ID = "GPSLoggerServiceChannel";
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        recordingState = isIconRecording();
+
+        builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         //builder.setSmallIcon(R.drawable.ic_notification_24dp)
-        builder.setSmallIcon(R.mipmap.ic_notify_24dp)
+        builder.setSmallIcon(recordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp)
                 .setColor(getResources().getColor(R.color.colorPrimaryLight))
                 .setContentTitle(getString(R.string.app_name))
                 .setShowWhen(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setOngoing(true)
-                .setContentText(getString(R.string.notification_contenttext));
+                .setContentText(composeContentText());
 
         //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
         //    builder.setPriority(NotificationCompat.PRIORITY_LOW);
@@ -74,39 +88,31 @@ public class GPSService extends Service {
         return builder.build();
     }
 
-    /* THREAD FOR DEBUG PURPOSE
-    Thread t = new Thread() {
-        public void run() {
-            boolean i = true;
-            while (i) {
-                try {
-                    sleep(1000);
-                    Log.w("myApp", "[#] GPSService.java - ** RUNNING **");
-                } catch (InterruptedException e) {
-                    i = false;
-                }
-            }
-        }
-    }; */
 
     @Override
     public void onCreate() {
         super.onCreate();
         singleton = this;
-        // THREAD FOR DEBUG PURPOSE
-        //if (!t.isAlive()) {
-        //    t.start();
-        //}
 
         // PARTIAL_WAKELOCK
-        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"GPSLogger:wakelock");
         Log.w("myApp", "[#] GPSService.java - CREATE = onCreate");
+
+        // Workaround for Nokia Devices, Android 9
+        // https://github.com/BasicAirData/GPSLogger/issues/77
+        if (EventBus.getDefault().isRegistered(this)) {
+            //Log.w("myApp", "[#] GPSActivity.java - EventBus: GPSActivity already registered");
+            EventBus.getDefault().unregister(this);
+        }
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startForeground(1, getNotification());
+        mNotificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+        startForeground(ID, getNotification());
         Log.w("myApp", "[#] GPSService.java - START = onStartCommand");
         return START_NOT_STICKY;
     }
@@ -130,9 +136,77 @@ public class GPSService extends Service {
             Log.w("myApp", "[#] GPSService.java - WAKELOCK released");
         }
 
+        EventBus.getDefault().unregister(this);
+
         Log.w("myApp", "[#] GPSService.java - DESTROY = onDestroy");
         // THREAD FOR DEBUG PURPOSE
         //if (t.isAlive()) t.interrupt();
         super.onDestroy();
+    }
+
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void onEvent(Short msg) {
+        if ((msg == EventBusMSG.UPDATE_FIX) && (builder != null)) {
+            String notificationText = composeContentText();
+            if (!oldNotificationText.equals(notificationText)) {
+                builder.setContentText(notificationText);
+
+                if (isIconRecording() != recordingState) {
+                    recordingState = isIconRecording();
+                    builder.setSmallIcon(recordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp);
+                }
+
+                mNotificationManager.notify(ID, builder.build());
+                oldNotificationText = notificationText;
+                //Log.w("myApp", "[#] GPSService.java - Update Notification Text");
+            }
+        }
+    }
+
+
+    private boolean isIconRecording () {
+        return ((GPSApplication.getInstance().getGPSStatus() == GPSApplication.GPS_OK) && GPSApplication.getInstance().getRecording());
+    }
+
+
+    private String composeContentText () {
+        String notificationText = "";
+
+        int GPSStatus = GPSApplication.getInstance().getGPSStatus();
+        switch (GPSStatus) {
+            case GPSApplication.GPS_DISABLED:
+                notificationText = getString(R.string.gps_disabled);
+                break;
+            case GPSApplication.GPS_OUTOFSERVICE:
+                notificationText = getString(R.string.gps_out_of_service);
+                break;
+            case GPSApplication.GPS_TEMPORARYUNAVAILABLE:
+            case GPSApplication.GPS_SEARCHING:
+                notificationText = getString(R.string.gps_searching);
+                break;
+            case GPSApplication.GPS_STABILIZING:
+                notificationText = getString(R.string.gps_stabilizing);
+                break;
+            case GPSApplication.GPS_OK:
+                if (GPSApplication.getInstance().getRecording() && (GPSApplication.getInstance().getCurrentTrack() != null)) {
+                    PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+                    PhysicalData phdDuration;
+                    PhysicalData phdDistance;
+
+                    // Duration
+                    phdDuration = phdformatter.format(GPSApplication.getInstance().getCurrentTrack().getPrefTime(), PhysicalDataFormatter.FORMAT_DURATION);
+                    if (phdDuration.Value.isEmpty()) phdDuration.Value = "00:00";
+                    notificationText = getString(R.string.duration) + ": " + phdDuration.Value;
+
+                    // Distance (if available)
+                    phdDistance = phdformatter.format(GPSApplication.getInstance().getCurrentTrack().getEstimatedDistance(), PhysicalDataFormatter.FORMAT_DISTANCE);
+                    if (!phdDistance.Value.isEmpty()) {
+                        notificationText += " - " + getString(R.string.distance) + ": " + phdDistance.Value + " " + phdDistance.UM;
+                    }
+                } else {
+                    notificationText = getString(R.string.notification_contenttext);
+                }
+        }
+        return notificationText;
     }
 }
