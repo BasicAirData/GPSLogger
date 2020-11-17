@@ -72,6 +72,7 @@ public class GPSService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setOngoing(true)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentText(composeContentText());
 
         //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
