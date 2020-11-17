@@ -1003,7 +1003,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
             // looping through all rows and adding to list
             if (cursor.moveToFirst()) {
                 do {
-                    SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());  // date and time formatter
+                    SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);  // date and time formatter
                     SDF.setTimeZone(TimeZone.getTimeZone("GMT"));
                     try {
                         Date d = SDF.parse(cursor.getString(1));

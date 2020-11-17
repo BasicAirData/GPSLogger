@@ -133,7 +133,7 @@ public class Track {
             Min_Longitude = Start_Longitude;
 
             if (Name.equals("")) {
-                SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
+                SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
                 Name = df2.format(Start_Time);
             }
 
@@ -560,7 +560,7 @@ public class Track {
         this.NumberOfPlacemarks++ ;
 
         if (Name.equals("")) {
-            SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
             Name = df2.format(location.getLocation().getTime());
         }
 

@@ -264,15 +264,14 @@ class PhysicalDataFormatter {
                 return(_PhysicalData);
 
             case FORMAT_TIME:   // Timestamps
-                Locale locale = Locale.getDefault();
                 if (gpsApplication.getPrefShowLocalTime()) {
-                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss", locale);        // date and time formatter
-                    SimpleDateFormat dfdTimeZone = new SimpleDateFormat("ZZZZZ", locale);       // timezone formatter
+                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());        // date and time formatter
+                    SimpleDateFormat dfdTimeZone = new SimpleDateFormat("ZZZZZ", Locale.getDefault());       // timezone formatter
                     _PhysicalData.Value = dfdTime.format(Number);
                     _PhysicalData.UM = dfdTimeZone.format(Number);
                     return (_PhysicalData);
                 } else {
-                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss", locale);        // date and time formatter
+                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());        // date and time formatter
                     dfdTime.setTimeZone(TimeZone.getTimeZone("GMT"));
                     _PhysicalData.Value = dfdTime.format(Number);
                     return (_PhysicalData);
