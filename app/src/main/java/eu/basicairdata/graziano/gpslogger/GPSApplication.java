@@ -840,6 +840,7 @@ public class GPSApplication extends Application implements LocationListener {
             return;
         }
         if (msg == EventBusMSG.APP_RESUME) {
+            isScreenOn = true;
             //Log.w("myApp", "[#] GPSApplication.java - Received EventBusMSG.APP_RESUME");
             if (!asyncPrepareTracklistContextMenu.isAlive()) {
                 asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
