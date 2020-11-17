@@ -21,6 +21,7 @@ package eu.basicairdata.graziano.gpslogger;
 import android.location.Location;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class Track {
 
@@ -132,7 +133,7 @@ public class Track {
             Min_Longitude = Start_Longitude;
 
             if (Name.equals("")) {
-                SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss");
+                SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
                 Name = df2.format(Start_Time);
             }
 
@@ -559,7 +560,7 @@ public class Track {
         this.NumberOfPlacemarks++ ;
 
         if (Name.equals("")) {
-            SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss");
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
             Name = df2.format(location.getLocation().getTime());
         }
 
