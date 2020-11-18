@@ -47,12 +47,15 @@
     <string name="northwest">西北</string>
     <string name="north_northwest">西北偏北</string>
     <!-- GPS Status messages -->
+    <string name="gps_not_accessible">无法访问 GPS</string>
     <string name="gps_disabled">GPS处于停用状态</string>
-    <string name="gps_disabled_with_hint">GPS处于停用状态。\n\n请双击此处\n启用定位服务\n并选取其中一种\n使用GPS传感器的定位模式。</string>
     <string name="gps_out_of_service">GPS无服务</string>
     <string name="gps_temporary_unavailable">GPS暂时不可用</string>
     <string name="gps_searching">正在寻找GPS</string>
     <string name="gps_stabilizing">正在稳定信号</string>
+    <string name="warning_location_denied">应用无法访问位置信息</string>
+    <string name="warning_background_restricted">应用无法在后台工作。\n请点击这里进入系统设置，在电池栏目中，您可以允许应用在后台活动。</string>
+    <string name="warning_enable_location_service">GPS传感器已禁用。\n点击这里前往系统设置，在那里您可以启用定位服务并设置一个使用GPS传感器的定位方法</string>
     <!-- Track -->
     <string name="track_id">轨迹</string>
     <string name="duration">持续时间</string>

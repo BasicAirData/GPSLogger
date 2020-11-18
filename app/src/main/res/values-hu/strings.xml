@@ -47,12 +47,15 @@
     <string name="northwest">ÉNY</string>
     <string name="north_northwest">ÉÉNY</string>
     <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPS nem elérhető</string>
     <string name="gps_disabled">GPS kikapcsolva</string>
-    <string name="gps_disabled_with_hint">GPS kikapcsolva\n\nDupla kattintással\nbekapcsolhatja a helymeghatározást\nés beállíthatja\na helymeghatározási módot</string>
     <string name="gps_out_of_service">GPS nem működik</string>
     <string name="gps_temporary_unavailable">GPS átmenetileg nem elérhető</string>
     <string name="gps_searching">GPS jel keresése</string>
     <string name="gps_stabilizing">Jel stabilizálás</string>
+    <string name="warning_location_denied">Az alkalmazás nem fér hozzá a helymeghatározáshoz</string>
+    <string name="warning_background_restricted">Az alkalmazás nem működik a háttérben.\nKattintson ide a Rendszerbeállítások megnyitásához, ahol az akkumulátor szakaszban engedélyezheti a háttérben futást</string>
+    <string name="warning_enable_location_service">A GPS-érzékelő le van tiltva.\nKattintson ide a Rendszerbeállítások megnyitásához, ahol engedélyezheti a Helyszolgáltatást és beállíthatja a helymeghatározási módszert, hogy a GPS-érzékelőt használja</string>
     <!-- Track -->
     <string name="track_id">Útvonal</string>
     <string name="duration">Időtartam</string>

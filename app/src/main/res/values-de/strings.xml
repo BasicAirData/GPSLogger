@@ -47,12 +47,15 @@
     <string name="northwest">NW</string>
     <string name="north_northwest">NNW</string>
     <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPS nicht verfügbar</string>
     <string name="gps_disabled">GPS deaktiviert</string>
-    <string name="gps_disabled_with_hint">GPS deaktiviert\n\nDoppelklicken Sie hier,\num den Ortungsdienst zu aktivieren\nund eine Ortungsmethode festzulegen,\ndie den GPS-Sensor verwendet.</string>
     <string name="gps_out_of_service">GPS nicht verfügbar</string>
     <string name="gps_temporary_unavailable">GPS vorübergehend nicht verfügbar</string>
     <string name="gps_searching">GPS-Signal wird gesucht</string>
     <string name="gps_stabilizing">Signal wird stabilisiert</string>
+    <string name="warning_location_denied">App fehlt die Berechtigung zur Standortbestimmung</string>
+    <string name="warning_background_restricted">Die App kann nicht im Hintergrund ausgeführt werden.\nKlicken Sie hier, um die Systemeinstellungen zu öffnen. Im Abschnitt „Batterie” können Sie die Hintergrundaktivität zulassen.</string>
+    <string name="warning_enable_location_service">Der GPS-Sensor ist deaktiviert.\nKlicken Sie hier, um die Systemeinstellungen zu öffnen. Aktivieren Sie dort den Dienst zur Standortbestimmung und legen Sie eine Standortbestimmungsmethode fest, welche der GPS-Sensor unterstützt.</string>
     <!-- Track -->
     <string name="track_id">Track</string>
     <string name="duration">Dauer</string>

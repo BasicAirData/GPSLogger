@@ -47,12 +47,15 @@
     <string name="northwest">北西</string>
     <string name="north_northwest">北北西</string>
     <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPSにアクセスできません</string>
     <string name="gps_disabled">GPS が無効です</string>
-    <string name="gps_disabled_with_hint">GPS が無効です\n\nここをダブルクリックすると\n位置情報サービスを有効にして\nGPS センサーが使用する\n検索方法を設定することができます</string>
     <string name="gps_out_of_service">GPS 圏外</string>
     <string name="gps_temporary_unavailable">GPS は一時的に利用できません</string>
     <string name="gps_searching">GPS を探しています</string>
     <string name="gps_stabilizing">信号の安定化中</string>
+    <string name="warning_location_denied">アプリは位置情報にアクセスできません</string>
+    <string name="warning_background_restricted">アプリはバックグラウンドで動作しません。\nここをクリックしてシステム設定に移動し、バッテリーセクションでバックグラウンドアクティビティを許可することができます</string>
+    <string name="warning_enable_location_service">GPSセンサーは無効です。\nここをクリックしてシステム設定に移動し、位置情報サービスを有効にし、GPSセンサーを使用した位置情報方法を設定することができます</string>
     <!-- Track -->
     <string name="track_id">追跡</string>
     <string name="duration">時間</string>
@@ -176,8 +179,8 @@
     <string name="toast_active_track_not_empty">有効な追跡が空ではありません</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger は、GPS を使用して、追跡を記録します。 それを Google Earth で表示したり、KML、GPX、TXT 形式で共有、およびお使いのデバイスの GPSLogger フォルダーにエクスポートすることができます。\n\nこのプログラムは GNU 一般公衆ライセンスの条件の下でリリースされるフリー ソフトウェアです。\n詳細は、こちらを参照してください: http://www.gnu.org/licenses/gpl.txt\n\nEGM96 ジオイド ファイルの免責事項はこちらを参照してください: http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger は、GPS を使用して、追跡を記録します。 それを Google Earth で表示したり、KML、GPX、TXT 形式で共有、およびお使いのデバイスの GPSLogger フォルダーにエクスポートすることができます。\n\nこのプログラムは GNU 一般公衆ライセンスの条件の下でリリースされるフリー ソフトウェアです。\n詳細は、こちらを参照してください: http://www.gnu.org/licenses/gpl.txt\n\nEGM96 ジオイド ファイルの免責事項はこちらを参照してください: http://earth-info.nga.mil/GandG/disclaim.html\n\nこのアプリを使って楽しんでいただけたら、少し時間をいただき Google ストアで GPS Logger を評価してください。</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger は、GPS を使用して、追跡を記録します。 それをお好みのビューアで表示したり、KML、GPX、TXT 形式で共有、およびお使いのデバイスの GPSLogger フォルダーにエクスポートすることができます。\n\nこのプログラムは GNU 一般公衆ライセンスの条件の下でリリースされるフリー ソフトウェアです。\n詳細は、こちらを参照してください: http://www.gnu.org/licenses/gpl.txt\n\nEGM96 ジオイド ファイルの免責事項はこちらを参照してください: http://earth-info.nga.mil/GandG/disclaim.html</string>
+    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger は、GPS を使用して、追跡を記録します。 それをお好みのビューアで表示したり、KML、GPX、TXT 形式で共有、およびお使いのデバイスの GPSLogger フォルダーにエクスポートすることができます。\n\nこのプログラムは GNU 一般公衆ライセンスの条件の下でリリースされるフリー ソフトウェアです。\n詳細は、こちらを参照してください: http://www.gnu.org/licenses/gpl.txt\n\nEGM96 ジオイド ファイルの免責事項はこちらを参照してください: http://earth-info.nga.mil/GandG/disclaim.html\n\nこのアプリを使って楽しんでいただけたら、少し時間をいただき Google ストアで GPS Logger を評価してください。</string>
     <string name="about_ok">閉じる</string>
     <string name="about_rate_this_app">このアプリを評価</string>
     <string name="about_unable_to_rate">ストアにアクセスできません</string>
