@@ -34,10 +34,20 @@ android {
         minSdkVersion 14
         targetSdkVersion 29
 
-        // We use the Semantic Versioning (starting from v2.3.0)
-        // https://semver.org/
-        versionName '2.3.0-dev.20201118'
+        // -----------------------------------------------------------------------------------------
+        // We use the Semantic Versioning (https://semver.org/):
+
+        def ver = '2.3.0'
         versionCode 34
+        // -----------------------------------------------------------------------------------------
+
+        // debug
+        final BUILD_DATE = new Date().format('yyyyMMdd')
+        def suffix = "-dev.$BUILD_DATE"
+        versionName "$ver$suffix"
+
+        // release
+        //versionName "$ver"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -45,6 +55,7 @@ android {
             }
         }
     }
+
     buildTypes {
         debug {
             minifyEnabled false
