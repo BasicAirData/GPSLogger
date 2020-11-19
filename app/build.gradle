@@ -36,18 +36,9 @@ android {
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-
-        def ver = '2.3.0'
+        versionName '2.3.0'
         versionCode 34
         // -----------------------------------------------------------------------------------------
-
-        // debug
-        final BUILD_DATE = new Date().format('yyyyMMdd')
-        def suffix = "-dev.$BUILD_DATE"
-        versionName "$ver$suffix"
-
-        // release
-        //versionName "$ver"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -61,6 +52,9 @@ android {
             minifyEnabled false
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            final BUILD_DATE = new Date().format('yyyyMMdd')
+            versionNameSuffix "-dev.$BUILD_DATE"
         }
         release {
             minifyEnabled false
