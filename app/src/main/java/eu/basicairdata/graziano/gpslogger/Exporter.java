@@ -61,11 +61,11 @@ class Exporter extends Thread {
         this.exportingTask = exportingTask;
         this.exportingTask.setNumberOfPoints_Processed(0);
         this.exportingTask.setStatus(ExportingTask.STATUS_RUNNING);
-        track = GPSApplication.getInstance().GPSDataBase.getTrack(exportingTask.getId());
-        AltitudeManualCorrection = GPSApplication.getInstance().getPrefAltitudeCorrection();
-        EGMAltitudeCorrection = GPSApplication.getInstance().getPrefEGM96AltitudeCorrection();
-        getPrefKMLAltitudeMode = GPSApplication.getInstance().getPrefKMLAltitudeMode();
-        getPrefGPXVersion = GPSApplication.getInstance().getPrefGPXVersion();
+        this.track = GPSApplication.getInstance().GPSDataBase.getTrack(exportingTask.getId());
+        this.AltitudeManualCorrection = GPSApplication.getInstance().getPrefAltitudeCorrection();
+        this.EGMAltitudeCorrection = GPSApplication.getInstance().getPrefEGM96AltitudeCorrection();
+        this.getPrefKMLAltitudeMode = GPSApplication.getInstance().getPrefKMLAltitudeMode();
+        this.getPrefGPXVersion = GPSApplication.getInstance().getPrefGPXVersion();
 
         this.ExportTXT = ExportTXT;
         this.ExportGPX = ExportGPX;

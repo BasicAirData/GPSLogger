@@ -36,7 +36,7 @@ public class AppDialogList extends BaseAdapter {
 
     public AppDialogList(Context context, ArrayList<AppInfo> listData) {
         this.listData = listData;
-        layoutInflater = LayoutInflater.from(context);
+        this.layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
