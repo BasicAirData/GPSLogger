@@ -173,9 +173,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     editor1.putString(key, sharedPreferences.getString(key, "2"));
                     editor1.commit();
 
-                    AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
                     getActivity().getWindow().setWindowAnimations(R.style.MyCrossfadeAnimation_Window);
-                    getActivity().recreate();
+                    AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
+                    //getActivity().recreate();
                 }
 
                 SetupPreferences();
