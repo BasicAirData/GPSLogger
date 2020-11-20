@@ -80,7 +80,7 @@
             android:name=".GPSService"
             android:enabled="true"
             android:foregroundServiceType="location"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="eu.basicairdata.graziano.gpslogger.GPSService" />
             </intent-filter>
