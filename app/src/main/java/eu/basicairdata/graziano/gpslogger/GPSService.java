@@ -18,6 +18,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,12 +36,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class GPSService extends Service {
-
-    // Singleton instance
-    private static GPSService singleton;
-    public static GPSService getInstance(){
-        return singleton;
-    }
 
     private final int ID = 1;
     private String oldNotificationText = "";
@@ -75,14 +70,9 @@ public class GPSService extends Service {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentText(composeContentText());
 
-        //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-        //    builder.setPriority(NotificationCompat.PRIORITY_LOW);
-        //}
-
         final Intent startIntent = new Intent(getApplicationContext(), GPSActivity.class);
         startIntent.setAction(Intent.ACTION_MAIN);
         startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        //startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 1, startIntent, 0);
         builder.setContentIntent(contentIntent);
@@ -93,7 +83,6 @@ public class GPSService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        singleton = this;
 
         // PARTIAL_WAKELOCK
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
@@ -112,12 +101,13 @@ public class GPSService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mNotificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         startForeground(ID, getNotification());
         Log.w("myApp", "[#] GPSService.java - START = onStartCommand");
         return START_NOT_STICKY;
     }
 
+    @SuppressLint("WakelockTimeout")
     @Override
     public IBinder onBind(Intent intent) {
         if (wakeLock != null && !wakeLock.isHeld()) {
