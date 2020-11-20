@@ -84,26 +84,26 @@ public class GPSActivity extends AppCompatActivity {
     Toast ToastClickAgain;
 
 
-    @Override
-    public void onRestart(){
-        Log.w("myApp", "[#] " + this + " - onRestart()");
-
-        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
-            Log.w("myApp", "[#] GPSActivity.java - it needs to be recreated (Theme changed)");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                // Normal behaviour for Android 5 +
-                this.recreate();
-            } else {
-                // Workaround to a bug on Android 4.4.X platform (google won't fix because Android 4.4 is obsolete)
-                // Android 4.4.X: taskAffinity & launchmode='singleTask' violating Activity's lifecycle
-                // https://issuetracker.google.com/issues/36998700
-                finish();
-                startActivity(new Intent(this, getClass()));
-            }
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        }
-        super.onRestart();
-    }
+//    @Override
+//    public void onRestart(){
+//        Log.w("myApp", "[#] " + this + " - onRestart()");
+//
+//        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
+//            Log.w("myApp", "[#] GPSActivity.java - it needs to be recreated (Theme changed)");
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                // Normal behaviour for Android 5 +
+//                this.recreate();
+//            } else {
+//                // Workaround to a bug on Android 4.4.X platform (google won't fix because Android 4.4 is obsolete)
+//                // Android 4.4.X: taskAffinity & launchmode='singleTask' violating Activity's lifecycle
+//                // https://issuetracker.google.com/issues/36998700
+//                finish();
+//                startActivity(new Intent(this, getClass()));
+//            }
+//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//        }
+//        super.onRestart();
+//    }
 
 
     @Override
