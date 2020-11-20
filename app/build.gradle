@@ -29,6 +29,10 @@ android {
         abortOnError false
     }
 
+//    aaptOptions {
+//        cruncherEnabled = false
+//    }
+
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
@@ -69,11 +73,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.preference:preference:1.1.1'
-    implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
+    implementation 'com.google.android.material:material:1.2.1'
+
     implementation 'com.github.bumptech.glide:glide:3.8.0'
 
     def eventbus_version = '3.1.1'
