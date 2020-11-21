@@ -42,4 +42,4 @@ local.properties
 .externalNativeBuild
 
 # Local documentation bloating folder
-/doc
+/documentation
