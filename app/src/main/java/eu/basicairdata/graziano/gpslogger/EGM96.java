@@ -36,7 +36,7 @@ import java.io.OutputStream;
 class EGM96 {
 
     // ---------------------------------------------------------------------------- Singleton Class
-    private static EGM96 instance = new EGM96();
+    private static final EGM96 instance = new EGM96();
 
     private EGM96(){}
 
@@ -64,7 +64,7 @@ class EGM96 {
     */
 
 
-    private int BOUNDARY = 3; // The grid extensions (in each of the 4 sides) of the real 721 x 1440 grid
+    private static final int BOUNDARY = 3; // The grid extensions (in each of the 4 sides) of the real 721 x 1440 grid
     private short[][] EGMGrid = new short[BOUNDARY + 1440 + BOUNDARY][BOUNDARY + 721 + BOUNDARY];
     private boolean isEGMGridLoaded = false;
     private boolean isEGMGridLoading = false;
@@ -72,7 +72,7 @@ class EGM96 {
     private String EGMFileName;
     private String EGMFileNameLocalCopy;
 
-    public double EGM96_VALUE_INVALID = -100000;
+    public static final double EGM96_VALUE_INVALID = -100000;
 
     public void LoadGridFromFile(String FileName, String FileNameLocalCopy) {
         if (!isEGMGridLoaded && !isEGMGridLoading) {
