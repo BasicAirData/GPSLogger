@@ -30,21 +30,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.view.ActionMode;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,26 +84,26 @@ public class GPSActivity extends AppCompatActivity {
     Toast ToastClickAgain;
 
 
-    @Override
-    public void onRestart(){
-        Log.w("myApp", "[#] " + this + " - onRestart()");
-
-        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
-            Log.w("myApp", "[#] GPSActivity.java - it needs to be recreated (Theme changed)");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                // Normal behaviour for Android 5 +
-                this.recreate();
-            } else {
-                // Workaround to a bug on Android 4.4.X platform (google won't fix because Android 4.4 is obsolete)
-                // Android 4.4.X: taskAffinity & launchmode='singleTask' violating Activity's lifecycle
-                // https://issuetracker.google.com/issues/36998700
-                finish();
-                startActivity(new Intent(this, getClass()));
-            }
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        }
-        super.onRestart();
-    }
+//    @Override
+//    public void onRestart(){
+//        Log.w("myApp", "[#] " + this + " - onRestart()");
+//
+//        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
+//            Log.w("myApp", "[#] GPSActivity.java - it needs to be recreated (Theme changed)");
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                // Normal behaviour for Android 5 +
+//                this.recreate();
+//            } else {
+//                // Workaround to a bug on Android 4.4.X platform (google won't fix because Android 4.4 is obsolete)
+//                // Android 4.4.X: taskAffinity & launchmode='singleTask' violating Activity's lifecycle
+//                // https://issuetracker.google.com/issues/36998700
+//                finish();
+//                startActivity(new Intent(this, getClass()));
+//            }
+//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//        }
+//        super.onRestart();
+//    }
 
 
     @Override
@@ -196,7 +195,7 @@ public class GPSActivity extends AppCompatActivity {
             Log.w("myApp", "[#] GPSActivity.java - THE APP HAS BEEN KILLED IN BACKGROUND DURING A RECORDING !!!");
             GPSApp.FlagRemove(GPSApp.FLAG_RECORDING);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.StyledDialog));
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 builder.setMessage(getResources().getString(R.string.dlg_app_killed) + "\n\n" + getResources().getString(R.string.dlg_app_killed_description));
                 builder.setNeutralButton(R.string.open_android_app_settings, new DialogInterface.OnClickListener() {
@@ -441,7 +440,7 @@ public class GPSActivity extends AppCompatActivity {
                 || (GPSApp.getRecording())
                 || (GPSApp.getPlacemarkRequest())) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.StyledDialog));
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getResources().getString(R.string.message_exit_finalizing));
             builder.setIcon(android.R.drawable.ic_menu_info_details);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

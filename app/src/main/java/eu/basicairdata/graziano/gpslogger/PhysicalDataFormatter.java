@@ -21,18 +21,19 @@ package eu.basicairdata.graziano.gpslogger;
 import android.location.Location;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.TimeZone;
 
 class PhysicalDataFormatter {
 
-    private final int NOT_AVAILABLE = -100000;
+    private static final int NOT_AVAILABLE = -100000;
 
-    private final int UM_METRIC_MS       = 0;
-    private final int UM_METRIC_KMH      = 1;
-    private final int UM_IMPERIAL_FPS    = 8;
-    private final int UM_IMPERIAL_MPH    = 9;
-    private final int UM_NAUTICAL_KN     = 16;
-    private final int UM_NAUTICAL_MPH    = 17;
+    private static final int UM_METRIC_MS       = 0;
+    private static final int UM_METRIC_KMH      = 1;
+    private static final int UM_IMPERIAL_FPS    = 8;
+    private static final int UM_IMPERIAL_MPH    = 9;
+    private static final int UM_NAUTICAL_KN     = 16;
+    private static final int UM_NAUTICAL_MPH    = 17;
 
     static final byte FORMAT_LATITUDE    = 1;
     static final byte FORMAT_LONGITUDE   = 2;
@@ -45,12 +46,12 @@ class PhysicalDataFormatter {
     static final byte FORMAT_DISTANCE    = 9;
     static final byte FORMAT_TIME        = 10;
 
-    private final float M_TO_FT   = 3.280839895f;
-    private final float M_TO_NM   = 0.000539957f;
-    private final float MS_TO_MPH = 2.2369363f;
-    private final float MS_TO_KMH = 3.6f;
-    private final float MS_TO_KN  = 1.943844491f;
-    private final float KM_TO_MI  = 0.621371192237f;
+    private static final float M_TO_FT   = 3.280839895f;
+    private static final float M_TO_NM   = 0.000539957f;
+    private static final float MS_TO_MPH = 2.2369363f;
+    private static final float MS_TO_KMH = 3.6f;
+    private static final float MS_TO_KN  = 1.943844491f;
+    private static final float KM_TO_MI  = 0.621371192237f;
     
     //private PhysicalData _PhysicalData = new PhysicalData();
     private GPSApplication gpsApplication = GPSApplication.getInstance();
@@ -92,24 +93,24 @@ class PhysicalDataFormatter {
             case FORMAT_SPEED_AVG:  // Average Speed, formatted with 1 decimal
                 switch (gpsApplication.getPrefUM()) {
                     case UM_METRIC_KMH:
-                        _PhysicalData.Value = String.format("%.1f", (Number * MS_TO_KMH));
+                        _PhysicalData.Value = String.format(Locale.getDefault(), "%.1f", (Number * MS_TO_KMH));
                         _PhysicalData.UM = gpsApplication.getString(R.string.UM_km_h);
                         return(_PhysicalData);
                     case UM_METRIC_MS:
-                        _PhysicalData.Value = String.format("%.1f", (Number));
+                        _PhysicalData.Value = String.format(Locale.getDefault(), "%.1f", (Number));
                         _PhysicalData.UM = gpsApplication.getString(R.string.UM_m_s);
                         return(_PhysicalData);
                     case UM_IMPERIAL_MPH:
                     case UM_NAUTICAL_MPH:
-                        _PhysicalData.Value = String.format("%.1f", (Number * MS_TO_MPH));
+                        _PhysicalData.Value = String.format(Locale.getDefault(), "%.1f", (Number * MS_TO_MPH));
                         _PhysicalData.UM = gpsApplication.getString(R.string.UM_mph);
                         return(_PhysicalData);
                     case UM_IMPERIAL_FPS:
-                        _PhysicalData.Value = String.format("%.1f", (Number * M_TO_FT));
+                        _PhysicalData.Value = String.format(Locale.getDefault(), "%.1f", (Number * M_TO_FT));
                         _PhysicalData.UM = gpsApplication.getString(R.string.UM_fps);
                         return(_PhysicalData);
                     case UM_NAUTICAL_KN:
-                        _PhysicalData.Value = String.format("%.1f", (Number * MS_TO_KN));
+                        _PhysicalData.Value = String.format(Locale.getDefault(), "%.1f", (Number * MS_TO_KN));
                         _PhysicalData.UM = gpsApplication.getString(R.string.UM_kn);
                         return(_PhysicalData);
                 }
@@ -163,31 +164,31 @@ class PhysicalDataFormatter {
                     case UM_METRIC_KMH:
                     case UM_METRIC_MS:
                         if (Number < 1000) {
-                            _PhysicalData.Value = String.format("%.0f", (Math.floor(Number)));
+                            _PhysicalData.Value = String.format(Locale.getDefault(), "%.0f", (Math.floor(Number)));
                             _PhysicalData.UM = gpsApplication.getString(R.string.UM_m);
                         }
                         else {
-                            if (Number < 10000) _PhysicalData.Value = String.format("%.2f" , ((Math.floor(Number / 10.0)))/100.0);
-                            else _PhysicalData.Value = String.format("%.1f" , ((Math.floor(Number / 100.0)))/10.0);
+                            if (Number < 10000) _PhysicalData.Value = String.format(Locale.getDefault(), "%.2f" , ((Math.floor(Number / 10.0)))/100.0);
+                            else _PhysicalData.Value = String.format(Locale.getDefault(), "%.1f" , ((Math.floor(Number / 100.0)))/10.0);
                             _PhysicalData.UM = gpsApplication.getString(R.string.UM_km);
                         }
                         return(_PhysicalData);
                     case UM_IMPERIAL_MPH:
                     case UM_IMPERIAL_FPS:
                         if ((Number * M_TO_FT) < 1000) {
-                            _PhysicalData.Value = String.format("%.0f", (Math.floor(Number * M_TO_FT)));
+                            _PhysicalData.Value = String.format(Locale.getDefault(), "%.0f", (Math.floor(Number * M_TO_FT)));
                             _PhysicalData.UM = gpsApplication.getString(R.string.UM_ft);
                         }
                         else {
-                            if ((Number * KM_TO_MI) < 10000) _PhysicalData.Value = String.format("%.2f", ((Math.floor((Number * KM_TO_MI) / 10.0)))/100.0);
-                            else _PhysicalData.Value = String.format("%.1f", ((Math.floor((Number * KM_TO_MI) / 100.0)))/10.0);
+                            if ((Number * KM_TO_MI) < 10000) _PhysicalData.Value = String.format(Locale.getDefault(), "%.2f", ((Math.floor((Number * KM_TO_MI) / 10.0)))/100.0);
+                            else _PhysicalData.Value = String.format(Locale.getDefault(), "%.1f", ((Math.floor((Number * KM_TO_MI) / 100.0)))/10.0);
                             _PhysicalData.UM = gpsApplication.getString(R.string.UM_mi);
                         }
                         return(_PhysicalData);
                     case UM_NAUTICAL_KN:
                     case UM_NAUTICAL_MPH:
-                        if ((Number * M_TO_NM) < 100) _PhysicalData.Value = String.format("%.2f", ((Math.floor((Number * M_TO_NM) * 100.0))) / 100.0);
-                        else _PhysicalData.Value = String.format("%.1f", ((Math.floor((Number * M_TO_NM) * 10.0))) / 10.0);
+                        if ((Number * M_TO_NM) < 100) _PhysicalData.Value = String.format(Locale.getDefault(), "%.2f", ((Math.floor((Number * M_TO_NM) * 100.0))) / 100.0);
+                        else _PhysicalData.Value = String.format(Locale.getDefault(), "%.1f", ((Math.floor((Number * M_TO_NM) * 10.0))) / 10.0);
                         _PhysicalData.UM = gpsApplication.getString(R.string.UM_nm);
                         return(_PhysicalData);
                 }
@@ -205,13 +206,13 @@ class PhysicalDataFormatter {
         switch (Format) {
             case FORMAT_LATITUDE:   // Latitude
                 _PhysicalData.Value = gpsApplication.getPrefShowDecimalCoordinates() ? 
-                    String.format("%.9f", Math.abs(Number)) : Location.convert(Math.abs(Number), Location.FORMAT_SECONDS);
+                    String.format(Locale.getDefault(), "%.9f", Math.abs(Number)) : Location.convert(Math.abs(Number), Location.FORMAT_SECONDS);
                 _PhysicalData.UM = Number >= 0 ? gpsApplication.getString(R.string.north) : gpsApplication.getString(R.string.south);
                 return(_PhysicalData);
                 
             case FORMAT_LONGITUDE:  // Longitude
                 _PhysicalData.Value = gpsApplication.getPrefShowDecimalCoordinates() ?
-                    String.format("%.9f", Math.abs(Number)) : Location.convert(Math.abs(Number), Location.FORMAT_SECONDS);
+                    String.format(Locale.getDefault(), "%.9f", Math.abs(Number)) : Location.convert(Math.abs(Number), Location.FORMAT_SECONDS);
                 _PhysicalData.UM = Number >= 0 ?
                     gpsApplication.getString(R.string.east) : gpsApplication.getString(R.string.west);
                 return(_PhysicalData);
@@ -264,13 +265,13 @@ class PhysicalDataFormatter {
 
             case FORMAT_TIME:   // Timestamps
                 if (gpsApplication.getPrefShowLocalTime()) {
-                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss");        // date and time formatter
-                    SimpleDateFormat dfdTimeZone = new SimpleDateFormat("ZZZZZ");       // timezone formatter
+                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());        // date and time formatter
+                    SimpleDateFormat dfdTimeZone = new SimpleDateFormat("ZZZZZ", Locale.getDefault());       // timezone formatter
                     _PhysicalData.Value = dfdTime.format(Number);
                     _PhysicalData.UM = dfdTimeZone.format(Number);
                     return (_PhysicalData);
                 } else {
-                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss");        // date and time formatter
+                    SimpleDateFormat dfdTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());        // date and time formatter
                     dfdTime.setTimeZone(TimeZone.getTimeZone("GMT"));
                     _PhysicalData.Value = dfdTime.format(Number);
                     return (_PhysicalData);

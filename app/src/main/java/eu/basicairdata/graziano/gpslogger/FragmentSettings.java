@@ -28,13 +28,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.preference.EditTextPreference;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.preference.SwitchPreferenceCompat;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.SwitchPreferenceCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -173,9 +173,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     editor1.putString(key, sharedPreferences.getString(key, "2"));
                     editor1.commit();
 
-                    AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
                     getActivity().getWindow().setWindowAnimations(R.style.MyCrossfadeAnimation_Window);
-                    getActivity().recreate();
+                    AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
+                    //getActivity().recreate();
                 }
 
                 SetupPreferences();
@@ -427,6 +427,17 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setInstanceFollowRedirects(true);
                 connection.connect();
+
+                // Redirection HTTP -> HTTPS is insecure.
+                //
+                // Unfortunately the July 2019 the National Geospatial-Intelligence Agency started to change
+                // its Website in a not predictable Way for Us (the EGM File started to return a HTTP 302) and,
+                // when we patched the Code, We decided to keep opened all the Possibilities in order to restore
+                // the Functionality and minimize the Possibility that the File could become unavailable again.
+                //
+                // We are watching if the remote Situation remains stable:
+                // The Plan is to completely remove the HTTP Request in favor of a direct HTTPS one,
+                // at least for Android 5+ that support TLS Protocol.
 
                 // expect HTTP 200 OK, so we don't mistakenly save error report
                 // instead of the file

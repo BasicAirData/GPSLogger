@@ -19,8 +19,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.3'
 
     lintOptions {
         //checkReleaseBuilds false
@@ -29,12 +29,20 @@ android {
         abortOnError false
     }
 
+//    aaptOptions {
+//        cruncherEnabled = false
+//    }
+
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 34
-        versionName '2.2.10'
+        targetSdkVersion 29
+
+        // -----------------------------------------------------------------------------------------
+        // We use the Semantic Versioning (https://semver.org/):
+        versionName '2.3.0'
+        versionCode 35
+        // -----------------------------------------------------------------------------------------
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -42,11 +50,15 @@ android {
             }
         }
     }
+
     buildTypes {
         debug {
             minifyEnabled false
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            final BUILD_DATE = new Date().format('yyyyMMdd')
+            versionNameSuffix "-dev.$BUILD_DATE"
         }
         release {
             minifyEnabled false
@@ -60,13 +72,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:preference-v7:28.0.0'
-    implementation 'com.android.support:preference-v14:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'com.google.android.material:material:1.2.1'
+
     implementation 'com.github.bumptech.glide:glide:3.8.0'
 
     def eventbus_version = '3.1.1'

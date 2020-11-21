@@ -47,12 +47,15 @@
     <string name="northwest">NO</string>
     <string name="north_northwest">NNO</string>
     <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPS non accessibile</string>
     <string name="gps_disabled">GPS disabilitato</string>
-    <string name="gps_disabled_with_hint">GPS disabilitato\n\nCliccando 2 volte qui\npuoi abilitare il servizio Posizione\ne impostare un metodo di ricerca\nche utilizza il sensore GPS</string>
     <string name="gps_out_of_service">GPS fuori servizio</string>
     <string name="gps_temporary_unavailable">GPS temporaneamente non disponibile</string>
     <string name="gps_searching">Ricerca del segnale GPS</string>
     <string name="gps_stabilizing">Stabilizzazione del segnale</string>
+    <string name="warning_location_denied">L\'App non può accedere alla Posizione</string>
+    <string name="warning_background_restricted">L\'App non può funzionare in background.\nClicca qui per aprire le impostazioni di sistema dove, nella sezione Batteria, puoi consentirle l\'attività in background</string>
+    <string name="warning_enable_location_service">Il sensore GPS è disattivato.\nClicca qui per aprire le impostazioni di sistema, dove puoi abilitare il servizio di Posizione e impostare un metodo di localizzazione che utilizzi il sensore GPS</string>
     <!-- Track -->
     <string name="track_id">Itinerario</string>
     <string name="duration">Durata</string>

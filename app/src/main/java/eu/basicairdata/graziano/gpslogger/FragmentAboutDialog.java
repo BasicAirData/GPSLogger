@@ -23,9 +23,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -74,14 +74,14 @@ public class FragmentAboutDialog extends DialogFragment {
                         boolean marketfailed = false;
                         try {
                             getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
-                        } catch (Throwable e) {
+                        } catch (Exception e) {
                             // Unable to start the Google Play app for rating
                             marketfailed = true;
                         }
                         if (marketfailed) {
                             try {               // Try with the web browser
                                 getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
-                            } catch (Throwable e) {
+                            } catch (Exception e) {
                                 // Unable to start also the browser for rating
                                 Toast.makeText(getContext(), getString(R.string.about_unable_to_rate), Toast.LENGTH_SHORT).show();
                             }

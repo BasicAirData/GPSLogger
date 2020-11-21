@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ include_warnings_gpsfix.xml
+  ~ Created by G.Capelli (BasicAirData) on 8/11/2020
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout android:id="@+id/id_warnings"
+    android:layout_gravity="bottom"
+    android:paddingBottom="58dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_warning_location_denied"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="2dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardBackgroundColor="@color/colorCardBackground"
+        android:clickable="true"
+        android:focusable="true"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="3dp"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true">
+
+        <TextView
+            android:id="@+id/id_warning_location_denied"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/warning_location_denied"
+            android:drawableLeft="@mipmap/ic_warning_24dp"
+            android:drawableStart="@mipmap/ic_warning_24dp"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="bottom"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_warning_background_restricted"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="2dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardBackgroundColor="@color/colorCardBackground"
+        android:clickable="true"
+        android:focusable="true"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="3dp"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true">
+
+        <TextView
+            android:id="@+id/id_warning_background_restricted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/warning_background_restricted"
+            android:drawableLeft="@mipmap/ic_warning_24dp"
+            android:drawableStart="@mipmap/ic_warning_24dp"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="bottom"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_warning_enable_location_service"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="2dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardBackgroundColor="@color/colorCardBackground"
+        android:clickable="true"
+        android:focusable="true"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="3dp"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true">
+
+        <TextView
+            android:id="@+id/id_warning_enable_location_service"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/warning_enable_location_service"
+            android:drawableLeft="@mipmap/ic_warning_24dp"
+            android:drawableStart="@mipmap/ic_warning_24dp"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="bottom"/>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

@@ -19,10 +19,18 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +38,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,14 +49,19 @@ public class FragmentGPSFix extends Fragment {
 
     private static final int NOT_AVAILABLE = -100000;
 
-    private final int GPS_DISABLED = 0;
-    private final int GPS_OUTOFSERVICE = 1;
-    private final int GPS_TEMPORARYUNAVAILABLE = 2;
-    private final int GPS_SEARCHING = 3;
-    private final int GPS_STABILIZING = 4;
-    private final int GPS_OK = 5;
+    private static final int GPS_DISABLED = 0;
+    private static final int GPS_OUTOFSERVICE = 1;
+    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
+    private static final int GPS_SEARCHING = 3;
+    private static final int GPS_STABILIZING = 4;
+    private static final int GPS_OK = 5;
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+
+    private boolean isAWarningClicked = false;
+    private boolean isLightTheme = false;
+
+    private Drawable drawableWarning;
 
     private FrameLayout FLGPSFix;
 
@@ -66,6 +81,10 @@ public class FragmentGPSFix extends Fragment {
     private TextView TVTime;
     private TextView TVTimeLabel;
     private TextView TVSatellites;
+
+    private CardView CVWarningLocationDenied;
+    private CardView CVWarningGPSDisabled;
+    private CardView CVWarningBackgroundRestricted;
 
     private TableLayout TLCoordinates;
     private TableLayout TLAltitude;
@@ -130,6 +149,10 @@ public class FragmentGPSFix extends Fragment {
         TVTimeLabel         = view.findViewById(R.id.id_textView_TimeLabel);
         TVSatellites        = view.findViewById(R.id.id_textView_Satellites);
 
+        CVWarningLocationDenied         = view.findViewById(R.id.card_view_warning_location_denied);
+        CVWarningGPSDisabled            = view.findViewById(R.id.card_view_warning_enable_location_service);
+        CVWarningBackgroundRestricted   = view.findViewById(R.id.card_view_warning_background_restricted);
+
         // TableLayouts
         TLCoordinates       = view.findViewById(R.id.id_TableLayout_Coordinates) ;
         TLAltitude          = view.findViewById(R.id.id_TableLayout_Altitude);
@@ -142,19 +165,50 @@ public class FragmentGPSFix extends Fragment {
         // LinearLayouts
         LLTimeSatellites    = view.findViewById(R.id.id_linearLayout_Time_Satellites);
 
-        TVGPSFixStatus.setOnClickListener(new View.OnClickListener() {
+        CVWarningGPSDisabled.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (GPSStatus == GPS_DISABLED) {
-                    if (GPSApplication.getInstance().getLocationSettingsFlag()) {
-                        // This is the second click
-                        GPSApplication.getInstance().setLocationSettingsFlag(false);
-                        // Go to Settings screen
-                        Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        if (callGPSSettingIntent != null) startActivityForResult(callGPSSettingIntent, 0);
-                    } else {
-                        GPSApplication.getInstance().setLocationSettingsFlag(true); // Start the timer
+                if (!isAWarningClicked && (GPSStatus == GPS_DISABLED)) {
+                    isAWarningClicked = true;
+                    // Go to Settings screen
+                    Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    try {
+                        startActivityForResult(callGPSSettingIntent, 0);
+                    } catch (Exception e) {
+                        isAWarningClicked = false;
+                        // Unable to open Intent
                     }
+                }
+            }
+        });
+
+        CVWarningBackgroundRestricted.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isAWarningClicked && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)) {
+                    isAWarningClicked = true;
+                    // Go to Settings screen
+                    Intent callAppSettingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getContext().getPackageName(), null);
+                    callAppSettingIntent.setData(uri);
+
+                    try {
+                        startActivityForResult(callAppSettingIntent, 0);
+                    } catch (Exception e) {
+                        isAWarningClicked = false;
+                        // Unable to open Intent
+                    }
+                }
+            }
+        });
+
+        CVWarningLocationDenied.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isAWarningClicked) {
+                    //isAWarningClicked = true;
+                    GPSActivity gpsActivity = (GPSActivity) getActivity();
+                    gpsActivity.CheckLocationPermission();
                 }
             }
         });
@@ -165,6 +219,26 @@ public class FragmentGPSFix extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        isAWarningClicked = false;
+
+        switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                // Night mode is not active, we're in day time
+                isLightTheme = true;
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                // Night mode is active, we're at night!
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                // We don't know what mode we're in, assume notnight
+                isLightTheme = false;
+                break;
+        }
+
+        if (isLightTheme) {
+            drawableWarning = getResources().getDrawable(R.mipmap.ic_warning_24dp);
+            drawableWarning.setColorFilter(GPSApplication.colorMatrixColorFilter);
+        }
 
         // Workaround for Nokia Devices, Android 9
         // https://github.com/BasicAirData/GPSLogger/issues/77
@@ -190,6 +264,7 @@ public class FragmentGPSFix extends Fragment {
     private int GPSStatus = GPS_DISABLED;
     private boolean EGMAltitudeCorrection;
     private boolean isValidAltitude;
+    private boolean isBackgroundActivityRestricted;
 
     public void Update() {
         //Log.w("myApp", "[#] FragmentGPSFix.java - Update(Location location)");
@@ -198,6 +273,7 @@ public class FragmentGPSFix extends Fragment {
         prefDirections = gpsApplication.getPrefShowDirections();
         GPSStatus = gpsApplication.getGPSStatus();
         EGMAltitudeCorrection = gpsApplication.getPrefEGM96AltitudeCorrection();
+        isBackgroundActivityRestricted = gpsApplication.isBackgroundActivityRestricted();
         if (isAdded()) {
             if ((location != null) && (GPSStatus == GPS_OK)) {
 
@@ -221,7 +297,7 @@ public class FragmentGPSFix extends Fragment {
                 TVAccuracy.setText(phdAccuracy.Value);
                 TVAccuracyUM.setText(phdAccuracy.UM);
                 TVTime.setText(phdTime.Value);
-                TVTimeLabel.setText(phdTime.UM.isEmpty() ? getString(R.string.time) : String.format("%s (%s)", getString(R.string.time), phdTime.UM));
+                TVTimeLabel.setText(phdTime.UM.isEmpty() ? getString(R.string.time) : String.format(Locale.getDefault(), "%s (%s)", getString(R.string.time), phdTime.UM));
                 TVSatellites.setText(location.getNumberOfSatellitesUsedInFix() != NOT_AVAILABLE ? location.getNumberOfSatellitesUsedInFix() + "/" + location.getNumberOfSatellites() : "");
 
                 // Colorize the Altitude textview depending on the altitude EGM Correction
@@ -267,7 +343,10 @@ public class FragmentGPSFix extends Fragment {
                         //Log.w("myApp", "[#] Tile Height      = " + ViewHeight + " px");
                     }
                 });
-
+                TVGPSFixStatus.setVisibility(View.INVISIBLE);
+                CVWarningBackgroundRestricted.setVisibility(View.GONE);
+                CVWarningGPSDisabled.setVisibility(View.GONE);
+                CVWarningLocationDenied.setVisibility(View.GONE);
             } else {
                 TLCoordinates.setVisibility(View.INVISIBLE);
                 TLAltitude.setVisibility(View.INVISIBLE);
@@ -280,20 +359,37 @@ public class FragmentGPSFix extends Fragment {
                 TVGPSFixStatus.setVisibility(View.VISIBLE);
                 switch (GPSStatus) {
                     case GPS_DISABLED:
-                        TVGPSFixStatus.setText(R.string.gps_disabled_with_hint);
+                        TVGPSFixStatus.setText(R.string.gps_disabled);
+                        CVWarningGPSDisabled.setVisibility(View.VISIBLE);
                         break;
                     case GPS_OUTOFSERVICE:
                         TVGPSFixStatus.setText(R.string.gps_out_of_service);
+                        CVWarningGPSDisabled.setVisibility(View.GONE);
                         break;
                     case GPS_TEMPORARYUNAVAILABLE:
                         //TVGPSFixStatus.setText(R.string.gps_temporary_unavailable);
                         //break;
                     case GPS_SEARCHING:
                         TVGPSFixStatus.setText(R.string.gps_searching);
+                        CVWarningGPSDisabled.setVisibility(View.GONE);
                         break;
                     case GPS_STABILIZING:
                         TVGPSFixStatus.setText(R.string.gps_stabilizing);
+                        CVWarningGPSDisabled.setVisibility(View.GONE);
                         break;
+                }
+
+                if (isBackgroundActivityRestricted) {
+                    CVWarningBackgroundRestricted.setVisibility(View.VISIBLE);
+                } else {
+                    CVWarningBackgroundRestricted.setVisibility(View.GONE);
+                }
+
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    TVGPSFixStatus.setText(R.string.gps_not_accessible);
+                    CVWarningLocationDenied.setVisibility(View.VISIBLE);
+                } else {
+                    CVWarningLocationDenied.setVisibility(View.GONE);
                 }
             }
         }

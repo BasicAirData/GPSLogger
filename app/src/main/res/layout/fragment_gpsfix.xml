@@ -436,4 +436,6 @@
         android:gravity="center_horizontal"
         android:text="@string/gps_searching" />
 
+    <include layout="@layout/include_warnings_gpsfix"/>
+
 </FrameLayout>

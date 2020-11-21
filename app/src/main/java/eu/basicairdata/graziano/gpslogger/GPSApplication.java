@@ -20,6 +20,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -35,6 +36,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -53,11 +55,11 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.preference.PreferenceManager;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -87,12 +89,12 @@ public class GPSApplication extends Application implements LocationListener {
     private static final int GPSUNAVAILABLEHANDLERTIMER = 7000; // The "GPS temporary unavailable" timer
     private int StabilizingSamples = 3;
 
-    private static final int GPS_DISABLED = 0;
-    private static final int GPS_OUTOFSERVICE = 1;
-    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    private static final int GPS_SEARCHING = 3;
-    private static final int GPS_STABILIZING = 4;
-    private static final int GPS_OK = 5;
+    public static final int GPS_DISABLED = 0;
+    public static final int GPS_OUTOFSERVICE = 1;
+    public static final int GPS_TEMPORARYUNAVAILABLE = 2;
+    public static final int GPS_SEARCHING = 3;
+    public static final int GPS_STABILIZING = 4;
+    public static final int GPS_OK = 5;
 
     public static final int APP_ORIGIN_NOT_SPECIFIED     = 0;
     public static final int APP_ORIGIN_GOOGLE_PLAY_STORE = 1;  // The app is installed via the Google Play Store
@@ -104,6 +106,15 @@ public class GPSApplication extends Application implements LocationListener {
     public static final int JOB_TYPE_DELETE     = 4;                // Bulk Delete
 
     public static final String FLAG_RECORDING   = "flagRecording";  // The persistent Flag is set when the app is recording, in order to detect Background Crashes
+
+    private static final float[] NEGATIVE = {
+            -1.0f,      0,      0,     0,  248,     // red
+            0,  -1.0f,      0,     0,  248,         // green
+            0,      0,  -1.0f,     0,  248,         // blue
+            0,      0,      0, 1.00f,    0          // alpha
+    };
+
+    public static final ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(NEGATIVE);
 
 
     // Preferences Variables
@@ -129,6 +140,8 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean isFirstRun                  = false;          // True if it is the first run of the app (the DB is empty)
     private boolean isJustStarted               = true;           // True if the application has just been started
     private boolean isMockProvider              = false;          // True if the location is from mock provider
+
+    private boolean isBackgroundActivityRestricted = false;       // True if the App is Background Restricted
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
@@ -156,6 +169,8 @@ public class GPSApplication extends Application implements LocationListener {
 
     private Satellites satellites;
 
+    private boolean isScreenOn = true;
+
     DatabaseHandler GPSDataBase;
     private String PlacemarkDescription = "";
     private boolean Recording = false;
@@ -174,15 +189,6 @@ public class GPSApplication extends Application implements LocationListener {
         }
     };
 
-    private boolean LocationSettingsFlag = false;           // The variable that handle the double-click on "Open Location Settings"
-    final Handler locationsettingshandler = new Handler();
-    Runnable locationsettingsr = new Runnable() {
-        @Override
-        public void run() {
-            LocationSettingsFlag = false;
-        }
-    };
-
     private LocationManager mlocManager = null;             // GPS LocationManager
     private int numberOfSatellitesTotal = 0;                // The total Number of Satellites
     private int numberOfSatellitesUsedInFix = 0;            // The Number of Satellites used in Fix
@@ -192,8 +198,6 @@ public class GPSApplication extends Application implements LocationListener {
     private int JobsPending = 0;                            // The number of jobs to be done
     public int JobType = JOB_TYPE_NONE;                     // The type of job that is pending
     private boolean DeleteAlsoExportedFiles = false;        // When true, the deletion of some tracks will delete also the exported files of the tracks
-
-    public int GPSActivityColorTheme;
 
     private int _Stabilizer = StabilizingSamples;
     private int HandlerTimer = DEFAULTHANDLERTIMER;
@@ -229,19 +233,18 @@ public class GPSApplication extends Application implements LocationListener {
         }
     };
 
-    private final int MAX_ACTIVE_EXPORTER_THREADS = 3;      // The maximum number of Exporter threads to run simultaneously
+    private static final int MAX_ACTIVE_EXPORTER_THREADS = 3;      // The maximum number of Exporter threads to run simultaneously
 
     private List<ExportingTask> ExportingTaskList = new ArrayList<>();
 
     private AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu;
-    private ExternalViewerChecker externalViewerChecker;
-                                                            // The manager of the External Viewers
+    private ExternalViewerChecker externalViewerChecker;    // The manager of the External Viewers
 
-    BroadcastReceiver sReceiver = new ShutdownReceiver();   // The BroadcastReceiver for SHUTDOWN event
+    BroadcastReceiver sReceiver = new ActionsBroadcastReceiver();   // The BroadcastReceiver for SHUTDOWN event
 
 
     // The handler that checks the progress of an exportation:
-    private final int ExportingStatusCheckInterval = 16;          // The app updates the progress of exportation every 16 milliseconds
+    private static final int ExportingStatusCheckInterval = 16;          // The app updates the progress of exportation every 16 milliseconds
     final Handler ExportingStatusCheckHandler = new Handler();
 
     Runnable ExportingStatusChecker = new Runnable() {
@@ -326,9 +329,9 @@ public class GPSApplication extends Application implements LocationListener {
         ExportingStatusChecker.run();
     }
 
-    void stopExportingStatusChecker() {
-        ExportingStatusCheckHandler.removeCallbacks(ExportingStatusChecker);
-    }
+//    void stopExportingStatusChecker() {
+//        ExportingStatusCheckHandler.removeCallbacks(ExportingStatusChecker);
+//    }
 
 
     // ------------------------------------------------------------------------------------ GPSStatus
@@ -449,21 +452,6 @@ public class GPSApplication extends Application implements LocationListener {
         } else {
             NewTrackFlag = false;
             newtrackhandler.removeCallbacks(newtrackr);         // Cancel the previous newtrackr handler
-        }
-    }
-
-    public boolean getLocationSettingsFlag() {
-        return LocationSettingsFlag;
-    }
-
-    public void setLocationSettingsFlag(boolean locationSettingsFlag) {
-        if (locationSettingsFlag) {
-            LocationSettingsFlag = true;
-            locationsettingshandler.removeCallbacks(locationsettingsr);   // Cancel the previous locationsettingsr handler
-            locationsettingshandler.postDelayed(locationsettingsr, 1000); // starts the new handler
-        } else {
-            LocationSettingsFlag = false;
-            locationsettingshandler.removeCallbacks(locationsettingsr);   // Cancel the previous locationsettingsr handler
         }
     }
 
@@ -598,6 +586,10 @@ public class GPSApplication extends Application implements LocationListener {
         isCurrentTrackVisible = currentTrackVisible;
     }
 
+    public boolean isBackgroundActivityRestricted() {
+        return isBackgroundActivityRestricted;
+    }
+
     public int getAppOrigin() {
         return AppOrigin;
     }
@@ -640,10 +632,6 @@ public class GPSApplication extends Application implements LocationListener {
 
     public ExternalViewerChecker getExternalViewerChecker() {
         return externalViewerChecker;
-    }
-
-    public AppInfo getTrackViewer() {
-        return TrackViewer;
     }
 
     public void setTrackViewer(AppInfo trackViewer) {
@@ -781,7 +769,7 @@ public class GPSApplication extends Application implements LocationListener {
             if (installer.equals("com.android.vending") || installer.equals("com.google.android.feedback"))
                 AppOrigin = APP_ORIGIN_GOOGLE_PLAY_STORE;                               // App installed from Google Play Store
             else AppOrigin = APP_ORIGIN_NOT_SPECIFIED;                                  // Otherwise
-        } catch (Throwable e) {
+        } catch (Exception e) {
             Log.w("myApp", "[#] GPSApplication.java - Exception trying to determine the package installer");
             AppOrigin = APP_ORIGIN_NOT_SPECIFIED;
         }
@@ -811,6 +799,8 @@ public class GPSApplication extends Application implements LocationListener {
         //Log.w("myApp", "[#] GPSApplication.java - Max available VM memory = " + (int) (Runtime.getRuntime().maxMemory() / 1024) + " kbytes");
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
         registerReceiver(sReceiver, filter);
     }
 
@@ -850,6 +840,7 @@ public class GPSApplication extends Application implements LocationListener {
             return;
         }
         if (msg == EventBusMSG.APP_RESUME) {
+            isScreenOn = true;
             //Log.w("myApp", "[#] GPSApplication.java - Received EventBusMSG.APP_RESUME");
             if (!asyncPrepareTracklistContextMenu.isAlive()) {
                 asyncPrepareTracklistContextMenu = new AsyncPrepareTracklistContextMenu();
@@ -864,6 +855,20 @@ public class GPSApplication extends Application implements LocationListener {
                 LoadPreferences();
             }
             StartAndBindGPSService();
+
+            // Check if the App is Background Restricted
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ActivityManager activityManager = (ActivityManager)getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+                if ((activityManager != null) && (activityManager.isBackgroundRestricted())) {
+                    isBackgroundActivityRestricted = true;
+                    Log.w("myApp", "[#] GPSApplication.java - THE APP IS BACKGROUND RESTRICTED!");
+                } else {
+                    isBackgroundActivityRestricted = false;
+                }
+            } else {
+                isBackgroundActivityRestricted = false;
+            }
+
             return;
         }
         if (msg == EventBusMSG.UPDATE_SETTINGS) {
@@ -893,6 +898,20 @@ public class GPSApplication extends Application implements LocationListener {
                 }
             }
         }
+    }
+
+
+    public void onScreenOff() {
+        isScreenOn = false;
+        Log.w("myApp", "[#] GPSApplication.java - SCREEN_OFF");
+    }
+
+
+    public void onScreenOn() {
+        Log.w("myApp", "[#] GPSApplication.java - SCREEN_ON");
+        isScreenOn = true;
+        EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
     }
 
 
@@ -1326,8 +1345,6 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void UpdateTrackList() {
         long ID = GPSDataBase.getLastTrackID();
-        List<Track> _OldArrayListTracks = new ArrayList<Track>();
-        _OldArrayListTracks.addAll(_ArrayListTracks);
 
         if (ID > 0) {
             synchronized(_ArrayListTracks) {
@@ -1526,12 +1543,12 @@ public class GPSApplication extends Application implements LocationListener {
                     locationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
                     locationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
                     _currentLocationExtended = locationExtended;
-                    EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+                    if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                     track.add(locationExtended);
                     GPSDataBase.addLocationToTrack(locationExtended, track);
                     //Log.w("myApp", "[#] GPSApplication.java - TASK_ADDLOCATION: Added new Location in " + track.getId());
                     _currentTrack = track;
-                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+                    if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
                     if (_currentTrack.getNumberOfLocations() + _currentTrack.getNumberOfPlacemarks() == 1) UpdateTrackList();
                 }
 
@@ -1553,7 +1570,7 @@ public class GPSApplication extends Application implements LocationListener {
                     _currentLocationExtended = new LocationExtended(asyncTODO.location.getLocation());
                     _currentLocationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
                     _currentLocationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
-                    EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+                    if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 }
 
                 // Task: Delete some tracks

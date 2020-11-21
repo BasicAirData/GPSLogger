@@ -22,7 +22,7 @@ import android.location.GnssStatus;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 

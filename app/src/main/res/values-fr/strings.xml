@@ -47,12 +47,15 @@
     <string name="northwest">NO</string>
     <string name="north_northwest">NNO</string>
     <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPS non accessible</string>
     <string name="gps_disabled">GPS désactivé</string>
-    <string name="gps_disabled_with_hint">GPS désactivé\n\nEn double-cliquant ici,\nvous pouvez activer le Service de Localisation\net définir une Méthode de Localisation\nqui utilise le signal GPS</string>
     <string name="gps_out_of_service">GPS hors service</string>
     <string name="gps_temporary_unavailable">GPS temporairement indisponible</string>
     <string name="gps_searching">Acquisition GPS</string>
     <string name="gps_stabilizing">Stabilisation du signal</string>
+    <string name="warning_location_denied">L\'application ne peut pas accéder à la localisation</string>
+    <string name="warning_background_restricted">L\'application ne peut pas fonctionner en arrière-plan.\nCliquez ici pour aller dans les paramètres du système où, dans la section Batterie, vous pouvez autoriser l\'activité d\'arrière-plan</string>
+    <string name="warning_enable_location_service">Le capteur GPS est désactivé.\nCliquez ici pour accéder aux paramètres du système, où vous pouvez activer le service de localisation et définir une méthode de localisation qui utilise le capteur GPS</string>
     <!-- Track -->
     <string name="track_id">Tracé</string>
     <string name="duration">Durée</string>

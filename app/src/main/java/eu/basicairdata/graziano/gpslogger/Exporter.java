@@ -61,11 +61,11 @@ class Exporter extends Thread {
         this.exportingTask = exportingTask;
         this.exportingTask.setNumberOfPoints_Processed(0);
         this.exportingTask.setStatus(ExportingTask.STATUS_RUNNING);
-        track = GPSApplication.getInstance().GPSDataBase.getTrack(exportingTask.getId());
-        AltitudeManualCorrection = GPSApplication.getInstance().getPrefAltitudeCorrection();
-        EGMAltitudeCorrection = GPSApplication.getInstance().getPrefEGM96AltitudeCorrection();
-        getPrefKMLAltitudeMode = GPSApplication.getInstance().getPrefKMLAltitudeMode();
-        getPrefGPXVersion = GPSApplication.getInstance().getPrefGPXVersion();
+        this.track = GPSApplication.getInstance().GPSDataBase.getTrack(exportingTask.getId());
+        this.AltitudeManualCorrection = GPSApplication.getInstance().getPrefAltitudeCorrection();
+        this.EGMAltitudeCorrection = GPSApplication.getInstance().getPrefEGM96AltitudeCorrection();
+        this.getPrefKMLAltitudeMode = GPSApplication.getInstance().getPrefKMLAltitudeMode();
+        this.getPrefGPXVersion = GPSApplication.getInstance().getPrefGPXVersion();
 
         this.ExportTXT = ExportTXT;
         this.ExportGPX = ExportGPX;
@@ -138,13 +138,13 @@ class Exporter extends Thread {
             }
         }
 
-        SimpleDateFormat dfdtGPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");        // date and time formatter for GPX timestamp (with millis)
+        SimpleDateFormat dfdtGPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);        // date and time formatter for GPX timestamp (with millis)
         dfdtGPX.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat dfdtGPX_NoMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   // date and time formatter for GPX timestamp (without millis)
+        SimpleDateFormat dfdtGPX_NoMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);   // date and time formatter for GPX timestamp (without millis)
         dfdtGPX_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat dfdtTXT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS");           // date and time formatter for TXT timestamp (with millis)
+        SimpleDateFormat dfdtTXT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS", Locale.US);           // date and time formatter for TXT timestamp (with millis)
         dfdtTXT.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");      // date and time formatter for TXT timestamp (without millis)
+        SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.US);      // date and time formatter for TXT timestamp (without millis)
         dfdtTXT_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         File KMLfile = null;
@@ -276,7 +276,43 @@ class Exporter extends Thread {
                 GPXbw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newLine);
                 GPXbw.write("<!-- Created with BasicAirData GPS Logger for Android - ver. " + versionName + " -->" + newLine);
                 GPXbw.write("<!-- Track " + String.valueOf(track.getId()) + " = " + String.valueOf(track.getNumberOfLocations())
-                        + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine);
+                        + " TrackPoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks -->" + newLine + newLine);
+
+                if (track.getNumberOfLocations() > 0) {
+                    GPXbw.write("<!-- Track Statistics (based on Total Time | Time in Movement): -->" + newLine);
+                    PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+                    PhysicalData phdDuration;
+                    PhysicalData phdDurationMoving;
+                    PhysicalData phdSpeedMax;
+                    PhysicalData phdSpeedAvg;
+                    PhysicalData phdSpeedAvgMoving;
+                    PhysicalData phdDistance;
+                    PhysicalData phdAltitudeGap;
+                    PhysicalData phdOverallDirection;
+                    phdDuration = phdformatter.format(track.getDuration(), PhysicalDataFormatter.FORMAT_DURATION);
+                    phdDurationMoving = phdformatter.format(track.getDuration_Moving(), PhysicalDataFormatter.FORMAT_DURATION);
+                    phdSpeedMax = phdformatter.format(track.getSpeedMax(), PhysicalDataFormatter.FORMAT_SPEED);
+                    phdSpeedAvg = phdformatter.format(track.getSpeedAverage(), PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                    phdSpeedAvgMoving = phdformatter.format(track.getSpeedAverageMoving(), PhysicalDataFormatter.FORMAT_SPEED_AVG);
+                    phdDistance = phdformatter.format(track.getEstimatedDistance(), PhysicalDataFormatter.FORMAT_DISTANCE);
+                    phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(GPSApp.getPrefEGM96AltitudeCorrection()), PhysicalDataFormatter.FORMAT_ALTITUDE);
+                    phdOverallDirection = phdformatter.format(track.getBearing(), PhysicalDataFormatter.FORMAT_BEARING);
+
+                    if (!phdDistance.Value.isEmpty())
+                        GPXbw.write("<!--  Distance = " + phdDistance.Value + " " + phdDistance.UM + " -->" + newLine);
+                    if (!phdDuration.Value.isEmpty())
+                        GPXbw.write("<!--  Duration = " + phdDuration.Value + " | " + phdDurationMoving.Value + " -->" + newLine);
+                    if (!phdAltitudeGap.Value.isEmpty())
+                        GPXbw.write("<!--  Altitude Gap = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM + " -->" + newLine);
+                    if (!phdSpeedMax.Value.isEmpty())
+                        GPXbw.write("<!--  Max Speed = " + phdSpeedMax.Value + " " + phdSpeedMax.UM + " -->" + newLine);
+                    if (!phdSpeedAvg.Value.isEmpty())
+                        GPXbw.write("<!--  Avg Speed = " + phdSpeedAvg.Value + " | " + phdSpeedAvgMoving.Value + " " + phdSpeedAvg.UM + " -->" + newLine);
+                    if (!phdOverallDirection.Value.isEmpty())
+                        GPXbw.write("<!--  Direction = " + phdOverallDirection.Value + phdOverallDirection.UM + " -->" + newLine);
+                    GPXbw.write(newLine);
+                }
+
                 if (getPrefGPXVersion == GPX1_0) {     // GPX 1.0
                     GPXbw.write("<gpx version=\"1.0\"" + newLine
                               + "     creator=\"BasicAirData GPS Logger " + versionName + "\"" + newLine
@@ -487,33 +523,6 @@ class Exporter extends Thread {
                 }
                 if (ExportGPX) {
                     GPXbw.write("<trk>" + newLine);
-
-                    PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
-                    PhysicalData phdDuration;
-                    PhysicalData phdDurationMoving;
-                    PhysicalData phdSpeedMax;
-                    PhysicalData phdSpeedAvg;
-                    PhysicalData phdSpeedAvgMoving;
-                    PhysicalData phdDistance;
-                    PhysicalData phdAltitudeGap;
-                    PhysicalData phdOverallDirection;
-                    phdDuration = phdformatter.format(track.getDuration(),PhysicalDataFormatter.FORMAT_DURATION);
-                    phdDurationMoving = phdformatter.format(track.getDuration_Moving(),PhysicalDataFormatter.FORMAT_DURATION);
-                    phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
-                    phdSpeedAvg = phdformatter.format(track.getSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
-                    phdSpeedAvgMoving = phdformatter.format(track.getSpeedAverageMoving(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
-                    phdDistance = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
-                    phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(GPSApp.getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
-                    phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
-
-                    if (!phdDistance.Value.isEmpty()) GPXbw.write(" <!-- Distance = " + phdDistance.Value + " " + phdDistance.UM + " -->" + newLine);
-                    if (!phdDuration.Value.isEmpty()) GPXbw.write(" <!-- Duration = " + phdDuration.Value + " | " + phdDurationMoving.Value + " -->" + newLine);
-                    if (!phdAltitudeGap.Value.isEmpty()) GPXbw.write(" <!-- Altitude Gap = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM + " -->" + newLine);
-                    if (!phdSpeedMax.Value.isEmpty()) GPXbw.write(" <!-- Max Speed = " + phdSpeedMax.Value + " " + phdSpeedMax.UM + " -->" + newLine);
-                    if (!phdSpeedAvg.Value.isEmpty()) GPXbw.write(" <!-- Avg Speed = " + phdSpeedAvg.Value + " | " + phdSpeedAvgMoving.Value + " " + phdSpeedAvg.UM + " -->" + newLine);
-                    if (!phdOverallDirection.Value.isEmpty()) GPXbw.write(" <!-- Direction = " + phdOverallDirection.Value + phdOverallDirection.UM + " -->" + newLine);
-                    GPXbw.write(" <!-- " + track.getNumberOfLocations() + " Trackpoints -->" + newLine);
-
                     GPXbw.write(" <name>" + GPSApp.getApplicationContext().getString(R.string.tab_track) + " " + track.getName() + "</name>" + newLine);
                     GPXbw.write(" <trkseg>" + newLine);
                 }
@@ -636,13 +645,13 @@ class Exporter extends Thread {
 
             if (ExportKML) {
                 KMLbw.write(" </Document>" + newLine);
-                KMLbw.write("</kml>");
+                KMLbw.write("</kml>" + newLine + " ");
 
                 KMLbw.close();
                 KMLfw.close();
             }
             if (ExportGPX) {
-                GPXbw.write("</gpx>");
+                GPXbw.write("</gpx>" + newLine + " ");
 
                 GPXbw.close();
                 GPXfw.close();

@@ -29,15 +29,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -292,7 +291,7 @@ public class FragmentTracklist extends Fragment {
                 }
             }
             if (fileexist) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(getResources().getString(R.string.card_message_delete_also_exported));
                 builder.setIcon(android.R.drawable.ic_menu_info_details);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -319,7 +318,7 @@ public class FragmentTracklist extends Fragment {
                 AlertDialog dialog = builder.create();
                 dialog.show();
             } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.StyledDialog));
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
                 builder.setIcon(android.R.drawable.ic_menu_info_details);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
