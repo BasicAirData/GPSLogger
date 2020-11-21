@@ -41,7 +41,7 @@ android {
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
         versionName '2.3.0'
-        versionCode 34
+        versionCode 35
         // -----------------------------------------------------------------------------------------
 
         javaCompileOptions {
