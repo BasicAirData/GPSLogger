@@ -205,11 +205,11 @@ public class GPSApplication extends Application implements LocationListener {
     private LocationExtended _currentLocationExtended = null;
     private LocationExtended _currentPlacemark = null;
     private Track _currentTrack = null;
-    private List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
+    private final List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
 
     Thumbnailer Th;
     Exporter Ex;
-    private AsyncUpdateThreadClass asyncUpdateThread = new AsyncUpdateThreadClass();
+    private final AsyncUpdateThreadClass asyncUpdateThread = new AsyncUpdateThreadClass();
 
     // The handler that switches off the location updates after a time delay:
     final Handler handler = new Handler();
@@ -1465,7 +1465,7 @@ public class GPSApplication extends Application implements LocationListener {
         LocationExtended location;
     }
 
-    private BlockingQueue<AsyncTODO> AsyncTODOQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<AsyncTODO> AsyncTODOQueue = new LinkedBlockingQueue<>();
 
     private class AsyncUpdateThreadClass extends Thread {
 

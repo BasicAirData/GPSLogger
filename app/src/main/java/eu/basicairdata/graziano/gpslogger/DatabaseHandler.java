@@ -434,58 +434,59 @@ class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    // NOT USED, Commented out
     // Get single Location
-    public LocationExtended getLocation(long id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        LocationExtended extdloc = null;
-        double lcdata_double;
-        float lcdata_float;
-
-        Cursor cursor = db.query(TABLE_LOCATIONS, new String[] {KEY_ID,
-                        KEY_LOCATION_LATITUDE,
-                        KEY_LOCATION_LONGITUDE,
-                        KEY_LOCATION_ALTITUDE,
-                        KEY_LOCATION_SPEED,
-                        KEY_LOCATION_ACCURACY,
-                        KEY_LOCATION_BEARING,
-                        KEY_LOCATION_TIME,
-                        KEY_LOCATION_NUMBEROFSATELLITES,
-                        KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX}, KEY_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-
-            Location lc = new Location("DB");
-            lc.setLatitude(cursor.getDouble(1));
-            lc.setLongitude(cursor.getDouble(2));
-
-            lcdata_double = cursor.getDouble(3);
-            if (lcdata_double != NOT_AVAILABLE) lc.setAltitude(lcdata_double);
-            //else lc.removeAltitude();
-
-            lcdata_float = cursor.getFloat(4);
-            if (lcdata_float != NOT_AVAILABLE) lc.setSpeed(lcdata_float);
-            //else lc.removeSpeed();
-
-            lcdata_float = cursor.getFloat(5);
-            if (lcdata_float != NOT_AVAILABLE) lc.setAccuracy(lcdata_float);
-            //else lc.removeAccuracy();
-
-            lcdata_float = cursor.getFloat(6);
-            if (lcdata_float != NOT_AVAILABLE) lc.setBearing(lcdata_float);
-            //else lc.removeBearing();
-
-            lc.setTime(cursor.getLong(7));
-
-
-            extdloc = new LocationExtended(lc);
-            extdloc.setNumberOfSatellites(cursor.getInt(8));
-            extdloc.setNumberOfSatellitesUsedInFix(cursor.getInt(9));
-
-            cursor.close();
-        }
-        return extdloc != null ? extdloc : null;
-    }
+//    public LocationExtended getLocation(long id) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        LocationExtended extdloc = null;
+//        double lcdata_double;
+//        float lcdata_float;
+//
+//        Cursor cursor = db.query(TABLE_LOCATIONS, new String[] {KEY_ID,
+//                        KEY_LOCATION_LATITUDE,
+//                        KEY_LOCATION_LONGITUDE,
+//                        KEY_LOCATION_ALTITUDE,
+//                        KEY_LOCATION_SPEED,
+//                        KEY_LOCATION_ACCURACY,
+//                        KEY_LOCATION_BEARING,
+//                        KEY_LOCATION_TIME,
+//                        KEY_LOCATION_NUMBEROFSATELLITES,
+//                        KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX}, KEY_ID + "=?",
+//                new String[] { String.valueOf(id) }, null, null, null, null);
+//        if (cursor != null) {
+//            cursor.moveToFirst();
+//
+//            Location lc = new Location("DB");
+//            lc.setLatitude(cursor.getDouble(1));
+//            lc.setLongitude(cursor.getDouble(2));
+//
+//            lcdata_double = cursor.getDouble(3);
+//            if (lcdata_double != NOT_AVAILABLE) lc.setAltitude(lcdata_double);
+//            //else lc.removeAltitude();
+//
+//            lcdata_float = cursor.getFloat(4);
+//            if (lcdata_float != NOT_AVAILABLE) lc.setSpeed(lcdata_float);
+//            //else lc.removeSpeed();
+//
+//            lcdata_float = cursor.getFloat(5);
+//            if (lcdata_float != NOT_AVAILABLE) lc.setAccuracy(lcdata_float);
+//            //else lc.removeAccuracy();
+//
+//            lcdata_float = cursor.getFloat(6);
+//            if (lcdata_float != NOT_AVAILABLE) lc.setBearing(lcdata_float);
+//            //else lc.removeBearing();
+//
+//            lc.setTime(cursor.getLong(7));
+//
+//
+//            extdloc = new LocationExtended(lc);
+//            extdloc.setNumberOfSatellites(cursor.getInt(8));
+//            extdloc.setNumberOfSatellitesUsedInFix(cursor.getInt(9));
+//
+//            cursor.close();
+//        }
+//        return extdloc != null ? extdloc : null;
+//    }
 
 
 
@@ -637,50 +638,53 @@ class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    // NOT USED, Commented out
     // Get the total amount of Locations stored in the DB
-    public long getLocationsTotalCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_LOCATIONS;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        long result = cursor.getCount();
-        cursor.close();
-        return result;
-    }
+//    public long getLocationsTotalCount() {
+//        String countQuery = "SELECT  * FROM " + TABLE_LOCATIONS;
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor cursor = db.rawQuery(countQuery, null);
+//        long result = cursor.getCount();
+//        cursor.close();
+//        return result;
+//    }
 
 
+    // NOT USED, Commented out
     // Get the number of Locations of a Track
-    public long getLocationsCount(long TrackID) {
-        String countQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE " + KEY_TRACK_ID + " = " + TrackID;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        long result = cursor.getCount();
-        cursor.close();
-        return result;
-    }
+//    public long getLocationsCount(long TrackID) {
+//        String countQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE " + KEY_TRACK_ID + " = " + TrackID;
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor cursor = db.rawQuery(countQuery, null);
+//        long result = cursor.getCount();
+//        cursor.close();
+//        return result;
+//    }
 
 
+    // NOT USED, Commented out
     // Get last Location ID
-    public long getLastLocationID(long TrackID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long result = 0;
-
-        String query = "SELECT " + KEY_ID + " FROM " + TABLE_LOCATIONS +
-                " WHERE " + KEY_TRACK_ID + " = " + TrackID + " ORDER BY " + KEY_ID + " DESC LIMIT 1";
-
-        //Log.w("myApp", "[#] DatabaseHandler.java - getLastLocationID(): " + query);
-
-        Cursor cursor = db.rawQuery(query, null);
-
-        if (cursor != null) {
-            //Log.w("myApp", "[#] !null");
-            if (cursor.moveToFirst()) {
-                result = cursor.getLong(0);
-            } //else Log.w("myApp", "[#] DatabaseHandler.java - Location table is empty");
-            cursor.close();
-        }
-        //Log.w("myApp", "[#] RETURN getLastTrack()");
-        return result;
-    }
+//    public long getLastLocationID(long TrackID) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        long result = 0;
+//
+//        String query = "SELECT " + KEY_ID + " FROM " + TABLE_LOCATIONS +
+//                " WHERE " + KEY_TRACK_ID + " = " + TrackID + " ORDER BY " + KEY_ID + " DESC LIMIT 1";
+//
+//        //Log.w("myApp", "[#] DatabaseHandler.java - getLastLocationID(): " + query);
+//
+//        Cursor cursor = db.rawQuery(query, null);
+//
+//        if (cursor != null) {
+//            //Log.w("myApp", "[#] !null");
+//            if (cursor.moveToFirst()) {
+//                result = cursor.getLong(0);
+//            } //else Log.w("myApp", "[#] DatabaseHandler.java - Location table is empty");
+//            cursor.close();
+//        }
+//        //Log.w("myApp", "[#] RETURN getLastTrack()");
+//        return result;
+//    }
 
 
 

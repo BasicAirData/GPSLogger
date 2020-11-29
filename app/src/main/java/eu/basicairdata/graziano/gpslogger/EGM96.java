@@ -86,14 +86,14 @@ class EGM96 {
         }
     }
 
-    public void UnloadGrid() {
-        isEGMGridLoaded = false;
-        isEGMGridLoading = false;
-        //listener.onEGMGridLoaded(isEGMGridLoaded);
-        EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
-        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
-    }
+//    public void UnloadGrid() {
+//        isEGMGridLoaded = false;
+//        isEGMGridLoading = false;
+//        //listener.onEGMGridLoaded(isEGMGridLoaded);
+//        EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+//        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+//        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+//    }
 
     public boolean isEGMGridLoaded() {
         return isEGMGridLoaded;

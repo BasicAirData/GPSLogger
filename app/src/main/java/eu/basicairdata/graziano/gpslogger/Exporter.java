@@ -53,8 +53,8 @@ class Exporter extends Thread {
     private boolean UnableToWriteFile = false;
     int GroupOfLocations;                           // Reads and writes location grouped by this number;
 
-    private ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(3500);
-    private AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
+    private final ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(3500);
+    private final AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
 
 
     public Exporter(ExportingTask exportingTask, boolean ExportKML, boolean ExportGPX, boolean ExportTXT, String SaveIntoFolder) {
