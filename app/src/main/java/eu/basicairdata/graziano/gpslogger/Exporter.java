@@ -654,17 +654,20 @@ class Exporter extends Thread {
                 KMLbw.write("</kml>" + newLine + " ");
                 KMLbw.flush();
                 KMLbw.close();
+                KMLfw.flush();
                 KMLfw.close();
             }
             if (ExportGPX) {
                 GPXbw.write("</gpx>" + newLine + " ");
                 GPXbw.flush();
                 GPXbw.close();
+                GPXfw.flush();
                 GPXfw.close();
             }
             if (ExportTXT) {
                 TXTbw.flush();
                 TXTbw.close();
+                TXTfw.flush();
                 TXTfw.close();
             }
 
