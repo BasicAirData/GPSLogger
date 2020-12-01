@@ -77,7 +77,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class GPSApplication extends Application implements LocationListener {
 
     //private static final float M_TO_FT = 3.280839895f;
-    private static final int NOT_AVAILABLE = -100000;
+    public static final int NOT_AVAILABLE = -100000;
 
     //private static final int UM_METRIC_MS = 0;
     private static final int UM_METRIC_KMH = 1;
@@ -170,6 +170,8 @@ public class GPSApplication extends Application implements LocationListener {
     private Satellites satellites;
 
     private boolean isScreenOn = true;
+    private long lastClickId = NOT_AVAILABLE;
+    private boolean lastClickState = false;
 
     DatabaseHandler GPSDataBase;
     private String PlacemarkDescription = "";
@@ -477,6 +479,22 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setLocationPermissionChecked(boolean locationPermissionChecked) {
         LocationPermissionChecked = locationPermissionChecked;
+    }
+
+    public long getLastClickId() {
+        return lastClickId;
+    }
+
+    public void setLastClickId(long lastClickId) {
+        this.lastClickId = lastClickId;
+    }
+
+    public boolean getLastClickState() {
+        return lastClickState;
+    }
+
+    public void setLastClickState(boolean lastClickState) {
+        this.lastClickState = lastClickState;
     }
 
     public void setHandlerTimer(int handlerTimer) {

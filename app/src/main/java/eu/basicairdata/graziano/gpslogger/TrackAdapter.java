@@ -62,7 +62,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
     private long StartAnimationTime = 0;
     private long PointsCount = GPSApplication.getInstance().getCurrentTrack().getNumberOfLocations() + GPSApplication.getInstance().getCurrentTrack().getNumberOfPlacemarks();
 
-    class TrackHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class TrackHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private final PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
         private PhysicalData phd;
@@ -89,9 +89,26 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (GPSApplication.getInstance().getJobsPending() == 0) {
                 track.setSelected(!track.isSelected());
                 card.setSelected(track.isSelected());
+
+                GPSApplication.getInstance().setLastClickId(track.getId());
+                GPSApplication.getInstance().setLastClickState(track.isSelected());
+                //Log.w("myApp", "[#] TrackAdapter.java - " + (track.isSelected() ? "Selected" : "Deselected") + " id = " + GPSApplication.getInstance().getLastClickId());
+
                 EventBus.getDefault().post(new EventBusMSGNormal(track.isSelected() ? EventBusMSG.TRACKLIST_SELECT : EventBusMSG.TRACKLIST_DESELECT, track.getId()));
                 //Log.w("myApp", "[#] TrackAdapter.java - Selected track id = " + track.getId());
             }
+        }
+
+
+        @Override
+        public boolean onLongClick(View view) {
+            if ((GPSApplication.getInstance().getJobsPending() == 0)
+                    && (GPSApplication.getInstance().getLastClickId() != track.getId())
+                    && (GPSApplication.getInstance().getNumberOfSelectedTracks() > 0)) {
+                //Log.w("myApp", "[#] TrackAdapter.java - onLongClick");
+                EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TRACKLIST_RANGE_SELECTION, track.getId()));
+            }
+            return false;
         }
 
 
@@ -99,6 +116,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             super(itemView);
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
 
             // CardView
             card                        = itemView.findViewById(R.id.card_view);

@@ -150,11 +150,11 @@ public class FragmentTracklist extends Fragment {
 
     @Subscribe
     public void onEvent(final EventBusMSGNormal msg) {
+        int i = 0;
+        boolean found = false;
         switch (msg.MSGType) {
             case EventBusMSG.TRACKLIST_SELECT:
             case EventBusMSG.TRACKLIST_DESELECT:
-                int i = 0;
-                boolean found = false;
                 synchronized (data) {
                     do {
                         if (data.get(i).getId() == msg.id) {
@@ -163,6 +163,28 @@ public class FragmentTracklist extends Fragment {
                         }
                         i++;
                     } while ((i < data.size()) && !found);
+                }
+                break;
+            case EventBusMSG.TRACKLIST_RANGE_SELECTION:
+                if (GPSApplication.getInstance().getLastClickId() != GPSApplication.NOT_AVAILABLE) {
+                    synchronized (data) {
+                        do {
+                            if (data.get(i).getId() == GPSApplication.getInstance().getLastClickId()) {
+                                data.get(i).setSelected(GPSApplication.getInstance().getLastClickState());
+                                found = !found;
+                            }
+                            if (data.get(i).getId() == msg.id) {
+                                data.get(i).setSelected(GPSApplication.getInstance().getLastClickState());
+                                found = !found;
+                            }
+                            if (found) {
+                                // into the range
+                                data.get(i).setSelected(GPSApplication.getInstance().getLastClickState());
+                            }
+                            i++;
+                        } while (i < data.size());
+                    }
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
                 }
         }
     }
