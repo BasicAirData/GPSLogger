@@ -44,7 +44,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     boolean isLightTheme = false;
 
-    private List<Track> dataSet;
+    private final List<Track> dataSet;
 
     private static final Bitmap[] bmpTrackType = {
             BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_place_white_24dp),

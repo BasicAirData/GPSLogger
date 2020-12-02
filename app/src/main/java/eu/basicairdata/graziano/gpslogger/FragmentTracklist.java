@@ -60,7 +60,7 @@ public class FragmentTracklist extends Fragment {
     RecyclerView.LayoutManager layoutManager;
 
     private TrackAdapter adapter;
-    private List<Track> data = Collections.synchronizedList(new ArrayList<Track>());
+    private final List<Track> data = Collections.synchronizedList(new ArrayList<Track>());
 
     private View view;
     private TextView TVTracklistEmpty;
