@@ -35,8 +35,8 @@ class SpikesChecker {
     private long    Time_Interval           = NOT_AVAILABLE;    // Interval between fixes (in seconds)
     private float   VerticalAcceleration;
 
-    private float MAX_ACCELERATION;     // The maximum vertical acceleration allowed
-    private int STABILIZATION_TIME = 4;  // Stabilization window, in seconds. It must be > 0
+    private final float MAX_ACCELERATION;     // The maximum vertical acceleration allowed
+    private final int STABILIZATION_TIME;  // Stabilization window, in seconds. It must be > 0
 
     // Constructor
     SpikesChecker(float max_acceleration, int Stabilization_Time) {

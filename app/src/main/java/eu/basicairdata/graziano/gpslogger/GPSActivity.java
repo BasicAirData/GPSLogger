@@ -75,35 +75,11 @@ public class GPSActivity extends AppCompatActivity {
     private int activeTab = 1;
     final Context context = this;
 
-    private boolean prefKeepScreenOn = true;
     private boolean show_toast_grant_storage_permission = false;
-    private int theme;
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
     Toast ToastClickAgain;
-
-
-//    @Override
-//    public void onRestart(){
-//        Log.w("myApp", "[#] " + this + " - onRestart()");
-//
-//        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")) != theme) {
-//            Log.w("myApp", "[#] GPSActivity.java - it needs to be recreated (Theme changed)");
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                // Normal behaviour for Android 5 +
-//                this.recreate();
-//            } else {
-//                // Workaround to a bug on Android 4.4.X platform (google won't fix because Android 4.4 is obsolete)
-//                // Android 4.4.X: taskAffinity & launchmode='singleTask' violating Activity's lifecycle
-//                // https://issuetracker.google.com/issues/36998700
-//                finish();
-//                startActivity(new Intent(this, getClass()));
-//            }
-//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//        }
-//        super.onRestart();
-//    }
 
 
     @Override
@@ -111,7 +87,6 @@ public class GPSActivity extends AppCompatActivity {
         Log.w("myApp", "[#] " + this + " - onCreate()");
 
         setTheme(R.style.MyMaterialTheme);
-        theme = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2"));
 
         super.onCreate(savedInstanceState);
 
@@ -190,10 +165,10 @@ public class GPSActivity extends AppCompatActivity {
 
         ActivateActionModeIfNeeded();
 
-        if (GPSApp.FlagExists(GPSApp.FLAG_RECORDING) && !GPSApp.getRecording()) {
+        if (GPSApp.FlagExists(GPSApplication.FLAG_RECORDING) && !GPSApp.getRecording()) {
             // The app is crashed in background
             Log.w("myApp", "[#] GPSActivity.java - THE APP HAS BEEN KILLED IN BACKGROUND DURING A RECORDING !!!");
-            GPSApp.FlagRemove(GPSApp.FLAG_RECORDING);
+            GPSApp.FlagRemove(GPSApplication.FLAG_RECORDING);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -344,6 +319,7 @@ public class GPSActivity extends AppCompatActivity {
             super(manager);
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
@@ -428,8 +404,7 @@ public class GPSActivity extends AppCompatActivity {
 
     private void LoadPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        prefKeepScreenOn = preferences.getBoolean("prefKeepScreenOn", true);
-        if (prefKeepScreenOn) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (preferences.getBoolean("prefKeepScreenOn", true)) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
@@ -502,11 +477,11 @@ public class GPSActivity extends AppCompatActivity {
     }
 
 
-    public boolean CheckLocationPermission() {
+    public void CheckLocationPermission() {
         Log.w("myApp", "[#] GPSActivity.java - Check Location Permission...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.w("myApp", "[#] GPSActivity.java - Location Permission granted");
-            return true;    // Permission Granted
+            // Permission Granted
         } else {
             Log.w("myApp", "[#] GPSActivity.java - Location Permission denied");
             boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -516,13 +491,12 @@ public class GPSActivity extends AppCompatActivity {
                 listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
-            return false;
         }
     }
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_ID_MULTIPLE_PERMISSIONS: {
                 Map<String, Integer> perms = new HashMap<>();

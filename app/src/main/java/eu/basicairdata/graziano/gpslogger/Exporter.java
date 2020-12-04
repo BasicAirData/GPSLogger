@@ -53,8 +53,8 @@ class Exporter extends Thread {
     private boolean UnableToWriteFile = false;
     int GroupOfLocations;                           // Reads and writes location grouped by this number;
 
-    private ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(3500);
-    private AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
+    private final ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(3500);
+    private final AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
 
 
     public Exporter(ExportingTask exportingTask, boolean ExportKML, boolean ExportGPX, boolean ExportTXT, String SaveIntoFolder) {
@@ -105,11 +105,17 @@ class Exporter extends Thread {
         // ------------------------------------------------- Create the Directory tree if not exist
         File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
         if (!sd.exists()) {
-            sd.mkdir();
+            if (!sd.mkdir()) {
+                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+                return;
+            }
         }
         sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
         if (!sd.exists()) {
-            sd.mkdir();
+            if (!sd.mkdir()) {
+                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+                return;
+            }
         }
         // ----------------------------------------------------------------------------------------
 
@@ -646,18 +652,22 @@ class Exporter extends Thread {
             if (ExportKML) {
                 KMLbw.write(" </Document>" + newLine);
                 KMLbw.write("</kml>" + newLine + " ");
-
+                KMLbw.flush();
                 KMLbw.close();
+                KMLfw.flush();
                 KMLfw.close();
             }
             if (ExportGPX) {
                 GPXbw.write("</gpx>" + newLine + " ");
-
+                GPXbw.flush();
                 GPXbw.close();
+                GPXfw.flush();
                 GPXfw.close();
             }
             if (ExportTXT) {
+                TXTbw.flush();
                 TXTbw.close();
+                TXTfw.flush();
                 TXTfw.close();
             }
 

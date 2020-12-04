@@ -77,7 +77,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class GPSApplication extends Application implements LocationListener {
 
     //private static final float M_TO_FT = 3.280839895f;
-    private static final int NOT_AVAILABLE = -100000;
+    public static final int NOT_AVAILABLE = -100000;
 
     //private static final int UM_METRIC_MS = 0;
     private static final int UM_METRIC_KMH = 1;
@@ -170,6 +170,8 @@ public class GPSApplication extends Application implements LocationListener {
     private Satellites satellites;
 
     private boolean isScreenOn = true;
+    private long lastClickId = NOT_AVAILABLE;
+    private boolean lastClickState = false;
 
     DatabaseHandler GPSDataBase;
     private String PlacemarkDescription = "";
@@ -205,11 +207,11 @@ public class GPSApplication extends Application implements LocationListener {
     private LocationExtended _currentLocationExtended = null;
     private LocationExtended _currentPlacemark = null;
     private Track _currentTrack = null;
-    private List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
+    private final List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
 
     Thumbnailer Th;
     Exporter Ex;
-    private AsyncUpdateThreadClass asyncUpdateThread = new AsyncUpdateThreadClass();
+    private final AsyncUpdateThreadClass asyncUpdateThread = new AsyncUpdateThreadClass();
 
     // The handler that switches off the location updates after a time delay:
     final Handler handler = new Handler();
@@ -477,6 +479,22 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setLocationPermissionChecked(boolean locationPermissionChecked) {
         LocationPermissionChecked = locationPermissionChecked;
+    }
+
+    public long getLastClickId() {
+        return lastClickId;
+    }
+
+    public void setLastClickId(long lastClickId) {
+        this.lastClickId = lastClickId;
+    }
+
+    public boolean getLastClickState() {
+        return lastClickState;
+    }
+
+    public void setLastClickState(boolean lastClickState) {
+        this.lastClickState = lastClickState;
     }
 
     public void setHandlerTimer(int handlerTimer) {
@@ -1465,7 +1483,7 @@ public class GPSApplication extends Application implements LocationListener {
         LocationExtended location;
     }
 
-    private BlockingQueue<AsyncTODO> AsyncTODOQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<AsyncTODO> AsyncTODOQueue = new LinkedBlockingQueue<>();
 
     private class AsyncUpdateThreadClass extends Thread {
 
