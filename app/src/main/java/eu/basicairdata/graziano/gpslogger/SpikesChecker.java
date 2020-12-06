@@ -18,9 +18,10 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
 
 class SpikesChecker {
-    private static final int NOT_AVAILABLE = -100000;
 
     private long    Good_Time               = NOT_AVAILABLE;   // The time of the last good value
 

@@ -24,11 +24,13 @@ import android.location.GpsStatus;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
+
 import java.util.ArrayList;
 
 public class Satellites {
-    private static final int NOT_AVAILABLE = -100000;
-    private static final float NO_DATA = 0.0f;
+    //private static final float NO_DATA = 0.0f;
 
     private int numSatsTotal = NOT_AVAILABLE;
     //private int numSatsInView = NOT_AVAILABLE;

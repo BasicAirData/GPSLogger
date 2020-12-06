@@ -37,10 +37,10 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
 
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
-
-    private static final int NOT_AVAILABLE = -100000;
 
     boolean isLightTheme = false;
 

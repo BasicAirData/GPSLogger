@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
 
 class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -213,9 +215,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER" + ")";  // 13
         db.execSQL(CREATE_PLACEMARKS_TABLE);
     }
-
-
-    private static final int NOT_AVAILABLE = -100000;
 
     private static final String DATABASE_ALTER_TABLE_LOCATIONS_TO_V2 = "ALTER TABLE "
             + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";

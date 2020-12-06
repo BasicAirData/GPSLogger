@@ -45,16 +45,16 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_DISABLED;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_OUTOFSERVICE;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_TEMPORARYUNAVAILABLE;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_SEARCHING;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_STABILIZING;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_OK;
+
+
 public class FragmentGPSFix extends Fragment {
-
-    private static final int NOT_AVAILABLE = -100000;
-
-    private static final int GPS_DISABLED = 0;
-    private static final int GPS_OUTOFSERVICE = 1;
-    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    private static final int GPS_SEARCHING = 3;
-    private static final int GPS_STABILIZING = 4;
-    private static final int GPS_OK = 5;
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
