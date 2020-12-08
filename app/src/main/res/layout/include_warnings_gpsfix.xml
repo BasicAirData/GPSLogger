@@ -51,8 +51,8 @@
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/warning_location_denied"
-            android:drawableLeft="@mipmap/ic_warning_24dp"
-            android:drawableStart="@mipmap/ic_warning_24dp"
+            card_view:drawableStartCompat="@drawable/ic_warning_24dp"
+            card_view:drawableLeftCompat="@drawable/ic_warning_24dp"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
             android:layout_gravity="bottom"/>
@@ -82,8 +82,8 @@
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/warning_background_restricted"
-            android:drawableLeft="@mipmap/ic_warning_24dp"
-            android:drawableStart="@mipmap/ic_warning_24dp"
+            card_view:drawableStartCompat="@drawable/ic_warning_24dp"
+            card_view:drawableLeftCompat="@drawable/ic_warning_24dp"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
             android:layout_gravity="bottom"/>
@@ -113,8 +113,8 @@
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/warning_enable_location_service"
-            android:drawableLeft="@mipmap/ic_warning_24dp"
-            android:drawableStart="@mipmap/ic_warning_24dp"
+            card_view:drawableStartCompat="@drawable/ic_warning_24dp"
+            card_view:drawableLeftCompat="@drawable/ic_warning_24dp"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
             android:layout_gravity="bottom"/>

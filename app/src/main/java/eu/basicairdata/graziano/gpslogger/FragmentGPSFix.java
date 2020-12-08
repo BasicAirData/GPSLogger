@@ -23,7 +23,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,9 +58,6 @@ public class FragmentGPSFix extends Fragment {
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
     private boolean isAWarningClicked = false;
-    private boolean isLightTheme = false;
-
-    private Drawable drawableWarning;
 
     private FrameLayout FLGPSFix;
 
@@ -221,24 +217,6 @@ public class FragmentGPSFix extends Fragment {
         super.onResume();
 
         isAWarningClicked = false;
-
-        switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                // Night mode is not active, we're in day time
-                isLightTheme = true;
-                break;
-            case Configuration.UI_MODE_NIGHT_YES:
-                // Night mode is active, we're at night!
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                // We don't know what mode we're in, assume notnight
-                isLightTheme = false;
-                break;
-        }
-
-        if (isLightTheme) {
-            drawableWarning = getResources().getDrawable(R.mipmap.ic_warning_24dp);
-            drawableWarning.setColorFilter(GPSApplication.colorMatrixColorFilter);
-        }
 
         // Workaround for Nokia Devices, Android 9
         // https://github.com/BasicAirData/GPSLogger/issues/77
