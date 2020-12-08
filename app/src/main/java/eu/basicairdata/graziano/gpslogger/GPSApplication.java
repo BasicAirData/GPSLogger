@@ -707,6 +707,7 @@ public class GPSApplication extends Application implements LocationListener {
     public void onCreate() {
 
         AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")));
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         super.onCreate();
 
