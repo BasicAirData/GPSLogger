@@ -43,7 +43,7 @@
         android:id="@+id/action_track_finished"
         android:visible="false"
         android:orderInCategory="105"
-        android:icon="@mipmap/ic_done_white_24dp"
+        android:icon="@drawable/ic_done_24dp"
         android:title="@string/menu_track_finished"
         app:showAsAction="ifRoom" />
 </menu>
