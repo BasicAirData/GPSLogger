@@ -64,6 +64,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_KML;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
+
+
 public class FragmentSettings extends PreferenceFragmentCompat {
 
     private static final float M_TO_FT = 3.280839895f;
@@ -259,8 +263,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
                             // Add "Select every Time" menu item
                             AppInfo askai = new AppInfo();
-                            askai.Label = getString(R.string.pref_track_viewer_select_every_time);
-                            askai.Icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_visibility_24dp, getActivity().getTheme());
+                            askai.label = getString(R.string.pref_track_viewer_select_every_time);
+                            askai.icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_visibility_24dp, getActivity().getTheme());
 
                             aild.add(askai);
                             aild.addAll(ail);
@@ -274,7 +278,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                                     // TODO: Set Preference
                                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
                                     SharedPreferences.Editor editor1 = settings.edit();
-                                    editor1.putString("prefTracksViewer", aild.get(position).PackageName);
+                                    editor1.putString("prefTracksViewer", aild.get(position).packageName);
                                     editor1.commit();
                                     SetupPreferences();
                                     dialog.dismiss();
@@ -292,15 +296,15 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         if (ail.isEmpty())
             pTracksViewer.setSummary(R.string.pref_track_viewer_not_installed);                                        // no Viewers installed
         else if (ail.size() == 1)
-            pTracksViewer.setSummary(ail.get(0).Label + (ail.get(0).GPX ? " (GPX)" : " (KML)"));                                                                              // 1 Viewer installed
+            pTracksViewer.setSummary(ail.get(0).label + (ail.get(0).fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)"));                                                                              // 1 Viewer installed
         else {
             pTracksViewer.setSummary(R.string.pref_track_viewer_select_every_time);                                       // ask every time
             String pn = prefs.getString("prefTracksViewer", "");
             Log.w("myApp", "[#] FragmentSettings.java - prefTracksViewer = " + pn);
             for (AppInfo ai : ail) {
-                if (ai.PackageName.equals(pn)) {
+                if (ai.packageName.equals(pn)) {
                     //Log.w("myApp", "[#] FragmentSettings.java - Found " + ai.Label);
-                    pTracksViewer.setSummary(ai.Label + (ai.GPX ? " (GPX)" : " (KML)"));                                // Default Viewer available!
+                    pTracksViewer.setSummary(ai.label + (ai.fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)"));                                // Default Viewer available!
                 }
             }
         }
