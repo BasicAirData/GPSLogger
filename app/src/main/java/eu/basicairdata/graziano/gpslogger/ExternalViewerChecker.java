@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,23 +87,24 @@ public class ExternalViewerChecker {
         appInfoList = new ArrayList<>();
 
         fileTypeList = new ArrayList<>();
-        fileTypeList.add(new FileType(null, "application/gpx+xml", FILETYPE_GPX));
+        fileTypeList.add(new FileType(null, "application/gpx+xml", FILETYPE_GPX));                      // The preferred format first
+        fileTypeList.add(new FileType(null, "application/vnd.google-earth.kml+xml",  FILETYPE_KML));
 
+        // We can add new MimeTypes, also with filtered lists!
+        // for example this one:
 //        ArrayList<String> gpxList = new ArrayList<>();
 //        gpxList.add("com.vecturagames.android.app.gpxviewer");
 //        fileTypeList.add(new FileType(gpxList, "application/gpx+xml", FILETYPE_GPX));
-
-        fileTypeList.add(new FileType(null, "application/vnd.google-earth.kml+xml",  FILETYPE_KML));
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         for (FileType ft : fileTypeList) {
             intent.setType(ft.mimeType);
-            Log.w("myApp", "[#] ExternalViewerChecker.java - " + ft.mimeType);
+            //Log.w("myApp", "[#] ExternalViewerChecker.java - " + ft.mimeType);
             //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
             List<ResolveInfo> KMLlri = pm.queryIntentActivities(intent, 0);
-            Log.w("myApp", "[#] ExternalViewerChecker.java - Found " + KMLlri.size() + " viewers:");
+            //Log.w("myApp", "[#] ExternalViewerChecker.java - Found " + KMLlri.size() + " viewers:");
             for (ResolveInfo tmpri : KMLlri) {
                 boolean isPackageInList = false;
                 if (ft.packages != null) {
@@ -117,7 +117,6 @@ public class ExternalViewerChecker {
                 } else isPackageInList = true;
 
                 if (isPackageInList) {
-                    Log.w("myApp", "[#] ExternalViewerChecker.java - * " + tmpri.activityInfo.applicationInfo.packageName);
                     AppInfo ainfo = new AppInfo();
                     ainfo.packageName = tmpri.activityInfo.applicationInfo.packageName;
                     ainfo.label = tmpri.activityInfo.applicationInfo.loadLabel(pm).toString();
@@ -127,6 +126,7 @@ public class ExternalViewerChecker {
                     for (AppInfo a : appInfoList) {
                         if (a.label.equals(ainfo.label) && a.packageName.equals(ainfo.packageName)) {
                             found = true;
+                            //Log.w("myApp", "[#] ExternalViewerChecker.java -   " + tmpri.activityInfo.applicationInfo.packageName);
                             break;
                         }
                     }
@@ -135,6 +135,7 @@ public class ExternalViewerChecker {
                         ainfo.fileType = ft.fileType;
                         ainfo.icon = tmpri.activityInfo.applicationInfo.loadIcon(pm);
                         appInfoList.add(ainfo);
+                        //Log.w("myApp", "[#] ExternalViewerChecker.java - + " + tmpri.activityInfo.applicationInfo.packageName);
                     }
                 }
             }
