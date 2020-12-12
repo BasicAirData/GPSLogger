@@ -21,10 +21,11 @@ package eu.basicairdata.graziano.gpslogger;
 import android.graphics.drawable.Drawable;
 
 public class AppInfo {
-    String Label = "";
-    String PackageName = "";
+    String label = "";
+    String packageName = "";
+    String mimeType = "";
     boolean KML = false;
     boolean GPX = false;
     boolean requiresFileProvider = false;
-    Drawable Icon = null;
+    Drawable icon = null;
 }

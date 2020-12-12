@@ -38,10 +38,9 @@ public class ExternalViewerChecker {
     static private class CustomComparator implements Comparator<AppInfo> {
         @Override
         public int compare(AppInfo o1, AppInfo o2) {
-            return o1.Label.compareTo(o2.Label);
+            return o1.label.compareTo(o2.label);
         }
     }
-
 
     public ArrayList<AppInfo> getAppInfoList() {
         return appInfoList;
@@ -73,41 +72,43 @@ public class ExternalViewerChecker {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+        // Find GPX Viewers
         intent.setType("application/gpx+xml");  // GPX
-
         //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
         List<ResolveInfo> GPXlri = pm.queryIntentActivities(intent, 0);
         //Log.w("myApp", "[#] GPSApplication.java - Found " + KMLlri.size() + " viewers:");
         for (ResolveInfo tmpri : GPXlri) {
-            //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
+            //Log.w("myApp", "[#] " + tmpri.activityInfo.applicationInfo.packageName);
             AppInfo ainfo = new AppInfo();
-            ainfo.PackageName = tmpri.activityInfo.applicationInfo.packageName;
-            ainfo.Label = tmpri.activityInfo.applicationInfo.loadLabel(pm).toString();
-            ainfo.Icon =  tmpri.activityInfo.applicationInfo.loadIcon(pm);
+            ainfo.packageName = tmpri.activityInfo.applicationInfo.packageName;
+            ainfo.label = tmpri.activityInfo.applicationInfo.loadLabel(pm).toString();
+            ainfo.icon =  tmpri.activityInfo.applicationInfo.loadIcon(pm);
             ainfo.KML = false;
             ainfo.GPX = true;
+            ainfo.mimeType = "application/gpx+xml";
 
             appInfoList.add(ainfo);
         }
 
+        // Find KML Viewers
         intent.setType("application/vnd.google-earth.kml+xml");     // KML
-
         //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
         List<ResolveInfo> KMLlri = pm.queryIntentActivities(intent, 0);
         //Log.w("myApp", "[#] GPSApplication.java - Found " + KMLlri.size() + " viewers:");
         for (ResolveInfo tmpri : KMLlri) {
-            //Log.w("myApp", "[#] " + ri.activityInfo.applicationInfo.packageName + " - " + tmpri.activityInfo.applicationInfo.packageName);
+            //Log.w("myApp", "[#] " + tmpri.activityInfo.applicationInfo.packageName);
             AppInfo ainfo = new AppInfo();
-            ainfo.PackageName = tmpri.activityInfo.applicationInfo.packageName;
-            ainfo.Label = tmpri.activityInfo.applicationInfo.loadLabel(pm).toString();
-            ainfo.Icon =  tmpri.activityInfo.applicationInfo.loadIcon(pm);
+            ainfo.packageName = tmpri.activityInfo.applicationInfo.packageName;
+            ainfo.label = tmpri.activityInfo.applicationInfo.loadLabel(pm).toString();
+            ainfo.icon =  tmpri.activityInfo.applicationInfo.loadIcon(pm);
+            ainfo.mimeType = "application/vnd.google-earth.kml+xml";
             ainfo.KML = true;
             ainfo.GPX = false;
 
             boolean found = false;
 
             for (AppInfo a : appInfoList) {
-                if (a.Label.equals(ainfo.Label) && a.PackageName.equals(ainfo.PackageName)) {
+                if (a.label.equals(ainfo.label) && a.packageName.equals(ainfo.packageName)) {
                     found = true;
                     //a.KML = true;
                     break;
@@ -123,12 +124,12 @@ public class ExternalViewerChecker {
 
         // Apply Exceptions
         for (AppInfo a : appInfoList) {
-            if (a.PackageName.equals("at.xylem.mapin")) {
+            if (a.packageName.equals("at.xylem.mapin")) {
                 // MAPinr is not opening GPX correctly!
                 a.GPX = false;
                 a.KML = true;
             }
-            if (a.PackageName.equals("com.google.earth")) {
+            if (a.packageName.equals("com.google.earth")) {
                 // Google Earth opens file with fileProvider only
                 a.requiresFileProvider = true;
             }

@@ -261,7 +261,7 @@ public class FragmentTracklist extends Fragment {
                     String pn = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefTracksViewer", "");
                     boolean foundDefault = false;
                     for (AppInfo ai : ail) {
-                        if (ai.PackageName.equals(pn)) {
+                        if (ai.packageName.equals(pn)) {
                             // Default Viewer available!
                             GPSApplication.getInstance().setTrackViewer(ai);
                             foundDefault = true;

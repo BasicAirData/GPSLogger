@@ -67,8 +67,8 @@ public class AppDialogList extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.icon.setImageDrawable(listData.get(position).Icon);
-        holder.description.setText(listData.get(position).Label);
+        holder.icon.setImageDrawable(listData.get(position).icon);
+        holder.description.setText(listData.get(position).label);
         holder.format.setText(listData.get(position).GPX ? "GPX" : listData.get(position).KML ? "KML" : "");
 
         return convertView;
