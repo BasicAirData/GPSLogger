@@ -23,11 +23,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_KML;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
+
 
 public class ExternalViewerChecker {
 
@@ -41,6 +46,19 @@ public class ExternalViewerChecker {
             return o1.label.compareTo(o2.label);
         }
     }
+
+    private class FileType {
+        FileType (ArrayList<String> _packages, String _mimeType, String _fileType) {
+            this.packages = _packages;
+            this.fileType = _fileType;
+            this.mimeType = _mimeType;
+        }
+        ArrayList<String> packages;
+        String mimeType;
+        String fileType;
+    }
+
+    private ArrayList<FileType> fileTypeList = new ArrayList<>();
 
     public ArrayList<AppInfo> getAppInfoList() {
         return appInfoList;
@@ -69,53 +87,56 @@ public class ExternalViewerChecker {
 
         appInfoList = new ArrayList<>();
 
+        fileTypeList = new ArrayList<>();
+        fileTypeList.add(new FileType(null, "application/gpx+xml", FILETYPE_GPX));
+
+//        ArrayList<String> gpxList = new ArrayList<>();
+//        gpxList.add("com.vecturagames.android.app.gpxviewer");
+//        fileTypeList.add(new FileType(gpxList, "application/gpx+xml", FILETYPE_GPX));
+
+        fileTypeList.add(new FileType(null, "application/vnd.google-earth.kml+xml",  FILETYPE_KML));
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Find GPX Viewers
-        intent.setType("application/gpx+xml");  // GPX
-        //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-        List<ResolveInfo> GPXlri = pm.queryIntentActivities(intent, 0);
-        //Log.w("myApp", "[#] GPSApplication.java - Found " + KMLlri.size() + " viewers:");
-        for (ResolveInfo tmpri : GPXlri) {
-            //Log.w("myApp", "[#] " + tmpri.activityInfo.applicationInfo.packageName);
-            AppInfo ainfo = new AppInfo();
-            ainfo.packageName = tmpri.activityInfo.applicationInfo.packageName;
-            ainfo.label = tmpri.activityInfo.applicationInfo.loadLabel(pm).toString();
-            ainfo.icon =  tmpri.activityInfo.applicationInfo.loadIcon(pm);
-            ainfo.KML = false;
-            ainfo.GPX = true;
-            ainfo.mimeType = "application/gpx+xml";
+        for (FileType ft : fileTypeList) {
+            intent.setType(ft.mimeType);
+            Log.w("myApp", "[#] ExternalViewerChecker.java - " + ft.mimeType);
+            //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
+            List<ResolveInfo> KMLlri = pm.queryIntentActivities(intent, 0);
+            Log.w("myApp", "[#] ExternalViewerChecker.java - Found " + KMLlri.size() + " viewers:");
+            for (ResolveInfo tmpri : KMLlri) {
+                boolean isPackageInList = false;
+                if (ft.packages != null) {
+                    for (String s : ft.packages) {
+                        if (s.equals(tmpri.activityInfo.applicationInfo.packageName)) {
+                            isPackageInList = true;
+                            break;
+                        }
+                    }
+                } else isPackageInList = true;
 
-            appInfoList.add(ainfo);
-        }
+                if (isPackageInList) {
+                    Log.w("myApp", "[#] ExternalViewerChecker.java - * " + tmpri.activityInfo.applicationInfo.packageName);
+                    AppInfo ainfo = new AppInfo();
+                    ainfo.packageName = tmpri.activityInfo.applicationInfo.packageName;
+                    ainfo.label = tmpri.activityInfo.applicationInfo.loadLabel(pm).toString();
 
-        // Find KML Viewers
-        intent.setType("application/vnd.google-earth.kml+xml");     // KML
-        //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
-        List<ResolveInfo> KMLlri = pm.queryIntentActivities(intent, 0);
-        //Log.w("myApp", "[#] GPSApplication.java - Found " + KMLlri.size() + " viewers:");
-        for (ResolveInfo tmpri : KMLlri) {
-            //Log.w("myApp", "[#] " + tmpri.activityInfo.applicationInfo.packageName);
-            AppInfo ainfo = new AppInfo();
-            ainfo.packageName = tmpri.activityInfo.applicationInfo.packageName;
-            ainfo.label = tmpri.activityInfo.applicationInfo.loadLabel(pm).toString();
-            ainfo.icon =  tmpri.activityInfo.applicationInfo.loadIcon(pm);
-            ainfo.mimeType = "application/vnd.google-earth.kml+xml";
-            ainfo.KML = true;
-            ainfo.GPX = false;
+                    boolean found = false;
 
-            boolean found = false;
-
-            for (AppInfo a : appInfoList) {
-                if (a.label.equals(ainfo.label) && a.packageName.equals(ainfo.packageName)) {
-                    found = true;
-                    //a.KML = true;
-                    break;
+                    for (AppInfo a : appInfoList) {
+                        if (a.label.equals(ainfo.label) && a.packageName.equals(ainfo.packageName)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        ainfo.mimeType = ft.mimeType;
+                        ainfo.fileType = ft.fileType;
+                        ainfo.icon = tmpri.activityInfo.applicationInfo.loadIcon(pm);
+                        appInfoList.add(ainfo);
+                    }
                 }
-            }
-            if (!found) {
-                appInfoList.add(ainfo);
             }
         }
 
@@ -126,8 +147,8 @@ public class ExternalViewerChecker {
         for (AppInfo a : appInfoList) {
             if (a.packageName.equals("at.xylem.mapin")) {
                 // MAPinr is not opening GPX correctly!
-                a.GPX = false;
-                a.KML = true;
+                a.fileType = FILETYPE_KML;
+                a.mimeType = "application/vnd.google-earth.kml+xml";
             }
             if (a.packageName.equals("com.google.earth")) {
                 // Google Earth opens file with fileProvider only

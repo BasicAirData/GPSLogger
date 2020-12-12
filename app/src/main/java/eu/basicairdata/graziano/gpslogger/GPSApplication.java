@@ -106,6 +106,8 @@ public class GPSApplication extends Application implements LocationListener {
     public static final int JOB_TYPE_DELETE     = 4;                // Bulk Delete
 
     public static final String FLAG_RECORDING   = "flagRecording";  // The persistent Flag is set when the app is recording, in order to detect Background Crashes
+    public static final String FILETYPE_KML     = ".kml";
+    public static final String FILETYPE_GPX     = ".gpx";
 
     private static final float[] NEGATIVE = {
             -1.0f,      0,      0,     0,  248,     // red
@@ -1016,10 +1018,8 @@ public class GPSApplication extends Application implements LocationListener {
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        if (TrackViewer.KML || TrackViewer.GPX) {
-            file = new File(Environment.getExternalStorageDirectory()
-                    + "/GPSLogger/AppData/", exportingTask.getName()
-                    + (TrackViewer.GPX ? ".gpx" : ".kml"));
+        if (!TrackViewer.fileType.isEmpty()) {
+            file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + TrackViewer.fileType);
             if (TrackViewer.requiresFileProvider) {
                 Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                 getApplicationContext().grantUriPermission(TrackViewer.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -1108,8 +1108,8 @@ public class GPSApplication extends Application implements LocationListener {
                 Ex.start();
                 break;
             case JOB_TYPE_VIEW:
-                if (TrackViewer.GPX) Ex = new Exporter(exportingTask, false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-                else if (TrackViewer.KML) Ex = new Exporter(exportingTask, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                if (TrackViewer.fileType.equals(FILETYPE_GPX)) Ex = new Exporter(exportingTask, false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                if (TrackViewer.fileType.equals(FILETYPE_KML)) Ex = new Exporter(exportingTask, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
                 Ex.start();
                 break;
             case JOB_TYPE_SHARE:
@@ -1205,7 +1205,7 @@ public class GPSApplication extends Application implements LocationListener {
                 isContextMenuViewVisible = true;
                 for (AppInfo ai : externalViewerChecker.getAppInfoList()) {
                     if ((ai.packageName.equals(pn)) || (externalViewerChecker.size() == 1)) {
-                        ViewInApp = ai.label + (ai.GPX ? " (GPX)" : " (KML)");
+                        ViewInApp = ai.label + (ai.fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)");
 
                         // Set View Icon
                         Bitmap bitmap;
@@ -1614,14 +1614,14 @@ public class GPSApplication extends Application implements LocationListener {
                                 if (track != null) {
                                     // Delete track files
                                     DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".kml");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".gpx");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + FILETYPE_KML);
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + FILETYPE_GPX);
                                     DeleteFile(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
                                     if (DeleteAlsoExportedFiles) {
                                         // Delete exported files
                                         DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + FILETYPE_KML);
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + FILETYPE_GPX);
                                     }
 
                                     TracksDeleted++;

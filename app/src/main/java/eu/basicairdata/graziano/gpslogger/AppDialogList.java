@@ -28,6 +28,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_KML;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
+
+
 public class AppDialogList extends BaseAdapter {
 
     private ArrayList<AppInfo> listData;
@@ -69,7 +73,7 @@ public class AppDialogList extends BaseAdapter {
 
         holder.icon.setImageDrawable(listData.get(position).icon);
         holder.description.setText(listData.get(position).label);
-        holder.format.setText(listData.get(position).GPX ? "GPX" : listData.get(position).KML ? "KML" : "");
+        holder.format.setText(listData.get(position).fileType.equals(FILETYPE_GPX) ? "GPX" : listData.get(position).fileType.equals(FILETYPE_KML) ? "KML" : "");
 
         return convertView;
     }

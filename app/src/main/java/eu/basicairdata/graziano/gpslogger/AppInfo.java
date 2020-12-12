@@ -24,8 +24,7 @@ public class AppInfo {
     String label = "";
     String packageName = "";
     String mimeType = "";
-    boolean KML = false;
-    boolean GPX = false;
+    String fileType = "";
     boolean requiresFileProvider = false;
     Drawable icon = null;
 }
