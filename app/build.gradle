@@ -21,7 +21,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
-
+    
     lintOptions {
         //checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
@@ -30,6 +30,7 @@ android {
     }
 
 //    aaptOptions {
+//        // Disable PNG Crunching
 //        cruncherEnabled = false
 //    }
 

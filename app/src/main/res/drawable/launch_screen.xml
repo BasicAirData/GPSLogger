@@ -20,7 +20,7 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
   <!-- The background color -->
-  <item android:drawable="@android:color/black"/>
+  <item android:drawable="@color/textColorPrimary"/>
   <!-- App Logo -->
   <item>
     <bitmap
