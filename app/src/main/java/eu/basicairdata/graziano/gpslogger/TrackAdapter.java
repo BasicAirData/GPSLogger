@@ -46,6 +46,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
     private final List<Track> dataSet;
 
+    // N.B. This must agree with the Track.TRACK_TYPE_* values
     private static final int[] trackType = {
             R.drawable.ic_tracktype_place_24dp,
             R.drawable.ic_tracktype_walk_24dp,
@@ -67,7 +68,6 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
         private final PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
         private PhysicalData phd;
         private Track track;
-        private int TT;
 
         private final CardView card;
         private final TextView textViewTrackName;
@@ -169,7 +169,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackGeopoints.setText(String.valueOf(trk.getNumberOfLocations()));
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
 
-            TT = trk.getTrackType();
+            int TT = trk.getTrackType();
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageResource(trackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
@@ -219,7 +219,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackGeopoints.setText(String.valueOf(track.getNumberOfLocations()));
             textViewTrackPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
 
-            TT = trk.getTrackType();
+            int TT = trk.getTrackType();
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageResource(trackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 

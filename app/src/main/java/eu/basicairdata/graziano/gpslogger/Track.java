@@ -34,6 +34,7 @@ public class Track {
     private static final float STANDARD_ACCURACY = 10.0f;
     private static final float SECURITY_COEFF = 1.7f;
 
+    // N.B. These values must agree with the order in TrackAdapter.trackType
     private static final int TRACK_TYPE_STEADY   = 0;
     private static final int TRACK_TYPE_WALK     = 1;
     private static final int TRACK_TYPE_MOUNTAIN = 2;
