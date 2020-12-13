@@ -53,10 +53,10 @@ public class FragmentAboutDialog extends DialogFragment {
 
         TVDescription = (TextView) view.findViewById(R.id.id_about_textView_description);
         switch (app.getAppOrigin()) {
-            case GPSApplication.APP_ORIGIN_NOT_SPECIFIED:
+            case APP_ORIGIN_NOT_SPECIFIED:
                 TVDescription.setText(getString(R.string.about_description));
                 break;
-            case GPSApplication.APP_ORIGIN_GOOGLE_PLAY_STORE:
+            case APP_ORIGIN_GOOGLE_PLAY_STORE:
                 TVDescription.setText(getString(R.string.about_description_googleplaystore));
                 break;
         }
@@ -66,11 +66,11 @@ public class FragmentAboutDialog extends DialogFragment {
                 public void onClick(DialogInterface dialog, int id) {}
             });
 
-        if (app.getAppOrigin() != GPSApplication.APP_ORIGIN_NOT_SPECIFIED) {
+        if (app.getAppOrigin() != AppOrigin.APP_ORIGIN_NOT_SPECIFIED) {
             createAboutAlert.setView(view).setNegativeButton(R.string.about_rate_this_app, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    if (app.getAppOrigin() == GPSApplication.APP_ORIGIN_GOOGLE_PLAY_STORE) {
+                    if (app.getAppOrigin() == AppOrigin.APP_ORIGIN_GOOGLE_PLAY_STORE) {
                         boolean marketfailed = false;
                         try {
                             getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));

@@ -156,29 +156,28 @@ public class GPSService extends Service {
 
 
     private boolean isIconRecording () {
-        return ((GPSApplication.getInstance().getGPSStatus() == GPSApplication.GPS_OK) && GPSApplication.getInstance().getRecording());
+        return ((GPSApplication.getInstance().getGPSStatus() == GPSStatus.GPS_OK) && GPSApplication.getInstance().getRecording());
     }
 
 
     private String composeContentText () {
         String notificationText = "";
 
-        int GPSStatus = GPSApplication.getInstance().getGPSStatus();
-        switch (GPSStatus) {
-            case GPSApplication.GPS_DISABLED:
+        switch (GPSApplication.getInstance().getGPSStatus()) {
+            case GPS_DISABLED:
                 notificationText = getString(R.string.gps_disabled);
                 break;
-            case GPSApplication.GPS_OUTOFSERVICE:
+            case GPS_OUTOFSERVICE:
                 notificationText = getString(R.string.gps_out_of_service);
                 break;
-            case GPSApplication.GPS_TEMPORARYUNAVAILABLE:
-            case GPSApplication.GPS_SEARCHING:
+            case GPS_TEMPORARYUNAVAILABLE:
+            case GPS_SEARCHING:
                 notificationText = getString(R.string.gps_searching);
                 break;
-            case GPSApplication.GPS_STABILIZING:
+            case GPS_STABILIZING:
                 notificationText = getString(R.string.gps_stabilizing);
                 break;
-            case GPSApplication.GPS_OK:
+            case GPS_OK:
                 if (GPSApplication.getInstance().getRecording() && (GPSApplication.getInstance().getCurrentTrack() != null)) {
                     PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
                     PhysicalData phdDuration;

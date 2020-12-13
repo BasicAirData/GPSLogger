@@ -238,7 +238,7 @@ public class FragmentTracklist extends Fragment {
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_SHARE_TRACKS) {
-            GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_SHARE);
+            GPSApplication.getInstance().LoadJob(JobType.JOB_TYPE_SHARE);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 CheckStoragePermission();   // Ask for storage permission
             } else GPSApplication.getInstance().ExecuteJob();
@@ -296,7 +296,7 @@ public class FragmentTracklist extends Fragment {
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_EXPORT_TRACKS) {
-            GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_EXPORT);
+            GPSApplication.getInstance().LoadJob(JobType.JOB_TYPE_EXPORT);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 CheckStoragePermission();   // Ask for storage permission
             } else GPSApplication.getInstance().ExecuteJob();
@@ -323,7 +323,7 @@ public class FragmentTracklist extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(true); // Delete also exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().LoadJob(JobType.JOB_TYPE_DELETE);
                         GPSApplication.getInstance().ExecuteJob();
                     }
                 });
@@ -331,7 +331,7 @@ public class FragmentTracklist extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().LoadJob(JobType.JOB_TYPE_DELETE);
                         GPSApplication.getInstance().ExecuteJob();
                     }
                 });
@@ -350,7 +350,7 @@ public class FragmentTracklist extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().LoadJob(JobType.JOB_TYPE_DELETE);
                         GPSApplication.getInstance().ExecuteJob();
                     }
                 });
@@ -475,7 +475,7 @@ public class FragmentTracklist extends Fragment {
 
 
     public void OpenTrack() {
-        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_VIEW);
+        GPSApplication.getInstance().LoadJob(JobType.JOB_TYPE_VIEW);
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             CheckStoragePermission();   // Ask for storage permission
         } else GPSApplication.getInstance().ExecuteJob();

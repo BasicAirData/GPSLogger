@@ -89,22 +89,6 @@ public class GPSApplication extends Application implements LocationListener {
     private static final int GPSUNAVAILABLEHANDLERTIMER = 7000; // The "GPS temporary unavailable" timer
     private int StabilizingSamples = 3;
 
-    public static final int GPS_DISABLED = 0;
-    public static final int GPS_OUTOFSERVICE = 1;
-    public static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    public static final int GPS_SEARCHING = 3;
-    public static final int GPS_STABILIZING = 4;
-    public static final int GPS_OK = 5;
-
-    public static final int APP_ORIGIN_NOT_SPECIFIED     = 0;
-    public static final int APP_ORIGIN_GOOGLE_PLAY_STORE = 1;  // The app is installed via the Google Play Store
-
-    public static final int JOB_TYPE_NONE       = 0;                // No operation
-    public static final int JOB_TYPE_EXPORT     = 1;                // Bulk Exportation
-    public static final int JOB_TYPE_VIEW       = 2;                // Bulk View
-    public static final int JOB_TYPE_SHARE      = 3;                // Bulk Share
-    public static final int JOB_TYPE_DELETE     = 4;                // Bulk Delete
-
     public static final String FLAG_RECORDING   = "flagRecording";  // The persistent Flag is set when the app is recording, in order to detect Background Crashes
 
     private static final float[] NEGATIVE = {
@@ -178,9 +162,9 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean Recording = false;
     private boolean PlacemarkRequest = false;
     private boolean isGPSLocationUpdatesActive = false;
-    private int GPSStatus = GPS_SEARCHING;
+    private GPSStatus GPSStatusValue = GPSStatus.GPS_SEARCHING;
 
-    private int AppOrigin = APP_ORIGIN_NOT_SPECIFIED;       // Which package manager is used to install this app
+    private AppOrigin AppOriginSetting = AppOrigin.APP_ORIGIN_NOT_SPECIFIED;       // Which package manager is used to install this app
 
     private boolean NewTrackFlag = false;                   // The variable that handle the double-click on "Track Finished"
     final Handler newtrackhandler = new Handler();
@@ -198,7 +182,7 @@ public class GPSApplication extends Application implements LocationListener {
     private int GPSActivity_activeTab = 0;                  // The active tab on GPSActivity
     private int JobProgress = 0;
     private int JobsPending = 0;                            // The number of jobs to be done
-    public int JobType = JOB_TYPE_NONE;                     // The type of job that is pending
+    private JobType JobTypeValue = JobType.JOB_TYPE_NONE;                     // The type of job that is pending
     private boolean DeleteAlsoExportedFiles = false;        // When true, the deletion of some tracks will delete also the exported files of the tracks
 
     private int _Stabilizer = StabilizingSamples;
@@ -228,8 +212,8 @@ public class GPSApplication extends Application implements LocationListener {
 
         @Override
         public void run() {
-            if ((GPSStatus == GPS_OK) || (GPSStatus == GPS_STABILIZING)) {
-                GPSStatus = GPS_TEMPORARYUNAVAILABLE;
+            if ((GPSStatusValue == GPSStatus.GPS_OK) || (GPSStatusValue == GPSStatus.GPS_STABILIZING)) {
+                GPSStatusValue = GPSStatus.GPS_TEMPORARYUNAVAILABLE;
                 EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
             }
         }
@@ -298,9 +282,9 @@ public class GPSApplication extends Application implements LocationListener {
 
             // Exportation Finished
             if (Exporters_Success == Exporters_Total) {
-                if (JobType == JOB_TYPE_VIEW) {
+                if (JobTypeValue == JobType.JOB_TYPE_VIEW) {
                     if (!ExportingTaskList.isEmpty()) ViewTrack(ExportingTaskList.get(0));
-                } else if (JobType == JOB_TYPE_SHARE) {
+                } else if (JobTypeValue == JobType.JOB_TYPE_SHARE) {
                     EventBus.getDefault().post(EventBusMSG.INTENT_SEND);
                 } else {
                     EventBus.getDefault().post(EventBusMSG.TOAST_TRACK_EXPORTED);
@@ -505,8 +489,8 @@ public class GPSApplication extends Application implements LocationListener {
         return HandlerTimer;
     }
 
-    public int getGPSStatus() {
-        return GPSStatus;
+    public GPSStatus getGPSStatus() {
+        return GPSStatusValue;
     }
 
     public int getPrefKMLAltitudeMode() {
@@ -608,8 +592,8 @@ public class GPSApplication extends Application implements LocationListener {
         return isBackgroundActivityRestricted;
     }
 
-    public int getAppOrigin() {
-        return AppOrigin;
+    public AppOrigin getAppOrigin() {
+        return AppOriginSetting;
     }
 
     public int getJobProgress() {
@@ -786,11 +770,11 @@ public class GPSApplication extends Application implements LocationListener {
             String installer;
             installer = getApplicationContext().getPackageManager().getInstallerPackageName(getApplicationContext().getPackageName());
             if (installer.equals("com.android.vending") || installer.equals("com.google.android.feedback"))
-                AppOrigin = APP_ORIGIN_GOOGLE_PLAY_STORE;                               // App installed from Google Play Store
-            else AppOrigin = APP_ORIGIN_NOT_SPECIFIED;                                  // Otherwise
+                AppOriginSetting = AppOrigin.APP_ORIGIN_GOOGLE_PLAY_STORE;                               // App installed from Google Play Store
+            else AppOriginSetting = AppOrigin.APP_ORIGIN_NOT_SPECIFIED;                                  // Otherwise
         } catch (Exception e) {
             Log.w("myApp", "[#] GPSApplication.java - Exception trying to determine the package installer");
-            AppOrigin = APP_ORIGIN_NOT_SPECIFIED;
+            AppOriginSetting = AppOrigin.APP_ORIGIN_NOT_SPECIFIED;
         }
 
         GPSDataBase = new DatabaseHandler(this);                                 // Initialize the Database
@@ -899,7 +883,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void onShutdown() {
         if (AsyncTODOQueue != null) {
-            GPSStatus = GPS_SEARCHING;
+            GPSStatusValue = GPSStatus.GPS_SEARCHING;
 
             Log.w("myApp", "[#] GPSApplication.java - onShutdown()");
             AsyncTODO ast = new AsyncTODO();
@@ -938,7 +922,7 @@ public class GPSApplication extends Application implements LocationListener {
         // Request permissions = https://developer.android.com/training/permissions/requesting.html
         if (!state && !getRecording() && isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            GPSStatus = GPS_SEARCHING;
+            GPSStatusValue = GPSStatus.GPS_SEARCHING;
             myGPSStatusListener.disable();
             mlocManager.removeUpdates(this);
             isGPSLocationUpdatesActive = false;
@@ -1088,7 +1072,7 @@ public class GPSApplication extends Application implements LocationListener {
     }
 
 
-    public void LoadJob (int jobType) {
+    public void LoadJob (JobType jobType) {
         ExportingTaskList.clear();
         synchronized(_ArrayListTracks) {
             for (Track T : _ArrayListTracks) {
@@ -1103,12 +1087,12 @@ public class GPSApplication extends Application implements LocationListener {
             }
         }
         JobsPending = ExportingTaskList.size();
-        JobType = jobType;
+        JobTypeValue = jobType;
     }
 
 
     public void ExecuteExportingTask (ExportingTask exportingTask) {
-        switch (JobType) {
+        switch (JobTypeValue) {
             case JOB_TYPE_NONE:
             case JOB_TYPE_DELETE:
                 break;
@@ -1133,7 +1117,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void ExecuteJob () {
         if (!ExportingTaskList.isEmpty()) {
-            switch (JobType) {
+            switch (JobTypeValue) {
                 case JOB_TYPE_NONE:
                     break;
                 case JOB_TYPE_DELETE:
@@ -1267,21 +1251,21 @@ public class GPSApplication extends Application implements LocationListener {
             gpsunavailablehandler.removeCallbacks(unavailr);                            // Cancel the previous unavail countdown handler
             gpsunavailablehandler.postDelayed(unavailr, GPSUNAVAILABLEHANDLERTIMER);    // starts the unavailability timeout (in 7 sec.)
 
-            if (GPSStatus != GPS_OK) {
-                if (GPSStatus != GPS_STABILIZING) {
-                    GPSStatus = GPS_STABILIZING;
+            if (GPSStatusValue != GPSStatus.GPS_OK) {
+                if (GPSStatusValue != GPSStatus.GPS_STABILIZING) {
+                    GPSStatusValue = GPSStatus.GPS_STABILIZING;
                     _Stabilizer = StabilizingSamples;
                     EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 }
                 else _Stabilizer--;
-                if (_Stabilizer == 0) GPSStatus = GPS_OK;
+                if (_Stabilizer == 0) GPSStatusValue = GPSStatus.GPS_OK;
                 PrevFix = eloc;
                 PrevRecordedFix = eloc;
                 isPrevFixRecorded = true;
             }
 
             // Save fix in case this is a STOP or a START (the speed is "old>0 and new=0" or "old=0 and new>0")
-            if ((PrevFix != null) && (PrevFix.getLocation().hasSpeed()) && (eloc.getLocation().hasSpeed()) && (GPSStatus == GPS_OK) && (Recording)
+            if ((PrevFix != null) && (PrevFix.getLocation().hasSpeed()) && (eloc.getLocation().hasSpeed()) && (GPSStatusValue == GPSStatus.GPS_OK) && (Recording)
                     && (((eloc.getLocation().getSpeed() == 0) && (PrevFix.getLocation().getSpeed() != 0)) || ((eloc.getLocation().getSpeed() != 0) && (PrevFix.getLocation().getSpeed() == 0)))) {
                 if (!isPrevFixRecorded) {                   // Record the old sample if not already recorded
                     AsyncTODO ast = new AsyncTODO();
@@ -1295,7 +1279,7 @@ public class GPSApplication extends Application implements LocationListener {
                 ForceRecord = true;                         // + Force to record the new
             }
 
-            if (GPSStatus == GPS_OK) {
+            if (GPSStatusValue == GPSStatus.GPS_OK) {
                 AsyncTODO ast = new AsyncTODO();
                 if ((Recording) && ((prefGPSdistance == 0) || (PrevRecordedFix == null) || (ForceRecord) || (loc.distanceTo(PrevRecordedFix.getLocation()) >= prefGPSdistance))) {
                     PrevRecordedFix = eloc;
@@ -1325,13 +1309,13 @@ public class GPSApplication extends Application implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
-        GPSStatus = GPS_DISABLED;
+        GPSStatusValue = GPSStatus.GPS_DISABLED;
         EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        GPSStatus = GPS_SEARCHING;
+        GPSStatusValue = GPSStatus.GPS_SEARCHING;
         EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
     }
 
@@ -1343,14 +1327,14 @@ public class GPSApplication extends Application implements LocationListener {
             case LocationProvider.OUT_OF_SERVICE:
                 //Log.w("myApp", "[#] GPSApplication.java - GPS Out of Service");
                 gpsunavailablehandler.removeCallbacks(unavailr);            // Cancel the previous unavail countdown handler
-                GPSStatus = GPS_OUTOFSERVICE;
+                GPSStatusValue = GPSStatus.GPS_OUTOFSERVICE;
                 EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 //Toast.makeText( getApplicationContext(), "GPS Out of Service", Toast.LENGTH_SHORT).show();
                 break;
             case LocationProvider.TEMPORARILY_UNAVAILABLE:
                 //Log.w("myApp", "[#] GPSApplication.java - GPS Temporarily Unavailable");
                 gpsunavailablehandler.removeCallbacks(unavailr);            // Cancel the previous unavail countdown handler
-                GPSStatus = GPS_TEMPORARYUNAVAILABLE;
+                GPSStatusValue = GPSStatus.GPS_TEMPORARYUNAVAILABLE;
                 EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 //Toast.makeText( getApplicationContext(), "GPS Temporarily Unavailable", Toast.LENGTH_SHORT).show();
                 break;

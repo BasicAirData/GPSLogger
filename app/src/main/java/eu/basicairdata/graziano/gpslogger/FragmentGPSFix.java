@@ -45,13 +45,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_DISABLED;
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_OUTOFSERVICE;
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_TEMPORARYUNAVAILABLE;
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_SEARCHING;
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_STABILIZING;
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_OK;
-
 
 public class FragmentGPSFix extends Fragment {
 
@@ -164,7 +157,7 @@ public class FragmentGPSFix extends Fragment {
         CVWarningGPSDisabled.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isAWarningClicked && (GPSStatus == GPS_DISABLED)) {
+                if (!isAWarningClicked && (GPSStatusValue == GPSStatus.GPS_DISABLED)) {
                     isAWarningClicked = true;
                     // Go to Settings screen
                     Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -239,7 +232,7 @@ public class FragmentGPSFix extends Fragment {
     private LocationExtended location;
     private double AltitudeManualCorrection;
     private int prefDirections;
-    private int GPSStatus = GPS_DISABLED;
+    private GPSStatus GPSStatusValue = GPSStatus.GPS_DISABLED;
     private boolean EGMAltitudeCorrection;
     private boolean isValidAltitude;
     private boolean isBackgroundActivityRestricted;
@@ -249,11 +242,11 @@ public class FragmentGPSFix extends Fragment {
         location = gpsApplication.getCurrentLocationExtended();
         AltitudeManualCorrection = gpsApplication.getPrefAltitudeCorrection();
         prefDirections = gpsApplication.getPrefShowDirections();
-        GPSStatus = gpsApplication.getGPSStatus();
+        GPSStatusValue = gpsApplication.getGPSStatus();
         EGMAltitudeCorrection = gpsApplication.getPrefEGM96AltitudeCorrection();
         isBackgroundActivityRestricted = gpsApplication.isBackgroundActivityRestricted();
         if (isAdded()) {
-            if ((location != null) && (GPSStatus == GPS_OK)) {
+            if ((location != null) && (GPSStatusValue == GPSStatus.GPS_OK)) {
 
                 phdLatitude = phdformatter.format(location.getLatitude(), PhysicalDataFormatter.FORMAT_LATITUDE);
                 phdLongitude = phdformatter.format(location.getLongitude(), PhysicalDataFormatter.FORMAT_LONGITUDE);
@@ -335,7 +328,7 @@ public class FragmentGPSFix extends Fragment {
                 TLSatellites.setVisibility(View.INVISIBLE);
 
                 TVGPSFixStatus.setVisibility(View.VISIBLE);
-                switch (GPSStatus) {
+                switch (GPSStatusValue) {
                     case GPS_DISABLED:
                         TVGPSFixStatus.setText(R.string.gps_disabled);
                         CVWarningGPSDisabled.setVisibility(View.VISIBLE);
