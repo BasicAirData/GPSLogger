@@ -56,7 +56,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_KML;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
 
