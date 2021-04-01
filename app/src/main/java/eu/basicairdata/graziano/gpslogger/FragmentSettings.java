@@ -53,18 +53,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_KML;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
 
@@ -158,7 +149,11 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         if (!Downloaded) {
                             // execute this when the downloader must be fired
                             final DownloadTask downloadTask = new DownloadTask(getActivity());
-                            downloadTask.execute("http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC");
+                            // Original Link not available anymore
+                            //downloadTask.execute("http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC");
+                            // Found a copy of EGM Binary grid hosted on OSGeo.org Website.
+                            // The connection is not secured with HTTPS for now, we chosen to use it anyway.
+                            downloadTask.execute("http://download.osgeo.org/proj/vdatum/egm96_15/outdated/WW15MGH.DAC");
 
                             mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
@@ -380,107 +375,45 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             this.context = context;
         }
 
-        // Disables the SSL certificate checking for new instances of {@link HttpsURLConnection} This has been created to
-        // usually aid testing on a local box, not for use on production. On this case it is OK
-        // Code found on https://gist.github.com/tobiasrohloff/72e32bc4e215522c4bcc
-
-        private void disableSSLCertificateChecking() {
-            TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-
-                @Override
-                public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                    // Not implemented
-                }
-
-                @Override
-                public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                    // Not implemented
-                }
-            } };
-
-            try {
-                SSLContext sc = SSLContext.getInstance("TLS");
-
-                sc.init(null, trustAllCerts, new java.security.SecureRandom());
-
-                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            } catch (KeyManagementException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-        }
-
-
         @Override
         protected String doInBackground(String... sUrl) {
-            boolean redirect = false;
-            String HTTPSUrl = "";
             InputStream input = null;
             OutputStream output = null;
             HttpURLConnection connection = null;
             try {
                 URL url = new URL(sUrl[0]);
                 connection = (HttpURLConnection) url.openConnection();
-                connection.setInstanceFollowRedirects(true);
                 connection.connect();
-
-                // Redirection HTTP -> HTTPS is insecure.
-                //
-                // Unfortunately the July 2019 the National Geospatial-Intelligence Agency started to change
-                // its Website in a not predictable Way for Us (the EGM File started to return a HTTP 302) and,
-                // when we patched the Code, We decided to keep opened all the Possibilities in order to restore
-                // the Functionality and minimize the Possibility that the File could become unavailable again.
-                //
-                // We are watching if the remote Situation remains stable:
-                // The Plan is to completely remove the HTTP Request in favor of a direct HTTPS one,
-                // at least for Android 5+ that support TLS Protocol.
 
                 // expect HTTP 200 OK, so we don't mistakenly save error report
                 // instead of the file
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    if ((connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP)
-                            || (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM)
-                            || (connection.getResponseCode() == HttpURLConnection.HTTP_SEE_OTHER)) {
-                        // REDIRECTED !!
-                        HTTPSUrl = connection.getHeaderField("Location");
-                        connection.disconnect();
-                        if (HTTPSUrl.startsWith("https")) {
-                            redirect = true;
-                            Log.w("myApp", "[#] FragmentSettings.java - Download of EGM Grid redirected to " + HTTPSUrl) ;
-                        }
-                    }
-                    else return "Server returned HTTP " + connection.getResponseCode()
+                    return "Server returned HTTP " + connection.getResponseCode()
                             + " " + connection.getResponseMessage();
                 }
 
-                if (!redirect) {
-                    // this will be useful to display download percentage
-                    // might be -1: server did not report the length
-                    int fileLength = connection.getContentLength();
+                // this will be useful to display download percentage
+                // might be -1: server did not report the length
+                int fileLength = connection.getContentLength();
 
-                    // download the file
-                    input = connection.getInputStream();
-                    output = new FileOutputStream(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+                // download the file
+                input = connection.getInputStream();
+                output = new FileOutputStream(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
 
-                    byte data[] = new byte[4096];
-                    long total = 0;
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        // allow canceling with back button
-                        if (isCancelled()) {
-                            input.close();
-                            return null;
-                        }
-                        total += count;
-                        // publishing the progress....
-                        if (fileLength > 0) // only if total length is known
-                            publishProgress((int) (total * 2028 / fileLength));
-                        output.write(data, 0, count);
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        input.close();
+                        return null;
                     }
+                    total += count;
+                    // publishing the progress....
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 2028 / fileLength));
+                    output.write(data, 0, count);
                 }
             } catch (Exception e) {
                 return e.toString();
@@ -496,67 +429,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (connection != null)
                     connection.disconnect();
             }
-            if (!redirect) return null;
-            else {
-                // REDIRECTION. Try with HTTPS:
-                HttpsURLConnection connection_https = null;
-                try {
-                    URL url = new URL(HTTPSUrl);
-
-                    connection_https = (HttpsURLConnection) url.openConnection();
-                    connection_https.setInstanceFollowRedirects(true);
-
-                    disableSSLCertificateChecking();
-
-                    connection_https = (HttpsURLConnection) url.openConnection();
-                    connection_https.connect();
-
-                    // expect HTTP 200 OK, so we don't mistakenly save error report
-                    // instead of the file
-                    if (connection_https.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                        return "Server returned HTTP " + connection_https.getResponseCode()
-                                + " " + connection_https.getResponseMessage();
-                    }
-
-                    // this will be useful to display download percentage
-                    // might be -1: server did not report the length
-                    int fileLength = connection_https.getContentLength();
-
-                    // download the file
-                    input = connection_https.getInputStream();
-                    output = new FileOutputStream(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-
-                    byte data[] = new byte[4096];
-                    long total = 0;
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        // allow canceling with back button
-                        if (isCancelled()) {
-                            input.close();
-                            return null;
-                        }
-                        total += count;
-                        // publishing the progress....
-                        if (fileLength > 0) // only if total length is known
-                            publishProgress((int) (total * 2028 / fileLength));
-                        output.write(data, 0, count);
-                    }
-                } catch (Exception e) {
-                    return e.toString();
-                } finally {
-                    try {
-                        if (output != null)
-                            output.close();
-                        if (input != null)
-                            input.close();
-                    } catch (IOException ignored) {
-                    }
-
-                    if (connection_https != null)
-                        connection_https.disconnect();
-                }
-                return null;
-            }
+            return null;
         }
 
         @Override
