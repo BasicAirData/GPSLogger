@@ -46,19 +46,12 @@
     <color name="preference_accent">#b51111</color>
     <color name="preference_fallback_accent_color" tools:override="true">#b51111</color>
 
-
-
+    <color name="colorRoundedCornerBottom">#eeeeee</color>
+    <color name="colorRoundedCornerTop">#ffffff</color>
+    <color name="colorRoundedCornerBorder">#bfbfbf</color>
 
     <!-- ======[ SHARED COLORS ]=============================================================== -->
 
     <color name="colorThumbnailLineColor">#c9c9c9</color> <!-- DO NOT CHANGE THIS COLOR! -->
-
-    <color name="colorRoundedCornerBottom_Dark">#161616</color>
-    <color name="colorRoundedCornerTop_Dark">#202020</color>
-    <color name="colorRoundedCornerBorder_Dark">#707070</color>
-
-    <color name="colorRoundedCornerBottom_Light">#eeeeee</color>
-    <color name="colorRoundedCornerTop_Light">#ffffff</color>
-    <color name="colorRoundedCornerBorder_Light">#bfbfbf</color>
 
 </resources>

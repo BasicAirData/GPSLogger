@@ -23,10 +23,12 @@ import android.location.Location;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
+
 public class Track {
 
     // Constants
-    private static final int NOT_AVAILABLE = -100000;
     private static final double MIN_ALTITUDE_STEP = 8.0;
     private static final float MOVEMENT_SPEED_THRESHOLD = 0.5f;     // The minimum speed (in m/s) to consider the user in movement
     private static final float STANDARD_ACCURACY = 10.0f;

@@ -37,23 +37,23 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
 
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
-
-    private static final int NOT_AVAILABLE = -100000;
 
     boolean isLightTheme = false;
 
     private final List<Track> dataSet;
 
-    private static final Bitmap[] bmpTrackType = {
-            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_place_white_24dp),
-            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_walk_white_24dp),
-            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_terrain_white_24dp),
-            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_run_white_24dp),
-            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_bike_white_24dp),
-            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_directions_car_white_24dp),
-            BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_flight_white_24dp)
+    private static final int[] trackType = {
+            R.drawable.ic_tracktype_place_24dp,
+            R.drawable.ic_tracktype_walk_24dp,
+            R.drawable.ic_tracktype_mountain_24dp,
+            R.drawable.ic_tracktype_run_24dp,
+            R.drawable.ic_tracktype_bike_24dp,
+            R.drawable.ic_tracktype_car_24dp,
+            R.drawable.ic_tracktype_flight_24dp
     };
 
     private static final Bitmap bmpCurrentTrackRecording = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_recording_48dp);
@@ -140,7 +140,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (isLightTheme) {
                 imageViewThumbnail.setColorFilter(GPSApplication.colorMatrixColorFilter);
                 imageViewPulse.setColorFilter(GPSApplication.colorMatrixColorFilter);
-                imageViewIcon.setColorFilter(GPSApplication.colorMatrixColorFilter);
+                //imageViewIcon.setColorFilter(GPSApplication.colorMatrixColorFilter);
             }
         }
 
@@ -170,7 +170,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
 
             TT = trk.getTrackType();
-            if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
+            if (TT != NOT_AVAILABLE) imageViewIcon.setImageResource(trackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
             if (GPSApplication.getInstance().getRecording()) {
@@ -220,7 +220,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
 
             TT = trk.getTrackType();
-            if (TT != NOT_AVAILABLE) imageViewIcon.setImageBitmap(bmpTrackType[TT]);
+            if (TT != NOT_AVAILABLE) imageViewIcon.setImageResource(trackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
             if (GPSApplication.getInstance().getCurrentTrack().getId() == track.getId()) {

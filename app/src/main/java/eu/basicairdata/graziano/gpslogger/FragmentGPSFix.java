@@ -23,7 +23,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,23 +44,20 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_DISABLED;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_OUTOFSERVICE;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_TEMPORARYUNAVAILABLE;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_SEARCHING;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_STABILIZING;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_OK;
+
+
 public class FragmentGPSFix extends Fragment {
-
-    private static final int NOT_AVAILABLE = -100000;
-
-    private static final int GPS_DISABLED = 0;
-    private static final int GPS_OUTOFSERVICE = 1;
-    private static final int GPS_TEMPORARYUNAVAILABLE = 2;
-    private static final int GPS_SEARCHING = 3;
-    private static final int GPS_STABILIZING = 4;
-    private static final int GPS_OK = 5;
 
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
 
     private boolean isAWarningClicked = false;
-    private boolean isLightTheme = false;
-
-    private Drawable drawableWarning;
 
     private FrameLayout FLGPSFix;
 
@@ -221,24 +217,6 @@ public class FragmentGPSFix extends Fragment {
         super.onResume();
 
         isAWarningClicked = false;
-
-        switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                // Night mode is not active, we're in day time
-                isLightTheme = true;
-                break;
-            case Configuration.UI_MODE_NIGHT_YES:
-                // Night mode is active, we're at night!
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                // We don't know what mode we're in, assume notnight
-                isLightTheme = false;
-                break;
-        }
-
-        if (isLightTheme) {
-            drawableWarning = getResources().getDrawable(R.mipmap.ic_warning_24dp);
-            drawableWarning.setColorFilter(GPSApplication.colorMatrixColorFilter);
-        }
 
         // Workaround for Nokia Devices, Android 9
         // https://github.com/BasicAirData/GPSLogger/issues/77

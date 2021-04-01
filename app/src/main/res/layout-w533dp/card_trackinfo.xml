@@ -22,6 +22,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     tools:context="eu.basicairdata.graziano.gpslogger.GPSActivity"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
@@ -98,6 +100,7 @@
             android:layout_height="24dp"
             android:layout_margin="7dp"
             android:clickable="false"
+            app:tint="@color/textColorPrimary"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true" />
 

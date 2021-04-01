@@ -106,6 +106,8 @@ public class GPSApplication extends Application implements LocationListener {
     public static final int JOB_TYPE_DELETE     = 4;                // Bulk Delete
 
     public static final String FLAG_RECORDING   = "flagRecording";  // The persistent Flag is set when the app is recording, in order to detect Background Crashes
+    public static final String FILETYPE_KML     = ".kml";
+    public static final String FILETYPE_GPX     = ".gpx";
 
     private static final float[] NEGATIVE = {
             -1.0f,      0,      0,     0,  248,     // red
@@ -707,6 +709,7 @@ public class GPSApplication extends Application implements LocationListener {
     public void onCreate() {
 
         AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")));
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         super.onCreate();
 
@@ -1010,32 +1013,21 @@ public class GPSApplication extends Application implements LocationListener {
     private void ViewTrack(ExportingTask exportingTask) {
         File file;
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setPackage(TrackViewer.PackageName);
-        Log.w("myApp", "[#] GPSApplication.java - ViewTrack with " + TrackViewer.PackageName);
+        intent.setPackage(TrackViewer.packageName);
+        Log.w("myApp", "[#] GPSApplication.java - ViewTrack with " + TrackViewer.packageName);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (TrackViewer.GPX) {
-            // GPX Viewer
-            file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".gpx");
+
+        if (!TrackViewer.fileType.isEmpty()) {
+            file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + TrackViewer.fileType);
             if (TrackViewer.requiresFileProvider) {
                 Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
-                getApplicationContext().grantUriPermission(TrackViewer.PackageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(uri, "application/gpx+xml");
+                getApplicationContext().grantUriPermission(TrackViewer.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(uri, TrackViewer.mimeType);
             } else {
-                intent.setDataAndType(Uri.fromFile(file), "application/gpx+xml");
+                intent.setDataAndType(Uri.fromFile(file), TrackViewer.mimeType);
             }
-        } else if (TrackViewer.KML) {
-            // KML Viewer
-            file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + ".kml");
-            if (TrackViewer.requiresFileProvider) {
-                Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
-                getApplicationContext().grantUriPermission(TrackViewer.PackageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(uri, "application/vnd.google-earth.kml+xml");
-            } else {
-                intent.setDataAndType(Uri.fromFile(file), "application/vnd.google-earth.kml+xml");
-            }
-        }
-        if (TrackViewer.KML || TrackViewer.GPX) {
+
             try {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 startActivity(intent);
@@ -1116,8 +1108,8 @@ public class GPSApplication extends Application implements LocationListener {
                 Ex.start();
                 break;
             case JOB_TYPE_VIEW:
-                if (TrackViewer.GPX) Ex = new Exporter(exportingTask, false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-                else if (TrackViewer.KML) Ex = new Exporter(exportingTask, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                if (TrackViewer.fileType.equals(FILETYPE_GPX)) Ex = new Exporter(exportingTask, false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                if (TrackViewer.fileType.equals(FILETYPE_KML)) Ex = new Exporter(exportingTask, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
                 Ex.start();
                 break;
             case JOB_TYPE_SHARE:
@@ -1212,15 +1204,15 @@ public class GPSApplication extends Application implements LocationListener {
             if (!externalViewerChecker.isEmpty()) {
                 isContextMenuViewVisible = true;
                 for (AppInfo ai : externalViewerChecker.getAppInfoList()) {
-                    if ((ai.PackageName.equals(pn)) || (externalViewerChecker.size() == 1)) {
-                        ViewInApp = ai.Label + (ai.GPX ? " (GPX)" : " (KML)");
+                    if ((ai.packageName.equals(pn)) || (externalViewerChecker.size() == 1)) {
+                        ViewInApp = ai.label + (ai.fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)");
 
                         // Set View Icon
                         Bitmap bitmap;
                         if (Build.VERSION.SDK_INT >= 26) {
-                            bitmap = getBitmap(ai.Icon);
+                            bitmap = getBitmap(ai.icon);
                         } else {
-                            bitmap = ((BitmapDrawable) ai.Icon).getBitmap();
+                            bitmap = ((BitmapDrawable) ai.icon).getBitmap();
                         }
                         ViewInAppIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap,
                                 (int) (24 * getResources().getDisplayMetrics().density),
@@ -1622,14 +1614,14 @@ public class GPSApplication extends Application implements LocationListener {
                                 if (track != null) {
                                     // Delete track files
                                     DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".kml");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".gpx");
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + FILETYPE_KML);
+                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + FILETYPE_GPX);
                                     DeleteFile(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
                                     if (DeleteAlsoExportedFiles) {
                                         // Delete exported files
                                         DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx");
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + FILETYPE_KML);
+                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + FILETYPE_GPX);
                                     }
 
                                     TracksDeleted++;

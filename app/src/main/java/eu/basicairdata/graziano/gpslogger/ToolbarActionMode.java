@@ -9,6 +9,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
+
 public class ToolbarActionMode implements ActionMode.Callback {
 
     private Menu actionmenu;
@@ -88,7 +91,7 @@ public class ToolbarActionMode implements ActionMode.Callback {
         EventBus.getDefault().unregister(this);
         if ((gpsApplication.getNumberOfSelectedTracks() > 0) && gpsApplication.getGPSActivity_activeTab() == 2) {
             GPSApplication.getInstance().DeselectAllTracks();
-            GPSApplication.getInstance().setLastClickId(GPSApplication.NOT_AVAILABLE);
+            GPSApplication.getInstance().setLastClickId(NOT_AVAILABLE);
         }
     }
 
@@ -123,9 +126,9 @@ public class ToolbarActionMode implements ActionMode.Callback {
                     if (gpsApplication.getViewInAppIcon() != null)
                         actionmenu.findItem(R.id.cardmenu_view).setIcon(gpsApplication.getViewInAppIcon());
                     else
-                        actionmenu.findItem(R.id.cardmenu_view).setIcon(R.mipmap.ic_visibility_white_24dp);
+                        actionmenu.findItem(R.id.cardmenu_view).setIcon(R.drawable.ic_visibility_24dp);
                 } else {
-                    actionmenu.findItem(R.id.cardmenu_view).setTitle(gpsApplication.getString(R.string.card_menu_view_selector)).setIcon(R.mipmap.ic_visibility_white_24dp);
+                    actionmenu.findItem(R.id.cardmenu_view).setTitle(gpsApplication.getString(R.string.card_menu_view_selector)).setIcon(R.drawable.ic_visibility_24dp);
                 }
             }
         }

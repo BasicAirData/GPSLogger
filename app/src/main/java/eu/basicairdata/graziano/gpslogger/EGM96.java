@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
 class EGM96 {
 
     // ---------------------------------------------------------------------------- Singleton Class
@@ -72,7 +74,7 @@ class EGM96 {
     private String EGMFileName;
     private String EGMFileNameLocalCopy;
 
-    public static final double EGM96_VALUE_INVALID = -100000;
+    public static final double EGM96_VALUE_INVALID = NOT_AVAILABLE;
 
     public void LoadGridFromFile(String FileName, String FileNameLocalCopy) {
         if (!isEGMGridLoaded && !isEGMGridLoading) {

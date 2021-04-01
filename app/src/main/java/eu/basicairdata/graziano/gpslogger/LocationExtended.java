@@ -20,9 +20,10 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.location.Location;
 
-public class LocationExtended {
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
-    private static final int NOT_AVAILABLE = -100000;
+
+public class LocationExtended {
 
     private Location _Location;
     private String _Description = "";

@@ -54,6 +54,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
+
 public class FragmentTracklist extends Fragment {
 
     RecyclerView recyclerView;
@@ -166,7 +169,7 @@ public class FragmentTracklist extends Fragment {
                 }
                 break;
             case EventBusMSG.TRACKLIST_RANGE_SELECTION:
-                if (GPSApplication.getInstance().getLastClickId() != GPSApplication.NOT_AVAILABLE) {
+                if (GPSApplication.getInstance().getLastClickId() != NOT_AVAILABLE) {
                     synchronized (data) {
                         do {
                             if (data.get(i).getId() == GPSApplication.getInstance().getLastClickId()) {
@@ -258,7 +261,7 @@ public class FragmentTracklist extends Fragment {
                     String pn = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefTracksViewer", "");
                     boolean foundDefault = false;
                     for (AppInfo ai : ail) {
-                        if (ai.PackageName.equals(pn)) {
+                        if (ai.packageName.equals(pn)) {
                             // Default Viewer available!
                             GPSApplication.getInstance().setTrackViewer(ai);
                             foundDefault = true;
