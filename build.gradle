@@ -2,8 +2,8 @@
 
 buildscript {
     repositories {
-        jcenter()
         google()
+        gradlePluginPortal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.1'
@@ -15,8 +15,10 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
+        // org.jetbrains.trove4j:trove4j:20160824.
+        gradlePluginPortal()
     }
 }
 
