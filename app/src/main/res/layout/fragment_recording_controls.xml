@@ -20,87 +20,183 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/id_fragmentrecordingcontrols"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="eu.basicairdata.graziano.gpslogger.FragmentRecordingControls"
-    android:id="@+id/id_fragmentrecordingcontrols"
+    android:baselineAligned="false"
     android:orientation="vertical"
-    android:baselineAligned="false">
+    tools:context="eu.basicairdata.graziano.gpslogger.FragmentRecordingControls">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/transparent"
+        android:baselineAligned="false"
+        android:weightSum="4">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:textColor="@color/textColorRecControlSecondary"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:textColor="@color/textColorRecControlSecondary"/>
+
+        <TextView
+            android:id="@+id/id_textView_Placemarks"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:textColor="@color/textColorRecControlSecondary"/>
+
+        <TextView
+            android:id="@+id/id_textView_GeoPoints"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:textColor="@color/textColorRecControlSecondary"/>
+
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
-        android:background="@drawable/shadow"
-        android:layout_height="6dp" />
+        android:layout_height="6dp"
+        android:background="@drawable/shadow" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorRecControlBackground"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:weightSum="4">
 
-
-    <TableLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/id_TableLayout_Placemarks"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp">
-
-        <TextView
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/textColorRecControlSecondary"
-            android:text="@string/placemarks"
-            android:id="@+id/id_textView_PlacemarksLabel"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/id_TableLayout_Lock"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:gravity="center_horizontal" />
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:padding="5dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_lock_24"
+                />
+
+            <TextView
+                android:id="@+id/id_textView_Lock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:freezesText="true"
+                android:gravity="center_horizontal"
+                android:text="Lock"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="12sp"
+                android:textColor="@color/textColorRecControlSecondary"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/id_TableLayout_Stop"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/textColorRecControlPrimary"
-            android:id="@+id/id_textView_Placemarks"
-            android:freezesText="true"
-            android:textStyle="bold"
-            android:text="0"
-            android:gravity="center_horizontal"/>
-    </TableLayout>
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:padding="5dp">
 
-    <TableLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/id_TableLayout_GeoPoints"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_stop_24"
+                />
 
-        <TextView
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/id_textView_Stop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:freezesText="true"
+                android:gravity="center_horizontal"
+                android:text="Stop"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="12sp"
+                android:textColor="@color/textColorRecControlSecondary"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/id_TableLayout_Placemarks"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/textColorRecControlSecondary"
-            android:text="@string/trackpoints"
-            android:id="@+id/id_textView_GeoPointsLabel"
-            android:textSize="13sp"
-            android:gravity="center_horizontal" />
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:padding="5dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_add_location_24dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:freezesText="true"
+                android:gravity="center_horizontal"
+                android:text="Annotate"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="12sp"
+                android:textColor="@color/textColorRecControlSecondary"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/id_TableLayout_GeoPoints"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/textColorRecControlPrimary"
-            android:id="@+id/id_textView_GeoPoints"
-            android:freezesText="true"
-            android:textStyle="bold"
-            android:text="0"
-            android:gravity="center_horizontal"/>
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:padding="5dp">
 
-    </TableLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_record_24"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:freezesText="true"
+                android:gravity="center_horizontal"
+                android:text="Record"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="12sp"
+                android:textColor="@color/textColorRecControlSecondary"/>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
