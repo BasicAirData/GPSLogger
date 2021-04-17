@@ -23,11 +23,11 @@ package eu.basicairdata.graziano.gpslogger;
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,11 +40,11 @@ public class FragmentRecordingControls extends Fragment{
         // Required empty public constructor
     }
 
-    LinearLayout tableLayoutGeoPoints;
-    LinearLayout tableLayoutPlacemarks;
 
     private TextView TVGeoPoints;
     private TextView TVPlacemarks;
+    private TextView TVRecordButton;
+    private TextView TVAnnotateButton;
 
     final GPSApplication gpsApplication = GPSApplication.getInstance();
 
@@ -59,23 +59,25 @@ public class FragmentRecordingControls extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recording_controls, container, false);
 
-        tableLayoutGeoPoints = (LinearLayout) view.findViewById(R.id.id_TableLayout_GeoPoints);
-        tableLayoutGeoPoints.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ontoggleRecordGeoPoint(v);
-            }
-        });
 
-        tableLayoutPlacemarks = (LinearLayout) view.findViewById(R.id.id_TableLayout_Placemarks);
-        tableLayoutPlacemarks.setOnClickListener(new View.OnClickListener() {
+        TVAnnotateButton = view.findViewById(R.id.id_annotate);
+        TVAnnotateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onPlacemarkRequest(v);
             }
         });
 
-        TVGeoPoints = (TextView) view.findViewById(R.id.id_textView_GeoPoints);
+        TVGeoPoints = view.findViewById(R.id.id_textView_GeoPoints);
+        TVRecordButton = view.findViewById(R.id.id_record);
+        TVRecordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.w("myApp", "[#] FragmentRecordingControls - TOGGLE TVGeoPoints.onClick");
+                ontoggleRecordGeoPoint(v);
+            }
+        });
+
         TVPlacemarks = (TextView) view.findViewById(R.id.id_textView_Placemarks);
 
         return view;
@@ -104,11 +106,11 @@ public class FragmentRecordingControls extends Fragment{
 
     public void ontoggleRecordGeoPoint(View view) {
         if (isAdded()) {
-            final Boolean grs = gpsApplication.getRecording();
+            final boolean grs = gpsApplication.getRecording();
             boolean newRecordingState = !grs;
             gpsApplication.setRecording(newRecordingState);
             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-            tableLayoutGeoPoints.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+            TVRecordButton.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
             //TVGeoPoints.setTextColor(getResources().getColor(newRecordingState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
             //TVGeoPointsLabel.setTextColor(getResources().getColor(newRecordingState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
         }
@@ -116,10 +118,10 @@ public class FragmentRecordingControls extends Fragment{
 
     public void onPlacemarkRequest(View view) {
         if (isAdded()) {
-            final Boolean pr = gpsApplication.getPlacemarkRequest();
+            final boolean pr = gpsApplication.getPlacemarkRequest();
             boolean newPlacemarkRequestState = !pr;
             gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
-            tableLayoutPlacemarks.setBackgroundColor(newPlacemarkRequestState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+            TVAnnotateButton.setBackgroundColor(newPlacemarkRequestState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
             //TVPlacemarks.setTextColor(getResources().getColor(newPlacemarkRequestState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
             //TVPlacemarksLabel.setTextColor(getResources().getColor(newPlacemarkRequestState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
 
@@ -136,13 +138,13 @@ public class FragmentRecordingControls extends Fragment{
     public void Update() {
         if (isAdded()) {
             final Track track = gpsApplication.getCurrentTrack();
-            final Boolean grs = gpsApplication.getRecording();
-            final Boolean pr = gpsApplication.getPlacemarkRequest();
+            final boolean grs = gpsApplication.getRecording();
+            final boolean pr = gpsApplication.getPlacemarkRequest();
             if (track != null) {
                 if (TVGeoPoints != null)            TVGeoPoints.setText(track.getNumberOfLocations() == 0 ? "" : String.valueOf(track.getNumberOfLocations()));
                 if (TVPlacemarks != null)           TVPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks() == 0 ? "" : track.getNumberOfPlacemarks()));
-                if (tableLayoutGeoPoints != null)   tableLayoutGeoPoints.setBackgroundColor(grs ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-                if (tableLayoutPlacemarks != null)  tableLayoutPlacemarks.setBackgroundColor(pr ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+                if (TVRecordButton != null)         TVRecordButton.setBackgroundColor(grs ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+                if (TVAnnotateButton != null)       TVAnnotateButton.setBackgroundColor(pr ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
                 //if (TVPlacemarks != null)           TVPlacemarks.setTextColor(getResources().getColor(pr ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
                 //if (TVPlacemarksLabel != null)      TVPlacemarksLabel.setTextColor(getResources().getColor(pr ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
                 //if (TVGeoPoints != null)            TVGeoPoints.setTextColor(getResources().getColor(grs ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));

@@ -85,9 +85,10 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:src="@drawable/shadow"
         android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/shadow" />
+        android:layout_height="5dp"
+         />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -96,107 +97,65 @@
         android:baselineAligned="false"
         android:weightSum="4">
 
-        <LinearLayout
-            android:id="@+id/id_TableLayout_Lock"
-            android:orientation="vertical"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/id_lock"
             android:layout_weight="1"
-            android:padding="5dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_lock_24"
-                />
-
-            <TextView
-                android:id="@+id/id_textView_Lock"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:freezesText="true"
-                android:gravity="center_horizontal"
-                android:text="Lock"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textSize="12sp"
-                android:textColor="@color/textColorRecControlSecondary"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/id_TableLayout_Stop"
-            android:orientation="vertical"
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:padding="5dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_stop_24"
-                />
-
-            <TextView
-                android:id="@+id/id_textView_Stop"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:freezesText="true"
-                android:gravity="center_horizontal"
-                android:text="Stop"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textSize="12sp"
-                android:textColor="@color/textColorRecControlSecondary"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/id_TableLayout_Placemarks"
-            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:layout_width="0dp"
+            android:freezesText="true"
+            android:gravity="center_horizontal"
+            app:drawableTopCompat="@drawable/ic_lock_24"
+            app:drawableTint="@color/textColorRecControlPrimary"
+            android:text="Lock"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:padding="4dp"
+            android:textColor="@color/textColorRecControlSecondary"/>
+
+        <TextView
+            android:id="@+id/id_stop"
             android:layout_weight="1"
-            android:padding="5dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_add_location_24dp"
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:freezesText="true"
-                android:gravity="center_horizontal"
-                android:text="Annotate"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textSize="12sp"
-                android:textColor="@color/textColorRecControlSecondary"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/id_TableLayout_GeoPoints"
-            android:orientation="vertical"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_width="0dp"
+            android:freezesText="true"
+            android:gravity="center_horizontal"
+            app:drawableTopCompat="@drawable/ic_stop_24"
+            app:drawableTint="@color/textColorRecControlPrimary"
+            android:text="Stop"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:padding="4dp"
+            android:textColor="@color/textColorRecControlSecondary"/>
+
+        <TextView
+            android:id="@+id/id_annotate"
             android:layout_weight="1"
-            android:padding="5dp">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:gravity="center_horizontal"
+            app:drawableTopCompat="@drawable/ic_add_location_24dp"
+            app:drawableTint="@color/textColorRecControlPrimary"
+            android:text="Annotate"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:padding="4dp"
+            android:textColor="@color/textColorRecControlSecondary"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_record_24"
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:freezesText="true"
-                android:gravity="center_horizontal"
-                android:text="Record"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textSize="12sp"
-                android:textColor="@color/textColorRecControlSecondary"/>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/id_record"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:gravity="center_horizontal"
+            app:drawableTopCompat="@drawable/ic_record_24"
+            app:drawableTint="@color/textColorRecControlPrimary"
+            android:text="Record"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:padding="4dp"
+            android:textColor="@color/textColorRecControlSecondary"/>
     </LinearLayout>
 
 </LinearLayout>
