@@ -20,7 +20,7 @@
 
 <LinearLayout android:id="@+id/id_warnings"
     android:layout_gravity="bottom"
-    android:paddingBottom="58dp"
+    android:paddingBottom="70dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
