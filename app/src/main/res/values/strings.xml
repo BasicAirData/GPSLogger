@@ -79,6 +79,13 @@
     <string name="track_empty">New Track\n\nStart recording Trackpoints\nor add a Placemark\nusing one of the buttons below</string>
 
     <!-- Recording buttons (bottom side) -->
+    <string name="record">Record</string>
+    <string name="pause">Pause</string>
+    <string name="annotate">Annotate</string>
+    <string name="stop">Stop</string>
+    <string name="lock">Lock</string>
+    <string name="unlock">Unlock</string>
+
     <string name="placemarks">Placemarks</string>
     <string name="trackpoints">Trackpoints</string>
 
