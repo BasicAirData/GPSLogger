@@ -179,6 +179,7 @@ public class GPSApplication extends Application implements LocationListener {
     private String PlacemarkDescription = "";
     private boolean Recording = false;
     private boolean PlacemarkRequest = false;
+    private boolean BottomBarLocked = false;
     private boolean isGPSLocationUpdatesActive = false;
     private int GPSStatus = GPS_SEARCHING;
 
@@ -593,6 +594,14 @@ public class GPSApplication extends Application implements LocationListener {
     public boolean getPlacemarkRequest() { return PlacemarkRequest; }
 
     public void setPlacemarkRequest(boolean placemarkRequest) { PlacemarkRequest = placemarkRequest; }
+
+    public boolean getBottomBarLocked() {
+        return BottomBarLocked;
+    }
+
+    public void setBottomBarLocked(boolean locked) {
+        BottomBarLocked = locked;
+    }
 
     public List<Track> getTrackList() {
         return _ArrayListTracks;

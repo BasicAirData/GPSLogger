@@ -392,6 +392,14 @@ public class GPSActivity extends AppCompatActivity {
                     }
                 });
                 break;
+            case EventBusMSG.TOAST_BOTTOM_BAR_LOCKED:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
             case EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE:
                 runOnUiThread(new Runnable() {
                     @Override

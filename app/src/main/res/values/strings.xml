@@ -86,6 +86,8 @@
     <string name="lock">Lock</string>
     <string name="unlock">Unlock</string>
 
+    <string name="toast_bottom_bar_locked">The bottom bar is locked</string>
+
     <string name="placemarks">Placemarks</string>
     <string name="trackpoints">Trackpoints</string>
 

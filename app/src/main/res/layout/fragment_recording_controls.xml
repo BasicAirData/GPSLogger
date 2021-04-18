@@ -95,12 +95,9 @@
             android:freezesText="true"
             android:gravity="center_horizontal"
             app:drawableTopCompat="@drawable/ic_lock_24"
-            app:drawableTint="@color/textColorRecControlPrimary"
-            android:text="@string/lock"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
-            android:padding="4dp"
-            android:textColor="@color/textColorRecControlSecondary"/>
+            android:padding="4dp"/>
 
         <TextView
             android:id="@+id/id_stop"
