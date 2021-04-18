@@ -113,7 +113,9 @@ public class FragmentRecordingControls extends Fragment{
             gpsApplication.setRecording(newRecordingState);
             EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
             TVRecordButton.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+            TVRecordButton.setCompoundDrawablesWithIntrinsicBounds(0, newRecordingState ? R.drawable.ic_pause_24 : R.drawable.ic_record_24, 0, 0);
             TVRecordButton.setTextColor(getResources().getColor(newRecordingState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
+            TVRecordButton.setText(getString(newRecordingState ? R.string.pause : R.string.record));
             setTextViewDrawableColor(TVRecordButton.getCompoundDrawables()[1],
                     getResources().getColor(newRecordingState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
         }
@@ -155,7 +157,9 @@ public class FragmentRecordingControls extends Fragment{
                 if (TVPlacemarks != null)           TVPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks() == 0 ? "" : track.getNumberOfPlacemarks()));
                 if (TVRecordButton != null) {
                     TVRecordButton.setBackgroundColor(isRec ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
+                    TVRecordButton.setCompoundDrawablesWithIntrinsicBounds(0, isRec ? R.drawable.ic_pause_24 : R.drawable.ic_record_24, 0, 0);
                     TVRecordButton.setTextColor(getResources().getColor(isRec ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
+                    TVRecordButton.setText(getString(isRec ? R.string.pause : R.string.record));
                     setTextViewDrawableColor(TVRecordButton.getCompoundDrawables()[1],
                             getResources().getColor(isRec ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
                 }

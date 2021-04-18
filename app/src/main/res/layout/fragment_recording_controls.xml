@@ -96,7 +96,7 @@
             android:gravity="center_horizontal"
             app:drawableTopCompat="@drawable/ic_lock_24"
             app:drawableTint="@color/textColorRecControlPrimary"
-            android:text="Lock"
+            android:text="@string/lock"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
             android:padding="4dp"
@@ -111,7 +111,7 @@
             android:gravity="center_horizontal"
             app:drawableTopCompat="@drawable/ic_stop_24"
             app:drawableTint="@color/textColorRecControlPrimary"
-            android:text="Stop"
+            android:text="@string/stop"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
             android:padding="4dp"
@@ -125,11 +125,10 @@
             android:freezesText="true"
             android:gravity="center_horizontal"
             app:drawableTopCompat="@drawable/ic_add_location_24dp"
-            android:text="Annotate"
+            android:text="@string/annotate"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
-            android:padding="4dp"
-            android:textColor="@color/textColorRecControlSecondary"/>
+            android:padding="4dp"/>
 
         <TextView
             android:id="@+id/id_record"
@@ -139,11 +138,9 @@
             android:freezesText="true"
             android:gravity="center_horizontal"
             app:drawableTopCompat="@drawable/ic_record_24"
-            android:text="Record"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
-            android:padding="4dp"
-            android:textColor="@color/textColorRecControlSecondary"/>
+            android:padding="4dp"/>
     </LinearLayout>
 
 </LinearLayout>
