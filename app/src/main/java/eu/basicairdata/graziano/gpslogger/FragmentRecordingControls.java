@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,10 +47,12 @@ public class FragmentRecordingControls extends Fragment{
 
     private TextView TVGeoPointsNumber;
     private TextView TVPlacemarksNumber;
-    private TextView TVRecordButton;
-    private TextView TVAnnotateButton;
+    
     private TextView TVLockButton;
-
+    private TextView TVStopButton;
+    private TextView TVAnnotateButton;
+    private TextView TVRecordButton;
+    
     final GPSApplication gpsApplication = GPSApplication.getInstance();
 
 
@@ -63,12 +66,27 @@ public class FragmentRecordingControls extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recording_controls, container, false);
 
+        TVLockButton = view.findViewById(R.id.id_lock);
+        TVLockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onToggleLock();
+            }
+        });
+
+        TVStopButton = view.findViewById(R.id.id_stop);
+        TVStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRequestStop();
+            }
+        });
 
         TVAnnotateButton = view.findViewById(R.id.id_annotate);
         TVAnnotateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPlacemarkRequest();
+                onRequestAnnotation();
             }
         });
 
@@ -76,15 +94,7 @@ public class FragmentRecordingControls extends Fragment{
         TVRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ontoggleRecordGeoPoint();
-            }
-        });
-
-        TVLockButton = view.findViewById(R.id.id_lock);
-        TVLockButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ontoggleLock();
+                onToggleRecord();
             }
         });
 
@@ -115,7 +125,7 @@ public class FragmentRecordingControls extends Fragment{
         super.onPause();
     }
 
-    public void ontoggleRecordGeoPoint() {
+    public void onToggleRecord() {
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
                 final boolean grs = gpsApplication.getRecording();
@@ -134,7 +144,7 @@ public class FragmentRecordingControls extends Fragment{
         }
     }
 
-    public void onPlacemarkRequest() {
+    public void onRequestAnnotation() {
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
             final boolean pr = gpsApplication.getPlacemarkRequest();
@@ -150,7 +160,19 @@ public class FragmentRecordingControls extends Fragment{
         }
     }
 
-    public void ontoggleLock() {
+    public void onRequestStop() {
+        if (isAdded()) {
+            if (!gpsApplication.getBottomBarLocked()) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                tpDialog.show(fm, "");
+            } else {
+                EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
+            }
+        }
+    }
+
+    public void onToggleLock() {
         if (isAdded()) {
             boolean lck = !gpsApplication.getBottomBarLocked();
             gpsApplication.setBottomBarLocked(lck);
