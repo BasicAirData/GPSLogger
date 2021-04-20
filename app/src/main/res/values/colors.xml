@@ -33,6 +33,7 @@
     <color name="colorRecControlBackground">#f4f4f4</color>
     <color name="textColorRecControlPrimary">#4f4f4f</color>
     <color name="textColorRecControlSecondary">#666666</color>
+    <color name="textColorRecControlDisabled">#bfbfbf</color>
     <color name="textColorRecControlPrimary_Active">#e4e4e4</color>
     <color name="textColorRecControlSecondary_Active">#cccccc</color>
 

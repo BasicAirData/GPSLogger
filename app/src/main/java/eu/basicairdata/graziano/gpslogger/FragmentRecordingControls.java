@@ -232,9 +232,18 @@ public class FragmentRecordingControls extends Fragment{
                     setTextViewDrawableColor(TVLockButton.getCompoundDrawables()[1],
                             getResources().getColor(isLck ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
                 }
-                if (TVLockButton != null) {
-                    TVStopButton.setAlpha(track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0 ? 1.0f : 0.4f);
+                if (TVStopButton != null) {
                     TVStopButton.setClickable(track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0);
+
+                    if (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) {
+                        TVStopButton.setTextColor(getResources().getColor(R.color.textColorRecControlSecondary));
+                        setTextViewDrawableColor(TVStopButton.getCompoundDrawables()[1],
+                                getResources().getColor(R.color.textColorRecControlPrimary));
+                    } else {
+                        TVStopButton.setTextColor(getResources().getColor(R.color.textColorRecControlDisabled));
+                        setTextViewDrawableColor(TVStopButton.getCompoundDrawables()[1],
+                                getResources().getColor(R.color.textColorRecControlDisabled));
+                    }
                 }
             }
         }
