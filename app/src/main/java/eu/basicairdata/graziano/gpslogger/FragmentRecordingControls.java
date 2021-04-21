@@ -26,6 +26,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -47,7 +48,6 @@ public class FragmentRecordingControls extends Fragment{
 
     private TextView TVGeoPointsNumber;
     private TextView TVPlacemarksNumber;
-    
     private TextView TVLockButton;
     private TextView TVStopButton;
     private TextView TVAnnotateButton;
@@ -60,6 +60,7 @@ public class FragmentRecordingControls extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,6 +105,7 @@ public class FragmentRecordingControls extends Fragment{
         return view;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -114,16 +116,17 @@ public class FragmentRecordingControls extends Fragment{
             //Log.w("myApp", "[#] FragmentRecordingControls - EventBus: FragmentRecordingControls already registered");
             EventBus.getDefault().unregister(this);
         }
-
         EventBus.getDefault().register(this);
         Update();
     }
+
 
     @Override
     public void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
+
 
     public void onToggleRecord() {
         if (isAdded()) {
@@ -132,17 +135,15 @@ public class FragmentRecordingControls extends Fragment{
                 boolean newRecordingState = !grs;
                 gpsApplication.setRecording(newRecordingState);
                 EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-                TVRecordButton.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-                TVRecordButton.setCompoundDrawablesWithIntrinsicBounds(0, newRecordingState ? R.drawable.ic_pause_24 : R.drawable.ic_record_24, 0, 0);
-                TVRecordButton.setTextColor(getResources().getColor(newRecordingState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
-                TVRecordButton.setText(getString(newRecordingState ? R.string.pause : R.string.record));
-                setTextViewDrawableColor(TVRecordButton.getCompoundDrawables()[1],
-                        getResources().getColor(newRecordingState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+
+                if (newRecordingState) setButtonToClickedState(TVRecordButton, R.drawable.ic_pause_24, R.string.pause);
+                else setButtonToNormalState(TVRecordButton, R.drawable.ic_record_24, R.string.record);
             } else {
                 EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
             }
         }
     }
+
 
     public void onRequestAnnotation() {
         if (isAdded()) {
@@ -150,41 +151,45 @@ public class FragmentRecordingControls extends Fragment{
             final boolean pr = gpsApplication.getPlacemarkRequest();
             boolean newPlacemarkRequestState = !pr;
             gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
-            TVAnnotateButton.setBackgroundColor(newPlacemarkRequestState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-            TVAnnotateButton.setTextColor(getResources().getColor(newPlacemarkRequestState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
-            setTextViewDrawableColor(TVAnnotateButton.getCompoundDrawables()[1],
-                    getResources().getColor(newPlacemarkRequestState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+
+            if (newPlacemarkRequestState) setButtonToClickedState(TVAnnotateButton, 0, 0);
+            else setButtonToNormalState(TVAnnotateButton, 0, 0);
+
         } else {
                 EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
             }
         }
     }
 
+
     public void onRequestStop() {
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
-                tpDialog.show(fm, "");
+                if (!gpsApplication.getStopFlag()) {
+                    gpsApplication.setStopFlag(true);
+                    setButtonToClickedState(TVStopButton, 0, 0);
+
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                    tpDialog.show(fm, "");
+                }
             } else {
                 EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
             }
         }
     }
 
+
     public void onToggleLock() {
         if (isAdded()) {
             boolean lck = !gpsApplication.getBottomBarLocked();
             gpsApplication.setBottomBarLocked(lck);
-            //EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-            TVLockButton.setBackgroundColor(lck ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-            TVLockButton.setCompoundDrawablesWithIntrinsicBounds(0, lck ? R.drawable.ic_unlock_24 : R.drawable.ic_lock_24, 0, 0);
-            TVLockButton.setTextColor(getResources().getColor(lck ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
-            TVLockButton.setText(getString(lck ? R.string.unlock : R.string.lock));
-            setTextViewDrawableColor(TVLockButton.getCompoundDrawables()[1],
-                    getResources().getColor(lck ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+
+            if (lck) setButtonToClickedState(TVLockButton, R.drawable.ic_unlock_24, R.string.unlock);
+            else setButtonToNormalState(TVLockButton, R.drawable.ic_lock_24, R.string.lock);
         }
     }
+
 
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
@@ -193,12 +198,41 @@ public class FragmentRecordingControls extends Fragment{
         }
     }
 
+
     private void setTextViewDrawableColor(Drawable drawable, int color) {
         if (drawable != null) {
             drawable.clearColorFilter();
             drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
         }
     }
+
+
+    private void setButtonToClickedState(@NonNull TextView button, int imageId, int stringId) {
+        button.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
+        button.setTextColor(getResources().getColor(R.color.textColorRecControlSecondary_Active));
+        if (stringId != 0) button.setText(getString(stringId));
+        setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlPrimary_Active));
+    }
+
+
+    private void setButtonToNormalState(@NonNull TextView button, int imageId, int stringId) {
+        button.setBackgroundColor(Color.TRANSPARENT);
+        if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
+        button.setTextColor(getResources().getColor(R.color.textColorRecControlSecondary));
+        if (stringId != 0) button.setText(getString(stringId));
+        setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlPrimary));
+    }
+
+
+    private void setButtonToDisabledState(@NonNull TextView button, int imageId, int stringId) {
+        button.setBackgroundColor(Color.TRANSPARENT);
+        if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
+        button.setTextColor(getResources().getColor(R.color.textColorRecControlDisabled));
+        if (stringId != 0) button.setText(getString(stringId));
+        setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlDisabled));
+    }
+
 
     public void Update() {
         if (isAdded()) {
@@ -210,39 +244,24 @@ public class FragmentRecordingControls extends Fragment{
                 if (TVGeoPointsNumber != null)            TVGeoPointsNumber.setText(track.getNumberOfLocations() == 0 ? "" : String.valueOf(track.getNumberOfLocations()));
                 if (TVPlacemarksNumber != null)           TVPlacemarksNumber.setText(String.valueOf(track.getNumberOfPlacemarks() == 0 ? "" : track.getNumberOfPlacemarks()));
                 if (TVRecordButton != null) {
-                    TVRecordButton.setBackgroundColor(isRec ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-                    TVRecordButton.setCompoundDrawablesWithIntrinsicBounds(0, isRec ? R.drawable.ic_pause_24 : R.drawable.ic_record_24, 0, 0);
-                    TVRecordButton.setTextColor(getResources().getColor(isRec ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
-                    TVRecordButton.setText(getString(isRec ? R.string.pause : R.string.record));
-                    setTextViewDrawableColor(TVRecordButton.getCompoundDrawables()[1],
-                            getResources().getColor(isRec ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+                    if (isRec) setButtonToClickedState(TVRecordButton, R.drawable.ic_pause_24, R.string.pause);
+                    else setButtonToNormalState(TVRecordButton, R.drawable.ic_record_24, R.string.record);
                 }
                 if (TVAnnotateButton != null) {
-                    TVAnnotateButton.setBackgroundColor(isAnnot ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-                    TVAnnotateButton.setTextColor(getResources().getColor(isAnnot ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
-                    setTextViewDrawableColor(TVAnnotateButton.getCompoundDrawables()[1],
-                            getResources().getColor(isAnnot ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
-
+                    if (isAnnot) setButtonToClickedState(TVAnnotateButton, 0, 0);
+                    else setButtonToNormalState(TVAnnotateButton, 0, 0);
                 }
                 if (TVLockButton != null) {
-                    TVLockButton.setBackgroundColor(isLck ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-                    TVLockButton.setCompoundDrawablesWithIntrinsicBounds(0, isLck ? R.drawable.ic_unlock_24 : R.drawable.ic_lock_24, 0, 0);
-                    TVLockButton.setTextColor(getResources().getColor(isLck ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
-                    TVLockButton.setText(getString(isLck ? R.string.unlock : R.string.lock));
-                    setTextViewDrawableColor(TVLockButton.getCompoundDrawables()[1],
-                            getResources().getColor(isLck ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
+                    if (isLck) setButtonToClickedState(TVLockButton, R.drawable.ic_unlock_24, R.string.unlock);
+                    else setButtonToNormalState(TVLockButton, R.drawable.ic_lock_24, R.string.lock);
                 }
                 if (TVStopButton != null) {
                     TVStopButton.setClickable(track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0);
-
                     if (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) {
-                        TVStopButton.setTextColor(getResources().getColor(R.color.textColorRecControlSecondary));
-                        setTextViewDrawableColor(TVStopButton.getCompoundDrawables()[1],
-                                getResources().getColor(R.color.textColorRecControlPrimary));
+                        if (gpsApplication.getStopFlag()) setButtonToClickedState(TVStopButton, 0, 0);
+                        else setButtonToNormalState(TVStopButton, 0, 0);
                     } else {
-                        TVStopButton.setTextColor(getResources().getColor(R.color.textColorRecControlDisabled));
-                        setTextViewDrawableColor(TVStopButton.getCompoundDrawables()[1],
-                                getResources().getColor(R.color.textColorRecControlDisabled));
+                        setButtonToDisabledState(TVStopButton, 0, 0);
                     }
                 }
             }

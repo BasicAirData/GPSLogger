@@ -75,7 +75,6 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                             String PlacemarkDescription = DescEditText.getText().toString();
                             final GPSApplication gpsApp = GPSApplication.getInstance();
                             //gpsApp.setPlacemarkDescription(PlacemarkDescription.trim());
-                            gpsApp.setNewTrackFlag(false);
                             gpsApp.setRecording(false);
                             EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
                             Toast.makeText(getActivity(), getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
