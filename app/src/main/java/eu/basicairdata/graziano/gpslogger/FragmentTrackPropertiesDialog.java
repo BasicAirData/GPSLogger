@@ -44,15 +44,16 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
 
     private EditText DescEditText;
     private ImageView[] tracktypeImageView = new ImageView[7];
+
     private int selectedTrackType = NOT_AVAILABLE;                  // The track type selected by the user
     private Track _trackToEdit = null;                              // The track to edit
     private int _title = 0;                                         // The resource id for the title
     private boolean _isAFinalization = false;                       // True if the "OK" button finalize the track and creates a new one
 
+    private static final String KEY_SELTRACKTYPE = "selectedTrackType";
+    private static final String KEY_TITLE = "_title";
+    private static final String KEY_ISFINALIZATION = "_isFinalization";
 
-    public void setTrackToEdit(Track trackToEdit) {
-        _trackToEdit = trackToEdit;
-    }
 
 
     public void setTitleResource(int titleResource) {
@@ -65,11 +66,34 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
     }
 
 
-    //@SuppressLint("InflateParams")
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        // TODO Auto-generated method stub
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(KEY_SELTRACKTYPE, selectedTrackType);
+        outState.putInt(KEY_TITLE, _title);
+        outState.putBoolean(KEY_ISFINALIZATION, _isAFinalization);
+    }
+
+
+
+        //@SuppressLint("InflateParams")
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity());
+
+        _trackToEdit = GPSApplication.getInstance().getTrackToEdit();
+
+        if (savedInstanceState != null) {
+            _title = savedInstanceState.getInt(KEY_TITLE, 0);
+            selectedTrackType = savedInstanceState.getInt(KEY_SELTRACKTYPE, NOT_AVAILABLE);
+            _isAFinalization = savedInstanceState.getBoolean(KEY_ISFINALIZATION, false);
+        } else {
+            selectedTrackType = _trackToEdit.getTrackType();
+        }
+
         if (_title != 0) createPlacemarkAlert.setTitle(_title);
         //createPlacemarkAlert.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_24, getActivity().getTheme()));
 
@@ -118,8 +142,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             });
         }
         // Activate the right image
-        if (_trackToEdit.getTrackType() != Track.TRACK_TYPE_ND)
-            tracktypeImageView[_trackToEdit.getTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
+        if (selectedTrackType != Track.TRACK_TYPE_ND)
+            tracktypeImageView[selectedTrackType].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
 
         createPlacemarkAlert.setView(view)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

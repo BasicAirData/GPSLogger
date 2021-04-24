@@ -181,7 +181,7 @@ public class FragmentRecordingControls extends Fragment{
 
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
-                    tpDialog.setTrackToEdit(gpsApplication.getCurrentTrack());
+                    gpsApplication.setTrackToEdit(gpsApplication.getCurrentTrack());
                     tpDialog.setTitleResource(R.string.finalize_track);
                     tpDialog.setIsAFinalization(true);
                     tpDialog.show(fm, "");

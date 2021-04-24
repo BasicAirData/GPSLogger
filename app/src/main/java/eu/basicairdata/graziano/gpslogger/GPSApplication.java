@@ -211,6 +211,8 @@ public class GPSApplication extends Application implements LocationListener {
     private LocationExtended _currentLocationExtended = null;
     private LocationExtended _currentPlacemark = null;
     private Track _currentTrack = null;
+    private Track trackToEdit = null;                       // The Track that the user selected to edit with the "Track Properties Dialog
+
     private final List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
 
     Thumbnailer Th;
@@ -666,6 +668,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setTrackViewer(AppInfo trackViewer) {
         TrackViewer = trackViewer;
+    }
+
+    public Track getTrackToEdit() {
+        return trackToEdit;
+    }
+
+    public void setTrackToEdit(Track trackToEdit) {
+        this.trackToEdit = trackToEdit;
     }
 
     // ------------------------------------------------------------------------ Utility
