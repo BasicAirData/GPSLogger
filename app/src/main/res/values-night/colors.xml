@@ -37,6 +37,8 @@
     <color name="textColorRecControlPrimary_Active">#ffffff</color>
     <color name="textColorRecControlSecondary_Active">#cccccc</color>
 
+    <color name="colorIconDisabledOnDialog">#707070</color>
+
     <color name="colorCardBackground_Title">#3d3d3d</color>
     <color name="colorCardBackground_Line">#2b2b2b</color>
     <color name="colorCardBackground_Data">#333333</color>

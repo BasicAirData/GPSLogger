@@ -127,7 +127,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
 
         // Disable all images
         for (int i = 0; i< tracktypeImageView.length; i++) {
-            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.textColorRecControlDisabled), PorterDuff.Mode.SRC_IN);
+            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
             tracktypeImageView[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -136,7 +136,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                             tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
                             selectedTrackType = i;
                         } else
-                            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.textColorRecControlDisabled), PorterDuff.Mode.SRC_IN);
+                            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
                     }
                 }
             });
