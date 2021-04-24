@@ -40,8 +40,12 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
+
     // Database Version
-    private static final int DATABASE_VERSION = 2;          // Updated to 2 in v2.1.3 (code 14)
+    // Updated to 2 in v2.1.3 (version code 14)
+    // Updated to 3 in v3.0.0 (version code 38)
+    private static final int DATABASE_VERSION = 3;
+
     private static final int LOCATION_TYPE_LOCATION = 1;
     private static final int LOCATION_TYPE_PLACEMARK = 2;
 
@@ -128,6 +132,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_TRACK_TYPE = "type";
 
     private static final String KEY_TRACK_VALIDMAP = "validmap";
+    private static final String KEY_TRACK_DESCRIPTION = "description";
 
 
 
@@ -179,7 +184,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_TRACK_NUMBEROFLOCATIONS + " INTEGER,"         // 37
                 + KEY_TRACK_NUMBEROFPLACEMARKS + " INTEGER,"        // 38
                 + KEY_TRACK_VALIDMAP + " INTEGER,"                  // 39
-                + KEY_TRACK_TYPE + " INTEGER " + ")";               // 40
+                + KEY_TRACK_TYPE + " INTEGER,"                      // 40
+                + KEY_TRACK_DESCRIPTION + " TEXT" + ")";            // 41
         db.execSQL(CREATE_TRACKS_TABLE);
 
         String CREATE_LOCATIONS_TABLE = "CREATE TABLE " + TABLE_LOCATIONS + "("
@@ -220,6 +226,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
             + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";
     private static final String DATABASE_ALTER_TABLE_PLACEMARKS_TO_V2 = "ALTER TABLE "
             + TABLE_PLACEMARKS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";
+    private static final String DATABASE_ALTER_TABLE_TRACKS_TO_V3 = "ALTER TABLE "
+            + TABLE_TRACKS + " ADD COLUMN " + KEY_TRACK_DESCRIPTION + " TEXT DEFAULT \"\";";
 
     // Upgrading database
     @Override
@@ -242,9 +250,10 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 //Log.w("myApp", "[#] DatabaseHandler.java - onUpgrade: from version 1 to 2 ...");
                 db.execSQL(DATABASE_ALTER_TABLE_LOCATIONS_TO_V2);
                 db.execSQL(DATABASE_ALTER_TABLE_PLACEMARKS_TO_V2);
-            //case 2:
+            case 2:
                 //upgrade from version 2 to 3
-            //    db.execSQL(DATABASE_ALTER_TEAM_TO_V3);
+                //Log.w("myApp", "[#] DatabaseHandler.java - onUpgrade: from version 2 to 3 ...");
+                db.execSQL(DATABASE_ALTER_TABLE_TRACKS_TO_V3);
 
                 //and so on.. do not add breaks so that switch will
                 //start at oldVersion, and run straight through to the latest
@@ -254,28 +263,14 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
 // ----------------------------------------------------------------------- LOCATIONS AND PLACEMARKS
 
+
     // Add new Location and update the corresponding track
-    public void addLocationToTrack(LocationExtended location, Track track) {
+    public void updateTrack(Track track) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        Location loc = location.getLocation();
-
-        ContentValues locvalues = new ContentValues();
-        locvalues.put(KEY_TRACK_ID, track.getId());
-        locvalues.put(KEY_LOCATION_NUMBER, track.getNumberOfLocations());
-        locvalues.put(KEY_LOCATION_LATITUDE, loc.getLatitude());
-        locvalues.put(KEY_LOCATION_LONGITUDE, loc.getLongitude());
-        locvalues.put(KEY_LOCATION_ALTITUDE, loc.hasAltitude() ? loc.getAltitude() : NOT_AVAILABLE);
-        locvalues.put(KEY_LOCATION_SPEED, loc.hasSpeed() ? loc.getSpeed() : NOT_AVAILABLE);
-        locvalues.put(KEY_LOCATION_ACCURACY, loc.hasAccuracy() ? loc.getAccuracy() : NOT_AVAILABLE);
-        locvalues.put(KEY_LOCATION_BEARING, loc.hasBearing() ? loc.getBearing() : NOT_AVAILABLE);
-        locvalues.put(KEY_LOCATION_TIME, loc.getTime());
-        locvalues.put(KEY_LOCATION_NUMBEROFSATELLITES, location.getNumberOfSatellites());
-        locvalues.put(KEY_LOCATION_TYPE, LOCATION_TYPE_LOCATION);
-        locvalues.put(KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX, location.getNumberOfSatellitesUsedInFix());
 
         ContentValues trkvalues = new ContentValues();
         trkvalues.put(KEY_TRACK_NAME, track.getName());
+
         trkvalues.put(KEY_TRACK_FROM, "");
         trkvalues.put(KEY_TRACK_TO, "");
 
@@ -328,6 +323,97 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_TYPE, track.getType());
 
         trkvalues.put(KEY_TRACK_VALIDMAP, track.getValidMap());
+        trkvalues.put(KEY_TRACK_DESCRIPTION, track.getDescription());
+
+        try {
+            db.beginTransaction();
+            db.update(TABLE_TRACKS, trkvalues, KEY_ID + " = ?",
+                    new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+        //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
+    }
+
+
+    // Add new Location and update the corresponding track
+    public void addLocationToTrack(LocationExtended location, Track track) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Location loc = location.getLocation();
+
+        ContentValues locvalues = new ContentValues();
+        locvalues.put(KEY_TRACK_ID, track.getId());
+        locvalues.put(KEY_LOCATION_NUMBER, track.getNumberOfLocations());
+        locvalues.put(KEY_LOCATION_LATITUDE, loc.getLatitude());
+        locvalues.put(KEY_LOCATION_LONGITUDE, loc.getLongitude());
+        locvalues.put(KEY_LOCATION_ALTITUDE, loc.hasAltitude() ? loc.getAltitude() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_SPEED, loc.hasSpeed() ? loc.getSpeed() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_ACCURACY, loc.hasAccuracy() ? loc.getAccuracy() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_BEARING, loc.hasBearing() ? loc.getBearing() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_TIME, loc.getTime());
+        locvalues.put(KEY_LOCATION_NUMBEROFSATELLITES, location.getNumberOfSatellites());
+        locvalues.put(KEY_LOCATION_TYPE, LOCATION_TYPE_LOCATION);
+        locvalues.put(KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX, location.getNumberOfSatellitesUsedInFix());
+
+        ContentValues trkvalues = new ContentValues();
+        trkvalues.put(KEY_TRACK_NAME, track.getName());
+
+        trkvalues.put(KEY_TRACK_FROM, "");
+        trkvalues.put(KEY_TRACK_TO, "");
+
+        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getStart_Latitude());
+        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getStart_Longitude());
+        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getStart_Altitude());
+        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getStart_Accuracy());
+        trkvalues.put(KEY_TRACK_START_SPEED, track.getStart_Speed());
+        trkvalues.put(KEY_TRACK_START_TIME, track.getStart_Time());
+
+        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getLastFix_Time());
+
+        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getEnd_Latitude());
+        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getEnd_Longitude());
+        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getEnd_Altitude());
+        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getEnd_Accuracy());
+        trkvalues.put(KEY_TRACK_END_SPEED, track.getEnd_Speed());
+        trkvalues.put(KEY_TRACK_END_TIME, track.getEnd_Time());
+
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLastStepDistance_Latitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLastStepDistance_Longitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getLastStepDistance_Accuracy());
+
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getLastStepAltitude_Altitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getLastStepAltitude_Accuracy());
+
+        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getMin_Latitude());
+        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getMin_Longitude());
+
+        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getMax_Latitude());
+        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getMax_Longitude());
+
+        trkvalues.put(KEY_TRACK_DURATION, track.getDuration());
+        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDuration_Moving());
+
+        trkvalues.put(KEY_TRACK_DISTANCE, track.getDistance());
+        trkvalues.put(KEY_TRACK_DISTANCE_INPROGRESS, track.getDistanceInProgress());
+        trkvalues.put(KEY_TRACK_DISTANCE_LASTALTITUDE, track.getDistanceLastAltitude());
+
+        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitude_Up());
+        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitude_Down());
+        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitude_InProgress());
+
+        trkvalues.put(KEY_TRACK_SPEED_MAX, track.getSpeedMax());
+        trkvalues.put(KEY_TRACK_SPEED_AVERAGE, track.getSpeedAverage());
+        trkvalues.put(KEY_TRACK_SPEED_AVERAGEMOVING, track.getSpeedAverageMoving());
+
+        trkvalues.put(KEY_TRACK_NUMBEROFLOCATIONS, track.getNumberOfLocations());
+        trkvalues.put(KEY_TRACK_NUMBEROFPLACEMARKS, track.getNumberOfPlacemarks());
+        trkvalues.put(KEY_TRACK_TYPE, track.getType());
+
+        trkvalues.put(KEY_TRACK_VALIDMAP, track.getValidMap());
+        trkvalues.put(KEY_TRACK_DESCRIPTION, track.getDescription());
 
         try {
             db.beginTransaction();
@@ -418,6 +504,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_TYPE, track.getType());
 
         trkvalues.put(KEY_TRACK_VALIDMAP, track.getValidMap());
+        trkvalues.put(KEY_TRACK_DESCRIPTION, track.getDescription());
 
         try {
             db.beginTransaction();
@@ -770,6 +857,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_TYPE, track.getType());
 
         trkvalues.put(KEY_TRACK_VALIDMAP, track.getValidMap());
+        trkvalues.put(KEY_TRACK_DESCRIPTION, track.getDescription());
 
         long TrackID;
         // Inserting Row
@@ -851,7 +939,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
                         cursor.getLong(38),
 
                         cursor.getInt(39),
-                        cursor.getInt(40));
+                        cursor.getInt(40),
+                        cursor.getString(41));
             }
             cursor.close();
         }
@@ -961,7 +1050,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
                             cursor.getLong(38),
 
                             cursor.getInt(39),
-                            cursor.getInt(40));
+                            cursor.getInt(40),
+                            cursor.getString(41));
 
                     trackList.add(trk);             // Add Track to list
                 } while (cursor.moveToNext());
@@ -1106,7 +1196,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
                             cursor.getLong(38),
 
                             cursor.getInt(39),
-                            cursor.getInt(40));
+                            cursor.getInt(40),
+                            cursor.getString(41));
                     trackList.add(trk);             // Add Track to list
                 } while (cursor.moveToNext());
             }

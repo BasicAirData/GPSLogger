@@ -34,18 +34,19 @@ public class Track {
     private static final float STANDARD_ACCURACY = 10.0f;
     private static final float SECURITY_COEFF = 1.7f;
 
-    private static final int TRACK_TYPE_STEADY   = 0;
-    private static final int TRACK_TYPE_WALK     = 1;
-    private static final int TRACK_TYPE_MOUNTAIN = 2;
-    private static final int TRACK_TYPE_RUN      = 3;
-    private static final int TRACK_TYPE_BICYCLE  = 4;
-    private static final int TRACK_TYPE_CAR      = 5;
-    private static final int TRACK_TYPE_FLIGHT   = 6;
-    private static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
+    public static final int TRACK_TYPE_STEADY   = 0;
+    public static final int TRACK_TYPE_WALK     = 1;
+    public static final int TRACK_TYPE_MOUNTAIN = 2;
+    public static final int TRACK_TYPE_RUN      = 3;
+    public static final int TRACK_TYPE_BICYCLE  = 4;
+    public static final int TRACK_TYPE_CAR      = 5;
+    public static final int TRACK_TYPE_FLIGHT   = 6;
+    public static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
 
     // Variables
     private long   id;                                              // Saved in DB
     private String Name                         = "";               // Saved in DB
+    private String Description                  = "";               // Saved in DB
 
     private double  Start_Latitude              = NOT_AVAILABLE;    // Saved in DB
     private double  Start_Longitude             = NOT_AVAILABLE;    // Saved in DB
@@ -287,9 +288,10 @@ public class Track {
                        long DistanceLastAltitude, double Altitude_Up, double Altitude_Down,
                        double Altitude_InProgress, float SpeedMax, float   SpeedAverage,
                        float SpeedAverageMoving, long NumberOfLocations, long NumberOfPlacemarks,
-                       int ValidMap, int Type) {
+                       int ValidMap, int Type, String Description) {
         this.id = id;
         this.Name = Name;
+        this.Description = Description;
 
         this.Start_Latitude = Start_Latitude;
         this.Start_Longitude = Start_Longitude;
@@ -367,6 +369,14 @@ public class Track {
 
     public void setName(String name) {
         Name = name;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
     }
 
     public double getStart_Latitude() {
@@ -693,9 +703,14 @@ public class Track {
     }
 
 
+    public void setTrackType(int trackType){
+        Type = trackType;
+    }
+
+
     public int getTrackType() {
 
-        //if (Type != TRACK_TYPE_ND) return Type;
+        if (Type != TRACK_TYPE_ND) return Type;
 
         if ((Distance == NOT_AVAILABLE) || (SpeedMax == NOT_AVAILABLE)) {
             if (NumberOfPlacemarks == 0) return TRACK_TYPE_ND;

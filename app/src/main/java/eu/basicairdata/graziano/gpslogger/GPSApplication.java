@@ -179,17 +179,19 @@ public class GPSApplication extends Application implements LocationListener {
     private String PlacemarkDescription = "";
     private boolean Recording = false;
     private boolean PlacemarkRequest = false;
+    private boolean BottomBarLocked = false;
     private boolean isGPSLocationUpdatesActive = false;
     private int GPSStatus = GPS_SEARCHING;
 
     private int AppOrigin = APP_ORIGIN_NOT_SPECIFIED;       // Which package manager is used to install this app
 
-    private boolean NewTrackFlag = false;                   // The variable that handle the double-click on "Track Finished"
-    final Handler newtrackhandler = new Handler();
-    Runnable newtrackr = new Runnable() {
+    private boolean stopFlag = false;                   // The variable that handle the double-click on "Track Finished"
+    final Handler stopHandler = new Handler();
+    Runnable stopr = new Runnable() {
         @Override
         public void run() {
-            NewTrackFlag = false;
+            stopFlag = false;
+            EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
         }
     };
 
@@ -209,6 +211,8 @@ public class GPSApplication extends Application implements LocationListener {
     private LocationExtended _currentLocationExtended = null;
     private LocationExtended _currentPlacemark = null;
     private Track _currentTrack = null;
+    private Track trackToEdit = null;                       // The Track that the user selected to edit with the "Track Properties Dialog
+
     private final List<Track> _ArrayListTracks = Collections.synchronizedList(new ArrayList<Track>());
 
     Thumbnailer Th;
@@ -444,18 +448,18 @@ public class GPSApplication extends Application implements LocationListener {
 
 
     // ------------------------------------------------------------------------ Getters and Setters
-    public boolean getNewTrackFlag() {
-        return NewTrackFlag;
+    public boolean getStopFlag() {
+        return stopFlag;
     }
 
-    public void setNewTrackFlag(boolean newTrackFlag) {
-        if (newTrackFlag) {
-            NewTrackFlag = true;
-            newtrackhandler.removeCallbacks(newtrackr);         // Cancel the previous newtrackr handler
-            newtrackhandler.postDelayed(newtrackr, 1500);       // starts the new handler
+    public void setStopFlag(boolean stopFlag) {
+        if (stopFlag) {
+            this.stopFlag = true;
+            stopHandler.removeCallbacks(stopr);         // Cancel the previous newtrackr handler
+            stopHandler.postDelayed(stopr, 300);       // starts the new handler
         } else {
-            NewTrackFlag = false;
-            newtrackhandler.removeCallbacks(newtrackr);         // Cancel the previous newtrackr handler
+            this.stopFlag = false;
+            stopHandler.removeCallbacks(stopr);         // Cancel the previous newtrackr handler
         }
     }
 
@@ -594,6 +598,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setPlacemarkRequest(boolean placemarkRequest) { PlacemarkRequest = placemarkRequest; }
 
+    public boolean getBottomBarLocked() {
+        return BottomBarLocked;
+    }
+
+    public void setBottomBarLocked(boolean locked) {
+        BottomBarLocked = locked;
+    }
+
     public List<Track> getTrackList() {
         return _ArrayListTracks;
     }
@@ -656,6 +668,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setTrackViewer(AppInfo trackViewer) {
         TrackViewer = trackViewer;
+    }
+
+    public Track getTrackToEdit() {
+        return trackToEdit;
+    }
+
+    public void setTrackToEdit(Track trackToEdit) {
+        this.trackToEdit = trackToEdit;
     }
 
     // ------------------------------------------------------------------------ Utility

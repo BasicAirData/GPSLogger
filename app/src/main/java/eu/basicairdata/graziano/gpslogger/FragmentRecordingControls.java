@@ -21,12 +21,18 @@ package eu.basicairdata.graziano.gpslogger;
 
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,14 +45,14 @@ public class FragmentRecordingControls extends Fragment{
         // Required empty public constructor
     }
 
-    TableLayout tableLayoutGeoPoints;
-    TableLayout tableLayoutPlacemarks;
 
-    private TextView TVGeoPoints;
-    private TextView TVPlacemarks;
-    private TextView TVGeoPointsLabel;
-    private TextView TVPlacemarksLabel;
-
+    private TextView TVGeoPointsNumber;
+    private TextView TVPlacemarksNumber;
+    private TextView TVLockButton;
+    private TextView TVStopButton;
+    private TextView TVAnnotateButton;
+    private TextView TVRecordButton;
+    
     final GPSApplication gpsApplication = GPSApplication.getInstance();
 
 
@@ -55,34 +61,50 @@ public class FragmentRecordingControls extends Fragment{
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recording_controls, container, false);
 
-        tableLayoutGeoPoints = (TableLayout) view.findViewById(R.id.id_TableLayout_GeoPoints);
-        tableLayoutGeoPoints.setOnClickListener(new View.OnClickListener() {
+        TVLockButton = view.findViewById(R.id.id_lock);
+        TVLockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ontoggleRecordGeoPoint(v);
+                onToggleLock();
             }
         });
 
-        tableLayoutPlacemarks = (TableLayout) view.findViewById(R.id.id_TableLayout_Placemarks);
-        tableLayoutPlacemarks.setOnClickListener(new View.OnClickListener() {
+        TVStopButton = view.findViewById(R.id.id_stop);
+        TVStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPlacemarkRequest(v);
+                onRequestStop();
             }
         });
 
-        TVGeoPoints = (TextView) view.findViewById(R.id.id_textView_GeoPoints);
-        TVPlacemarks = (TextView) view.findViewById(R.id.id_textView_Placemarks);
-        TVGeoPointsLabel = (TextView) view.findViewById(R.id.id_textView_GeoPointsLabel);
-        TVPlacemarksLabel = (TextView) view.findViewById(R.id.id_textView_PlacemarksLabel);
+        TVAnnotateButton = view.findViewById(R.id.id_annotate);
+        TVAnnotateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRequestAnnotation();
+            }
+        });
+
+        TVRecordButton = view.findViewById(R.id.id_record);
+        TVRecordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onToggleRecord();
+            }
+        });
+
+        TVGeoPointsNumber = view.findViewById(R.id.id_textView_GeoPoints);
+        TVPlacemarksNumber = view.findViewById(R.id.id_textView_Placemarks);
 
         return view;
     }
+
 
     @Override
     public void onResume() {
@@ -94,10 +116,10 @@ public class FragmentRecordingControls extends Fragment{
             //Log.w("myApp", "[#] FragmentRecordingControls - EventBus: FragmentRecordingControls already registered");
             EventBus.getDefault().unregister(this);
         }
-
         EventBus.getDefault().register(this);
         Update();
     }
+
 
     @Override
     public void onPause() {
@@ -105,29 +127,82 @@ public class FragmentRecordingControls extends Fragment{
         super.onPause();
     }
 
-    public void ontoggleRecordGeoPoint(View view) {
+
+    public void onToggleRecord() {
         if (isAdded()) {
-            final Boolean grs = gpsApplication.getRecording();
-            boolean newRecordingState = !grs;
-            gpsApplication.setRecording(newRecordingState);
-            EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-            tableLayoutGeoPoints.setBackgroundColor(newRecordingState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-            TVGeoPoints.setTextColor(getResources().getColor(newRecordingState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
-            TVGeoPointsLabel.setTextColor(getResources().getColor(newRecordingState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
+            if (!gpsApplication.getBottomBarLocked()) {
+                if (!gpsApplication.getStopFlag()) {
+                    final boolean grs = gpsApplication.getRecording();
+                    boolean newRecordingState = !grs;
+                    gpsApplication.setRecording(newRecordingState);
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+
+                    if (newRecordingState)
+                        setButtonToClickedState(TVRecordButton, R.drawable.ic_pause_24, R.string.pause);
+                    else
+                        setButtonToNormalState(TVRecordButton, R.drawable.ic_record_24, R.string.record);
+                }
+            } else {
+                EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
+            }
         }
     }
 
-    public void onPlacemarkRequest(View view) {
-        if (isAdded()) {
-            final Boolean pr = gpsApplication.getPlacemarkRequest();
-            boolean newPlacemarkRequestState = !pr;
-            gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
-            tableLayoutPlacemarks.setBackgroundColor(newPlacemarkRequestState ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-            TVPlacemarks.setTextColor(getResources().getColor(newPlacemarkRequestState ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
-            TVPlacemarksLabel.setTextColor(getResources().getColor(newPlacemarkRequestState ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
 
+    public void onRequestAnnotation() {
+        if (isAdded()) {
+            if (!gpsApplication.getBottomBarLocked()) {
+                if (!gpsApplication.getStopFlag()) {
+                    final boolean pr = gpsApplication.getPlacemarkRequest();
+                    boolean newPlacemarkRequestState = !pr;
+                    gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
+
+                    if (newPlacemarkRequestState) setButtonToClickedState(TVAnnotateButton, 0, 0);
+                    else setButtonToNormalState(TVAnnotateButton, 0, 0);
+                }
+            } else {
+                EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
+            }
         }
     }
+
+
+    public void onRequestStop() {
+        if (isAdded()) {
+            if (!gpsApplication.getBottomBarLocked()) {
+                if (!gpsApplication.getStopFlag()) {
+                    setButtonToClickedState(TVStopButton, 0, 0);
+                    gpsApplication.setStopFlag(true);
+                    gpsApplication.setRecording(false);
+                    gpsApplication.setPlacemarkRequest(false);
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+
+                    //gpsApplication.setTrackToEdit(gpsApplication.getCurrentTrack());
+
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                    gpsApplication.setTrackToEdit(gpsApplication.getCurrentTrack());
+                    tpDialog.setTitleResource(R.string.finalize_track);
+                    tpDialog.setIsAFinalization(true);
+                    tpDialog.show(fm, "");
+                }
+            } else {
+                EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
+            }
+        }
+    }
+
+
+    public void onToggleLock() {
+        if (isAdded()) {
+            boolean lck = !gpsApplication.getBottomBarLocked();
+            gpsApplication.setBottomBarLocked(lck);
+
+            if (lck) setButtonToClickedState(TVLockButton, R.drawable.ic_unlock_24, R.string.unlock);
+            else setButtonToNormalState(TVLockButton, R.drawable.ic_lock_24, R.string.lock);
+        }
+    }
+
 
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
@@ -136,20 +211,72 @@ public class FragmentRecordingControls extends Fragment{
         }
     }
 
+
+    private void setTextViewDrawableColor(Drawable drawable, int color) {
+        if (drawable != null) {
+            drawable.clearColorFilter();
+            drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        }
+    }
+
+
+    private void setButtonToClickedState(@NonNull TextView button, int imageId, int stringId) {
+        button.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
+        button.setTextColor(getResources().getColor(R.color.textColorRecControlSecondary_Active));
+        if (stringId != 0) button.setText(getString(stringId));
+        setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlPrimary_Active));
+    }
+
+
+    private void setButtonToNormalState(@NonNull TextView button, int imageId, int stringId) {
+        button.setBackgroundColor(Color.TRANSPARENT);
+        if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
+        button.setTextColor(getResources().getColor(R.color.textColorRecControlSecondary));
+        if (stringId != 0) button.setText(getString(stringId));
+        setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlPrimary));
+    }
+
+
+    private void setButtonToDisabledState(@NonNull TextView button, int imageId, int stringId) {
+        button.setBackgroundColor(Color.TRANSPARENT);
+        if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
+        button.setTextColor(getResources().getColor(R.color.textColorRecControlDisabled));
+        if (stringId != 0) button.setText(getString(stringId));
+        setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlDisabled));
+    }
+
+
     public void Update() {
         if (isAdded()) {
             final Track track = gpsApplication.getCurrentTrack();
-            final Boolean grs = gpsApplication.getRecording();
-            final Boolean pr = gpsApplication.getPlacemarkRequest();
+            final boolean isRec = gpsApplication.getRecording();
+            final boolean isAnnot = gpsApplication.getPlacemarkRequest();
+            final boolean isLck = gpsApplication.getBottomBarLocked();
             if (track != null) {
-                if (TVGeoPoints != null)            TVGeoPoints.setText(String.valueOf(track.getNumberOfLocations()));
-                if (TVPlacemarks != null)           TVPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
-                if (tableLayoutGeoPoints != null)   tableLayoutGeoPoints.setBackgroundColor(grs ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-                if (tableLayoutPlacemarks != null)  tableLayoutPlacemarks.setBackgroundColor(pr ? getResources().getColor(R.color.colorPrimary) : Color.TRANSPARENT);
-                if (TVPlacemarks != null)           TVPlacemarks.setTextColor(getResources().getColor(pr ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
-                if (TVPlacemarksLabel != null)      TVPlacemarksLabel.setTextColor(getResources().getColor(pr ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
-                if (TVGeoPoints != null)            TVGeoPoints.setTextColor(getResources().getColor(grs ? R.color.textColorRecControlPrimary_Active : R.color.textColorRecControlPrimary));
-                if (TVGeoPointsLabel != null)       TVGeoPointsLabel.setTextColor(getResources().getColor(grs ? R.color.textColorRecControlSecondary_Active : R.color.textColorRecControlSecondary));
+                if (TVGeoPointsNumber != null)            TVGeoPointsNumber.setText(track.getNumberOfLocations() == 0 ? "" : String.valueOf(track.getNumberOfLocations()));
+                if (TVPlacemarksNumber != null)           TVPlacemarksNumber.setText(String.valueOf(track.getNumberOfPlacemarks() == 0 ? "" : track.getNumberOfPlacemarks()));
+                if (TVRecordButton != null) {
+                    if (isRec) setButtonToClickedState(TVRecordButton, R.drawable.ic_pause_24, R.string.pause);
+                    else setButtonToNormalState(TVRecordButton, R.drawable.ic_record_24, R.string.record);
+                }
+                if (TVAnnotateButton != null) {
+                    if (isAnnot) setButtonToClickedState(TVAnnotateButton, 0, 0);
+                    else setButtonToNormalState(TVAnnotateButton, 0, 0);
+                }
+                if (TVLockButton != null) {
+                    if (isLck) setButtonToClickedState(TVLockButton, R.drawable.ic_unlock_24, R.string.unlock);
+                    else setButtonToNormalState(TVLockButton, R.drawable.ic_lock_24, R.string.lock);
+                }
+                if (TVStopButton != null) {
+                    TVStopButton.setClickable(track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0);
+                    if (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) {
+                        if (gpsApplication.getStopFlag()) setButtonToClickedState(TVStopButton, 0, 0);
+                        else setButtonToNormalState(TVStopButton, 0, 0);
+                    } else {
+                        setButtonToDisabledState(TVStopButton, 0, 0);
+                    }
+                }
             }
         }
     }

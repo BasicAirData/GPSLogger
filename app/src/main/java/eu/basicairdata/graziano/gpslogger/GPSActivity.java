@@ -79,8 +79,6 @@ public class GPSActivity extends AppCompatActivity {
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
-    Toast ToastClickAgain;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,8 +117,6 @@ public class GPSActivity extends AppCompatActivity {
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setHideable (false);
-
-        ToastClickAgain = Toast.makeText(this, getString(R.string.toast_track_finished_click_again), Toast.LENGTH_SHORT);
     }
 
 
@@ -241,12 +237,12 @@ public class GPSActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        menutrackfinished = menu.findItem(R.id.action_track_finished);
-        menutrackfinished.setVisible(!GPSApp.getCurrentTrack().getName().equals(""));
-        return true;
-    }
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        menutrackfinished = menu.findItem(R.id.action_track_finished);
+//        menutrackfinished.setVisible(!GPSApp.getCurrentTrack().getName().equals(""));
+//        return true;
+//    }
 
 
     @Override
@@ -257,21 +253,6 @@ public class GPSActivity extends AppCompatActivity {
             GPSApp.setHandlerTimer(60000);
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-            return true;
-        }
-        if (id == R.id.action_track_finished) {
-            if (GPSApp.getNewTrackFlag()) {
-                // This is the second click
-                GPSApp.setNewTrackFlag(false);
-                GPSApp.setRecording(false);
-                EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
-                ToastClickAgain.cancel();
-                Toast.makeText(this, getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
-            } else {
-                // This is the first click
-                GPSApp.setNewTrackFlag(true); // Start the timer
-                ToastClickAgain.show();
-            }
             return true;
         }
         if (id == R.id.action_about) {
@@ -389,6 +370,14 @@ public class GPSActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case EventBusMSG.TOAST_BOTTOM_BAR_LOCKED:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
