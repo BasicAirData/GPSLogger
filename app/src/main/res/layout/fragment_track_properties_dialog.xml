@@ -20,7 +20,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,48 +51,48 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <androidx.appcompat.widget.AppCompatImageButton
+            <ImageView
+                android:id="@+id/tracktype_steady"
                 android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.4"
-                android:background="@drawable/ic_tracktype_place_24dp"/>
-            <androidx.appcompat.widget.AppCompatImageButton
+                app:srcCompat="@drawable/ic_tracktype_place_24dp"/>
+            <ImageView
+                android:id="@+id/tracktype_mountain"
                 android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.4"
-                android:background="@drawable/ic_tracktype_mountain_24dp"/>
-            <androidx.appcompat.widget.AppCompatImageButton
+                app:srcCompat="@drawable/ic_tracktype_mountain_24dp"/>
+            <ImageView
+                android:id="@+id/tracktype_walk"
                 android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.4"
-                android:background="@drawable/ic_tracktype_walk_24dp"/>
-            <androidx.appcompat.widget.AppCompatImageButton
+                app:srcCompat="@drawable/ic_tracktype_walk_24dp"/>
+            <ImageView
+                android:id="@+id/tracktype_run"
                 android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.4"
-                android:background="@drawable/ic_tracktype_run_24dp"/>
-            <androidx.appcompat.widget.AppCompatImageButton
+                app:srcCompat="@drawable/ic_tracktype_run_24dp"/>
+            <ImageView
+                android:id="@+id/tracktype_bicycle"
                 android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.4"
-                android:background="@drawable/ic_tracktype_bike_24dp"/>
-            <androidx.appcompat.widget.AppCompatImageButton
+                app:srcCompat="@drawable/ic_tracktype_bike_24dp"/>
+            <ImageView
+                android:id="@+id/tracktype_car"
                 android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="1.0"
-                android:background="@drawable/ic_tracktype_car_24dp"/>
-            <androidx.appcompat.widget.AppCompatImageButton
+                app:srcCompat="@drawable/ic_tracktype_car_24dp"/>
+            <ImageView
+                android:id="@+id/tracktype_flight"
                 android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.4"
-                android:background="@drawable/ic_tracktype_flight_24dp"/>
+                app:srcCompat="@drawable/ic_tracktype_flight_24dp"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

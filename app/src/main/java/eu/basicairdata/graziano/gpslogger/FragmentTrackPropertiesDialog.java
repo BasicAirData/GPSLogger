@@ -19,40 +19,67 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
+
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+
 public class FragmentTrackPropertiesDialog extends DialogFragment {
 
-    EditText DescEditText;
+    private EditText DescEditText;
+    private ImageView[] tracktypeImageView = new ImageView[7];
+    private int selectedTrackType = NOT_AVAILABLE;                  // The track type selected by the user
+    private Track _trackToEdit = null;                              // The track to edit
+    private int _title = 0;                                         // The resource id for the title
+    private boolean _isAFinalization = false;                       // True if the "OK" button finalize the track and creates a new one
+
+
+    public void setTrackToEdit(Track trackToEdit) {
+        _trackToEdit = trackToEdit;
+    }
+
+
+    public void setTitleResource(int titleResource) {
+        _title = titleResource;
+    }
+
+
+    public void setIsAFinalization(boolean isAFinalization) {
+        _isAFinalization = isAFinalization;
+    }
+
 
     //@SuppressLint("InflateParams")
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity());
-        createPlacemarkAlert.setTitle(R.string.finalize_track);
+        if (_title != 0) createPlacemarkAlert.setTitle(_title);
         //createPlacemarkAlert.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_24, getActivity().getTheme()));
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_track_properties_dialog, null);
 
         DescEditText = view.findViewById(R.id.track_description);
+        if (!_trackToEdit.getDescription().isEmpty()) {
+            DescEditText.setText(_trackToEdit.getDescription());
+        }
         //DescEditText.setHint(getString(R.string.track_id) + " " + String.valueOf(GPSApplication.getInstance().getCurrentTrack().getId()));
 //        DescEditText.postDelayed(new Runnable()
 //        {
@@ -66,19 +93,52 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
 //            }
 //        }, 200);
 
+        tracktypeImageView[Track.TRACK_TYPE_STEADY    ] = view.findViewById(R.id.tracktype_steady);
+        tracktypeImageView[Track.TRACK_TYPE_MOUNTAIN  ] = view.findViewById(R.id.tracktype_mountain);
+        tracktypeImageView[Track.TRACK_TYPE_WALK      ] = view.findViewById(R.id.tracktype_walk);
+        tracktypeImageView[Track.TRACK_TYPE_RUN       ] = view.findViewById(R.id.tracktype_run);
+        tracktypeImageView[Track.TRACK_TYPE_BICYCLE   ] = view.findViewById(R.id.tracktype_bicycle);
+        tracktypeImageView[Track.TRACK_TYPE_CAR       ] = view.findViewById(R.id.tracktype_car);
+        tracktypeImageView[Track.TRACK_TYPE_FLIGHT    ] = view.findViewById(R.id.tracktype_flight);
+
+        // Disable all images
+        for (int i = 0; i< tracktypeImageView.length; i++) {
+            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.textColorRecControlDisabled), PorterDuff.Mode.SRC_IN);
+            tracktypeImageView[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    for (int i = 0; i < tracktypeImageView.length; i++) {
+                        if (view == tracktypeImageView[i]) {
+                            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
+                            selectedTrackType = i;
+                        } else
+                            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.textColorRecControlDisabled), PorterDuff.Mode.SRC_IN);
+                    }
+                }
+            });
+        }
+        // Activate the right image
+        if (_trackToEdit.getTrackType() != Track.TRACK_TYPE_ND)
+            tracktypeImageView[_trackToEdit.getTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
+
         createPlacemarkAlert.setView(view)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         if (isAdded()) {
-                            String PlacemarkDescription = DescEditText.getText().toString();
-                            final GPSApplication gpsApp = GPSApplication.getInstance();
-                            //gpsApp.setPlacemarkDescription(PlacemarkDescription.trim());
-                            gpsApp.setRecording(false);
-                            EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
-                            Toast.makeText(getActivity(), getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
-                            //Log.w("myApp", "[#] FragmentPlacemarkDialog.java - posted ADD_PLACEMARK: " + PlacemarkDescription);
+                            String trackDescription = DescEditText.getText().toString();
+                            _trackToEdit.setDescription (trackDescription.trim());
+                            if (selectedTrackType != NOT_AVAILABLE) _trackToEdit.setTrackType(selectedTrackType);  // the user selected a track type!
+                            GPSApplication.getInstance().GPSDataBase.updateTrack(_trackToEdit);
+                            if (_isAFinalization) {
+                                // a request to finalize a track
+                                EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
+                                Toast.makeText(getActivity(), getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
+                            } else {
+                                EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
+                                // TODO: update only the selected track!
+                            }
                         }
                     }
                 })

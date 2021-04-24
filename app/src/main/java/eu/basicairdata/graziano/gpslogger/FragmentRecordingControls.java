@@ -131,13 +131,17 @@ public class FragmentRecordingControls extends Fragment{
     public void onToggleRecord() {
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
-                final boolean grs = gpsApplication.getRecording();
-                boolean newRecordingState = !grs;
-                gpsApplication.setRecording(newRecordingState);
-                EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+                if (!gpsApplication.getStopFlag()) {
+                    final boolean grs = gpsApplication.getRecording();
+                    boolean newRecordingState = !grs;
+                    gpsApplication.setRecording(newRecordingState);
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
 
-                if (newRecordingState) setButtonToClickedState(TVRecordButton, R.drawable.ic_pause_24, R.string.pause);
-                else setButtonToNormalState(TVRecordButton, R.drawable.ic_record_24, R.string.record);
+                    if (newRecordingState)
+                        setButtonToClickedState(TVRecordButton, R.drawable.ic_pause_24, R.string.pause);
+                    else
+                        setButtonToNormalState(TVRecordButton, R.drawable.ic_record_24, R.string.record);
+                }
             } else {
                 EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
             }
@@ -148,14 +152,15 @@ public class FragmentRecordingControls extends Fragment{
     public void onRequestAnnotation() {
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
-            final boolean pr = gpsApplication.getPlacemarkRequest();
-            boolean newPlacemarkRequestState = !pr;
-            gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
+                if (!gpsApplication.getStopFlag()) {
+                    final boolean pr = gpsApplication.getPlacemarkRequest();
+                    boolean newPlacemarkRequestState = !pr;
+                    gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
 
-            if (newPlacemarkRequestState) setButtonToClickedState(TVAnnotateButton, 0, 0);
-            else setButtonToNormalState(TVAnnotateButton, 0, 0);
-
-        } else {
+                    if (newPlacemarkRequestState) setButtonToClickedState(TVAnnotateButton, 0, 0);
+                    else setButtonToNormalState(TVAnnotateButton, 0, 0);
+                }
+            } else {
                 EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
             }
         }
@@ -166,11 +171,19 @@ public class FragmentRecordingControls extends Fragment{
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
                 if (!gpsApplication.getStopFlag()) {
-                    gpsApplication.setStopFlag(true);
                     setButtonToClickedState(TVStopButton, 0, 0);
+                    gpsApplication.setStopFlag(true);
+                    gpsApplication.setRecording(false);
+                    gpsApplication.setPlacemarkRequest(false);
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+
+                    //gpsApplication.setTrackToEdit(gpsApplication.getCurrentTrack());
 
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                    tpDialog.setTrackToEdit(gpsApplication.getCurrentTrack());
+                    tpDialog.setTitleResource(R.string.finalize_track);
+                    tpDialog.setIsAFinalization(true);
                     tpDialog.show(fm, "");
                 }
             } else {
