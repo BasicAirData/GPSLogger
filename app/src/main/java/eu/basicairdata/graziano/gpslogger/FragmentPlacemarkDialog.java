@@ -25,7 +25,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -46,7 +45,7 @@ public class FragmentPlacemarkDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity());
         createPlacemarkAlert.setTitle(R.string.dlg_add_placemark);
-        createPlacemarkAlert.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_location_24dp, getActivity().getTheme()));
+        //createPlacemarkAlert.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_location_24dp, getActivity().getTheme()));
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = (View) inflater.inflate(R.layout.fragment_placemark_dialog, null);
