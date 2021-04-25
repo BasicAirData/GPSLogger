@@ -452,11 +452,11 @@ public class GPSApplication extends Application implements LocationListener {
         return stopFlag;
     }
 
-    public void setStopFlag(boolean stopFlag) {
+    public void setStopFlag(boolean stopFlag, long millis) {
         if (stopFlag) {
             this.stopFlag = true;
             stopHandler.removeCallbacks(stopr);         // Cancel the previous newtrackr handler
-            stopHandler.postDelayed(stopr, 500);       // starts the new handler
+            stopHandler.postDelayed(stopr, millis);       // starts the new handler
         } else {
             this.stopFlag = false;
             stopHandler.removeCallbacks(stopr);         // Cancel the previous newtrackr handler

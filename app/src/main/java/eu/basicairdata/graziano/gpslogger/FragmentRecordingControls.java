@@ -161,7 +161,7 @@ public class FragmentRecordingControls extends Fragment{
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
                 if (!gpsApplication.getStopFlag()) {
-                    gpsApplication.setStopFlag(true);
+                    gpsApplication.setStopFlag(true, gpsApplication.getCurrentTrack().getNumberOfLocations() + gpsApplication.getCurrentTrack().getNumberOfPlacemarks() > 0 ? 1000 : 300);
                     gpsApplication.setRecording(false);
                     gpsApplication.setPlacemarkRequest(false);
                     Update();
@@ -205,6 +205,20 @@ public class FragmentRecordingControls extends Fragment{
             drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
         }
     }
+
+
+//    private void setButtonToClickedState(@NonNull TextView button, int imageId, int stringId) {
+//        ColorDrawable[] colorDrawables = {new ColorDrawable(getResources().getColor(R.color.colorPrimaryLight)),
+//                new ColorDrawable(getResources().getColor(R.color.colorPrimary))};
+//        TransitionDrawable transitionDrawable = new TransitionDrawable(colorDrawables);
+//
+//        button.setBackgroundDrawable(transitionDrawable);
+//        if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
+//        button.setTextColor(getResources().getColor(R.color.textColorRecControlSecondary_Active));
+//        if (stringId != 0) button.setText(getString(stringId));
+//        setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlPrimary_Active));
+//        transitionDrawable.startTransition(500);
+//    }
 
 
     private void setButtonToClickedState(@NonNull TextView button, int imageId, int stringId) {
