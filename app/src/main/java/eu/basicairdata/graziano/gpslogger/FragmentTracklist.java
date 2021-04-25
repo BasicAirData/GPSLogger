@@ -34,6 +34,7 @@ import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -245,6 +246,20 @@ public class FragmentTracklist extends Fragment {
             GPSApplication.getInstance().DeselectAllTracks();
             return;
         }
+        if (msg == EventBusMSG.ACTION_EDIT_TRACK) {
+            for (Track T : GPSApplication.getInstance().getTrackList()) {
+                if (T.isSelected()) {
+                    GPSApplication.getInstance().setTrackToEdit(T);
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                    tpDialog.setTitleResource(R.string.finalize_track);
+                    tpDialog.setIsAFinalization(false);
+                    tpDialog.show(fm, "");
+                    break;
+                }
+            }
+        }
+
         if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
             final ArrayList<AppInfo> ail = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getAppInfoList());
 

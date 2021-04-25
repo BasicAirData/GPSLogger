@@ -126,6 +126,7 @@
     <string name="card_menu_view">View in %1$s</string>
     <string name="card_menu_delete">Delete</string>
     <string name="card_menu_share">Share with ...</string>
+    <string name="card_menu_edit">Edit details</string>
 
     <!-- Tracklist toasts and messagebox -->
     <string name="card_message_delete_also_exported">Do you also want to delete all exported files of the selected tracks?</string>

@@ -22,6 +22,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="eu.basicairdata.graziano.gpslogger.GPSActivity">
     <item
+        android:id="@+id/cardmenu_edit"
+        android:icon="@drawable/ic_edit_24"
+        android:visible="true"
+        android:title="@string/card_menu_edit" />
+    <item
         android:id="@+id/cardmenu_view"
         android:icon="@drawable/ic_visibility_24dp"
         android:visible="true"

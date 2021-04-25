@@ -15,14 +15,19 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 public class ToolbarActionMode implements ActionMode.Callback {
 
     private Menu actionmenu;
-    private GPSApplication gpsApplication = GPSApplication.getInstance();
+    private MenuItem menuItemDelete;
+    private MenuItem menuItemExport;
+    private MenuItem menuItemShare;
+    private MenuItem menuItemView;
+    private MenuItem menuItemEdit;
+    private final GPSApplication gpsApplication = GPSApplication.getInstance();
 
 
     // A flag that avoids to start more than one job at a time on Actionmode Toolbar
     private boolean ActionmodeButtonPressed = false;
 
     private final Handler handler_ActionmodeButtonPressed = new Handler();
-    private Runnable r_ActionmodeButtonPressed = new Runnable() {
+    private final Runnable r_ActionmodeButtonPressed = new Runnable() {
         @Override
         public void run() {
             setActionmodeButtonPressed(false);
@@ -50,10 +55,16 @@ public class ToolbarActionMode implements ActionMode.Callback {
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         actionmenu = menu;
-        actionmenu.findItem(R.id.cardmenu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        actionmenu.findItem(R.id.cardmenu_view).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        actionmenu.findItem(R.id.cardmenu_export).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        actionmenu.findItem(R.id.cardmenu_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItemEdit = actionmenu.findItem(R.id.cardmenu_edit);
+        menuItemEdit.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItemShare = actionmenu.findItem(R.id.cardmenu_share);
+        menuItemShare.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItemView = actionmenu.findItem(R.id.cardmenu_view);
+        menuItemView.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItemExport = actionmenu.findItem(R.id.cardmenu_export);
+        menuItemExport.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItemDelete = actionmenu.findItem(R.id.cardmenu_delete);
+        menuItemDelete.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         EvaluateVisibility();
         return true;
     }
@@ -77,6 +88,10 @@ public class ToolbarActionMode implements ActionMode.Callback {
                 case R.id.cardmenu_share:
                     setActionmodeButtonPressed(true);
                     EventBus.getDefault().post(EventBusMSG.ACTION_BULK_SHARE_TRACKS);
+                    break;
+                case R.id.cardmenu_edit:
+                    setActionmodeButtonPressed(true);
+                    EventBus.getDefault().post(EventBusMSG.ACTION_EDIT_TRACK);
                     break;
                 default:
                     return false;
@@ -115,20 +130,21 @@ public class ToolbarActionMode implements ActionMode.Callback {
 
     public void EvaluateVisibility() {
         if (GPSApplication.getInstance().getNumberOfSelectedTracks() > 0) {
-            actionmenu.findItem(R.id.cardmenu_view).setVisible((gpsApplication.getNumberOfSelectedTracks() <= 1) && (gpsApplication.isContextMenuViewVisible()));
-            actionmenu.findItem(R.id.cardmenu_share).setVisible(gpsApplication.isContextMenuShareVisible() && (gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT()));
-            actionmenu.findItem(R.id.cardmenu_export).setVisible(gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT());
-            actionmenu.findItem(R.id.cardmenu_delete).setVisible(!gpsApplication.getSelectedTracks().contains(gpsApplication.getCurrentTrack()));
+            menuItemView.setVisible((gpsApplication.getNumberOfSelectedTracks() <= 1) && (gpsApplication.isContextMenuViewVisible()));
+            menuItemEdit.setVisible(gpsApplication.getNumberOfSelectedTracks() <= 1);
+            menuItemShare.setVisible(gpsApplication.isContextMenuShareVisible() && (gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT()));
+            menuItemExport.setVisible(gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT());
+            menuItemDelete.setVisible(!gpsApplication.getSelectedTracks().contains(gpsApplication.getCurrentTrack()));
 
-            if (actionmenu.findItem(R.id.cardmenu_view).isVisible()) {
+            if (menuItemView.isVisible()) {
                 if (!gpsApplication.getViewInApp().equals("")) {
-                    actionmenu.findItem(R.id.cardmenu_view).setTitle(gpsApplication.getString(R.string.card_menu_view, gpsApplication.getViewInApp()));
+                    menuItemView.setTitle(gpsApplication.getString(R.string.card_menu_view, gpsApplication.getViewInApp()));
                     if (gpsApplication.getViewInAppIcon() != null)
-                        actionmenu.findItem(R.id.cardmenu_view).setIcon(gpsApplication.getViewInAppIcon());
+                        menuItemView.setIcon(gpsApplication.getViewInAppIcon());
                     else
-                        actionmenu.findItem(R.id.cardmenu_view).setIcon(R.drawable.ic_visibility_24dp);
+                        menuItemView.setIcon(R.drawable.ic_visibility_24dp);
                 } else {
-                    actionmenu.findItem(R.id.cardmenu_view).setTitle(gpsApplication.getString(R.string.card_menu_view_selector)).setIcon(R.drawable.ic_visibility_24dp);
+                    menuItemView.setTitle(gpsApplication.getString(R.string.card_menu_view_selector)).setIcon(R.drawable.ic_visibility_24dp);
                 }
             }
         }
