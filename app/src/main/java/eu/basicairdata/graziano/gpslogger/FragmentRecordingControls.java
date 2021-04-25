@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -132,18 +133,11 @@ public class FragmentRecordingControls extends Fragment{
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
                 if (!gpsApplication.getStopFlag()) {
-                    final boolean grs = gpsApplication.getRecording();
-                    boolean newRecordingState = !grs;
-                    gpsApplication.setRecording(newRecordingState);
-                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-
-                    if (newRecordingState)
-                        setButtonToClickedState(TVRecordButton, R.drawable.ic_pause_24, R.string.pause);
-                    else
-                        setButtonToNormalState(TVRecordButton, R.drawable.ic_record_24, R.string.record);
+                    gpsApplication.setRecording(!gpsApplication.getRecording());
+                    Update();
                 }
             } else {
-                EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
+                Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -153,15 +147,11 @@ public class FragmentRecordingControls extends Fragment{
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
                 if (!gpsApplication.getStopFlag()) {
-                    final boolean pr = gpsApplication.getPlacemarkRequest();
-                    boolean newPlacemarkRequestState = !pr;
-                    gpsApplication.setPlacemarkRequest(newPlacemarkRequestState);
-
-                    if (newPlacemarkRequestState) setButtonToClickedState(TVAnnotateButton, 0, 0);
-                    else setButtonToNormalState(TVAnnotateButton, 0, 0);
+                    gpsApplication.setPlacemarkRequest(!gpsApplication.getPlacemarkRequest());
+                    Update();
                 }
             } else {
-                EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
+                Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -171,23 +161,23 @@ public class FragmentRecordingControls extends Fragment{
         if (isAdded()) {
             if (!gpsApplication.getBottomBarLocked()) {
                 if (!gpsApplication.getStopFlag()) {
-                    setButtonToClickedState(TVStopButton, 0, 0);
                     gpsApplication.setStopFlag(true);
                     gpsApplication.setRecording(false);
                     gpsApplication.setPlacemarkRequest(false);
-                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-
-                    //gpsApplication.setTrackToEdit(gpsApplication.getCurrentTrack());
-
-                    FragmentManager fm = getActivity().getSupportFragmentManager();
-                    FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
-                    gpsApplication.setTrackToEdit(gpsApplication.getCurrentTrack());
-                    tpDialog.setTitleResource(R.string.finalize_track);
-                    tpDialog.setIsAFinalization(true);
-                    tpDialog.show(fm, "");
+                    Update();
+                    if (gpsApplication.getCurrentTrack().getNumberOfLocations() + gpsApplication.getCurrentTrack().getNumberOfPlacemarks() > 0) {
+                        FragmentManager fm = getActivity().getSupportFragmentManager();
+                        FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                        gpsApplication.setTrackToEdit(gpsApplication.getCurrentTrack());
+                        tpDialog.setTitleResource(R.string.finalize_track);
+                        tpDialog.setIsAFinalization(true);
+                        tpDialog.show(fm, "");
+                    } else {
+                        Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_nothing_to_save), Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else {
-                EventBus.getDefault().post(EventBusMSG.TOAST_BOTTOM_BAR_LOCKED);
+                Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -195,11 +185,8 @@ public class FragmentRecordingControls extends Fragment{
 
     public void onToggleLock() {
         if (isAdded()) {
-            boolean lck = !gpsApplication.getBottomBarLocked();
-            gpsApplication.setBottomBarLocked(lck);
-
-            if (lck) setButtonToClickedState(TVLockButton, R.drawable.ic_unlock_24, R.string.unlock);
-            else setButtonToNormalState(TVLockButton, R.drawable.ic_lock_24, R.string.lock);
+            gpsApplication.setBottomBarLocked(!gpsApplication.getBottomBarLocked());
+            Update();
         }
     }
 
@@ -269,8 +256,8 @@ public class FragmentRecordingControls extends Fragment{
                     else setButtonToNormalState(TVLockButton, R.drawable.ic_lock_24, R.string.lock);
                 }
                 if (TVStopButton != null) {
-                    TVStopButton.setClickable(track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0);
-                    if (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) {
+                    TVStopButton.setClickable(isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0));
+                    if (isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0)) {
                         if (gpsApplication.getStopFlag()) setButtonToClickedState(TVStopButton, 0, 0);
                         else setButtonToNormalState(TVStopButton, 0, 0);
                     } else {

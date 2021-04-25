@@ -88,6 +88,7 @@
 
     <string name="finalize_track">Finalize Track</string>
     <string name="toast_bottom_bar_locked">The bottom bar is locked</string>
+    <string name="toast_nothing_to_save">Nothing to save</string>
 
     <string name="ok">Ok</string>
 
