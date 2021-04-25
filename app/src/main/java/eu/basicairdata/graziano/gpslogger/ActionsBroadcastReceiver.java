@@ -26,20 +26,23 @@ public class ActionsBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, final Intent intent) {
         //Log.w("myApp", "[#] EVENT");
-        switch (intent.getAction()) {
-            case Intent.ACTION_SCREEN_OFF:
-                // Turns off the EventBus Signals of the Recording Thread
-                // in order to save Battery
-                GPSApplication.getInstance().onScreenOff();
-                break;
-            case Intent.ACTION_SCREEN_ON:
-                // Turns on the EventBus Signals of the Recording Thread
-                GPSApplication.getInstance().onScreenOn();
-                break;
-            case Intent.ACTION_SHUTDOWN:
-                // Gracefully finish to write data and close the Database
-                GPSApplication.getInstance().onShutdown();
-                break;
+        String broadcastedAction = intent.getAction();
+        if (broadcastedAction != null) {
+            switch (broadcastedAction) {
+                case Intent.ACTION_SCREEN_OFF:
+                    // Turns off the EventBus Signals of the Recording Thread
+                    // in order to save Battery
+                    GPSApplication.getInstance().onScreenOff();
+                    break;
+                case Intent.ACTION_SCREEN_ON:
+                    // Turns on the EventBus Signals of the Recording Thread
+                    GPSApplication.getInstance().onScreenOn();
+                    break;
+                case Intent.ACTION_SHUTDOWN:
+                    // Gracefully finish to write data and close the Database
+                    GPSApplication.getInstance().onShutdown();
+                    break;
+            }
         }
     }
 }
