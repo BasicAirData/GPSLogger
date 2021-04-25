@@ -257,7 +257,7 @@ public class FragmentRecordingControls extends Fragment{
                 }
                 if (TVStopButton != null) {
                     TVStopButton.setClickable(isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0));
-                    if (isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0)) {
+                    if (isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) || gpsApplication.getStopFlag()) {
                         if (gpsApplication.getStopFlag()) setButtonToClickedState(TVStopButton, 0, 0);
                         else setButtonToNormalState(TVStopButton, 0, 0);
                     } else {
