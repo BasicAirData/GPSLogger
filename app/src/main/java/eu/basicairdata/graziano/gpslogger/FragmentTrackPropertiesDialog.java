@@ -43,7 +43,7 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 public class FragmentTrackPropertiesDialog extends DialogFragment {
 
     private EditText DescEditText;
-    private ImageView[] tracktypeImageView = new ImageView[7];
+    private final ImageView[] tracktypeImageView = new ImageView[7];
 
     private int selectedTrackType = NOT_AVAILABLE;                  // The track type selected by the user
     private Track _trackToEdit = null;                              // The track to edit
@@ -91,7 +91,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             selectedTrackType = savedInstanceState.getInt(KEY_SELTRACKTYPE, NOT_AVAILABLE);
             _isAFinalization = savedInstanceState.getBoolean(KEY_ISFINALIZATION, false);
         } else {
-            selectedTrackType = _trackToEdit.getTrackType();
+            selectedTrackType = _trackToEdit.getType();
         }
 
         if (_title != 0) createPlacemarkAlert.setTitle(_title);
@@ -142,8 +142,10 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             });
         }
         // Activate the right image
-        if (selectedTrackType != Track.TRACK_TYPE_ND)
+        if (selectedTrackType != NOT_AVAILABLE)
             tracktypeImageView[selectedTrackType].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
+        else if (_trackToEdit.getTrackType() != Track.TRACK_TYPE_ND)
+            tracktypeImageView[_trackToEdit.getTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
 
         createPlacemarkAlert.setView(view)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -160,8 +162,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                                 EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
                                 Toast.makeText(getActivity(), getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
                             } else {
-                                EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
-                                // TODO: update only the selected track!
+                                GPSApplication.getInstance().UpdateTrackList();
                             }
                         }
                     }
