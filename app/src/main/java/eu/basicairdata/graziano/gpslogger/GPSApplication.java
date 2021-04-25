@@ -243,7 +243,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     private static final int MAX_ACTIVE_EXPORTER_THREADS = 3;      // The maximum number of Exporter threads to run simultaneously
 
-    private List<ExportingTask> ExportingTaskList = new ArrayList<>();
+    private final List<ExportingTask> ExportingTaskList = new ArrayList<>();
 
     private AsyncPrepareTracklistContextMenu asyncPrepareTracklistContextMenu;
     private ExternalViewerChecker externalViewerChecker;    // The manager of the External Viewers
@@ -391,7 +391,7 @@ public class GPSApplication extends Application implements LocationListener {
     GPSService GPSLoggerService;
     boolean isGPSServiceBound = false;
 
-    private ServiceConnection GPSServiceConnection = new ServiceConnection() {
+    private final ServiceConnection GPSServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -456,7 +456,7 @@ public class GPSApplication extends Application implements LocationListener {
         if (stopFlag) {
             this.stopFlag = true;
             stopHandler.removeCallbacks(stopr);         // Cancel the previous newtrackr handler
-            stopHandler.postDelayed(stopr, 300);       // starts the new handler
+            stopHandler.postDelayed(stopr, 500);       // starts the new handler
         } else {
             this.stopFlag = false;
             stopHandler.removeCallbacks(stopr);         // Cancel the previous newtrackr handler
@@ -920,23 +920,21 @@ public class GPSApplication extends Application implements LocationListener {
 
 
     public void onShutdown() {
-        if (AsyncTODOQueue != null) {
-            GPSStatus = GPS_SEARCHING;
+        GPSStatus = GPS_SEARCHING;
 
-            Log.w("myApp", "[#] GPSApplication.java - onShutdown()");
-            AsyncTODO ast = new AsyncTODO();
-            ast.TaskType = "TASK_SHUTDOWN";
-            ast.location = null;
-            AsyncTODOQueue.add(ast);
+        Log.w("myApp", "[#] GPSApplication.java - onShutdown()");
+        AsyncTODO ast = new AsyncTODO();
+        ast.TaskType = "TASK_SHUTDOWN";
+        ast.location = null;
+        AsyncTODOQueue.add(ast);
 
-            if (asyncUpdateThread.isAlive()) {
-                try {
-                    Log.w("myApp", "[#] GPSApplication.java - onShutdown(): asyncUpdateThread isAlive. join...");
-                    asyncUpdateThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Log.w("myApp", "[#] GPSApplication.java - onShutdown() InterruptedException: " + e);
-                }
+        if (asyncUpdateThread.isAlive()) {
+            try {
+                Log.w("myApp", "[#] GPSApplication.java - onShutdown(): asyncUpdateThread isAlive. join...");
+                asyncUpdateThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Log.w("myApp", "[#] GPSApplication.java - onShutdown() InterruptedException: " + e);
             }
         }
     }
@@ -1063,7 +1061,7 @@ public class GPSApplication extends Application implements LocationListener {
 
 
     public ArrayList<Track> getSelectedTracks() {
-        ArrayList<Track> selTracks = new ArrayList<Track>();
+        ArrayList<Track> selTracks = new ArrayList<>();
         synchronized(_ArrayListTracks) {
             for (Track T : _ArrayListTracks) {
                 if (T.isSelected()) {
@@ -1120,9 +1118,6 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void ExecuteExportingTask (ExportingTask exportingTask) {
         switch (JobType) {
-            case JOB_TYPE_NONE:
-            case JOB_TYPE_DELETE:
-                break;
             case JOB_TYPE_EXPORT:
                 Ex = new Exporter(exportingTask, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger");
                 Ex.start();
@@ -1136,6 +1131,8 @@ public class GPSApplication extends Application implements LocationListener {
                 Ex = new Exporter(exportingTask, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
                 Ex.start();
                 break;
+            case JOB_TYPE_NONE:
+            case JOB_TYPE_DELETE:
             default:
                 break;
         }
@@ -1677,14 +1674,14 @@ public class GPSApplication extends Application implements LocationListener {
         long Id;
         long NumberOfLocations;
 
-        private Paint drawPaint = new Paint();
-        private Paint BGPaint = new Paint();
-        private Paint EndDotdrawPaint = new Paint();
-        private Paint EndDotBGPaint = new Paint();
-        private int Size = (int)(getResources().getDimension(R.dimen.thumbSize));
+        private final Paint drawPaint = new Paint();
+        private final Paint BGPaint = new Paint();
+        private final Paint EndDotdrawPaint = new Paint();
+        private final Paint EndDotBGPaint = new Paint();
+        private final int Size = (int)(getResources().getDimension(R.dimen.thumbSize));
 
-        private int Margin = (int) Math.ceil(getResources().getDimension(R.dimen.thumbLineWidth) * 3);
-        private int Size_Minus_Margins = Size - 2 * Margin;
+        private final int Margin = (int) Math.ceil(getResources().getDimension(R.dimen.thumbLineWidth) * 3);
+        private final int Size_Minus_Margins = Size - 2 * Margin;
 
         private double MinLatitude;
         private double MinLongitude;
@@ -1693,8 +1690,6 @@ public class GPSApplication extends Application implements LocationListener {
         double DrawScale;
         double Lat_Offset;
         double Lon_Offset;
-
-        private AsyncThumbnailThreadClass asyncThumbnailThreadClass = new AsyncThumbnailThreadClass();
 
         public Thumbnailer(long ID) {
 
@@ -1750,6 +1745,7 @@ public class GPSApplication extends Application implements LocationListener {
                 MinLatitude = track.getMin_Latitude();
                 MinLongitude = track.getMin_Longitude();
 
+                final AsyncThumbnailThreadClass asyncThumbnailThreadClass = new AsyncThumbnailThreadClass();
                 asyncThumbnailThreadClass.start();
             }
         }
