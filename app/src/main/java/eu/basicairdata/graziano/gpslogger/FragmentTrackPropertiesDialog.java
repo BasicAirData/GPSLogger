@@ -104,7 +104,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         if (!_trackToEdit.getDescription().isEmpty()) {
             DescEditText.setText(_trackToEdit.getDescription());
         }
-        //DescEditText.setHint(getString(R.string.track_id) + " " + String.valueOf(GPSApplication.getInstance().getCurrentTrack().getId()));
+        DescEditText.setHint(GPSApplication.getInstance().getString(R.string.track_id) + " " + _trackToEdit.getId());
+
 //        DescEditText.postDelayed(new Runnable()
 //        {
 //            public void run()
