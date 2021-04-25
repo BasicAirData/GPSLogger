@@ -252,7 +252,7 @@ public class FragmentTracklist extends Fragment {
                     GPSApplication.getInstance().setTrackToEdit(T);
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
-                    tpDialog.setTitleResource(R.string.finalize_track);
+                    tpDialog.setTitleResource(R.string.card_menu_edit);
                     tpDialog.setIsAFinalization(false);
                     tpDialog.show(fm, "");
                     break;
