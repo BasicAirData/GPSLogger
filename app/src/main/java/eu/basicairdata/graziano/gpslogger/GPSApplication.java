@@ -66,6 +66,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -689,6 +690,22 @@ public class GPSApplication extends Application implements LocationListener {
             else Log.w("myApp", "[#] GPSApplication.java - DeleteFile: " + filename + " unable to delete the File");
         }
         else Log.w("myApp", "[#] GPSApplication.java - DeleteFile: " + filename + " doesn't exists");
+    }
+
+
+    public File[] FindFile(String path, final String nameStart) {
+        File _path = new File(path);
+        try {
+            return _path.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    String name = file.getName(); //.toLowerCase();
+                    return name.startsWith(nameStart);
+                }
+            });
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 
@@ -1630,15 +1647,18 @@ public class GPSApplication extends Application implements LocationListener {
                                 }
                                 if (track != null) {
                                     // Delete track files
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + FILETYPE_KML);
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + FILETYPE_GPX);
+                                    for (File f : FindFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData", track.getName())) {
+                                        Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
+                                        DeleteFile(f.getAbsolutePath());
+                                    }
+                                    // Delete thumbnail
                                     DeleteFile(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
+                                    // Delete exported files
                                     if (DeleteAlsoExportedFiles) {
-                                        // Delete exported files
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + FILETYPE_KML);
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + FILETYPE_GPX);
+                                        for (File f : FindFile(Environment.getExternalStorageDirectory() + "/GPSLogger", track.getName())) {
+                                            Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
+                                            DeleteFile(f.getAbsolutePath());
+                                        }
                                     }
 
                                     TracksDeleted++;
