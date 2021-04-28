@@ -325,9 +325,9 @@ public class FragmentTracklist extends Fragment {
             boolean fileexist = false;
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 for (Track track : selectedTracks) {
-                    fileexist |= FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml")
-                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx")
-                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
+                    fileexist |= FileExists(GPSApplication.DIRECTORY_EXPORT + "/" + track.getName() + ".kml")
+                            || FileExists(GPSApplication.DIRECTORY_EXPORT + "/" + track.getName() + ".gpx")
+                            || FileExists(GPSApplication.DIRECTORY_EXPORT + "/" + track.getName() + ".txt");
                 }
             }
             if (fileexist) {
@@ -441,19 +441,19 @@ public class FragmentTracklist extends Fragment {
                 }
 
                 String fname = track.getName() + ".kml";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists () && GPSApplication.getInstance().getPrefExportKML()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
                 fname = track.getName() + ".gpx";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists ()  && GPSApplication.getInstance().getPrefExportGPX()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
                 fname = track.getName() + ".txt";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists ()  && GPSApplication.getInstance().getPrefExportTXT()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
