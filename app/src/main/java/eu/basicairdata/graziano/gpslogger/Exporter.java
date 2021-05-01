@@ -342,7 +342,7 @@ class Exporter extends Thread {
                               + "     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + newLine
                               + "     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine);
                     GPXbw.write("<name>GPS Logger " + track.getName() + "</name>" + newLine);
-                    GPXbw.write("<desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
+                    if (!track.getDescription().isEmpty()) GPXbw.write("<desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
                     GPXbw.write("<time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine + newLine);
                 }
                 if (getPrefGPXVersion == GPX1_1) {    // GPX 1.1
@@ -356,7 +356,7 @@ class Exporter extends Thread {
                     //          + "     xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\">" + newLine); //
                     GPXbw.write("<metadata> " + newLine);    // GPX Metadata
                     GPXbw.write(" <name>GPS Logger " + track.getName() + "</name>" + newLine);
-                    GPXbw.write(" <desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
+                    if (!track.getDescription().isEmpty()) GPXbw.write(" <desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
                     GPXbw.write(" <time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
                     GPXbw.write("</metadata>" + newLine + newLine);
                 }
