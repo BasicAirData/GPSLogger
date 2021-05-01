@@ -150,7 +150,9 @@ public class FragmentTrack extends Fragment {
         if (isAdded()) {
             if ((track != null) && (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0)) {
 
-                FTrackID = getString(R.string.track_id) + " " + String.valueOf(track.getId());
+                FTrackID = (track.getDescription().isEmpty() ?
+                        getString(R.string.track_id) + " " + String.valueOf(track.getId()) :
+                        track.getDescription());
                 FTrackName = track.getName();
                 phdDuration = phdformatter.format(track.getPrefTime(),PhysicalDataFormatter.FORMAT_DURATION);
                 phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);

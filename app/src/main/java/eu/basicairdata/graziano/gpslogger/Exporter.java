@@ -77,35 +77,6 @@ class Exporter extends Thread {
     }
 
 
-    private String stringToDescFileName(String str) {
-        if ((str == null) || str.isEmpty()) return "";
-        // Remove the \ / :  * ?  " < > |
-        // Remove heading and trailing spaces
-        String sName = str.substring(0, Math.min(128, str.length()))
-                .replace("\\","_")
-                .replace("/","_")
-                .replace(":","_")
-                .replace(".","_")
-                .replace("*","_")
-                .replace("?","_")
-                .replace("\"","_")
-                .replace("<","_")
-                .replace(">","_")
-                .replace("|","_")
-                .trim();
-        if (sName.isEmpty()) return "";
-        else return (" - " + sName);        // Adds the separator and returns the file name (without .extension)
-    }
-
-
-    private String getFileName() {
-        if (track.getDescription().isEmpty())
-            return track.getName();
-        else
-            return track.getName() + stringToDescFileName(track.getDescription());
-    }
-
-
     private boolean tryToInitFiles(String fName) {
         // Create files, deleting old version if exists
         Log.w("myApp", "[#] Exporter.java - [" + fName + "]");
@@ -257,8 +228,8 @@ class Exporter extends Thread {
         }
 
         // If the file is not writable abort exportation:
-        boolean fileWritable = tryToInitFiles(getFileName());               // Try to use the name with the description
-        if (!fileWritable) fileWritable = tryToInitFiles(track.getName());  // else try to use the name without description
+        boolean fileWritable = tryToInitFiles(GPSApp.getFileName(track));               // Try to use the name with the description
+        //if (!fileWritable) fileWritable = tryToInitFiles(track.getName());  // else try to use the name without description
         if (!fileWritable) {
             Log.w("myApp", "[#] Exporter.java - Unable to write the file!!");
             exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);

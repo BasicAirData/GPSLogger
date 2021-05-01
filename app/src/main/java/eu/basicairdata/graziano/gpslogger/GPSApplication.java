@@ -712,6 +712,36 @@ public class GPSApplication extends Application implements LocationListener {
     }
 
 
+    private String stringToDescFileName(String str) {
+        if ((str == null) || str.isEmpty()) return "";
+        // Remove the \ / :  * ?  " < > |
+        // Remove heading and trailing spaces
+        String sName = str.substring(0, Math.min(128, str.length()))
+                .replace("\\","_")
+                .replace("/","_")
+                .replace(":","_")
+                .replace(".","_")
+                .replace("*","_")
+                .replace("?","_")
+                .replace("\"","_")
+                .replace("<","_")
+                .replace(">","_")
+                .replace("|","_")
+                .trim();
+        if (sName.isEmpty()) return "";
+        else return sName;
+    }
+
+
+    public String getFileName(Track track) {
+        if (track.getDescription().isEmpty())
+            return track.getName();
+        else
+            // Adds the separator and returns the filename = name - description (without .extension)
+            return track.getName() + " - " + stringToDescFileName(track.getDescription());
+    }
+
+
     /* NOT USED, Commented out
     private boolean FileExists(String filename) {
         File file = new File(filename);
@@ -1127,7 +1157,7 @@ public class GPSApplication extends Application implements LocationListener {
                 if (T.isSelected()) {
                     ExportingTask ET = new ExportingTask();
                     ET.setId(T.getId());
-                    ET.setName(T.getName());
+                    ET.setName(getFileName(T));
                     ET.setNumberOfPoints_Total(T.getNumberOfLocations() + T.getNumberOfPlacemarks());
                     ET.setNumberOfPoints_Processed(0);
                     ExportingTaskList.add(ET);
