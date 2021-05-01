@@ -49,7 +49,11 @@ class Exporter extends Thread {
     private int getPrefGPXVersion = 0;
     private boolean TXTFirstTrackpointFlag = true;
 
-    private boolean UnableToWriteFile = false;
+    private File KMLfile;
+    private File GPXfile;
+    private File TXTfile;
+    private File sd;
+
     int GroupOfLocations;                           // Reads and writes location grouped by this number;
 
     private final ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(3500);
@@ -70,6 +74,68 @@ class Exporter extends Thread {
         if (str == null) return "";
         return str.replace("[","(")
                 .replace("]",")");
+    }
+
+
+    private String stringToDescFileName(String str) {
+        if ((str == null) || str.isEmpty()) return "";
+        // Remove the \ / :  * ?  " < > |
+        // Remove heading and trailing spaces
+        String sName = str.substring(0, Math.min(128, str.length()))
+                .replace("\\","_")
+                .replace("/","_")
+                .replace(":","_")
+                .replace(".","_")
+                .replace("*","_")
+                .replace("?","_")
+                .replace("\"","_")
+                .replace("<","_")
+                .replace(">","_")
+                .replace("|","_")
+                .trim();
+        if (sName.isEmpty()) return "";
+        else return (" - " + sName);        // Adds the separator and returns the file name (without .extension)
+    }
+
+
+    private String getFileName() {
+        if (track.getDescription().isEmpty())
+            return track.getName();
+        else
+            return track.getName() + stringToDescFileName(track.getDescription());
+    }
+
+
+    private boolean tryToInitFiles(String fName) {
+        // Create files, deleting old version if exists
+        Log.w("myApp", "[#] Exporter.java - [" + fName + "]");
+        if (ExportKML) {
+            KMLfile = new File(sd, (fName + ".kml"));
+            if (KMLfile.exists()) KMLfile.delete();
+        }
+        if (ExportGPX) {
+            GPXfile = new File(sd, (fName + ".gpx"));
+            if (GPXfile.exists()) GPXfile.delete();
+        }
+        if (ExportTXT) {
+            TXTfile = new File(sd, (fName + ".txt"));
+            if (TXTfile.exists()) TXTfile.delete();
+        }
+
+        // Check if all the files are writable:
+        try {
+            if ((ExportGPX && !(GPXfile.createNewFile())) || (ExportKML && !(KMLfile.createNewFile())) || (ExportTXT && !(TXTfile.createNewFile()))) {
+                Log.w("myApp", "[#] Exporter.java - Unable to write the file " + fName);
+                return false;
+            }
+        } catch (SecurityException e) {
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: SecurityException");
+            return false;
+        } catch (IOException e) {
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
+            return false;
+        }
+        return true;
     }
 
 
@@ -103,8 +169,13 @@ class Exporter extends Thread {
         //GroupOfLocations = 300;
     }
 
+
     public void run() {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+        KMLfile = null;
+        GPXfile = null;
+        TXTfile = null;
 
         final int GPX1_0 = 100;
         final int GPX1_1 = 110;
@@ -119,7 +190,7 @@ class Exporter extends Thread {
         long start_Time = System.currentTimeMillis();
 
         // ------------------------------------------------- Create the Directory tree if not exist
-        File sd = new File(GPSApplication.DIRECTORY_EXPORT);
+        sd = new File(GPSApplication.DIRECTORY_EXPORT);
         if (!sd.exists()) {
             if (!sd.mkdir()) {
                 exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
@@ -169,9 +240,6 @@ class Exporter extends Thread {
         SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.US);      // date and time formatter for TXT timestamp (without millis)
         dfdtTXT_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        File KMLfile = null;
-        File GPXfile = null;
-        File TXTfile = null;
         //final String newLine = System.getProperty("line.separator"); //\n\r
         final String newLine = "\r\n";
 
@@ -188,18 +256,14 @@ class Exporter extends Thread {
             return;
         }
 
-        // Create files, deleting old version if exists
-        if (ExportKML) {
-            KMLfile = new File(sd, (track.getName() + ".kml"));
-            if (KMLfile.exists()) KMLfile.delete();
-        }
-        if (ExportGPX) {
-            GPXfile = new File(sd, (track.getName() + ".gpx"));
-            if (GPXfile.exists()) GPXfile.delete();
-        }
-        if (ExportTXT) {
-            TXTfile = new File(sd, (track.getName() + ".txt"));
-            if (TXTfile.exists()) TXTfile.delete();
+        // If the file is not writable abort exportation:
+        boolean fileWritable = tryToInitFiles(getFileName());               // Try to use the name with the description
+        if (!fileWritable) fileWritable = tryToInitFiles(track.getName());  // else try to use the name without description
+        if (!fileWritable) {
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file!!");
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            return;
         }
 
         // Create buffers for Write operations
@@ -209,28 +273,6 @@ class Exporter extends Thread {
         BufferedWriter GPXbw = null;
         PrintWriter TXTfw = null;
         BufferedWriter TXTbw = null;
-
-        // Check if all the files are writable:
-        try {
-            if ((ExportGPX && !(GPXfile.createNewFile())) || (ExportKML && !(KMLfile.createNewFile())) || (ExportTXT && !(TXTfile.createNewFile()))) {
-                UnableToWriteFile = true;
-                Log.w("myApp", "[#] Exporter.java - Unable to write the file");
-            }
-        } catch (SecurityException e) {
-            UnableToWriteFile = true;
-            Log.w("myApp", "[#] Exporter.java - Unable to write the file: SecurityException");
-        } catch (IOException e) {
-            UnableToWriteFile = true;
-            Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
-        } finally {
-            // If the file is not writable abort exportation:
-            if (UnableToWriteFile) {
-                Log.w("myApp", "[#] Exporter.java - Unable to write the file!!");
-                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
-                //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
-                return;
-            }
-        }
 
         asyncGeopointsLoader.start();
 
