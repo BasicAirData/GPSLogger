@@ -164,6 +164,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                                 Toast.makeText(getActivity(), getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
                             } else {
                                 GPSApplication.getInstance().UpdateTrackList();
+                                EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
                             }
                         }
                     }
