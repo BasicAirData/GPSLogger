@@ -66,6 +66,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,6 +105,9 @@ public class GPSApplication extends Application implements LocationListener {
     public static final int JOB_TYPE_VIEW       = 2;                // Bulk View
     public static final int JOB_TYPE_SHARE      = 3;                // Bulk Share
     public static final int JOB_TYPE_DELETE     = 4;                // Bulk Delete
+
+    public static String DIRECTORY_TEMP;                            // The directory to store temporary tracks. Currently /GPSLogger/AppData
+    public static String DIRECTORY_EXPORT;                          // The directory where the app exports tracks. Currently /GPSLogger
 
     public static final String FLAG_RECORDING   = "flagRecording";  // The persistent Flag is set when the app is recording, in order to detect Background Crashes
     public static final String FILETYPE_KML     = ".kml";
@@ -692,6 +696,52 @@ public class GPSApplication extends Application implements LocationListener {
     }
 
 
+    public File[] FindFile(String path, final String nameStart) {
+        File _path = new File(path);
+        try {
+            return _path.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    String name = file.getName(); //.toLowerCase();
+                    return name.startsWith(nameStart);
+                }
+            });
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    private String stringToDescFileName(String str) {
+        if ((str == null) || str.isEmpty()) return "";
+        // Remove the \ / :  * ?  " < > |
+        // Remove heading and trailing spaces
+        String sName = str.substring(0, Math.min(128, str.length()))
+                .replace("\\","_")
+                .replace("/","_")
+                .replace(":","_")
+                .replace(".","_")
+                .replace("*","_")
+                .replace("?","_")
+                .replace("\"","_")
+                .replace("<","_")
+                .replace(">","_")
+                .replace("|","_")
+                .trim();
+        if (sName.isEmpty()) return "";
+        else return sName;
+    }
+
+
+    public String getFileName(Track track) {
+        if (track.getDescription().isEmpty())
+            return track.getName();
+        else
+            // Adds the separator and returns the filename = name - description (without .extension)
+            return track.getName() + " - " + stringToDescFileName(track.getDescription());
+    }
+
+
     /* NOT USED, Commented out
     private boolean FileExists(String filename) {
         File file = new File(filename);
@@ -774,18 +824,21 @@ public class GPSApplication extends Application implements LocationListener {
         EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
         EventBus.getDefault().register(this);
 
+        DIRECTORY_TEMP = Environment.getExternalStorageDirectory() + "/GPSLogger/AppData";
+        DIRECTORY_EXPORT = Environment.getExternalStorageDirectory() + "/GPSLogger";
+
         satellites = new Satellites();                                                  // Satellites
 
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
 
         myGPSStatusListener = new MyGPSStatus();                                        // GPS Satellites
 
-        File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");   // Create the Directories if not exist
+        File sd = new File(DIRECTORY_EXPORT);   // Create the Directories if not exist
         if (!sd.exists()) {
             sd.mkdir();
             Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
-        sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+        sd = new File(DIRECTORY_TEMP);
         if (!sd.exists()) {
             sd.mkdir();
             Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
@@ -800,7 +853,7 @@ public class GPSApplication extends Application implements LocationListener {
         EGM96 egm96 = EGM96.getInstance();                                              // Load EGM Grid
         if (egm96 != null) {
             if (!egm96.isEGMGridLoaded()) {
-                egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+                egm96.LoadGridFromFile(DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
             }
         }
 
@@ -1037,7 +1090,7 @@ public class GPSApplication extends Application implements LocationListener {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         if (!TrackViewer.fileType.isEmpty()) {
-            file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", exportingTask.getName() + TrackViewer.fileType);
+            file = new File(DIRECTORY_TEMP + "/", exportingTask.getName() + TrackViewer.fileType);
             if (TrackViewer.requiresFileProvider) {
                 Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                 getApplicationContext().grantUriPermission(TrackViewer.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -1104,7 +1157,7 @@ public class GPSApplication extends Application implements LocationListener {
                 if (T.isSelected()) {
                     ExportingTask ET = new ExportingTask();
                     ET.setId(T.getId());
-                    ET.setName(T.getName());
+                    ET.setName(getFileName(T));
                     ET.setNumberOfPoints_Total(T.getNumberOfLocations() + T.getNumberOfPlacemarks());
                     ET.setNumberOfPoints_Processed(0);
                     ExportingTaskList.add(ET);
@@ -1119,16 +1172,16 @@ public class GPSApplication extends Application implements LocationListener {
     public void ExecuteExportingTask (ExportingTask exportingTask) {
         switch (JobType) {
             case JOB_TYPE_EXPORT:
-                Ex = new Exporter(exportingTask, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger");
+                Ex = new Exporter(exportingTask, prefExportKML, prefExportGPX, prefExportTXT, DIRECTORY_EXPORT);
                 Ex.start();
                 break;
             case JOB_TYPE_VIEW:
-                if (TrackViewer.fileType.equals(FILETYPE_GPX)) Ex = new Exporter(exportingTask, false, true, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-                if (TrackViewer.fileType.equals(FILETYPE_KML)) Ex = new Exporter(exportingTask, true, false, false, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                if (TrackViewer.fileType.equals(FILETYPE_GPX)) Ex = new Exporter(exportingTask, false, true, false, DIRECTORY_TEMP);
+                if (TrackViewer.fileType.equals(FILETYPE_KML)) Ex = new Exporter(exportingTask, true, false, false, DIRECTORY_TEMP);
                 Ex.start();
                 break;
             case JOB_TYPE_SHARE:
-                Ex = new Exporter(exportingTask, prefExportKML, prefExportGPX, prefExportTXT, Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                Ex = new Exporter(exportingTask, prefExportKML, prefExportGPX, prefExportTXT, DIRECTORY_TEMP);
                 Ex.start();
                 break;
             case JOB_TYPE_NONE:
@@ -1472,7 +1525,7 @@ public class GPSApplication extends Application implements LocationListener {
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
             if (!egm96.isEGMGridLoaded()) {
-                egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+                egm96.LoadGridFromFile(DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
             }
         }
 
@@ -1630,15 +1683,18 @@ public class GPSApplication extends Application implements LocationListener {
                                 }
                                 if (track != null) {
                                     // Delete track files
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + ".txt");
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + FILETYPE_KML);
-                                    DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + track.getName() + FILETYPE_GPX);
+                                    for (File f : FindFile(DIRECTORY_TEMP, track.getName())) {
+                                        Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
+                                        DeleteFile(f.getAbsolutePath());
+                                    }
+                                    // Delete thumbnail
                                     DeleteFile(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
+                                    // Delete exported files
                                     if (DeleteAlsoExportedFiles) {
-                                        // Delete exported files
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + FILETYPE_KML);
-                                        DeleteFile(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + FILETYPE_GPX);
+                                        for (File f : FindFile(DIRECTORY_EXPORT, track.getName())) {
+                                            Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
+                                            DeleteFile(f.getAbsolutePath());
+                                        }
                                     }
 
                                     TracksDeleted++;
@@ -1802,7 +1858,7 @@ public class GPSApplication extends Application implements LocationListener {
                             //Log.w("myApp", "[#] GPSApplication.java - out.close();");
                         } catch (Exception e) {
                             e.printStackTrace();
-                            //Log.w("myApp", "[#] GPSApplication.java - Unable to save: " + Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/" + fname);
+                            //Log.w("myApp", "[#] GPSApplication.java - Unable to save: " + DIRECTORY_TEMP + "/" + fname);
                         }
 
                         EventBus.getDefault().post(EventBusMSG.REFRESH_TRACKLIST);

@@ -79,22 +79,22 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         addPreferencesFromResource(R.xml.app_preferences);
 
-        File tsd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
+        File tsd = new File(GPSApplication.DIRECTORY_EXPORT);
         boolean isGPSLoggerFolder = true;
         if (!tsd.exists()) {
             isGPSLoggerFolder = tsd.mkdir();
         }
-        tsd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+        tsd = new File(GPSApplication.DIRECTORY_TEMP);
         if (!tsd.exists()) {
             isGPSLoggerFolder = tsd.mkdir();
         }
-        Log.w("myApp", "[#] FragmentSettings.java - " + (isGPSLoggerFolder ? "Folder /GPSLogger/AppData OK" : "Unable to create folder /GPSLogger/AppData"));
+        //Log.w("myApp", "[#] FragmentSettings.java - " + (isGPSLoggerFolder ? "Folder /GPSLogger/AppData OK" : "Unable to create folder /GPSLogger/AppData"));
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         // Chech if EGM96 file is downloaded and complete;
         File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-        File sd_old = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+        File sd_old = new File(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC");
         if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
             Downloaded = true;
         } else {
@@ -462,7 +462,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     Toast.makeText(context, getString(R.string.toast_download_error) + ": " + result, Toast.LENGTH_LONG).show();
                 else {
                     File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-                    File sd_old = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                    File sd_old = new File(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC");
                     if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
                         Downloaded = true;
                         Toast.makeText(context, getString(R.string.toast_download_completed), Toast.LENGTH_SHORT).show();

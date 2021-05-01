@@ -34,6 +34,7 @@ import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -245,6 +246,20 @@ public class FragmentTracklist extends Fragment {
             GPSApplication.getInstance().DeselectAllTracks();
             return;
         }
+        if (msg == EventBusMSG.ACTION_EDIT_TRACK) {
+            for (Track T : GPSApplication.getInstance().getTrackList()) {
+                if (T.isSelected()) {
+                    GPSApplication.getInstance().setTrackToEdit(T);
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                    tpDialog.setTitleResource(R.string.card_menu_edit);
+                    tpDialog.setIsAFinalization(false);
+                    tpDialog.show(fm, "");
+                    break;
+                }
+            }
+        }
+
         if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
             final ArrayList<AppInfo> ail = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getAppInfoList());
 
@@ -310,9 +325,9 @@ public class FragmentTracklist extends Fragment {
             boolean fileexist = false;
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 for (Track track : selectedTracks) {
-                    fileexist |= FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml")
-                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx")
-                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
+                    fileexist |= FileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".kml")
+                            || FileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".gpx")
+                            || FileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".txt");
                 }
             }
             if (fileexist) {
@@ -408,10 +423,12 @@ public class FragmentTracklist extends Fragment {
                 phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
                 if (track.getNumberOfLocations() <= 1) {
                     extraText.append(getString(R.string.app_name) + " - " + getString(R.string.tab_track) + " " + track.getName()
+                            + (track.getDescription().isEmpty() ? "\n" + track.getDescription() + "\n" : "")
                             + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
                             + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks));
                 } else {
                     extraText.append(getString(R.string.app_name) + " - " + getString(R.string.tab_track) + " " + track.getName()
+                            + (!track.getDescription().isEmpty() ? "\n" + track.getDescription() : "")
                             + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
                             + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)
                             + "\n"
@@ -425,20 +442,20 @@ public class FragmentTracklist extends Fragment {
                             + "\n" + getString(R.string.pref_track_stats) + ": " + getString(R.string.pref_track_stats_totaltime) + " | " + getString(R.string.pref_track_stats_movingtime));
                 }
 
-                String fname = track.getName() + ".kml";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                String fname = GPSApplication.getInstance().getFileName(track) + ".kml";
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists () && GPSApplication.getInstance().getPrefExportKML()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
-                fname = track.getName() + ".gpx";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                fname = GPSApplication.getInstance().getFileName(track) + ".gpx";
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists ()  && GPSApplication.getInstance().getPrefExportGPX()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
-                fname = track.getName() + ".txt";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                fname = GPSApplication.getInstance().getFileName(track) + ".txt";
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists ()  && GPSApplication.getInstance().getPrefExportTXT()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);

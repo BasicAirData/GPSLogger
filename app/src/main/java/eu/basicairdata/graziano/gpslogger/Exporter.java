@@ -18,7 +18,6 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedWriter;
@@ -38,8 +37,8 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
 class Exporter extends Thread {
 
-    private Track track;
-    private ExportingTask exportingTask;
+    private final Track track;
+    private final ExportingTask exportingTask;
     private boolean ExportKML = true;
     private boolean ExportGPX = true;
     private boolean ExportTXT = true;
@@ -50,11 +49,65 @@ class Exporter extends Thread {
     private int getPrefGPXVersion = 0;
     private boolean TXTFirstTrackpointFlag = true;
 
-    private boolean UnableToWriteFile = false;
+    private File KMLfile;
+    private File GPXfile;
+    private File TXTfile;
+    private File sd;
+
     int GroupOfLocations;                           // Reads and writes location grouped by this number;
 
     private final ArrayBlockingQueue<LocationExtended> ArrayGeopoints = new ArrayBlockingQueue<>(3500);
     private final AsyncGeopointsLoader asyncGeopointsLoader = new AsyncGeopointsLoader();
+
+
+    private String stringToXML(String str) {
+        if (str == null) return "";
+        return str.replace("<","&lt;")
+                  .replace("&","&amp;")
+                  .replace(">","&gt;")
+                  .replace("\"","&quot;")
+                  .replace("'","&apos;");
+    }
+
+
+    private String stringToCDATA(String str) {
+        if (str == null) return "";
+        return str.replace("[","(")
+                .replace("]",")");
+    }
+
+
+    private boolean tryToInitFiles(String fName) {
+        // Create files, deleting old version if exists
+        Log.w("myApp", "[#] Exporter.java - [" + fName + "]");
+        if (ExportKML) {
+            KMLfile = new File(sd, (fName + ".kml"));
+            if (KMLfile.exists()) KMLfile.delete();
+        }
+        if (ExportGPX) {
+            GPXfile = new File(sd, (fName + ".gpx"));
+            if (GPXfile.exists()) GPXfile.delete();
+        }
+        if (ExportTXT) {
+            TXTfile = new File(sd, (fName + ".txt"));
+            if (TXTfile.exists()) TXTfile.delete();
+        }
+
+        // Check if all the files are writable:
+        try {
+            if ((ExportGPX && !(GPXfile.createNewFile())) || (ExportKML && !(KMLfile.createNewFile())) || (ExportTXT && !(TXTfile.createNewFile()))) {
+                Log.w("myApp", "[#] Exporter.java - Unable to write the file " + fName);
+                return false;
+            }
+        } catch (SecurityException e) {
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: SecurityException");
+            return false;
+        } catch (IOException e) {
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
+            return false;
+        }
+        return true;
+    }
 
 
     public Exporter(ExportingTask exportingTask, boolean ExportKML, boolean ExportGPX, boolean ExportTXT, String SaveIntoFolder) {
@@ -87,8 +140,13 @@ class Exporter extends Thread {
         //GroupOfLocations = 300;
     }
 
+
     public void run() {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+        KMLfile = null;
+        GPXfile = null;
+        TXTfile = null;
 
         final int GPX1_0 = 100;
         final int GPX1_1 = 110;
@@ -103,14 +161,14 @@ class Exporter extends Thread {
         long start_Time = System.currentTimeMillis();
 
         // ------------------------------------------------- Create the Directory tree if not exist
-        File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
+        sd = new File(GPSApplication.DIRECTORY_EXPORT);
         if (!sd.exists()) {
             if (!sd.mkdir()) {
                 exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
                 return;
             }
         }
-        sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+        sd = new File(GPSApplication.DIRECTORY_TEMP);
         if (!sd.exists()) {
             if (!sd.mkdir()) {
                 exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
@@ -153,9 +211,6 @@ class Exporter extends Thread {
         SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.US);      // date and time formatter for TXT timestamp (without millis)
         dfdtTXT_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        File KMLfile = null;
-        File GPXfile = null;
-        File TXTfile = null;
         //final String newLine = System.getProperty("line.separator"); //\n\r
         final String newLine = "\r\n";
 
@@ -172,18 +227,14 @@ class Exporter extends Thread {
             return;
         }
 
-        // Create files, deleting old version if exists
-        if (ExportKML) {
-            KMLfile = new File(sd, (track.getName() + ".kml"));
-            if (KMLfile.exists()) KMLfile.delete();
-        }
-        if (ExportGPX) {
-            GPXfile = new File(sd, (track.getName() + ".gpx"));
-            if (GPXfile.exists()) GPXfile.delete();
-        }
-        if (ExportTXT) {
-            TXTfile = new File(sd, (track.getName() + ".txt"));
-            if (TXTfile.exists()) TXTfile.delete();
+        // If the file is not writable abort exportation:
+        boolean fileWritable = tryToInitFiles(GPSApp.getFileName(track));               // Try to use the name with the description
+        //if (!fileWritable) fileWritable = tryToInitFiles(track.getName());  // else try to use the name without description
+        if (!fileWritable) {
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file!!");
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
+            return;
         }
 
         // Create buffers for Write operations
@@ -193,28 +244,6 @@ class Exporter extends Thread {
         BufferedWriter GPXbw = null;
         PrintWriter TXTfw = null;
         BufferedWriter TXTbw = null;
-
-        // Check if all the files are writable:
-        try {
-            if ((ExportGPX && !(GPXfile.createNewFile())) || (ExportKML && !(KMLfile.createNewFile())) || (ExportTXT && !(TXTfile.createNewFile()))) {
-                UnableToWriteFile = true;
-                Log.w("myApp", "[#] Exporter.java - Unable to write the file");
-            }
-        } catch (SecurityException e) {
-            UnableToWriteFile = true;
-            Log.w("myApp", "[#] Exporter.java - Unable to write the file: SecurityException");
-        } catch (IOException e) {
-            UnableToWriteFile = true;
-            Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
-        } finally {
-            // If the file is not writable abort exportation:
-            if (UnableToWriteFile) {
-                Log.w("myApp", "[#] Exporter.java - Unable to write the file!!");
-                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
-                //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
-                return;
-            }
-        }
 
         asyncGeopointsLoader.start();
 
@@ -247,8 +276,8 @@ class Exporter extends Thread {
                 KMLbw.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\">" + newLine);
                 KMLbw.write(" <Document>" + newLine);
                 KMLbw.write("  <name>GPS Logger " + track.getName() + "</name>" + newLine);
-                KMLbw.write("  <description><![CDATA[" + String.valueOf(track.getNumberOfLocations()) + " Trackpoints<br>" +
-                        String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks]]></description>" + newLine);
+                KMLbw.write("  <description><![CDATA[" + (track.getDescription().isEmpty() ? "" : stringToCDATA(track.getDescription()) + newLine));
+                KMLbw.write(String.valueOf(track.getNumberOfLocations()) + " Trackpoints + " + String.valueOf(track.getNumberOfPlacemarks()) + " Placemarks]]></description>" + newLine);
                 if (track.getNumberOfLocations() > 0) {
                     KMLbw.write("  <Style id=\"TrackStyle\">" + newLine);
                     KMLbw.write("   <LineStyle>" + newLine);
@@ -326,6 +355,7 @@ class Exporter extends Thread {
                               + "     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + newLine
                               + "     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine);
                     GPXbw.write("<name>GPS Logger " + track.getName() + "</name>" + newLine);
+                    if (!track.getDescription().isEmpty()) GPXbw.write("<desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
                     GPXbw.write("<time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine + newLine);
                 }
                 if (getPrefGPXVersion == GPX1_1) {    // GPX 1.1
@@ -339,6 +369,7 @@ class Exporter extends Thread {
                     //          + "     xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\">" + newLine); //
                     GPXbw.write("<metadata> " + newLine);    // GPX Metadata
                     GPXbw.write(" <name>GPS Logger " + track.getName() + "</name>" + newLine);
+                    if (!track.getDescription().isEmpty()) GPXbw.write(" <desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
                     GPXbw.write(" <time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
                     GPXbw.write("</metadata>" + newLine + newLine);
                 }
@@ -382,12 +413,7 @@ class Exporter extends Thread {
                             if (ExportKML) {
                                 KMLbw.write("  <Placemark id=\"" + placemark_id + "\">" + newLine);
                                 KMLbw.write("   <name>");
-                                KMLbw.write(loc.getDescription()
-                                        .replace("<","&lt;")
-                                        .replace("&","&amp;")
-                                        .replace(">","&gt;")
-                                        .replace("\"","&quot;")
-                                        .replace("'","&apos;"));
+                                KMLbw.write(stringToXML(loc.getDescription()));
                                 KMLbw.write("</name>" + newLine);
                                 KMLbw.write("   <styleUrl>#PlacemarkStyle</styleUrl>" + newLine);
                                 KMLbw.write("   <Point>" + newLine);
@@ -419,12 +445,7 @@ class Exporter extends Thread {
                                         dfdtGPX.format(loc.getLocation().getTime()));
                                 GPXbw.write("</time>");
                                 GPXbw.write("<name>");     // Name
-                                GPXbw.write(loc.getDescription()
-                                        .replace("<","&lt;")
-                                        .replace("&","&amp;")
-                                        .replace(">","&gt;")
-                                        .replace("\"","&quot;")
-                                        .replace("'","&apos;"));
+                                GPXbw.write(stringToXML(loc.getDescription()));
                                 GPXbw.write("</name>");
                                 if (loc.getNumberOfSatellitesUsedInFix() > 0) {     // Satellites used in fix
                                     GPXbw.write("<sat>");
@@ -509,7 +530,8 @@ class Exporter extends Thread {
                     phdAltitudeGap = phdformatter.format(track.getEstimatedAltitudeGap(GPSApp.getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
                     phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
 
-                    String TrackDesc = GPSApp.getApplicationContext().getString(R.string.distance) + " = " + phdDistance.Value + " " + phdDistance.UM +
+                    String TrackDesc = (track.getDescription().isEmpty() ? "" : "<b>" + stringToCDATA(track.getDescription()) + "</b><br><br>")
+                            + GPSApp.getApplicationContext().getString(R.string.distance) + " = " + phdDistance.Value + " " + phdDistance.UM +
                             "<br>" + GPSApp.getApplicationContext().getString(R.string.duration) + " = " + phdDuration.Value + " | " + phdDurationMoving.Value +
                             "<br>" + GPSApp.getApplicationContext().getString(R.string.altitude_gap) + " = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM +
                             "<br>" + GPSApp.getApplicationContext().getString(R.string.max_speed) + " = " + phdSpeedMax.Value + " " + phdSpeedMax.UM +
@@ -621,7 +643,8 @@ class Exporter extends Thread {
                             TXTbw.write(String.valueOf(loc.getNumberOfSatellites()));
                         TXTbw.write(",");
                         if (TXTFirstTrackpointFlag) {           // First trackpoint of the track: add the description
-                            TXTbw.write(track.getName() + ",GPS Logger: " + track.getName());
+                            if (track.getDescription().isEmpty()) TXTbw.write(track.getName() + ",GPS Logger: " + track.getName());
+                            else TXTbw.write(track.getName() + ",GPS Logger: " + track.getName() + " - " + track.getDescription().replace(",", "_"));
                             TXTFirstTrackpointFlag = false;
                         } else TXTbw.write(",");
                         TXTbw.write(newLine);

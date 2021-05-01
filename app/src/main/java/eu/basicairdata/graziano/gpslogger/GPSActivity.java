@@ -509,11 +509,11 @@ public class GPSActivity extends AppCompatActivity {
                         if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                             Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
                             // ---------------------------------------------------- Create the Directories if not exist
-                            File sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
+                            File sd = new File(GPSApplication.DIRECTORY_EXPORT);
                             if (!sd.exists()) {
                                 sd.mkdir();
                             }
-                            sd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+                            sd = new File(GPSApplication.DIRECTORY_TEMP);
                             if (!sd.exists()) {
                                 sd.mkdir();
                             }
@@ -525,7 +525,7 @@ public class GPSActivity extends AppCompatActivity {
                             if (egm96 != null) {
                                 if (!egm96.isEGMGridLoaded()) {
                                     //Log.w("myApp", "[#] GPSApplication.java - Loading EGM Grid...");
-                                    egm96.LoadGridFromFile(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+                                    egm96.LoadGridFromFile(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
                                 }
                             }
 
