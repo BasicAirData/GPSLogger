@@ -1313,9 +1313,11 @@ public class GPSApplication extends Application implements LocationListener {
         if (loc != null) {      // Location data is valid
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {          // For API >= 18
                 if ((PrevFix == null) || (loc.isFromMockProvider()!=isMockProvider)) {  // Reset the number of satellites when the provider changes between GPS and MOCK
+                    if (loc.isFromMockProvider()!=isMockProvider) {
+                        numberOfSatellitesTotal = NOT_AVAILABLE;
+                        numberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                    }
                     isMockProvider = loc.isFromMockProvider();
-                    numberOfSatellitesTotal = NOT_AVAILABLE;
-                    numberOfSatellitesUsedInFix = NOT_AVAILABLE;
                     if (isMockProvider) Log.w("myApp", "[#] GPSApplication.java - Provider Type = MOCK PROVIDER");
                     else Log.w("myApp", "[#] GPSApplication.java - Provider Type = GPS PROVIDER");
                 }
