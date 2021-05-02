@@ -334,6 +334,11 @@ public class FragmentGPSFix extends Fragment {
                 TLTime.setVisibility(View.INVISIBLE);
                 TLSatellites.setVisibility(View.INVISIBLE);
 
+                String ssat = "";
+                if (((GPSStatus == GPS_SEARCHING) || (GPSStatus == GPS_STABILIZING) || (GPSStatus == GPS_TEMPORARYUNAVAILABLE)) && (gpsApplication.getNumberOfSatellitesUsedInFix() != NOT_AVAILABLE)) {
+                    ssat = "\n\n" + gpsApplication.getNumberOfSatellitesUsedInFix() + "/" + gpsApplication.getNumberOfSatellitesTotal() + " " + getString(R.string.satellites);
+                }
+
                 TVGPSFixStatus.setVisibility(View.VISIBLE);
                 switch (GPSStatus) {
                     case GPS_DISABLED:
@@ -348,11 +353,11 @@ public class FragmentGPSFix extends Fragment {
                         //TVGPSFixStatus.setText(R.string.gps_temporary_unavailable);
                         //break;
                     case GPS_SEARCHING:
-                        TVGPSFixStatus.setText(R.string.gps_searching);
+                        TVGPSFixStatus.setText(getString(R.string.gps_searching) + ssat);
                         CVWarningGPSDisabled.setVisibility(View.GONE);
                         break;
                     case GPS_STABILIZING:
-                        TVGPSFixStatus.setText(R.string.gps_stabilizing);
+                        TVGPSFixStatus.setText(getString(R.string.gps_stabilizing) + ssat);
                         CVWarningGPSDisabled.setVisibility(View.GONE);
                         break;
                 }

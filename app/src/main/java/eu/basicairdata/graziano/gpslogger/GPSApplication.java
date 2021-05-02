@@ -189,7 +189,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     private int AppOrigin = APP_ORIGIN_NOT_SPECIFIED;       // Which package manager is used to install this app
 
-    private boolean stopFlag = false;                   // The variable that handle the double-click on "Track Finished"
+    private boolean stopFlag = false;                       // It prevents a double click of Stop button
     final Handler stopHandler = new Handler();
     Runnable stopr = new Runnable() {
         @Override
@@ -1057,6 +1057,10 @@ public class GPSApplication extends Application implements LocationListener {
             numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             //Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
         }
+        if (GPSStatus != GPS_OK) {
+            if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+            //Log.w("myApp", "[#] GPSApplication.java - updateSats: Used=" + numberOfSatellitesUsedInFix + " Total=" + numberOfSatellitesTotal);
+        }
         //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
     }
 
@@ -1076,6 +1080,10 @@ public class GPSApplication extends Application implements LocationListener {
             numberOfSatellitesTotal = NOT_AVAILABLE;
             numberOfSatellitesUsedInFix = NOT_AVAILABLE;
             //Log.w("myApp", "[#] GPSApplication.java - updateSats: Caught NullPointerException: " + e);
+        }
+        if (GPSStatus != GPS_OK) {
+            if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
+            //Log.w("myApp", "[#] GPSApplication.java - updateSats: Used=" + numberOfSatellitesUsedInFix + " Total=" + numberOfSatellitesTotal);
         }
         //Log.w("myApp", "[#] GPSApplication.java - updateSats: Total=" + _NumberOfSatellites + " Used=" + _NumberOfSatellitesUsedInFix);
     }
