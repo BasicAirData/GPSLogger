@@ -1,6 +1,9 @@
-/**
+/*
  * DatabaseHandler - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 1/5/2016
+ * Created by G.Capelli on 1/5/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +39,17 @@ import java.util.TimeZone;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
-
+/**
+ * A SQLite Helper wrapper that allow to easily manage the database that the app
+ * uses to store all the recorded data.
+ * <br>
+ * The GPS Logger database has three tables:
+ * <ul>
+ *     <li>The table of the Tracks</li>
+ *     <li>The table of the locations (trackpoints)</li>
+ *     <li>The table of the annotations (placemarks)</li>
+ * </ul>
+ */
 class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
@@ -81,7 +94,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_TRACK_NAME = "name";
     private static final String KEY_TRACK_FROM = "location_from";
     private static final String KEY_TRACK_TO = "location_to";
-
 
     private static final String KEY_TRACK_START_LATITUDE        = "start_latitude";
     private static final String KEY_TRACK_START_LONGITUDE       = "start_longitude";
@@ -135,12 +147,13 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_TRACK_DESCRIPTION = "description";
 
 
-
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Creating Tables
+    /**
+     * Creates the tables to store Tracks, Locations, and Placemarks.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TRACKS_TABLE = "CREATE TABLE " + TABLE_TRACKS + "("
@@ -229,7 +242,9 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final String DATABASE_ALTER_TABLE_TRACKS_TO_V3 = "ALTER TABLE "
             + TABLE_TRACKS + " ADD COLUMN " + KEY_TRACK_DESCRIPTION + " TEXT DEFAULT \"\";";
 
-    // Upgrading database
+    /**
+     * Upgrade the database version, altering the corresponding tables.
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -263,8 +278,11 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
 // ----------------------------------------------------------------------- LOCATIONS AND PLACEMARKS
 
-
-    // Add new Location and update the corresponding track
+    /**
+     * Updates a track record using the given Track data.
+     *
+     * @param track the Track containing the new values to store
+     */
     public void updateTrack(Track track) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -333,12 +351,16 @@ class DatabaseHandler extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
-
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
 
-
-    // Add new Location and update the corresponding track
+    /**
+     * Adds a new Location to a Track and update the corresponding Track table.
+     * The two operations will be done in a single transaction, to avoid any data loss or corruption.
+     *
+     * @param location the location to add
+     * @param track the Track that receives the location
+     */
     public void addLocationToTrack(LocationExtended location, Track track) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -417,19 +439,23 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
         try {
             db.beginTransaction();
-            db.insert(TABLE_LOCATIONS, null, locvalues);                // Insert the new Location
+            db.insert(TABLE_LOCATIONS, null, locvalues);              // Insert the new Location
             db.update(TABLE_TRACKS, trkvalues, KEY_ID + " = ?",
-                    new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
+                    new String[] { String.valueOf(track.getId()) });                // Update the corresponding Track
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
-
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
 
-
-    // Add new Placemark and update the corresponding track
+    /**
+     * Adds a new Annotation (Placemark) to a Track and update the corresponding Track table.
+     * The two operations will be done in a single transaction, to avoid any data loss or corruption.
+     *
+     * @param placemark the placemark to add
+     * @param track the Track that receives the placemark
+     */
     public void addPlacemarkToTrack(LocationExtended placemark, Track track) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -508,9 +534,9 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
         try {
             db.beginTransaction();
-            db.insert(TABLE_PLACEMARKS, null, locvalues);                // Insert the new Location
+            db.insert(TABLE_PLACEMARKS, null, locvalues);         // Insert the new Placemark
             db.update(TABLE_TRACKS, trkvalues, KEY_ID + " = ?",
-                    new String[] { String.valueOf(track.getId()) });    // Update the corresponding Track
+                    new String[] { String.valueOf(track.getId()) });            // Update the corresponding Track
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
@@ -575,19 +601,26 @@ class DatabaseHandler extends SQLiteOpenHelper {
 //    }
 
 
-
-    // Getting a list of Locations associated to a specified track, with number between startNumber and endNumber
-    // Please note that limits both are inclusive!
-    public List<LocationExtended> getLocationsList(long TrackID, long startNumber, long endNumber) {
-
+    /**
+     * Returns a list of Locations associated to a specified Track,
+     * with Location ID from startNumber to endNumber.
+     * Both limits are included.
+     *
+     * @param trackID the ID of the Track
+     * @param startNumber the start number of the location (included)
+     * @param endNumber the end number of the location (included)
+     *
+     * @return the list of Locations
+     */
+    public List<LocationExtended> getLocationsList(long trackID, long startNumber, long endNumber) {
         List<LocationExtended> locationList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE "
-                + KEY_TRACK_ID + " = " + TrackID + " AND "
+                + KEY_TRACK_ID + " = " + trackID + " AND "
                 + KEY_LOCATION_NUMBER + " BETWEEN " + startNumber + " AND " + endNumber
                 + " ORDER BY " + KEY_LOCATION_NUMBER;
 
-        //Log.w("myApp", "[#] DatabaseHandler.java - getLocationList(" + TrackID + ", " + startNumber + ", " +endNumber + ") ==> " + selectQuery);
+        //Log.w("myApp", "[#] DatabaseHandler.java - getLocationList(" + trackID + ", " + startNumber + ", " +endNumber + ") ==> " + selectQuery);
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -632,18 +665,27 @@ class DatabaseHandler extends SQLiteOpenHelper {
         return locationList;
     }
 
-    // Getting a list of Locations associated to a specified track, with number between startNumber and endNumber
-    // Please note that limits both are inclusive!
-    public List<LocationExtended> getPlacemarksList(long TrackID, long startNumber, long endNumber) {
+    /**
+     * Returns a list of Annotations (Placemarks) associated to a specified Track,
+     * with Placemark ID from startNumber to endNumber.
+     * Both limits are included.
+     *
+     * @param trackID the ID of the Track
+     * @param startNumber the start number of the placemark (included)
+     * @param endNumber the end number of the placemark (included)
+     *
+     * @return the list of placemarks
+     */
+    public List<LocationExtended> getPlacemarksList(long trackID, long startNumber, long endNumber) {
 
         List<LocationExtended> placemarkList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_PLACEMARKS + " WHERE "
-                + KEY_TRACK_ID + " = " + TrackID + " AND "
+                + KEY_TRACK_ID + " = " + trackID + " AND "
                 + KEY_LOCATION_NUMBER + " BETWEEN " + startNumber + " AND " + endNumber
                 + " ORDER BY " + KEY_LOCATION_NUMBER;
 
-        //Log.w("myApp", "[#] DatabaseHandler.java - getLocationList(" + TrackID + ", " + startNumber + ", " +endNumber + ") ==> " + selectQuery);
+        //Log.w("myApp", "[#] DatabaseHandler.java - getLocationList(" + trackID + ", " + startNumber + ", " +endNumber + ") ==> " + selectQuery);
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -689,20 +731,30 @@ class DatabaseHandler extends SQLiteOpenHelper {
         return placemarkList;
     }
 
-
-    // Getting a list of Locations associated to a specified track, with number between startNumber and endNumber
-    // Please note that limits both are inclusive!
-    public List<LatLng> getLatLngList(long TrackID, long startNumber, long endNumber) {
+    /**
+     * Returns a list of LatLng (a subset of Location data that contains only Latitude and Longitude)
+     * associated to a specified Track, with Location ID from startNumber to endNumber.
+     * Both limits are included.
+     * <p>
+     * This method is used to obtain the data for drawing the thumbnail of a track.
+     *
+     * @param trackID the ID of the Track
+     * @param startNumber the start number of the corresponding location (included)
+     * @param endNumber the end number of the corresponding location (included)
+     *
+     * @return the list of LatLng
+     */
+    public List<LatLng> getLatLngList(long trackID, long startNumber, long endNumber) {
 
         List<LatLng> latlngList = new ArrayList<>();
 
         String selectQuery = "SELECT " + KEY_TRACK_ID + "," + KEY_LOCATION_LATITUDE + "," + KEY_LOCATION_LONGITUDE + "," + KEY_LOCATION_NUMBER
                 + " FROM " + TABLE_LOCATIONS + " WHERE "
-                + KEY_TRACK_ID + " = " + TrackID + " AND "
+                + KEY_TRACK_ID + " = " + trackID + " AND "
                 + KEY_LOCATION_NUMBER + " BETWEEN " + startNumber + " AND " + endNumber
                 + " ORDER BY " + KEY_LOCATION_NUMBER;
 
-        //Log.w("myApp", "[#] DatabaseHandler.java - getLocationList(" + TrackID + ", " + startNumber + ", " +endNumber + ") ==> " + selectQuery);
+        //Log.w("myApp", "[#] DatabaseHandler.java - getLocationList(" + trackID + ", " + startNumber + ", " +endNumber + ") ==> " + selectQuery);
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -777,28 +829,36 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
 // ----------------------------------------------------------------------------------------- TRACKS
 
-    // Delete the track with the specified ID;
-    // The method deletes also Placemarks and Locations associated to the specified track
-    public void DeleteTrack(long TrackID) {
+    /**
+     * Deletes the track with the specified ID.
+     * The method deletes also Placemarks and Locations associated to the specified track.
+     *
+     * @param trackID the ID of the Track
+     */
+    public void DeleteTrack(long trackID) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             db.beginTransaction();
             db.delete(TABLE_PLACEMARKS, KEY_TRACK_ID + " = ?",
-                    new String[] { String.valueOf(TrackID) });    // Delete track's Placemarks
+                    new String[] { String.valueOf(trackID) });    // Delete track's Placemarks
             db.delete(TABLE_LOCATIONS, KEY_TRACK_ID + " = ?",
-                    new String[] { String.valueOf(TrackID) });    // Delete track's Locations
+                    new String[] { String.valueOf(trackID) });    // Delete track's Locations
             db.delete(TABLE_TRACKS, KEY_ID + " = ?",
-                    new String[] { String.valueOf(TrackID) });    // Delete track
+                    new String[] { String.valueOf(trackID) });    // Delete track
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
-
         //Log.w("myApp", "[#] DatabaseHandler.java - addLocation: Location " + track.getNumberOfLocations() + " added into track " + track.getID());
     }
 
-
-    // Add a new Track, returns the TrackID
+    /**
+     * Adds a new track to the Database.
+     *
+     * @param track the Track to be written into the new record
+     *
+     * @return the ID of the new Track
+     */
     public long addTrack(Track track) {
 
         SQLiteDatabase db = this.getWritableDatabase();

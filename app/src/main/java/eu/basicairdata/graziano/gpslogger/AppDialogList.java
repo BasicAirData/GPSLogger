@@ -1,6 +1,9 @@
-/**
+/*
  * AppDialogList - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 23/9/2020
+ * Created by G.Capelli on 23/9/2020
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +34,19 @@ import java.util.ArrayList;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_KML;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
-
+/**
+ * The Adapter for the menu that lists the Track Viewers.
+ */
 public class AppDialogList extends BaseAdapter {
+    private final ArrayList<AppInfo> listData;
+    private final LayoutInflater layoutInflater;
 
-    private ArrayList<AppInfo> listData;
-
-    private LayoutInflater layoutInflater;
-
+    /**
+     * Creates a new AppDialogList using the specified ArrayList of AppInfo.
+     *
+     * @param context the base context
+     * @param listData the ArrayList of AppInfo to be used as adapter data.
+     */
     public AppDialogList(Context context, ArrayList<AppInfo> listData) {
         this.listData = listData;
         this.layoutInflater = LayoutInflater.from(context);
@@ -58,6 +67,13 @@ public class AppDialogList extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Returns the View of the given position.
+     *
+     * @param position the position of the view
+     * @param convertView the view
+     * @param parent the parent ViewGroup
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
@@ -70,18 +86,18 @@ public class AppDialogList extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
         holder.icon.setImageDrawable(listData.get(position).icon);
         holder.description.setText(listData.get(position).label);
         holder.format.setText(listData.get(position).fileType.equals(FILETYPE_GPX) ? "GPX" : listData.get(position).fileType.equals(FILETYPE_KML) ? "KML" : "");
-
         return convertView;
     }
 
+    /**
+     * The class used into the AppDialogList Class.
+     */
     static class ViewHolder {
         ImageView icon;
         TextView description;
         TextView format;
     }
-
 }

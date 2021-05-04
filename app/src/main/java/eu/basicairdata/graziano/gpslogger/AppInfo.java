@@ -1,6 +1,9 @@
-/**
+/*
  * AppInfo - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 23/9/2020
+ * Created by G.Capelli on 23/9/2020
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +23,15 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.graphics.drawable.Drawable;
 
+/**
+ * The data structure that describes a Track Viewer.
+ */
 public class AppInfo {
-    String label = "";
-    String packageName = "";
-    String mimeType = "";
-    String fileType = "";
-    boolean requiresFileProvider = false;
-    Drawable icon = null;
+    String label = "";                      // The name of the app
+    String packageName = "";                // The full package name
+    String mimeType = "";                   // The mimetype to use with the ACTION_VIEW intent (for example "application/gpx+xml")
+    String fileType = "";                   // "GPX" or "KML"
+    boolean requiresFileProvider = false;   // True if the app requires the FileProvider method to open the track
+                                            // It is set to false by default, but it should become true in the future
+    Drawable icon = null;                   // The app's icon
 }
