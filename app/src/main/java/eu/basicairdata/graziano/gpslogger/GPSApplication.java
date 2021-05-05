@@ -151,6 +151,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     private LocationExtended PrevFix = null;
     private boolean isPrevFixRecorded = false;
+    private boolean isFirstFixFound = false;                      // True if at less one fix has been obtained
 
     private MyGPSStatus myGPSStatusListener;
 
@@ -680,6 +681,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setTrackToEdit(Track trackToEdit) {
         this.trackToEdit = trackToEdit;
+    }
+
+    public boolean isFirstFixFound() {
+        return isFirstFixFound;
     }
 
     // ------------------------------------------------------------------------ Utility
@@ -1390,6 +1395,7 @@ public class GPSApplication extends Application implements LocationListener {
                     EventBus.getDefault().post(EventBusMSG.REQUEST_ADD_PLACEMARK);
                 }
                 PrevFix = eloc;
+                isFirstFixFound = true;
             }
         }
     }

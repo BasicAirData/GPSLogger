@@ -134,6 +134,8 @@ public class FragmentRecordingControls extends Fragment{
             if (!gpsApplication.getBottomBarLocked()) {
                 if (!gpsApplication.getStopFlag()) {
                     gpsApplication.setRecording(!gpsApplication.getRecording());
+                    if (!gpsApplication.isFirstFixFound() && (gpsApplication.getRecording()))
+                        Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_recording_when_gps_found), Toast.LENGTH_LONG).show();
                     Update();
                 }
             } else {
@@ -148,6 +150,8 @@ public class FragmentRecordingControls extends Fragment{
             if (!gpsApplication.getBottomBarLocked()) {
                 if (!gpsApplication.getStopFlag()) {
                     gpsApplication.setPlacemarkRequest(!gpsApplication.getPlacemarkRequest());
+                    if (!gpsApplication.isFirstFixFound() && (gpsApplication.getPlacemarkRequest()))
+                        Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_annotate_when_gps_found), Toast.LENGTH_LONG).show();
                     Update();
                 }
             } else {

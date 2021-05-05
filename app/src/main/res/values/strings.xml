@@ -89,6 +89,8 @@
     <string name="finalize_track">Finalize Track</string>
     <string name="toast_bottom_bar_locked">The bottom bar is locked</string>
     <string name="toast_nothing_to_save">Nothing to save</string>
+    <string name="toast_recording_when_gps_found">The recording will begin when the GPS signal is found</string>
+    <string name="toast_annotate_when_gps_found">The annotation will be taken when the GPS signal is found</string>
 
     <string name="ok">Ok</string>
 
