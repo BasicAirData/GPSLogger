@@ -1,6 +1,9 @@
-/**
+/*
  * FragmentAboutDialog - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 26/7/2016
+ * Created by G.Capelli on 26/7/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,33 +34,35 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * The About Dialog Fragment
+ */
 public class FragmentAboutDialog extends DialogFragment {
-
-    TextView TVVersion;
-    TextView TVDescription;
 
     //@SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        TextView tvVersion;
+        TextView tvDescription;
 
         AlertDialog.Builder createAboutAlert = new AlertDialog.Builder(getActivity(), R.style.MyMaterialThemeAbout);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_about_dialog, null);
 
-        final GPSApplication app = GPSApplication.getInstance();
+        final GPSApplication gpsApp = GPSApplication.getInstance();
 
-        TVVersion = (TextView) view.findViewById(R.id.id_about_textView_Version);
+        tvVersion = view.findViewById(R.id.id_about_textView_Version);
         String versionName = BuildConfig.VERSION_NAME;
-        TVVersion.setText(getString(R.string.about_version) + " " + versionName);
+        tvVersion.setText(getString(R.string.about_version) + " " + versionName);
 
-        TVDescription = (TextView) view.findViewById(R.id.id_about_textView_description);
-        switch (app.getAppOrigin()) {
+        tvDescription = view.findViewById(R.id.id_about_textView_description);
+        switch (gpsApp.getAppOrigin()) {
             case GPSApplication.APP_ORIGIN_NOT_SPECIFIED:
-                TVDescription.setText(getString(R.string.about_description));
+                tvDescription.setText(getString(R.string.about_description));
                 break;
             case GPSApplication.APP_ORIGIN_GOOGLE_PLAY_STORE:
-                TVDescription.setText(getString(R.string.about_description_googleplaystore));
+                tvDescription.setText(getString(R.string.about_description_googleplaystore));
                 break;
         }
 
@@ -66,16 +71,16 @@ public class FragmentAboutDialog extends DialogFragment {
                 public void onClick(DialogInterface dialog, int id) {}
             });
 
-        if (app.getAppOrigin() != GPSApplication.APP_ORIGIN_NOT_SPECIFIED) {
+        if (gpsApp.getAppOrigin() != GPSApplication.APP_ORIGIN_NOT_SPECIFIED) {
             createAboutAlert.setView(view).setNegativeButton(R.string.about_rate_this_app, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    if (app.getAppOrigin() == GPSApplication.APP_ORIGIN_GOOGLE_PLAY_STORE) {
+                    if (gpsApp.getAppOrigin() == GPSApplication.APP_ORIGIN_GOOGLE_PLAY_STORE) {
                         boolean marketfailed = false;
                         try {
                             getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
                         } catch (Exception e) {
-                            // Unable to start the Google Play app for rating
+                            // Unable to start the Google Play gpsApp for rating
                             marketfailed = true;
                         }
                         if (marketfailed) {
@@ -90,7 +95,6 @@ public class FragmentAboutDialog extends DialogFragment {
                 }
             });
         }
-
         return createAboutAlert.create();
     }
 

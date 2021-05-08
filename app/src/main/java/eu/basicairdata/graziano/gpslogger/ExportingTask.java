@@ -39,9 +39,6 @@ public class ExportingTask {
     private short   status                      = STATUS_PENDING;
     private String  name                        = "";
 
-    /**
-     * Returns the ID of the Track
-     */
     public long getId() {
         return id;
     }
