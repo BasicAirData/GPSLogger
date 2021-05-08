@@ -1,6 +1,9 @@
-/**
+/*
  * ExportingTask - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 15/6/2019
+ * Created by G.Capelli on 15/6/2019
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +21,11 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+/**
+ * The data structure that stores all the information needed to export a Track.
+ * It stores the properties, the amount of work,
+ * and the status of the exportation.
+ */
 public class ExportingTask {
 
     static final short STATUS_PENDING           = 0;    // Task not yet started
@@ -26,12 +34,14 @@ public class ExportingTask {
     static final short STATUS_ENDED_FAILED      = 3;    // Task failed to export
 
     private long    id                          = 0;
-    private long    NumberOfPoints_Total        = 0;
-    private long    NumberOfPoints_Processed    = 0;
-    private short   Status                      = STATUS_PENDING;
-    private String  Name                        = "";
+    private long    numberOfPoints_Total        = 0;
+    private long    numberOfPoints_Processed    = 0;
+    private short   status                      = STATUS_PENDING;
+    private String  name                        = "";
 
-
+    /**
+     * Returns the ID of the Track
+     */
     public long getId() {
         return id;
     }
@@ -41,35 +51,35 @@ public class ExportingTask {
     }
 
     public long getNumberOfPoints_Total() {
-        return NumberOfPoints_Total;
+        return numberOfPoints_Total;
     }
 
     public void setNumberOfPoints_Total(long numberOfPoints_Total) {
-        NumberOfPoints_Total = numberOfPoints_Total;
+        this.numberOfPoints_Total = numberOfPoints_Total;
     }
 
     public long getNumberOfPoints_Processed() {
-        return NumberOfPoints_Processed;
+        return numberOfPoints_Processed;
     }
 
     public void setNumberOfPoints_Processed(long numberOfPoints_Processed) {
-        NumberOfPoints_Processed = numberOfPoints_Processed;
+        this.numberOfPoints_Processed = numberOfPoints_Processed;
     }
 
     public short getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(short status) {
-        Status = status;
+        this.status = status;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 }
 

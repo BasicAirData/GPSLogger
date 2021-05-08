@@ -22,24 +22,24 @@
 package eu.basicairdata.graziano.gpslogger;
 
 /**
- * A class that is made to be used as parameter for EventBus messages, when the message
- * must contain a track ID and a Value as additional data.
+ * A class that is made to be used as parameter for EventBus messages.
+ * This type of messages contain a track ID and a Value as additional data.
  */
 public class EventBusMSGLong {
-    short MSGType;
-    long id;
-    long Value;
+    short eventBusMSG;
+    long trackID;
+    long value;
 
     /**
      * Creates a new EventBusMSGLong.
      *
-     * @param _MSGType One of the EventBusMSG Values
-     * @param _id The ID of the Track
-     * @param _Value The new value
+     * @param eventBusMSG One of the EventBusMSG Values
+     * @param trackID The ID of the Track
+     * @param value The new value
      */
-    EventBusMSGLong (short _MSGType, long _id, long _Value) {
-        MSGType = _MSGType;
-        id      = _id;
-        Value   = _Value;
+    EventBusMSGLong (short eventBusMSG, long trackID, long value) {
+        this.eventBusMSG = eventBusMSG;
+        this.trackID = trackID;
+        this.value = value;
     }
 }

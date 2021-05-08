@@ -27,7 +27,6 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -156,14 +155,14 @@ public class FragmentTracklist extends Fragment {
     public void onEvent(final EventBusMSGNormal msg) {
         int i = 0;
         boolean found = false;
-        switch (msg.MSGType) {
+        switch (msg.eventBusMSG) {
             case EventBusMSG.TRACKLIST_SELECT:
             case EventBusMSG.TRACKLIST_DESELECT:
                 synchronized (data) {
                     do {
-                        if (data.get(i).getId() == msg.id) {
+                        if (data.get(i).getId() == msg.trackID) {
                             found = true;
-                            data.get(i).setSelected(msg.MSGType == EventBusMSG.TRACKLIST_SELECT);
+                            data.get(i).setSelected(msg.eventBusMSG == EventBusMSG.TRACKLIST_SELECT);
                         }
                         i++;
                     } while ((i < data.size()) && !found);
@@ -177,7 +176,7 @@ public class FragmentTracklist extends Fragment {
                                 data.get(i).setSelected(GPSApplication.getInstance().getLastClickState());
                                 found = !found;
                             }
-                            if (data.get(i).getId() == msg.id) {
+                            if (data.get(i).getId() == msg.trackID) {
                                 data.get(i).setSelected(GPSApplication.getInstance().getLastClickState());
                                 found = !found;
                             }

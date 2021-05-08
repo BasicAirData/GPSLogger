@@ -112,7 +112,7 @@ public class ToolbarActionMode implements ActionMode.Callback {
 
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(EventBusMSGNormal msg) {
-        switch (msg.MSGType) {
+        switch (msg.eventBusMSG) {
             case EventBusMSG.TRACKLIST_SELECT:
             case EventBusMSG.TRACKLIST_DESELECT:
                 EvaluateVisibility();

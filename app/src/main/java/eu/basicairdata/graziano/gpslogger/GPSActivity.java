@@ -28,7 +28,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -324,7 +323,7 @@ public class GPSActivity extends AppCompatActivity {
 
     @Subscribe
     public void onEvent(EventBusMSGNormal msg) {
-        switch (msg.MSGType) {
+        switch (msg.eventBusMSG) {
             case EventBusMSG.TRACKLIST_SELECT:
             case EventBusMSG.TRACKLIST_DESELECT:
                 ActivateActionModeIfNeeded();
