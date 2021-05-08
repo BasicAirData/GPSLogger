@@ -1,6 +1,9 @@
-/**
+/*
  * EventBusMSGLong - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 05/08/17.
+ * Created by G.Capelli on 05/08/17.
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +21,22 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+/**
+ * A class that is made to be used as parameter for EventBus messages, when the message
+ * must contain a track ID and a Value as additional data.
+ */
 public class EventBusMSGLong {
-    short MSGType = 0;
-    long  id      = 0;
-    long  Value   = 0;
+    short MSGType;
+    long id;
+    long Value;
 
+    /**
+     * Creates a new EventBusMSGLong.
+     *
+     * @param _MSGType One of the EventBusMSG Values
+     * @param _id The ID of the Track
+     * @param _Value The new value
+     */
     EventBusMSGLong (short _MSGType, long _id, long _Value) {
         MSGType = _MSGType;
         id      = _id;

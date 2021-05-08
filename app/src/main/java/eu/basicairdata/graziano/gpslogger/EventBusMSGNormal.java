@@ -1,6 +1,9 @@
-/**
+/*
  * EventBusMSGNormal - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 05/08/17.
+ * Created by G.Capelli on 05/08/17.
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +21,20 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+/**
+ * A class that is made to be used as parameter for EventBus messages, when the message
+ * must contain a track ID as additional data.
+ */
 public class EventBusMSGNormal {
-    short MSGType = 0;
-    long  id      = 0;
+    short MSGType;
+    long id;
 
+    /**
+     * Creates a new EventBusMSGNormal.
+     *
+     * @param _MSGType One of the EventBusMSG Values
+     * @param _id The ID of the Track
+     */
     EventBusMSGNormal (short _MSGType, long _id) {
         MSGType = _MSGType;
         id      = _id;
