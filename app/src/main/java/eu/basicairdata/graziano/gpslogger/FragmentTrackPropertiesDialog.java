@@ -1,6 +1,9 @@
-/**
+/*
  * FragmentTrackPropertiesDialog - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 18/4/2021
+ * Created by G.Capelli on 18/4/2021
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,71 +43,60 @@ import org.greenrobot.eventbus.EventBus;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
+/**
+ * The Dialog that shows the properties of a Track.
+ * The user can use it to edit the description and the activity type.
+ * As extra feature of this dialog, The OK Button can finalize the Track.
+ */
 public class FragmentTrackPropertiesDialog extends DialogFragment {
 
-    private EditText DescEditText;
+    private EditText etDescription;
     private final ImageView[] tracktypeImageView = new ImageView[7];
 
-    private int selectedTrackType = NOT_AVAILABLE;                  // The track type selected by the user
-    private Track _trackToEdit = null;                              // The track to edit
-    private int _title = 0;                                         // The resource id for the title
-    private boolean _isAFinalization = false;                       // True if the "OK" button finalize the track and creates a new one
+    private int selectedTrackType = NOT_AVAILABLE;                 // The track type selected by the user
+    private Track trackToEdit = null;                              // The track to edit
+    private int title = 0;                                         // The resource id for the title
+    private boolean finalizeTrackWithOk = false;                   // True if the "OK" button finalizes the track and creates a new one
 
     private static final String KEY_SELTRACKTYPE = "selectedTrackType";
     private static final String KEY_TITLE = "_title";
     private static final String KEY_ISFINALIZATION = "_isFinalization";
 
-
-
-    public void setTitleResource(int titleResource) {
-        _title = titleResource;
-    }
-
-
-    public void setIsAFinalization(boolean isAFinalization) {
-        _isAFinalization = isAFinalization;
-    }
-
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        // TODO Auto-generated method stub
         super.onSaveInstanceState(outState);
 
         outState.putInt(KEY_SELTRACKTYPE, selectedTrackType);
-        outState.putInt(KEY_TITLE, _title);
-        outState.putBoolean(KEY_ISFINALIZATION, _isAFinalization);
+        outState.putInt(KEY_TITLE, title);
+        outState.putBoolean(KEY_ISFINALIZATION, finalizeTrackWithOk);
     }
 
-
-
-        //@SuppressLint("InflateParams")
+    //@SuppressLint("InflateParams")
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity());
-
-        _trackToEdit = GPSApplication.getInstance().getTrackToEdit();
+        trackToEdit = GPSApplication.getInstance().getTrackToEdit();
 
         if (savedInstanceState != null) {
-            _title = savedInstanceState.getInt(KEY_TITLE, 0);
+            title = savedInstanceState.getInt(KEY_TITLE, 0);
             selectedTrackType = savedInstanceState.getInt(KEY_SELTRACKTYPE, NOT_AVAILABLE);
-            _isAFinalization = savedInstanceState.getBoolean(KEY_ISFINALIZATION, false);
+            finalizeTrackWithOk = savedInstanceState.getBoolean(KEY_ISFINALIZATION, false);
         } else {
-            selectedTrackType = _trackToEdit.getType();
+            selectedTrackType = trackToEdit.getType();
         }
 
-        if (_title != 0) createPlacemarkAlert.setTitle(_title);
+        if (title != 0) createPlacemarkAlert.setTitle(title);
         //createPlacemarkAlert.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_24, getActivity().getTheme()));
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_track_properties_dialog, null);
 
-        DescEditText = view.findViewById(R.id.track_description);
-        if (!_trackToEdit.getDescription().isEmpty()) {
-            DescEditText.setText(_trackToEdit.getDescription());
+        etDescription = view.findViewById(R.id.track_description);
+        if (!trackToEdit.getDescription().isEmpty()) {
+            etDescription.setText(trackToEdit.getDescription());
         }
-        DescEditText.setHint(GPSApplication.getInstance().getString(R.string.track_id) + " " + _trackToEdit.getId());
+        etDescription.setHint(GPSApplication.getInstance().getString(R.string.track_id) + " " + trackToEdit.getId());
 
 //        DescEditText.postDelayed(new Runnable()
 //        {
@@ -145,8 +137,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         // Activate the right image
         if (selectedTrackType != NOT_AVAILABLE)
             tracktypeImageView[selectedTrackType].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
-        else if (_trackToEdit.getTrackType() != Track.TRACK_TYPE_ND)
-            tracktypeImageView[_trackToEdit.getTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
+        else if (trackToEdit.getTrackType() != Track.TRACK_TYPE_ND)
+            tracktypeImageView[trackToEdit.getTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
 
         createPlacemarkAlert.setView(view)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -154,11 +146,11 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         if (isAdded()) {
-                            String trackDescription = DescEditText.getText().toString();
-                            _trackToEdit.setDescription (trackDescription.trim());
-                            if (selectedTrackType != NOT_AVAILABLE) _trackToEdit.setTrackType(selectedTrackType);  // the user selected a track type!
-                            GPSApplication.getInstance().GPSDataBase.updateTrack(_trackToEdit);
-                            if (_isAFinalization) {
+                            String trackDescription = etDescription.getText().toString();
+                            trackToEdit.setDescription (trackDescription.trim());
+                            if (selectedTrackType != NOT_AVAILABLE) trackToEdit.setTrackType(selectedTrackType);  // the user selected a track type!
+                            GPSApplication.getInstance().GPSDataBase.updateTrack(trackToEdit);
+                            if (finalizeTrackWithOk) {
                                 // a request to finalize a track
                                 EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
                                 Toast.makeText(getActivity(), getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
@@ -181,5 +173,23 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    /**
+     * Sets the title of the Dialog.
+     *
+     * @param titleResource The Resource String of the title
+     */
+    public void setTitleResource(int titleResource) {
+        title = titleResource;
+    }
+
+    /**
+     * If true, the dialog finalizes the track when the user press the OK Button.
+     *
+     * @param finalize true if the dialog should finalize the track
+     */
+    public void setFinalizeTrackWithOk(boolean finalize) {
+        finalizeTrackWithOk = finalize;
     }
 }

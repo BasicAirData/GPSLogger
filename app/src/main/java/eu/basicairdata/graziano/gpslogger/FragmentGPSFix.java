@@ -205,7 +205,7 @@ public class FragmentGPSFix extends Fragment {
                 if (!isAWarningClicked) {
                     //isAWarningClicked = true;
                     GPSActivity gpsActivity = (GPSActivity) getActivity();
-                    gpsActivity.CheckLocationPermission();
+                    gpsActivity.checkLocationPermission();
                 }
             }
         });

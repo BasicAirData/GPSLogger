@@ -189,7 +189,7 @@ public class FragmentRecordingControls extends Fragment {
                         FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
                         gpsApp.setTrackToEdit(gpsApp.getCurrentTrack());
                         tpDialog.setTitleResource(R.string.finalize_track);
-                        tpDialog.setIsAFinalization(true);
+                        tpDialog.setFinalizeTrackWithOk(true);
                         tpDialog.show(fm, "");
                     } else {
                         Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_nothing_to_save), Toast.LENGTH_SHORT).show();

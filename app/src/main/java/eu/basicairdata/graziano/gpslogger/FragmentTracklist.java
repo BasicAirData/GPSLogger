@@ -234,7 +234,7 @@ public class FragmentTracklist extends Fragment {
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
                     tpDialog.setTitleResource(R.string.card_menu_edit);
-                    tpDialog.setIsAFinalization(false);
+                    tpDialog.setFinalizeTrackWithOk(false);
                     tpDialog.show(fm, "");
                     break;
                 }
