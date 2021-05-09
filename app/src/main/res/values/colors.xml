@@ -49,9 +49,9 @@
     <color name="preference_accent">#b51111</color>
     <color name="preference_fallback_accent_color" tools:override="true">#b51111</color>
 
-    <color name="colorRoundedCornerBottom">#ececec</color>
+    <color name="colorRoundedCornerBottom">#eeeeee</color>
     <color name="colorRoundedCornerTop">#ffffff</color>
-    <color name="colorRoundedCornerBorder">#cccccc</color>
+    <color name="colorRoundedCornerBorder">#c7c7c7</color>
 
     <!-- ======[ SHARED COLORS ]=============================================================== -->
 
