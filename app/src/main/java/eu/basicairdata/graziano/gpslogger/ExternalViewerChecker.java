@@ -175,14 +175,14 @@ public class ExternalViewerChecker {
                 a.fileType = FILETYPE_KML;
                 a.mimeType = "application/vnd.google-earth.kml+xml";
             }
-//            if (a.packageName.equals("com.vecturagames.android.app.gpxviewer")) {
-//                // GPX Viewer saves a copy of the file if passed via FileProvider
-//                a.requiresFileProvider = false;
-//            }
-            if (a.packageName.equals("com.google.earth")) {
-                // Google Earth opens file with fileProvider only
-                a.requiresFileProvider = true;
+            if (a.packageName.equals("com.vecturagames.android.app.gpxviewer")) {
+                // GPX Viewer saves a copy of the file if passed via FileProvider
+                a.requiresFileProvider = false;
             }
+//            if (a.packageName.equals("com.google.earth")) {
+//                // Google Earth opens file with fileProvider only
+//                a.requiresFileProvider = true;
+//            }
         }
     }
 }
