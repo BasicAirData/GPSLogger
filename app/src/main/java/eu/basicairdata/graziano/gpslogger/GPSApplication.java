@@ -166,7 +166,7 @@ public class GPSApplication extends Application implements LocationListener {
     private String ViewInApp = "";                              // The string of default app name for "View"
                                                                 // "" in case of selector
 
-    private AppInfo TrackViewer = new AppInfo();
+    private ExternalViewer TrackViewer = new ExternalViewer();
 
     // Singleton instance
     private static GPSApplication singleton;
@@ -671,7 +671,7 @@ public class GPSApplication extends Application implements LocationListener {
         return externalViewerChecker;
     }
 
-    public void setTrackViewer(AppInfo trackViewer) {
+    public void setTrackViewer(ExternalViewer trackViewer) {
         TrackViewer = trackViewer;
     }
 
@@ -1282,20 +1282,20 @@ public class GPSApplication extends Application implements LocationListener {
 
             // ----- menu view
 
-            externalViewerChecker.makeAppInfoList();
+            externalViewerChecker.makeExternalViewersList();
             String pn = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefTracksViewer", "");
             if (!externalViewerChecker.isEmpty()) {
                 isContextMenuViewVisible = true;
-                for (AppInfo ai : externalViewerChecker.getAppInfoList()) {
-                    if ((ai.packageName.equals(pn)) || (externalViewerChecker.size() == 1)) {
-                        ViewInApp = ai.label + (ai.fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)");
+                for (ExternalViewer ev : externalViewerChecker.getExternalViewersList()) {
+                    if ((ev.packageName.equals(pn)) || (externalViewerChecker.size() == 1)) {
+                        ViewInApp = ev.label + (ev.fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)");
 
                         // Set View Icon
                         Bitmap bitmap;
                         if (Build.VERSION.SDK_INT >= 26) {
-                            bitmap = getBitmap(ai.icon);
+                            bitmap = getBitmap(ev.icon);
                         } else {
-                            bitmap = ((BitmapDrawable) ai.icon).getBitmap();
+                            bitmap = ((BitmapDrawable) ev.icon).getBitmap();
                         }
                         ViewInAppIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap,
                                 (int) (24 * getResources().getDisplayMetrics().density),

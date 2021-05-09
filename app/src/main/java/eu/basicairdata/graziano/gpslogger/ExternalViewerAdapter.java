@@ -1,5 +1,5 @@
 /*
- * AppDialogList - Java Class for Android
+ * ExternalViewerAdapter - Java Class for Android
  * Created by G.Capelli on 23/9/2020
  * This file is part of BasicAirData GPS Logger
  *
@@ -37,17 +37,17 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 /**
  * The Adapter for the menu that lists the Track Viewers.
  */
-public class AppDialogList extends BaseAdapter {
-    private final ArrayList<AppInfo> listData;
+public class ExternalViewerAdapter extends BaseAdapter {
+    private final ArrayList<ExternalViewer> listData;
     private final LayoutInflater layoutInflater;
 
     /**
-     * Creates a new AppDialogList using the specified ArrayList of AppInfo.
+     * Creates a new ExternalViewerAdapter using the specified ArrayList of ExternalViewer.
      *
      * @param context the base context
-     * @param listData the ArrayList of AppInfo to be used as adapter data.
+     * @param listData the ArrayList of ExternalViewer to be used as adapter data.
      */
-    public AppDialogList(Context context, ArrayList<AppInfo> listData) {
+    public ExternalViewerAdapter(Context context, ArrayList<ExternalViewer> listData) {
         this.listData = listData;
         this.layoutInflater = LayoutInflater.from(context);
     }
@@ -79,9 +79,9 @@ public class AppDialogList extends BaseAdapter {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.appdialog_list_row, null);
             holder = new ViewHolder();
-            holder.icon = (ImageView) convertView.findViewById(R.id.id_appdialog_row_imageView_icon);
-            holder.description = (TextView) convertView.findViewById(R.id.id_appdialog_row_textView_description);
-            holder.format = (TextView) convertView.findViewById(R.id.id_appdialog_row_textView_format);
+            holder.icon = convertView.findViewById(R.id.id_appdialog_row_imageView_icon);
+            holder.description = convertView.findViewById(R.id.id_appdialog_row_textView_description);
+            holder.format = convertView.findViewById(R.id.id_appdialog_row_textView_format);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -93,7 +93,7 @@ public class AppDialogList extends BaseAdapter {
     }
 
     /**
-     * The class used into the AppDialogList Class.
+     * The class used into the ExternalViewerAdapter Class.
      */
     static class ViewHolder {
         ImageView icon;

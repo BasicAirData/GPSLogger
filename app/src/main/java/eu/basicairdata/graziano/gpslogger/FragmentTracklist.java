@@ -242,12 +242,12 @@ public class FragmentTracklist extends Fragment {
         }
 
         if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
-            final ArrayList<AppInfo> ail = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getAppInfoList());
+            final ArrayList<ExternalViewer> evList = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getExternalViewersList());
 
-            if (!ail.isEmpty()) {
-                if (ail.size() == 1) {
+            if (!evList.isEmpty()) {
+                if (evList.size() == 1) {
                     // 1 Viewer installed, let's use it
-                    GPSApplication.getInstance().setTrackViewer(ail.get(0));
+                    GPSApplication.getInstance().setTrackViewer(evList.get(0));
                     OpenTrack();
                 }
                 else {
@@ -256,10 +256,10 @@ public class FragmentTracklist extends Fragment {
 
                     String pn = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefTracksViewer", "");
                     boolean foundDefault = false;
-                    for (AppInfo ai : ail) {
-                        if (ai.packageName.equals(pn)) {
+                    for (ExternalViewer ev : evList) {
+                        if (ev.packageName.equals(pn)) {
                             // Default Viewer available!
-                            GPSApplication.getInstance().setTrackViewer(ai);
+                            GPSApplication.getInstance().setTrackViewer(ev);
                             foundDefault = true;
                         }
                     }
@@ -270,13 +270,13 @@ public class FragmentTracklist extends Fragment {
                         View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
                         ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
 
-                        AppDialogList clad = new AppDialogList(getActivity(), ail);
+                        ExternalViewerAdapter clad = new ExternalViewerAdapter(getActivity(), evList);
 
                         lv.setAdapter(clad);
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                GPSApplication.getInstance().setTrackViewer(ail.get(position));
+                                GPSApplication.getInstance().setTrackViewer(evList.get(position));
                                 OpenTrack();
                                 dialog.dismiss();
                             }

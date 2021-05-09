@@ -36,21 +36,21 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_KML;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
 /**
- * A class that makes and stores a list of External Viewers available on the device.
- * The list is made of AppInfo items.
+ * A class that makes and stores the list of External Viewers available on the device.
+ * The list is made of ExternalViewer items.
  */
 public class ExternalViewerChecker {
 
     private final Context context;
-    private ArrayList<AppInfo> appInfoList = new ArrayList<>();         // The list of Viewers available
-    private final CustomComparator comparator = new CustomComparator(); // The comparator for the AppInfo list sorting
+    private ArrayList<ExternalViewer> externalViewerList = new ArrayList<>();         // The list of Viewers available
+    private final CustomComparator comparator = new CustomComparator(); // The comparator for the ExternalViewer list sorting
 
     /**
-     * The comparator used to orders the AppInfo items alphabetically by label (app name)
+     * The comparator used to orders the ExternalViewer items alphabetically by label (app name)
      */
-    static private class CustomComparator implements Comparator<AppInfo> {
+    static private class CustomComparator implements Comparator<ExternalViewer> {
         @Override
-        public int compare(AppInfo o1, AppInfo o2) {
+        public int compare(ExternalViewer o1, ExternalViewer o2) {
             return o1.label.compareTo(o2.label);
         }
     }
@@ -83,8 +83,8 @@ public class ExternalViewerChecker {
         String fileType;
     }
 
-    public ArrayList<AppInfo> getAppInfoList() {
-        return appInfoList;
+    public ArrayList<ExternalViewer> getExternalViewersList() {
+        return externalViewerList;
     }
 
     public ExternalViewerChecker(Context context) {
@@ -92,23 +92,23 @@ public class ExternalViewerChecker {
     }
 
     public int size() {
-        return appInfoList.size();
+        return externalViewerList.size();
     }
 
     public boolean isEmpty() {
-        return (appInfoList.isEmpty());
+        return (externalViewerList.isEmpty());
     }
 
     /**
-     * Creates the AppInfo list basing on the research criteria.
+     * Creates the ExternalViewer list basing on the research criteria.
      * The criteria are defined into this method.
-     * The list of AppInfo are stored here into this ExternalViewerChecker class,
-     * and can be obtained from outside using the getAppInfoList() method.
+     * The list of ExternalViewer are stored here into this ExternalViewerChecker class,
+     * and can be obtained from outside using the getExternalViewersList() method.
      */
-    public void makeAppInfoList() {
+    public void makeExternalViewersList() {
         final PackageManager pm = context.getPackageManager();
 
-        appInfoList = new ArrayList<>();
+        externalViewerList = new ArrayList<>();
         ArrayList<FileType> fileTypeList = new ArrayList<>();
 
         fileTypeList.add(new FileType(null, "application/gpx+xml", FILETYPE_GPX));                      // The preferred format first
@@ -141,13 +141,13 @@ public class ExternalViewerChecker {
                 } else isPackageInList = true;
 
                 if (isPackageInList) {
-                    AppInfo aInfo = new AppInfo();
+                    ExternalViewer aInfo = new ExternalViewer();
                     aInfo.packageName = tmpRI.activityInfo.applicationInfo.packageName;
                     aInfo.label = tmpRI.activityInfo.applicationInfo.loadLabel(pm).toString();
 
                     boolean found = false;
 
-                    for (AppInfo a : appInfoList) {
+                    for (ExternalViewer a : externalViewerList) {
                         if (a.label.equals(aInfo.label) && a.packageName.equals(aInfo.packageName)) {
                             found = true;
                             //Log.w("myApp", "[#] ExternalViewerChecker.java -   " + tmpRI.activityInfo.applicationInfo.packageName);
@@ -158,7 +158,7 @@ public class ExternalViewerChecker {
                         aInfo.mimeType = ft.mimeType;
                         aInfo.fileType = ft.fileType;
                         aInfo.icon = tmpRI.activityInfo.applicationInfo.loadIcon(pm);
-                        appInfoList.add(aInfo);
+                        externalViewerList.add(aInfo);
                         //Log.w("myApp", "[#] ExternalViewerChecker.java - + " + tmpRI.activityInfo.applicationInfo.packageName);
                     }
                 }
@@ -166,15 +166,19 @@ public class ExternalViewerChecker {
         }
 
         // Sort List by Package Name
-        Collections.sort(appInfoList, comparator);
+        Collections.sort(externalViewerList, comparator);
 
         // Apply Exceptions
-        for (AppInfo a : appInfoList) {
+        for (ExternalViewer a : externalViewerList) {
             if (a.packageName.equals("at.xylem.mapin")) {
                 // MAPinr is not opening GPX correctly!
                 a.fileType = FILETYPE_KML;
                 a.mimeType = "application/vnd.google-earth.kml+xml";
             }
+//            if (a.packageName.equals("com.vecturagames.android.app.gpxviewer")) {
+//                // GPX Viewer saves a copy of the file if passed via FileProvider
+//                a.requiresFileProvider = false;
+//            }
             if (a.packageName.equals("com.google.earth")) {
                 // Google Earth opens file with fileProvider only
                 a.requiresFileProvider = true;
