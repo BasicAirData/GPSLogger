@@ -62,7 +62,7 @@ public class FragmentAboutDialog extends DialogFragment {
                 tvDescription.setText(getString(R.string.about_description));
                 break;
             case GPSApplication.APP_ORIGIN_GOOGLE_PLAY_STORE:
-                tvDescription.setText(getString(R.string.about_description_googleplaystore));
+                tvDescription.setText(getString(R.string.about_description) + "\n\n" + getString(R.string.about_description_googleplaystore));
                 break;
         }
 
