@@ -1,6 +1,9 @@
-/**
+/*
  * FragmentTracklist - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 19/6/2016
+ * Created by G.Capelli on 19/6/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,26 +59,21 @@ import java.util.List;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
-
+/**
+ * The Fragment that displays and manages the list of the archived Tracks
+ * on the third tab (Tracklist) of the main Activity (GPSActivity).
+ */
 public class FragmentTracklist extends Fragment {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-
     private TrackAdapter adapter;
     private final List<Track> data = Collections.synchronizedList(new ArrayList<Track>());
-
     private View view;
-    private TextView TVTracklistEmpty;
-
+    private TextView tvTracklistEmpty;
 
     public FragmentTracklist() {
         // Required empty public constructor
-    }
-
-    private boolean FileExists(String filename) {
-        File file = new File(filename);
-        return file.exists ();
     }
 
     @Override
@@ -85,16 +83,14 @@ public class FragmentTracklist extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tracklist, container, false);
 
-        TVTracklistEmpty    = view.findViewById(R.id.id_textView_TracklistEmpty);
-        recyclerView        = view.findViewById(R.id.my_recycler_view);
-
+        tvTracklistEmpty = view.findViewById(R.id.id_textView_TracklistEmpty);
+        recyclerView = view.findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.getItemAnimator().setChangeDuration(0);
         adapter = new TrackAdapter(data);
-
         switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
             case Configuration.UI_MODE_NIGHT_NO:
                 // Night mode is not active, we're in day time
@@ -107,26 +103,9 @@ public class FragmentTracklist extends Fragment {
                 adapter.isLightTheme = false;
                 break;
         }
-
         recyclerView.setAdapter(adapter);
-
         return view;
     }
-
-    public boolean CheckStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission GRANTED");
-            return true;    // Permission Granted
-        } else {
-            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission DENIED");
-            List<String> listPermissionsNeeded = new ArrayList<>();
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-    }
-
 
     @Override
     public void onResume() {
@@ -143,14 +122,15 @@ public class FragmentTracklist extends Fragment {
         Update();
     }
 
-
     @Override
     public void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
 
-
+    /**
+     * The EventBus receiver for Normal Messages.
+     */
     @Subscribe
     public void onEvent(final EventBusMSGNormal msg) {
         int i = 0;
@@ -192,7 +172,9 @@ public class FragmentTracklist extends Fragment {
         }
     }
 
-
+    /**
+     * The EventBus receiver for Short Messages.
+     */
     @Subscribe
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_TRACK) {
@@ -489,7 +471,34 @@ public class FragmentTracklist extends Fragment {
         }
     }
 
+    /**
+     * Checks the permission to access the External Storage.
+     */
+    public boolean CheckStoragePermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission GRANTED");
+            return true;    // Permission Granted
+        } else {
+            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission DENIED");
+            List<String> listPermissionsNeeded = new ArrayList<>();
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+    }
 
+    /**
+     * @return true if a specified file exists
+     */
+    private boolean FileExists(String filename) {
+        File file = new File(filename);
+        return file.exists ();
+    }
+
+    /**
+     * Open a Track with an external viewer using the GPSApplication Job executor.
+     */
     public void OpenTrack() {
         GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_VIEW);
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -498,7 +507,9 @@ public class FragmentTracklist extends Fragment {
         GPSApplication.getInstance().DeselectAllTracks();
     }
 
-
+    /**
+     * Updates the user interface of the fragment.
+     */
     public void Update() {
         if (isAdded()) {
             Log.w("myApp", "[#] FragmentTracklist.java - Updating Tracklist");
@@ -523,7 +534,7 @@ public class FragmentTracklist extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+                            tvTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
                             adapter.notifyDataSetChanged();
                         }
                     });
@@ -534,7 +545,10 @@ public class FragmentTracklist extends Fragment {
         }
     }
 
-
+    /**
+     * It deletes some tracks from the CardView Adapter via notification,
+     * in order to show a graceful animation of the deletion.
+     */
     public void DeleteSomeTracks() {
         try {
             getActivity().runOnUiThread(new Runnable() {
@@ -548,7 +562,7 @@ public class FragmentTracklist extends Fragment {
                                 adapter.notifyItemRemoved(i);
                             }
                         }
-                        TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+                        tvTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
                     }
                 }
             });

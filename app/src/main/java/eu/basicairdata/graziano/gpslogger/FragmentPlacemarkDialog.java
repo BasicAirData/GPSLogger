@@ -1,6 +1,9 @@
-/**
+/*
  * FragmentPlacemarkDialog - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 9/7/2016
+ * Created by G.Capelli on 9/7/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +38,12 @@ import android.widget.EditText;
 
 import org.greenrobot.eventbus.EventBus;
 
+/**
+ * The dialog that appears when the user adds a new Annotation (Placemark).
+ */
 public class FragmentPlacemarkDialog extends DialogFragment {
 
-    EditText DescEditText;
+    EditText etDescription;
 
     //@SuppressLint("InflateParams")
     @NonNull
@@ -48,17 +54,17 @@ public class FragmentPlacemarkDialog extends DialogFragment {
         //createPlacemarkAlert.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_location_24dp, getActivity().getTheme()));
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = (View) inflater.inflate(R.layout.fragment_placemark_dialog, null);
+        final View view = inflater.inflate(R.layout.fragment_placemark_dialog, null);
 
-        DescEditText = (EditText) view.findViewById(R.id.placemark_description);
-        DescEditText.postDelayed(new Runnable()
+        etDescription = view.findViewById(R.id.placemark_description);
+        etDescription.postDelayed(new Runnable()
         {
             public void run()
             {
                 if (isAdded()) {
-                    DescEditText.requestFocus();
-                    InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    mgr.showSoftInput(DescEditText, InputMethodManager.SHOW_IMPLICIT);
+                    etDescription.requestFocus();
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.showSoftInput(etDescription, InputMethodManager.SHOW_IMPLICIT);
                 }
             }
         }, 200);
@@ -69,11 +75,11 @@ public class FragmentPlacemarkDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         if (isAdded()) {
-                            String PlacemarkDescription = DescEditText.getText().toString();
-                            final GPSApplication GlobalVariables = (GPSApplication) getActivity().getApplicationContext();
-                            GlobalVariables.setPlacemarkDescription(PlacemarkDescription.trim());
+                            String placemarkDescription = etDescription.getText().toString();
+                            final GPSApplication gpsApp = GPSApplication.getInstance();
+                            gpsApp.setPlacemarkDescription(placemarkDescription.trim());
                             EventBus.getDefault().post(EventBusMSG.ADD_PLACEMARK);
-                            //Log.w("myApp", "[#] FragmentPlacemarkDialog.java - posted ADD_PLACEMARK: " + PlacemarkDescription);
+                            //Log.w("myApp", "[#] FragmentPlacemarkDialog.java - posted ADD_PLACEMARK: " + placemarkDescription);
                         }
                     }
                 })

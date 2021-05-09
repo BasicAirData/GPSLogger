@@ -1,6 +1,9 @@
-/**
+/*
  * FragmentRecordingControls - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 20/5/2016
+ * Created by G.Capelli on 20/5/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +21,6 @@
  */
 
 package eu.basicairdata.graziano.gpslogger;
-
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -40,72 +42,65 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class FragmentRecordingControls extends Fragment{
+/**
+ * The Fragment that displays and manages the bottom bar.
+ */
+public class FragmentRecordingControls extends Fragment {
+
+    private TextView tvGeoPointsNumber;
+    private TextView tvPlacemarksNumber;
+    private TextView tvLockButton;
+    private TextView tvStopButton;
+    private TextView tvAnnotateButton;
+    private TextView tvRecordButton;
+    final GPSApplication gpsApp = GPSApplication.getInstance();
 
     public FragmentRecordingControls() {
         // Required empty public constructor
     }
-
-
-    private TextView TVGeoPointsNumber;
-    private TextView TVPlacemarksNumber;
-    private TextView TVLockButton;
-    private TextView TVStopButton;
-    private TextView TVAnnotateButton;
-    private TextView TVRecordButton;
-    
-    final GPSApplication gpsApplication = GPSApplication.getInstance();
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recording_controls, container, false);
 
-        TVLockButton = view.findViewById(R.id.id_lock);
-        TVLockButton.setOnClickListener(new View.OnClickListener() {
+        tvLockButton = view.findViewById(R.id.id_lock);
+        tvLockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onToggleLock();
             }
         });
-
-        TVStopButton = view.findViewById(R.id.id_stop);
-        TVStopButton.setOnClickListener(new View.OnClickListener() {
+        tvStopButton = view.findViewById(R.id.id_stop);
+        tvStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onRequestStop();
             }
         });
-
-        TVAnnotateButton = view.findViewById(R.id.id_annotate);
-        TVAnnotateButton.setOnClickListener(new View.OnClickListener() {
+        tvAnnotateButton = view.findViewById(R.id.id_annotate);
+        tvAnnotateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onRequestAnnotation();
             }
         });
-
-        TVRecordButton = view.findViewById(R.id.id_record);
-        TVRecordButton.setOnClickListener(new View.OnClickListener() {
+        tvRecordButton = view.findViewById(R.id.id_record);
+        tvRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onToggleRecord();
             }
         });
-
-        TVGeoPointsNumber = view.findViewById(R.id.id_textView_GeoPoints);
-        TVPlacemarksNumber = view.findViewById(R.id.id_textView_Placemarks);
-
+        tvGeoPointsNumber = view.findViewById(R.id.id_textView_GeoPoints);
+        tvPlacemarksNumber = view.findViewById(R.id.id_textView_Placemarks);
         return view;
     }
-
 
     @Override
     public void onResume() {
@@ -121,80 +116,15 @@ public class FragmentRecordingControls extends Fragment{
         Update();
     }
 
-
     @Override
     public void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
 
-
-    public void onToggleRecord() {
-        if (isAdded()) {
-            if (!gpsApplication.getBottomBarLocked()) {
-                if (!gpsApplication.getStopFlag()) {
-                    gpsApplication.setRecording(!gpsApplication.getRecording());
-                    if (!gpsApplication.isFirstFixFound() && (gpsApplication.getRecording()))
-                        Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_recording_when_gps_found), Toast.LENGTH_LONG).show();
-                    Update();
-                }
-            } else {
-                Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
-    public void onRequestAnnotation() {
-        if (isAdded()) {
-            if (!gpsApplication.getBottomBarLocked()) {
-                if (!gpsApplication.getStopFlag()) {
-                    gpsApplication.setPlacemarkRequest(!gpsApplication.getPlacemarkRequest());
-                    if (!gpsApplication.isFirstFixFound() && (gpsApplication.getPlacemarkRequest()))
-                        Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_annotate_when_gps_found), Toast.LENGTH_LONG).show();
-                    Update();
-                }
-            } else {
-                Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
-    public void onRequestStop() {
-        if (isAdded()) {
-            if (!gpsApplication.getBottomBarLocked()) {
-                if (!gpsApplication.getStopFlag()) {
-                    gpsApplication.setStopFlag(true, gpsApplication.getCurrentTrack().getNumberOfLocations() + gpsApplication.getCurrentTrack().getNumberOfPlacemarks() > 0 ? 1000 : 300);
-                    gpsApplication.setRecording(false);
-                    gpsApplication.setPlacemarkRequest(false);
-                    Update();
-                    if (gpsApplication.getCurrentTrack().getNumberOfLocations() + gpsApplication.getCurrentTrack().getNumberOfPlacemarks() > 0) {
-                        FragmentManager fm = getActivity().getSupportFragmentManager();
-                        FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
-                        gpsApplication.setTrackToEdit(gpsApplication.getCurrentTrack());
-                        tpDialog.setTitleResource(R.string.finalize_track);
-                        tpDialog.setIsAFinalization(true);
-                        tpDialog.show(fm, "");
-                    } else {
-                        Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_nothing_to_save), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } else {
-                Toast.makeText(gpsApplication.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
-    public void onToggleLock() {
-        if (isAdded()) {
-            gpsApplication.setBottomBarLocked(!gpsApplication.getBottomBarLocked());
-            Update();
-        }
-    }
-
-
+    /**
+     * The EventBus receiver for Short Messages.
+     */
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_TRACK) {
@@ -202,14 +132,97 @@ public class FragmentRecordingControls extends Fragment{
         }
     }
 
+    /**
+     * Toggles the status of the recording, by managing the button behaviour and
+     * the status of the recording process.
+     * It also displays some toasts to inform the user about some conditions.
+     */
+    public void onToggleRecord() {
+        if (isAdded()) {
+            if (!gpsApp.getBottomBarLocked()) {
+                if (!gpsApp.getStopFlag()) {
+                    gpsApp.setRecording(!gpsApp.getRecording());
+                    if (!gpsApp.isFirstFixFound() && (gpsApp.getRecording()))
+                        Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_recording_when_gps_found), Toast.LENGTH_LONG).show();
+                    Update();
+                }
+            } else {
+                Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
+    /**
+     * Toggles the status of the placemark request, by managing the button behaviour and
+     * the status of the request.
+     * It also displays some toasts to inform the user about some conditions.
+     */
+    public void onRequestAnnotation() {
+        if (isAdded()) {
+            if (!gpsApp.getBottomBarLocked()) {
+                if (!gpsApp.getStopFlag()) {
+                    gpsApp.setPlacemarkRequest(!gpsApp.getPlacemarkRequest());
+                    if (!gpsApp.isFirstFixFound() && (gpsApp.getPlacemarkRequest()))
+                        Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_annotate_when_gps_found), Toast.LENGTH_LONG).show();
+                    Update();
+                }
+            } else {
+                Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * Manages the Stop button behaviour.
+     * It also displays some toasts to inform the user about some conditions.
+     */
+    public void onRequestStop() {
+        if (isAdded()) {
+            if (!gpsApp.getBottomBarLocked()) {
+                if (!gpsApp.getStopFlag()) {
+                    gpsApp.setStopFlag(true, gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0 ? 1000 : 300);
+                    gpsApp.setRecording(false);
+                    gpsApp.setPlacemarkRequest(false);
+                    Update();
+                    if (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0) {
+                        FragmentManager fm = getActivity().getSupportFragmentManager();
+                        FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                        gpsApp.setTrackToEdit(gpsApp.getCurrentTrack());
+                        tpDialog.setTitleResource(R.string.finalize_track);
+                        tpDialog.setIsAFinalization(true);
+                        tpDialog.show(fm, "");
+                    } else {
+                        Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_nothing_to_save), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else {
+                Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * Manages the Lock button behaviour.
+     */
+    public void onToggleLock() {
+        if (isAdded()) {
+            gpsApp.setBottomBarLocked(!gpsApp.getBottomBarLocked());
+            Update();
+        }
+    }
+
+    /**
+     * Sets the color of a drawable.
+     *
+     * @param drawable The Drawable
+     * @param color The new Color to set
+     */
     private void setTextViewDrawableColor(Drawable drawable, int color) {
         if (drawable != null) {
             drawable.clearColorFilter();
             drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
         }
     }
-
 
 //    private void setButtonToClickedState(@NonNull TextView button, int imageId, int stringId) {
 //        ColorDrawable[] colorDrawables = {new ColorDrawable(getResources().getColor(R.color.colorPrimaryLight)),
@@ -224,7 +237,14 @@ public class FragmentRecordingControls extends Fragment{
 //        transitionDrawable.startTransition(500);
 //    }
 
-
+    /**
+     * Sets the appearance of a button (TextView + upper compound Drawable) as "Clicked",
+     * by setting the specified Drawable and Text and applying the right colours.
+     *
+     * @param button The TextView button
+     * @param imageId The resource of the drawable
+     * @param stringId The resource of the string
+     */
     private void setButtonToClickedState(@NonNull TextView button, int imageId, int stringId) {
         button.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
@@ -233,7 +253,14 @@ public class FragmentRecordingControls extends Fragment{
         setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlPrimary_Active));
     }
 
-
+    /**
+     * Sets the appearance of a button (TextView + upper compound Drawable) as "Normal",
+     * by setting the specified Drawable and Text and applying the right colours.
+     *
+     * @param button The TextView button
+     * @param imageId The resource of the drawable
+     * @param stringId The resource of the string
+     */
     private void setButtonToNormalState(@NonNull TextView button, int imageId, int stringId) {
         button.setBackgroundColor(Color.TRANSPARENT);
         if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
@@ -242,7 +269,14 @@ public class FragmentRecordingControls extends Fragment{
         setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlPrimary));
     }
 
-
+    /**
+     * Sets the appearance of a button (TextView + upper compound Drawable) as "Disabled"
+     * by setting the specified Drawable and Text and applying the right colours.
+     *
+     * @param button The TextView button
+     * @param imageId The resource of the drawable
+     * @param stringId The resource of the string
+     */
     private void setButtonToDisabledState(@NonNull TextView button, int imageId, int stringId) {
         button.setBackgroundColor(Color.TRANSPARENT);
         if (imageId != 0) button.setCompoundDrawablesWithIntrinsicBounds(0, imageId, 0, 0);
@@ -251,35 +285,38 @@ public class FragmentRecordingControls extends Fragment{
         setTextViewDrawableColor(button.getCompoundDrawables()[1], getResources().getColor(R.color.textColorRecControlDisabled));
     }
 
-
+    /**
+     * Updates the user interface of the fragment.
+     * It takes care of the state of each button.
+     */
     public void Update() {
         if (isAdded()) {
-            final Track track = gpsApplication.getCurrentTrack();
-            final boolean isRec = gpsApplication.getRecording();
-            final boolean isAnnot = gpsApplication.getPlacemarkRequest();
-            final boolean isLck = gpsApplication.getBottomBarLocked();
+            final Track track = gpsApp.getCurrentTrack();
+            final boolean isRec = gpsApp.getRecording();
+            final boolean isAnnot = gpsApp.getPlacemarkRequest();
+            final boolean isLck = gpsApp.getBottomBarLocked();
             if (track != null) {
-                if (TVGeoPointsNumber != null)            TVGeoPointsNumber.setText(track.getNumberOfLocations() == 0 ? "" : String.valueOf(track.getNumberOfLocations()));
-                if (TVPlacemarksNumber != null)           TVPlacemarksNumber.setText(String.valueOf(track.getNumberOfPlacemarks() == 0 ? "" : track.getNumberOfPlacemarks()));
-                if (TVRecordButton != null) {
-                    if (isRec) setButtonToClickedState(TVRecordButton, R.drawable.ic_pause_24, R.string.pause);
-                    else setButtonToNormalState(TVRecordButton, R.drawable.ic_record_24, R.string.record);
+                if (tvGeoPointsNumber != null)            tvGeoPointsNumber.setText(track.getNumberOfLocations() == 0 ? "" : String.valueOf(track.getNumberOfLocations()));
+                if (tvPlacemarksNumber != null)           tvPlacemarksNumber.setText(String.valueOf(track.getNumberOfPlacemarks() == 0 ? "" : track.getNumberOfPlacemarks()));
+                if (tvRecordButton != null) {
+                    if (isRec) setButtonToClickedState(tvRecordButton, R.drawable.ic_pause_24, R.string.pause);
+                    else setButtonToNormalState(tvRecordButton, R.drawable.ic_record_24, R.string.record);
                 }
-                if (TVAnnotateButton != null) {
-                    if (isAnnot) setButtonToClickedState(TVAnnotateButton, 0, 0);
-                    else setButtonToNormalState(TVAnnotateButton, 0, 0);
+                if (tvAnnotateButton != null) {
+                    if (isAnnot) setButtonToClickedState(tvAnnotateButton, 0, 0);
+                    else setButtonToNormalState(tvAnnotateButton, 0, 0);
                 }
-                if (TVLockButton != null) {
-                    if (isLck) setButtonToClickedState(TVLockButton, R.drawable.ic_unlock_24, R.string.unlock);
-                    else setButtonToNormalState(TVLockButton, R.drawable.ic_lock_24, R.string.lock);
+                if (tvLockButton != null) {
+                    if (isLck) setButtonToClickedState(tvLockButton, R.drawable.ic_unlock_24, R.string.unlock);
+                    else setButtonToNormalState(tvLockButton, R.drawable.ic_lock_24, R.string.lock);
                 }
-                if (TVStopButton != null) {
-                    TVStopButton.setClickable(isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0));
-                    if (isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) || gpsApplication.getStopFlag()) {
-                        if (gpsApplication.getStopFlag()) setButtonToClickedState(TVStopButton, 0, 0);
-                        else setButtonToNormalState(TVStopButton, 0, 0);
+                if (tvStopButton != null) {
+                    tvStopButton.setClickable(isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0));
+                    if (isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) || gpsApp.getStopFlag()) {
+                        if (gpsApp.getStopFlag()) setButtonToClickedState(tvStopButton, 0, 0);
+                        else setButtonToNormalState(tvStopButton, 0, 0);
                     } else {
-                        setButtonToDisabledState(TVStopButton, 0, 0);
+                        setButtonToDisabledState(tvStopButton, 0, 0);
                     }
                 }
             }
