@@ -829,13 +829,11 @@ public class GPSApplication extends Application implements LocationListener {
         EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
         EventBus.getDefault().register(this);
 
-        DIRECTORY_TEMP = Environment.getExternalStorageDirectory() + "/GPSLogger/AppData";
+        DIRECTORY_TEMP = Environment.getExternalStorageDirectory() + "/GPSLogger/Temp";
         DIRECTORY_EXPORT = Environment.getExternalStorageDirectory() + "/GPSLogger";
 
         satellites = new Satellites();                                                  // Satellites
-
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
-
         myGPSStatusListener = new MyGPSStatus();                                        // GPS Satellites
 
         File sd = new File(DIRECTORY_EXPORT);   // Create the Directories if not exist
@@ -843,10 +841,21 @@ public class GPSApplication extends Application implements LocationListener {
             sd.mkdir();
             Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
+
         sd = new File(DIRECTORY_TEMP);
         if (!sd.exists()) {
-            sd.mkdir();
-            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            File oldTemp = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
+            if (oldTemp.exists()) {                         // The old "AppData" folder exists
+                boolean success = oldTemp.renameTo(sd);     // Try to rename it to "Temp"
+                if (!success) {
+                    sd.mkdir();                             // In case of failure it creates "Temp" leaving also "AppData"
+                    Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+                } else Log.w("myApp", "[#] GPSApplication.java - Folder AppData renamed to: " + sd.getAbsolutePath());
+            }
+            else {
+                sd.mkdir();
+                Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            }
         }
 
         sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
