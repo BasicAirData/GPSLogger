@@ -26,12 +26,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 
+import androidx.core.content.FileProvider;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILE_EMPTY_GPX;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILE_EMPTY_KML;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_KML;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
@@ -124,7 +130,15 @@ public class ExternalViewerChecker {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         for (FileType ft : fileTypeList) {
-            intent.setType(ft.mimeType);
+            //intent.setType(ft.mimeType);
+
+            File file = new File(ft.mimeType.equals(FILETYPE_GPX) ? FILE_EMPTY_GPX : FILE_EMPTY_KML);
+            Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
+            intent.setDataAndType(uri, ft.mimeType);
+
+//            File file = new File(ft.mimeType.equals(FILETYPE_GPX) ? EMPTY_GPX : EMPTY_KML);
+//            intent.setDataAndType(Uri.fromFile(file), ft.mimeType);
+
             //Log.w("myApp", "[#] ExternalViewerChecker.java - " + ft.mimeType);
             //Log.w("myApp", "[#] GPSApplication.java - Open with: " + ri.activityInfo.applicationInfo.loadLabel(getContext().getPackageManager()));
             List<ResolveInfo> kmlLRI = pm.queryIntentActivities(intent, 0);

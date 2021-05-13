@@ -68,6 +68,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -108,6 +109,9 @@ public class GPSApplication extends Application implements LocationListener {
 
     public static String DIRECTORY_TEMP;                            // The directory to store temporary tracks. Currently /GPSLogger/AppData
     public static String DIRECTORY_EXPORT;                          // The directory where the app exports tracks. Currently /GPSLogger
+    public static String DIRECTORY_FILESDIR_TRACKS;                 // The directory FilesDir/Tracks
+    public static String FILE_EMPTY_GPX;
+    public static String FILE_EMPTY_KML;
 
     public static final String FLAG_RECORDING   = "flagRecording";  // The persistent Flag is set when the app is recording, in order to detect Background Crashes
     public static final String FILETYPE_KML     = ".kml";
@@ -831,17 +835,21 @@ public class GPSApplication extends Application implements LocationListener {
 
         DIRECTORY_TEMP = Environment.getExternalStorageDirectory() + "/GPSLogger/Temp";
         DIRECTORY_EXPORT = Environment.getExternalStorageDirectory() + "/GPSLogger";
+        DIRECTORY_FILESDIR_TRACKS = getApplicationContext().getFilesDir() + "/URI";
+        FILE_EMPTY_GPX = DIRECTORY_FILESDIR_TRACKS + "/empty.gpx";
+        FILE_EMPTY_KML = DIRECTORY_FILESDIR_TRACKS + "/empty.kml";
 
         satellites = new Satellites();                                                  // Satellites
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
         myGPSStatusListener = new MyGPSStatus();                                        // GPS Satellites
 
+        // Creates EXPORTING folder
         File sd = new File(DIRECTORY_EXPORT);   // Create the Directories if not exist
         if (!sd.exists()) {
             sd.mkdir();
             Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
         }
-
+        // Creates TEMP folder into EXPORTING folder
         sd = new File(DIRECTORY_TEMP);
         if (!sd.exists()) {
             File oldTemp = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
@@ -857,11 +865,37 @@ public class GPSApplication extends Application implements LocationListener {
                 Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
             }
         }
-
+        // Creates THUMBNAILS folder into private FilesDir
         sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
         if (!sd.exists()) {
             sd.mkdir();
             Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+        }
+        // Creates TRACKS folder into private FilesDir
+        sd = new File(DIRECTORY_FILESDIR_TRACKS);
+        if (!sd.exists()) {
+            sd.mkdir();
+            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+        }
+        // Creates the empty GPX
+        sd = new File(FILE_EMPTY_GPX);
+        if (!sd.exists()) {
+            try {
+                sd.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.w("myApp", "[#] GPSApplication.java - Unable to create " + sd.getAbsolutePath());
+            }
+        }
+        // Creates the empty KML
+        sd = new File(FILE_EMPTY_KML);
+        if (!sd.exists()) {
+            try {
+                sd.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.w("myApp", "[#] GPSApplication.java - Unable to create " + sd.getAbsolutePath());
+            }
         }
 
         EGM96 egm96 = EGM96.getInstance();                                              // Load EGM Grid

@@ -22,4 +22,7 @@
     <external-path
         name = "gps_logger"
         path = "GPSLogger" />
+    <files-path
+        name = "private_uri"
+        path = "URI" />
 </paths>
