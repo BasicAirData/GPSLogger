@@ -76,7 +76,8 @@
     <string name="altitude_gap">Altitude Gap</string>
 
     <!-- Track Status message -->
-    <string name="track_empty">New Track\n\nStart recording Trackpoints\nor add a Placemark\nusing one of the buttons below</string>
+    <string name="track_empty">New Track</string>
+    <string name="track_start_with_button_below">Start recording Trackpoints\nor add an Annotation\nusing one of the buttons below</string>
 
     <!-- Recording buttons (bottom side) -->
     <string name="record">Record</string>

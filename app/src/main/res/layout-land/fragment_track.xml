@@ -346,7 +346,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/id_textView_TrackStatus"
         android:gravity="center_horizontal"
-        android:paddingTop="30dp"
-        android:text="@string/track_empty" />
+        android:paddingTop="30dp" />
 
 </FrameLayout>

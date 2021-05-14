@@ -113,6 +113,7 @@ public class FragmentTrack extends Fragment {
         tlAltitudeGap = view.findViewById(R.id.id_tableLayout_AltitudeGap) ;
         tlOverallDirection = view.findViewById(R.id.id_tableLayout_OverallDirection) ;
 
+        tvTrackStatus.setText(getString(R.string.track_empty) + "\n\n" + getString(R.string.track_start_with_button_below));
         return view;
     }
 
