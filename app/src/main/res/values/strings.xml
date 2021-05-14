@@ -120,7 +120,7 @@
     <string name="card_trackinfo_max_speed">Max spd</string>
     <string name="card_trackinfo_average_speed">Avg spd</string>
     <string name="card_trackinfo_geopoints">Points</string>
-    <string name="card_trackinfo_placemarks">Places</string>
+    <string name="card_trackinfo_placemarks">Annot</string>
 
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">Export</string>
