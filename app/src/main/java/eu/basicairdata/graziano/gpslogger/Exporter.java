@@ -92,7 +92,9 @@ class Exporter extends Thread {
     private String stringToCDATA(String str) {
         if (str == null) return "";
         return str.replace("[","(")
-                .replace("]",")");
+                .replace("]",")")
+                .replace("<","(")
+                .replace(">",")");
     }
 
     /**
