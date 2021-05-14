@@ -58,7 +58,6 @@
     <string name="gps_not_accessible">GPS not accessible</string>
     <string name="gps_disabled">GPS disabled</string>
     <string name="gps_out_of_service">GPS out of service</string>
-    <string name="gps_temporary_unavailable">GPS temporary unavailable</string>
     <string name="gps_searching">Looking for GPS</string>
     <string name="gps_stabilizing">Stabilizing signal</string>
 
@@ -95,7 +94,7 @@
 
     <string name="ok">Ok</string>
 
-    <string name="placemarks">Placemarks</string>
+    <string name="placemarks">Annotations</string>
     <string name="trackpoints">Trackpoints</string>
 
     <!-- Main menu -->
@@ -107,7 +106,7 @@
     <string name="menu_shutdown">Shutdown</string>
 
     <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">Add Placemark</string>
+    <string name="dlg_add_placemark">Add annotation</string>
     <string name="dlg_placemark_description">Enter the description</string>
     <string name="dlg_button_add">Add</string>
     <string name="dlg_button_cancel">Cancel</string>

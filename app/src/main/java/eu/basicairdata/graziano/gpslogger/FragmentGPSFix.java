@@ -356,8 +356,6 @@ public class FragmentGPSFix extends Fragment {
                         cvWarningGPSDisabled.setVisibility(View.GONE);
                         break;
                     case GPS_TEMPORARYUNAVAILABLE:
-                        //TVGPSFixStatus.setText(R.string.gps_temporary_unavailable);
-                        //break;
                     case GPS_SEARCHING:
                         tvGPSFixStatus.setText(getString(R.string.gps_searching) + ssat);
                         cvWarningGPSDisabled.setVisibility(View.GONE);
