@@ -103,6 +103,7 @@
     <string name="toast_track_saved_into_tracklist">Track saved into the Tracklist</string>
     <string name="toast_track_exported">Tracks exported in /GPSLogger folder</string>
     <string name="menu_about">About</string>
+    <string name="menu_online_help">Online help</string>
     <string name="menu_shutdown">Shutdown</string>
 
     <!-- Placemark Creation dialog -->
@@ -218,6 +219,7 @@
     <string name="toast_download_completed">Download completed</string>
     <string name="toast_download_failed">Download failed. Try again later</string>
     <string name="toast_active_track_not_empty">The active track is not empty</string>
+    <string name="toast_no_browser_installed">No Internet browser installed</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>

@@ -34,8 +34,13 @@
         android:title="@string/menu_about"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_shutdown"
+        android:id="@+id/action_online_help"
         android:orderInCategory="102"
+        android:title="@string/menu_online_help"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_shutdown"
+        android:orderInCategory="103"
         android:title="@string/menu_shutdown"
         app:showAsAction="never" />
 </menu>
