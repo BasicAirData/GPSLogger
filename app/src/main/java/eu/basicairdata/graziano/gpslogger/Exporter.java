@@ -150,7 +150,7 @@ class Exporter extends Thread {
         this.exportingTask = exportingTask;
         this.exportingTask.setNumberOfPoints_Processed(0);
         this.exportingTask.setStatus(ExportingTask.STATUS_RUNNING);
-        this.track = GPSApplication.getInstance().GPSDataBase.getTrack(exportingTask.getId());
+        this.track = GPSApplication.getInstance().gpsDataBase.getTrack(exportingTask.getId());
         this.altitudeManualCorrection = GPSApplication.getInstance().getPrefAltitudeCorrection();
         this.egmAltitudeCorrection = GPSApplication.getInstance().getPrefEGM96AltitudeCorrection();
         this.getPrefKMLAltitudeMode = GPSApplication.getInstance().getPrefKMLAltitudeMode();
@@ -430,7 +430,7 @@ class Exporter extends Thread {
 
                 for (int i = 0; i <= track.getNumberOfPlacemarks(); i += groupOfLocations) {
                     //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
-                    placemarkList.addAll(gpsApp.GPSDataBase.getPlacemarksList(track.getId(), i, i + groupOfLocations - 1));
+                    placemarkList.addAll(gpsApp.gpsDataBase.getPlacemarksList(track.getId(), i, i + groupOfLocations - 1));
 
                     if (!placemarkList.isEmpty()) {
                         for (LocationExtended loc : placemarkList) {
@@ -763,7 +763,7 @@ class Exporter extends Thread {
 
             for (int i = 0; i <= track.getNumberOfLocations(); i += groupOfLocations) {
                 //Log.w("myApp", "[#] Exporter.java - " + (i + GroupOfLocations));
-                lList.addAll(GPSApplication.getInstance().GPSDataBase.getLocationsList(track.getId(), i, i + groupOfLocations - 1));
+                lList.addAll(GPSApplication.getInstance().gpsDataBase.getLocationsList(track.getId(), i, i + groupOfLocations - 1));
                 if (!lList.isEmpty()) {
                     for (LocationExtended loc : lList) {
                         try {

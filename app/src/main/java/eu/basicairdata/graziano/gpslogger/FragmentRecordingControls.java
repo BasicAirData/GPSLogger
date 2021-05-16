@@ -139,10 +139,10 @@ public class FragmentRecordingControls extends Fragment {
      */
     public void onToggleRecord() {
         if (isAdded()) {
-            if (!gpsApp.getBottomBarLocked()) {
-                if (!gpsApp.getStopFlag()) {
-                    gpsApp.setRecording(!gpsApp.getRecording());
-                    if (!gpsApp.isFirstFixFound() && (gpsApp.getRecording()))
+            if (!gpsApp.isBottomBarLocked()) {
+                if (!gpsApp.isStopButtonFlag()) {
+                    gpsApp.setRecording(!gpsApp.isRecording());
+                    if (!gpsApp.isFirstFixFound() && (gpsApp.isRecording()))
                         Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_recording_when_gps_found), Toast.LENGTH_LONG).show();
                     Update();
                 }
@@ -159,10 +159,10 @@ public class FragmentRecordingControls extends Fragment {
      */
     public void onRequestAnnotation() {
         if (isAdded()) {
-            if (!gpsApp.getBottomBarLocked()) {
-                if (!gpsApp.getStopFlag()) {
-                    gpsApp.setPlacemarkRequest(!gpsApp.getPlacemarkRequest());
-                    if (!gpsApp.isFirstFixFound() && (gpsApp.getPlacemarkRequest()))
+            if (!gpsApp.isBottomBarLocked()) {
+                if (!gpsApp.isStopButtonFlag()) {
+                    gpsApp.setPlacemarkRequested(!gpsApp.isPlacemarkRequested());
+                    if (!gpsApp.isFirstFixFound() && (gpsApp.isPlacemarkRequested()))
                         Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_annotate_when_gps_found), Toast.LENGTH_LONG).show();
                     Update();
                 }
@@ -178,11 +178,11 @@ public class FragmentRecordingControls extends Fragment {
      */
     public void onRequestStop() {
         if (isAdded()) {
-            if (!gpsApp.getBottomBarLocked()) {
-                if (!gpsApp.getStopFlag()) {
-                    gpsApp.setStopFlag(true, gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0 ? 1000 : 300);
+            if (!gpsApp.isBottomBarLocked()) {
+                if (!gpsApp.isStopButtonFlag()) {
+                    gpsApp.setStopButtonFlag(true, gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0 ? 1000 : 300);
                     gpsApp.setRecording(false);
-                    gpsApp.setPlacemarkRequest(false);
+                    gpsApp.setPlacemarkRequested(false);
                     Update();
                     if (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0) {
                         FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -206,7 +206,7 @@ public class FragmentRecordingControls extends Fragment {
      */
     public void onToggleLock() {
         if (isAdded()) {
-            gpsApp.setBottomBarLocked(!gpsApp.getBottomBarLocked());
+            gpsApp.setBottomBarLocked(!gpsApp.isBottomBarLocked());
             Update();
         }
     }
@@ -292,9 +292,9 @@ public class FragmentRecordingControls extends Fragment {
     public void Update() {
         if (isAdded()) {
             final Track track = gpsApp.getCurrentTrack();
-            final boolean isRec = gpsApp.getRecording();
-            final boolean isAnnot = gpsApp.getPlacemarkRequest();
-            final boolean isLck = gpsApp.getBottomBarLocked();
+            final boolean isRec = gpsApp.isRecording();
+            final boolean isAnnot = gpsApp.isPlacemarkRequested();
+            final boolean isLck = gpsApp.isBottomBarLocked();
             if (track != null) {
                 if (tvGeoPointsNumber != null)            tvGeoPointsNumber.setText(track.getNumberOfLocations() == 0 ? "" : String.valueOf(track.getNumberOfLocations()));
                 if (tvPlacemarksNumber != null)           tvPlacemarksNumber.setText(String.valueOf(track.getNumberOfPlacemarks() == 0 ? "" : track.getNumberOfPlacemarks()));
@@ -312,8 +312,8 @@ public class FragmentRecordingControls extends Fragment {
                 }
                 if (tvStopButton != null) {
                     tvStopButton.setClickable(isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0));
-                    if (isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) || gpsApp.getStopFlag()) {
-                        if (gpsApp.getStopFlag()) setButtonToClickedState(tvStopButton, 0, 0);
+                    if (isRec || isAnnot || (track.getNumberOfLocations() + track.getNumberOfPlacemarks() > 0) || gpsApp.isStopButtonFlag()) {
+                        if (gpsApp.isStopButtonFlag()) setButtonToClickedState(tvStopButton, 0, 0);
                         else setButtonToNormalState(tvStopButton, 0, 0);
                     } else {
                         setButtonToDisabledState(tvStopButton, 0, 0);

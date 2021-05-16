@@ -173,7 +173,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             if (TT != NOT_AVAILABLE) imageViewIcon.setImageResource(trackType[TT]);
             else imageViewIcon.setImageBitmap(null);
 
-            if (GPSApplication.getInstance().getRecording()) {
+            if (GPSApplication.getInstance().isRecording()) {
                 imageViewThumbnail.setImageBitmap(bmpCurrentTrackRecording);
                 imageViewPulse.setVisibility(View.VISIBLE);
                 if ((PointsCount != trk.getNumberOfLocations()+trk.getNumberOfPlacemarks()) && (System.currentTimeMillis() - StartAnimationTime >= 700L)) {
@@ -226,7 +226,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             else imageViewIcon.setImageBitmap(null);
 
             if (GPSApplication.getInstance().getCurrentTrack().getId() == track.getId()) {
-                imageViewThumbnail.setImageBitmap (GPSApplication.getInstance().getRecording() ? bmpCurrentTrackRecording : bmpCurrentTrackPaused);
+                imageViewThumbnail.setImageBitmap (GPSApplication.getInstance().isRecording() ? bmpCurrentTrackRecording : bmpCurrentTrackPaused);
             }
             else {
                 Glide.clear(imageViewThumbnail);

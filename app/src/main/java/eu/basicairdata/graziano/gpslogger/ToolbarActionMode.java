@@ -105,7 +105,7 @@ public class ToolbarActionMode implements ActionMode.Callback {
     public void onDestroyActionMode(ActionMode mode) {
         EventBus.getDefault().unregister(this);
         if ((gpsApplication.getNumberOfSelectedTracks() > 0) && gpsApplication.getGPSActivity_activeTab() == 2) {
-            GPSApplication.getInstance().DeselectAllTracks();
+            GPSApplication.getInstance().deselectAllTracks();
             GPSApplication.getInstance().setLastClickId(NOT_AVAILABLE);
         }
     }

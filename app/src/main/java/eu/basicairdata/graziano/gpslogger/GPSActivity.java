@@ -166,10 +166,10 @@ public class GPSActivity extends AppCompatActivity {
 
         activateActionModeIfNeeded();
 
-        if (gpsApp.FlagExists(GPSApplication.FLAG_RECORDING) && !gpsApp.getRecording()) {
+        if (gpsApp.preferenceFlagExists(GPSApplication.FLAG_RECORDING) && !gpsApp.isRecording()) {
             // The app is crashed in background
             Log.w("myApp", "[#] GPSActivity.java - THE APP HAS BEEN KILLED IN BACKGROUND DURING A RECORDING !!!");
-            gpsApp.FlagRemove(GPSApplication.FLAG_RECORDING);
+            gpsApp.clearPreferenceFlag_NoBackup(GPSApplication.FLAG_RECORDING);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -237,7 +237,7 @@ public class GPSActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            gpsApp.setHandlerTimer(60000);
+            gpsApp.setHandlerTime(60000);
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
@@ -316,7 +316,7 @@ public class GPSActivity extends AppCompatActivity {
                                     egm96.LoadGridFromFile(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
                                 }
                             }
-                            if (gpsApp.getJobsPending() > 0) gpsApp.ExecuteJob();
+                            if (gpsApp.getJobsPending() > 0) gpsApp.executeJob();
                         } else {
                             Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
                             if (gpsApp.getJobsPending() > 0) {
@@ -481,8 +481,8 @@ public class GPSActivity extends AppCompatActivity {
     private void ShutdownApp() {
         if ((gpsApp.getCurrentTrack().getNumberOfLocations() > 0)
                 || (gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0)
-                || (gpsApp.getRecording())
-                || (gpsApp.getPlacemarkRequest())) {
+                || (gpsApp.isRecording())
+                || (gpsApp.isPlacemarkRequested())) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getResources().getString(R.string.message_exit_finalizing));
@@ -490,9 +490,9 @@ public class GPSActivity extends AppCompatActivity {
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     gpsApp.setRecording(false);
-                    gpsApp.setPlacemarkRequest(false);
+                    gpsApp.setPlacemarkRequested(false);
                     EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
-                    gpsApp.StopAndUnbindGPSService();
+                    gpsApp.stopAndUnbindGPSService();
                     gpsApp.setLocationPermissionChecked(false);
 
                     dialog.dismiss();
@@ -508,8 +508,8 @@ public class GPSActivity extends AppCompatActivity {
             builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     gpsApp.setRecording(false);
-                    gpsApp.setPlacemarkRequest(false);
-                    gpsApp.StopAndUnbindGPSService();
+                    gpsApp.setPlacemarkRequested(false);
+                    gpsApp.stopAndUnbindGPSService();
                     gpsApp.setLocationPermissionChecked(false);
 
                     dialog.dismiss();
@@ -521,8 +521,8 @@ public class GPSActivity extends AppCompatActivity {
             dialog.show();
         } else {
             gpsApp.setRecording(false);
-            gpsApp.setPlacemarkRequest(false);
-            gpsApp.StopAndUnbindGPSService();
+            gpsApp.setPlacemarkRequested(false);
+            gpsApp.stopAndUnbindGPSService();
             gpsApp.setLocationPermissionChecked(false);
 
             finish();

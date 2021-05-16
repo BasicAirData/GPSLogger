@@ -149,7 +149,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                             String trackDescription = etDescription.getText().toString();
                             trackToEdit.setDescription (trackDescription.trim());
                             if (selectedTrackType != NOT_AVAILABLE) trackToEdit.setTrackType(selectedTrackType);  // the user selected a track type!
-                            GPSApplication.getInstance().GPSDataBase.updateTrack(trackToEdit);
+                            GPSApplication.getInstance().gpsDataBase.updateTrack(trackToEdit);
                             if (finalizeTrackWithOk) {
                                 // a request to finalize a track
                                 EventBus.getDefault().post(EventBusMSG.NEW_TRACK);

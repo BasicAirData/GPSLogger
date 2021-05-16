@@ -156,7 +156,7 @@ public class GPSService extends Service {
 
 
     private boolean isIconRecording () {
-        return ((GPSApplication.getInstance().getGPSStatus() == GPSApplication.GPS_OK) && GPSApplication.getInstance().getRecording());
+        return ((GPSApplication.getInstance().getGPSStatus() == GPSApplication.GPS_OK) && GPSApplication.getInstance().isRecording());
     }
 
 
@@ -179,7 +179,7 @@ public class GPSService extends Service {
                 notificationText = getString(R.string.gps_stabilizing);
                 break;
             case GPSApplication.GPS_OK:
-                if (GPSApplication.getInstance().getRecording() && (GPSApplication.getInstance().getCurrentTrack() != null)) {
+                if (GPSApplication.getInstance().isRecording() && (GPSApplication.getInstance().getCurrentTrack() != null)) {
                     PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
                     PhysicalData phdDuration;
                     PhysicalData phdDistance;

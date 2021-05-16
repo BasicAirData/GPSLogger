@@ -220,11 +220,11 @@ public class FragmentTracklist extends Fragment {
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_SHARE_TRACKS) {
-            GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_SHARE);
+            GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_SHARE);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 CheckStoragePermission();   // Ask for storage permission
-            } else GPSApplication.getInstance().ExecuteJob();
-            GPSApplication.getInstance().DeselectAllTracks();
+            } else GPSApplication.getInstance().executeJob();
+            GPSApplication.getInstance().deselectAllTracks();
             return;
         }
         if (msg == EventBusMSG.ACTION_EDIT_TRACK) {
@@ -292,11 +292,11 @@ public class FragmentTracklist extends Fragment {
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_EXPORT_TRACKS) {
-            GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_EXPORT);
+            GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_EXPORT);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 CheckStoragePermission();   // Ask for storage permission
-            } else GPSApplication.getInstance().ExecuteJob();
-            GPSApplication.getInstance().DeselectAllTracks();
+            } else GPSApplication.getInstance().executeJob();
+            GPSApplication.getInstance().deselectAllTracks();
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_DELETE_TRACKS) {
@@ -319,16 +319,16 @@ public class FragmentTracklist extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(true); // Delete also exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().ExecuteJob();
+                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().executeJob();
                     }
                 });
                 builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().ExecuteJob();
+                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().executeJob();
                     }
                 });
                 builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -346,8 +346,8 @@ public class FragmentTracklist extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().ExecuteJob();
+                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().executeJob();
                     }
                 });
                 builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -376,7 +376,7 @@ public class FragmentTracklist extends Fragment {
 
             for (ExportingTask ET : selectedTracks) {
 
-                Track track = GPSApplication.getInstance().GPSDataBase.getTrack(ET.getId());
+                Track track = GPSApplication.getInstance().gpsDataBase.getTrack(ET.getId());
                 if (track == null) return;
 
                 if (i > 0) {
@@ -500,11 +500,11 @@ public class FragmentTracklist extends Fragment {
      * Open a Track with an external viewer using the GPSApplication Job executor.
      */
     public void OpenTrack() {
-        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_VIEW);
+        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_VIEW);
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             CheckStoragePermission();   // Ask for storage permission
-        } else GPSApplication.getInstance().ExecuteJob();
-        GPSApplication.getInstance().DeselectAllTracks();
+        } else GPSApplication.getInstance().executeJob();
+        GPSApplication.getInstance().deselectAllTracks();
     }
 
     /**
@@ -520,15 +520,15 @@ public class FragmentTracklist extends Fragment {
                 if (!TI.isEmpty()) {
                     data.addAll(TI);
                     if (data.get(0).getId() == GPSApplication.getInstance().getCurrentTrack().getId()) {
-                        GPSApplication.getInstance().setisCurrentTrackVisible(true);
+                        GPSApplication.getInstance().setCurrentTrackVisible(true);
                         //Log.w("myApp", "[#] FragmentTracklist.java - current track, VISIBLE into the tracklist ("
                         //    + GPSApplication.getInstance().getCurrentTrack().getId() + ")");
                     } else {
-                        GPSApplication.getInstance().setisCurrentTrackVisible(false);
+                        GPSApplication.getInstance().setCurrentTrackVisible(false);
                         //Log.w("myApp", "[#] FragmentTracklist.java - current track empty, NOT VISIBLE into the tracklist");
                     }
                 } else {
-                    GPSApplication.getInstance().setisCurrentTrackVisible(false);
+                    GPSApplication.getInstance().setCurrentTrackVisible(false);
                 }
                 try {
                     getActivity().runOnUiThread(new Runnable() {
