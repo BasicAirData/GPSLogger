@@ -2029,18 +2029,18 @@ public class GPSApplication extends Application implements LocationListener {
 
                         for (int i = 0; i < latlngList.size(); i++) {
                             if (i == 0)
-                                path.moveTo((float) (lonOffset + margin + sizeMinusMargins * ((latlngList.get(i).Longitude - minLongitude) * distanceProportion / drawScale)),
-                                        (float) (-latOffset + size - (margin + sizeMinusMargins * ((latlngList.get(i).Latitude - minLatitude) / drawScale))));
+                                path.moveTo((float) (lonOffset + margin + sizeMinusMargins * ((latlngList.get(i).longitude - minLongitude) * distanceProportion / drawScale)),
+                                        (float) (-latOffset + size - (margin + sizeMinusMargins * ((latlngList.get(i).latitude - minLatitude) / drawScale))));
                             else
-                                path.lineTo((float) (lonOffset + margin + sizeMinusMargins * ((latlngList.get(i).Longitude - minLongitude) * distanceProportion / drawScale)),
-                                        (float) (-latOffset + size - (margin + sizeMinusMargins * ((latlngList.get(i).Latitude - minLatitude) / drawScale))));
+                                path.lineTo((float) (lonOffset + margin + sizeMinusMargins * ((latlngList.get(i).longitude - minLongitude) * distanceProportion / drawScale)),
+                                        (float) (-latOffset + size - (margin + sizeMinusMargins * ((latlngList.get(i).latitude - minLatitude) / drawScale))));
                         }
                         thumbCanvas.drawPath(path, bgPaint);
-                        thumbCanvas.drawPoint((float) (lonOffset + margin + sizeMinusMargins * ((latlngList.get(latlngList.size()-1).Longitude - minLongitude) * distanceProportion / drawScale)),
-                                (float) (-latOffset + size - (margin + sizeMinusMargins * ((latlngList.get(latlngList.size()-1).Latitude - minLatitude) / drawScale))), endDotBGPaint);
+                        thumbCanvas.drawPoint((float) (lonOffset + margin + sizeMinusMargins * ((latlngList.get(latlngList.size()-1).longitude - minLongitude) * distanceProportion / drawScale)),
+                                (float) (-latOffset + size - (margin + sizeMinusMargins * ((latlngList.get(latlngList.size()-1).latitude - minLatitude) / drawScale))), endDotBGPaint);
                         thumbCanvas.drawPath(path, drawPaint);
-                        thumbCanvas.drawPoint((float) (lonOffset + margin + sizeMinusMargins * ((latlngList.get(latlngList.size()-1).Longitude - minLongitude) * distanceProportion / drawScale)),
-                                (float) (-latOffset + size - (margin + sizeMinusMargins * ((latlngList.get(latlngList.size()-1).Latitude - minLatitude) / drawScale))), endDotdrawPaint);
+                        thumbCanvas.drawPoint((float) (lonOffset + margin + sizeMinusMargins * ((latlngList.get(latlngList.size()-1).longitude - minLongitude) * distanceProportion / drawScale)),
+                                (float) (-latOffset + size - (margin + sizeMinusMargins * ((latlngList.get(latlngList.size()-1).latitude - minLatitude) / drawScale))), endDotdrawPaint);
 
                         try {
                             FileOutputStream out = new FileOutputStream(file);

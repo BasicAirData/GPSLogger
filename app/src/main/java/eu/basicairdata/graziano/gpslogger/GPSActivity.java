@@ -337,6 +337,63 @@ public class GPSActivity extends AppCompatActivity {
     }
 
     /**
+     * The EventBus receiver for Normal Messages.
+     */
+    @Subscribe
+    public void onEvent(EventBusMSGNormal msg) {
+        switch (msg.eventBusMSG) {
+            case EventBusMSG.TRACKLIST_SELECT:
+            case EventBusMSG.TRACKLIST_DESELECT:
+                activateActionModeIfNeeded();
+        }
+    }
+
+    /**
+     * The EventBus receiver for Short Messages.
+     */
+    @Subscribe
+    public void onEvent(Short msg) {
+        switch (msg) {
+            case EventBusMSG.REQUEST_ADD_PLACEMARK:
+                // Shows the Placemark Dialog
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentPlacemarkDialog placemarkDialog = new FragmentPlacemarkDialog();
+                placemarkDialog.show(fm, "");
+                break;
+            case EventBusMSG.UPDATE_TRACKLIST:
+            case EventBusMSG.NOTIFY_TRACKS_DELETED:
+                activateActionModeIfNeeded();
+                break;
+            case EventBusMSG.APPLY_SETTINGS:
+                loadPreferences();
+                break;
+            case EventBusMSG.TOAST_TRACK_EXPORTED:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.toast_track_exported), Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
+                    }
+                });
+        }
+    }
+
+    /**
      * @return true if a browser is installed on the device.
      */
     private Boolean isBrowserInstalled() {
@@ -404,63 +461,6 @@ public class GPSActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return fragmentsTitleList.get(position);
-        }
-    }
-
-    /**
-     * The EventBus receiver for Normal Messages.
-     */
-    @Subscribe
-    public void onEvent(EventBusMSGNormal msg) {
-        switch (msg.eventBusMSG) {
-            case EventBusMSG.TRACKLIST_SELECT:
-            case EventBusMSG.TRACKLIST_DESELECT:
-                activateActionModeIfNeeded();
-        }
-    }
-
-    /**
-     * The EventBus receiver for Short Messages.
-     */
-    @Subscribe
-    public void onEvent(Short msg) {
-        switch (msg) {
-            case EventBusMSG.REQUEST_ADD_PLACEMARK:
-                // Shows the Placemark Dialog
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentPlacemarkDialog placemarkDialog = new FragmentPlacemarkDialog();
-                placemarkDialog.show(fm, "");
-                break;
-            case EventBusMSG.UPDATE_TRACKLIST:
-            case EventBusMSG.NOTIFY_TRACKS_DELETED:
-                activateActionModeIfNeeded();
-                break;
-            case EventBusMSG.APPLY_SETTINGS:
-                loadPreferences();
-                break;
-            case EventBusMSG.TOAST_TRACK_EXPORTED:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, getString(R.string.toast_track_exported), Toast.LENGTH_LONG).show();
-                    }
-                });
-                break;
-            case EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
-                    }
-                });
-                break;
-            case EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
-                    }
-                });
         }
     }
 

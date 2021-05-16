@@ -150,15 +150,15 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
             if (trk.getNumberOfLocations() >= 1) {
                 phd = phdformatter.format(trk.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
-                textViewTrackLength.setText(phd.Value + " " + phd.UM);
+                textViewTrackLength.setText(phd.value + " " + phd.um);
                 phd = phdformatter.format(trk.getPrefTime(),PhysicalDataFormatter.FORMAT_DURATION);
-                textViewTrackDuration.setText(phd.Value);
+                textViewTrackDuration.setText(phd.value);
                 phd = phdformatter.format(trk.getEstimatedAltitudeGap(GPSApplication.getInstance().getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
-                textViewTrackAltitudeGap.setText(phd.Value + " " + phd.UM);
+                textViewTrackAltitudeGap.setText(phd.value + " " + phd.um);
                 phd = phdformatter.format(trk.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
-                textViewTrackMaxSpeed.setText(phd.Value + " " + phd.UM);
+                textViewTrackMaxSpeed.setText(phd.value + " " + phd.um);
                 phd = phdformatter.format(trk.getPrefSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
-                textViewTrackAverageSpeed.setText(phd.Value + " " + phd.UM);
+                textViewTrackAverageSpeed.setText(phd.value + " " + phd.um);
             } else {
                 textViewTrackLength.setText("");
                 textViewTrackDuration.setText("");
@@ -202,15 +202,15 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
             if (trk.getNumberOfLocations() >= 1) {
                 phd = phdformatter.format(track.getEstimatedDistance(),PhysicalDataFormatter.FORMAT_DISTANCE);
-                textViewTrackLength.setText(phd.Value + " " + phd.UM);
+                textViewTrackLength.setText(phd.value + " " + phd.um);
                 phd = phdformatter.format(track.getPrefTime(),PhysicalDataFormatter.FORMAT_DURATION);
-                textViewTrackDuration.setText(phd.Value);
+                textViewTrackDuration.setText(phd.value);
                 phd = phdformatter.format(track.getEstimatedAltitudeGap(GPSApplication.getInstance().getPrefEGM96AltitudeCorrection()),PhysicalDataFormatter.FORMAT_ALTITUDE);
-                textViewTrackAltitudeGap.setText(phd.Value + " " + phd.UM);
+                textViewTrackAltitudeGap.setText(phd.value + " " + phd.um);
                 phd = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
-                textViewTrackMaxSpeed.setText(phd.Value + " " + phd.UM);
+                textViewTrackMaxSpeed.setText(phd.value + " " + phd.um);
                 phd = phdformatter.format(track.getPrefSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
-                textViewTrackAverageSpeed.setText(phd.Value + " " + phd.UM);
+                textViewTrackAverageSpeed.setText(phd.value + " " + phd.um);
             } else {
                 textViewTrackLength.setText("");
                 textViewTrackDuration.setText("");

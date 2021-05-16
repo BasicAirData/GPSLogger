@@ -269,19 +269,19 @@ public class FragmentGPSFix extends Fragment {
                 phdAccuracy = phdformatter.format(location.getAccuracy(), PhysicalDataFormatter.FORMAT_ACCURACY);
                 phdTime = phdformatter.format(location.getTime(), PhysicalDataFormatter.FORMAT_TIME);
 
-                tvLatitude.setText(phdLatitude.Value);
-                tvLongitude.setText(phdLongitude.Value);
-                tvLatitudeUM.setText(phdLatitude.UM);
-                tvLongitudeUM.setText(phdLongitude.UM);
-                tvAltitude.setText(phdAltitude.Value);
-                tvAltitudeUM.setText(phdAltitude.UM);
-                tvSpeed.setText(phdSpeed.Value);
-                tvSpeedUM.setText(phdSpeed.UM);
-                tvBearing.setText(phdBearing.Value);
-                tvAccuracy.setText(phdAccuracy.Value);
-                tvAccuracyUM.setText(phdAccuracy.UM);
-                tvTime.setText(phdTime.Value);
-                tvTimeLabel.setText(phdTime.UM.isEmpty() ? getString(R.string.time) : String.format(Locale.getDefault(), "%s (%s)", getString(R.string.time), phdTime.UM));
+                tvLatitude.setText(phdLatitude.value);
+                tvLongitude.setText(phdLongitude.value);
+                tvLatitudeUM.setText(phdLatitude.um);
+                tvLongitudeUM.setText(phdLongitude.um);
+                tvAltitude.setText(phdAltitude.value);
+                tvAltitudeUM.setText(phdAltitude.um);
+                tvSpeed.setText(phdSpeed.value);
+                tvSpeedUM.setText(phdSpeed.um);
+                tvBearing.setText(phdBearing.value);
+                tvAccuracy.setText(phdAccuracy.value);
+                tvAccuracyUM.setText(phdAccuracy.um);
+                tvTime.setText(phdTime.value);
+                tvTimeLabel.setText(phdTime.um.isEmpty() ? getString(R.string.time) : String.format(Locale.getDefault(), "%s (%s)", getString(R.string.time), phdTime.um));
                 tvSatellites.setText(location.getNumberOfSatellitesUsedInFix() != NOT_AVAILABLE ? location.getNumberOfSatellitesUsedInFix() + "/" + location.getNumberOfSatellites() : "");
 
                 // Colorize the Altitude textview depending on the altitude EGM Correction
@@ -293,11 +293,11 @@ public class FragmentGPSFix extends Fragment {
 
                 tvDirectionUM.setVisibility(prefDirections == 0 ? View.GONE : View.VISIBLE);
 
-                tlCoordinates.setVisibility(phdLatitude.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlAltitude.setVisibility(phdAltitude.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlSpeed.setVisibility(phdSpeed.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlBearing.setVisibility(phdBearing.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlAccuracy.setVisibility(phdAccuracy.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlCoordinates.setVisibility(phdLatitude.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlAltitude.setVisibility(phdAltitude.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlSpeed.setVisibility(phdSpeed.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlBearing.setVisibility(phdBearing.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlAccuracy.setVisibility(phdAccuracy.value.equals("") ? View.INVISIBLE : View.VISIBLE);
                 tlTime.setVisibility(View.VISIBLE);
                 tlSatellites.setVisibility(location.getNumberOfSatellitesUsedInFix() == NOT_AVAILABLE ? View.INVISIBLE : View.VISIBLE);
 

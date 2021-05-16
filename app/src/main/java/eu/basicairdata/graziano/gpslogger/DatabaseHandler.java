@@ -764,8 +764,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     LatLng latlng = new LatLng();
-                    latlng.Latitude = cursor.getDouble(1);
-                    latlng.Longitude = cursor.getDouble(2);
+                    latlng.latitude = cursor.getDouble(1);
+                    latlng.longitude = cursor.getDouble(2);
 
                     latlngList.add(latlng); // Add Location to list
                 } while (cursor.moveToNext());

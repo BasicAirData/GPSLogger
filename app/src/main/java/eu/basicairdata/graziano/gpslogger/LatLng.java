@@ -1,6 +1,9 @@
 /*
  * LatLng - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 3/7/2016
+ * Created by G.Capelli on 3/7/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +21,11 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+/**
+ * The data structure that describes a 2D point on the Earth surface.
+ * It is used to create the thumbnails of the Tracks.
+ */
 class LatLng {
-    double Latitude;
-    double Longitude;
+    double latitude;
+    double longitude;
 }

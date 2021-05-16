@@ -173,17 +173,17 @@ public class FragmentTrack extends Fragment {
 
                 tvTrackID.setText(fTrackID);
                 tvTrackName.setText(fTrackName);
-                tvDuration.setText(phdDuration.Value);
-                tvMaxSpeed.setText(phdSpeedMax.Value);
-                tvAverageSpeed.setText(phdSpeedAvg.Value);
-                tvDistance.setText(phdDistance.Value);
-                tvAltitudeGap.setText(phdAltitudeGap.Value);
-                tvOverallDirection.setText(phdOverallDirection.Value);
+                tvDuration.setText(phdDuration.value);
+                tvMaxSpeed.setText(phdSpeedMax.value);
+                tvAverageSpeed.setText(phdSpeedAvg.value);
+                tvDistance.setText(phdDistance.value);
+                tvAltitudeGap.setText(phdAltitudeGap.value);
+                tvOverallDirection.setText(phdOverallDirection.value);
 
-                tvMaxSpeedUM.setText(phdSpeedMax.UM);
-                tvAverageSpeedUM.setText(phdSpeedAvg.UM);
-                tvDistanceUM.setText(phdDistance.UM);
-                tvAltitudeGapUM.setText(phdAltitudeGap.UM);
+                tvMaxSpeedUM.setText(phdSpeedMax.um);
+                tvAverageSpeedUM.setText(phdSpeedAvg.um);
+                tvDistanceUM.setText(phdDistance.um);
+                tvAltitudeGapUM.setText(phdAltitudeGap.um);
 
                 // Colorize the Altitude Gap textview depending on the altitude filter
                 isValidAltitude = track.isValidAltitude();
@@ -195,12 +195,12 @@ public class FragmentTrack extends Fragment {
                 tvDirectionUM.setVisibility(prefDirections == 0 ? View.GONE : View.VISIBLE);
 
                 tlTrack.setVisibility(fTrackName.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlDuration.setVisibility(phdDuration.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlSpeedMax.setVisibility(phdSpeedMax.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlSpeedAvg.setVisibility(phdSpeedAvg.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlDistance.setVisibility(phdDistance.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlOverallDirection.setVisibility(phdOverallDirection.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
-                tlAltitudeGap.setVisibility(phdAltitudeGap.Value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlDuration.setVisibility(phdDuration.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlSpeedMax.setVisibility(phdSpeedMax.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlSpeedAvg.setVisibility(phdSpeedAvg.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlDistance.setVisibility(phdDistance.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlOverallDirection.setVisibility(phdOverallDirection.value.equals("") ? View.INVISIBLE : View.VISIBLE);
+                tlAltitudeGap.setVisibility(phdAltitudeGap.value.equals("") ? View.INVISIBLE : View.VISIBLE);
 
             } else {
                 tvTrackStatus.setVisibility(View.VISIBLE);

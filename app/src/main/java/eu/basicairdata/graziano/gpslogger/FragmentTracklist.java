@@ -413,12 +413,12 @@ public class FragmentTracklist extends Fragment {
                             + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
                             + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)
                             + "\n"
-                            + "\n" + getString(R.string.distance) + " = " + phdDistance.Value + " " + phdDistance.UM
-                            + "\n" + getString(R.string.duration) + " = " + phdDuration.Value + " | " + phdDurationMoving.Value
-                            + "\n" + getString(R.string.altitude_gap) + " = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM
-                            + "\n" + getString(R.string.max_speed) + " = " + phdSpeedMax.Value + " " + phdSpeedMax.UM
-                            + "\n" + getString(R.string.average_speed) + " = " + phdSpeedAvg.Value + " | " + phdSpeedAvgMoving.Value + " " + phdSpeedAvg.UM
-                            + "\n" + getString(R.string.overall_direction) + " = " + phdOverallDirection.Value + " " + phdOverallDirection.UM
+                            + "\n" + getString(R.string.distance) + " = " + phdDistance.value + " " + phdDistance.um
+                            + "\n" + getString(R.string.duration) + " = " + phdDuration.value + " | " + phdDurationMoving.value
+                            + "\n" + getString(R.string.altitude_gap) + " = " + phdAltitudeGap.value + " " + phdAltitudeGap.um
+                            + "\n" + getString(R.string.max_speed) + " = " + phdSpeedMax.value + " " + phdSpeedMax.um
+                            + "\n" + getString(R.string.average_speed) + " = " + phdSpeedAvg.value + " | " + phdSpeedAvgMoving.value + " " + phdSpeedAvg.um
+                            + "\n" + getString(R.string.overall_direction) + " = " + phdOverallDirection.value + " " + phdOverallDirection.um
                             + "\n"
                             + "\n" + getString(R.string.pref_track_stats) + ": " + getString(R.string.pref_track_stats_totaltime) + " | " + getString(R.string.pref_track_stats_movingtime));
                 }
