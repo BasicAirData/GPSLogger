@@ -1,3 +1,24 @@
+/*
+ * ToolbarActionMode - Java Class for Android
+ * Created by G.Capelli on 6/01/2019
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package eu.basicairdata.graziano.gpslogger;
 
 import android.os.Handler;
@@ -11,39 +32,30 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
-
+/**
+ * The Actionmode Toolbar for the Tracklist.
+ * It comes out when one or more Tracks are selected on Tracklist.
+ * This Toolbar contains the action that could be done with the selected Tracks.
+ * For example Delete, Share, View, Export...
+ */
 public class ToolbarActionMode implements ActionMode.Callback {
 
-    private Menu actionmenu;
+    private Menu actionMenu;
     private MenuItem menuItemDelete;
     private MenuItem menuItemExport;
     private MenuItem menuItemShare;
     private MenuItem menuItemView;
     private MenuItem menuItemEdit;
-    private final GPSApplication gpsApplication = GPSApplication.getInstance();
+    private boolean isActionmodeButtonPressed = false;            // A flag that avoids to start more than one job at a time
 
-
-    // A flag that avoids to start more than one job at a time on Actionmode Toolbar
-    private boolean ActionmodeButtonPressed = false;
-
-    private final Handler handler_ActionmodeButtonPressed = new Handler();
-    private final Runnable r_ActionmodeButtonPressed = new Runnable() {
+    private final GPSApplication gpsApp = GPSApplication.getInstance();
+    private final Handler actionmodeButtonPressedHandler = new Handler();
+    private final Runnable actionmodeButtonPressedRunnable = new Runnable() {
         @Override
         public void run() {
             setActionmodeButtonPressed(false);
         }
     };
-
-    public boolean isActionmodeButtonPressed() {
-        return ActionmodeButtonPressed;
-    }
-
-    public void setActionmodeButtonPressed(boolean actionmodeButtonPressed) {
-        ActionmodeButtonPressed = actionmodeButtonPressed;
-        if (actionmodeButtonPressed) {
-            handler_ActionmodeButtonPressed.postDelayed(r_ActionmodeButtonPressed, 500);    // The Flag remains active for 500 ms
-        } else handler_ActionmodeButtonPressed.removeCallbacks(r_ActionmodeButtonPressed);
-    }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -54,16 +66,16 @@ public class ToolbarActionMode implements ActionMode.Callback {
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        actionmenu = menu;
-        menuItemEdit = actionmenu.findItem(R.id.cardmenu_edit);
+        actionMenu = menu;
+        menuItemEdit = actionMenu.findItem(R.id.cardmenu_edit);
         menuItemEdit.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItemShare = actionmenu.findItem(R.id.cardmenu_share);
+        menuItemShare = actionMenu.findItem(R.id.cardmenu_share);
         menuItemShare.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItemView = actionmenu.findItem(R.id.cardmenu_view);
+        menuItemView = actionMenu.findItem(R.id.cardmenu_view);
         menuItemView.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItemExport = actionmenu.findItem(R.id.cardmenu_export);
+        menuItemExport = actionMenu.findItem(R.id.cardmenu_export);
         menuItemExport.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItemDelete = actionmenu.findItem(R.id.cardmenu_delete);
+        menuItemDelete = actionMenu.findItem(R.id.cardmenu_delete);
         menuItemDelete.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         EvaluateVisibility();
         return true;
@@ -104,12 +116,15 @@ public class ToolbarActionMode implements ActionMode.Callback {
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         EventBus.getDefault().unregister(this);
-        if ((gpsApplication.getNumberOfSelectedTracks() > 0) && gpsApplication.getGPSActivity_activeTab() == 2) {
+        if ((gpsApp.getNumberOfSelectedTracks() > 0) && gpsApp.getGPSActivity_activeTab() == 2) {
             GPSApplication.getInstance().deselectAllTracks();
             GPSApplication.getInstance().setLastClickId(NOT_AVAILABLE);
         }
     }
 
+    /**
+     * The EventBus receiver for Normal Messages.
+     */
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(EventBusMSGNormal msg) {
         switch (msg.eventBusMSG) {
@@ -119,6 +134,9 @@ public class ToolbarActionMode implements ActionMode.Callback {
         }
     }
 
+    /**
+     * The EventBus receiver for Short Messages.
+     */
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
         switch (msg) {
@@ -128,23 +146,43 @@ public class ToolbarActionMode implements ActionMode.Callback {
         }
     }
 
+    public boolean isActionmodeButtonPressed() {
+        return isActionmodeButtonPressed;
+    }
+
+    /**
+     * Sets the isActionmodeButtonPressed.
+     * If sets to true, it starts the handler that resets the value to false.
+     */
+    public void setActionmodeButtonPressed(boolean actionmodeButtonPressed) {
+        isActionmodeButtonPressed = actionmodeButtonPressed;
+        if (actionmodeButtonPressed) {
+            actionmodeButtonPressedHandler.postDelayed(actionmodeButtonPressedRunnable, 500);    // The Flag remains active for 500 ms
+        } else actionmodeButtonPressedHandler.removeCallbacks(actionmodeButtonPressedRunnable);
+    }
+
+    /**
+     * Evaluate the visibility of the buttons on the Toolbar basing on the selection,
+     * the installed apps, and the Preferences.
+     * It sets also the tooltip text and the icon of the View button.
+     */
     public void EvaluateVisibility() {
         if (GPSApplication.getInstance().getNumberOfSelectedTracks() > 0) {
-            menuItemView.setVisible((gpsApplication.getNumberOfSelectedTracks() <= 1) && (gpsApplication.isContextMenuViewVisible()));
-            menuItemEdit.setVisible(gpsApplication.getNumberOfSelectedTracks() <= 1);
-            menuItemShare.setVisible(gpsApplication.isContextMenuShareVisible() && (gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT()));
-            menuItemExport.setVisible(gpsApplication.getPrefExportGPX() || gpsApplication.getPrefExportKML() || gpsApplication.getPrefExportTXT());
-            menuItemDelete.setVisible(!gpsApplication.getSelectedTracks().contains(gpsApplication.getCurrentTrack()));
+            menuItemView.setVisible((gpsApp.getNumberOfSelectedTracks() <= 1) && (gpsApp.isContextMenuViewVisible()));
+            menuItemEdit.setVisible(gpsApp.getNumberOfSelectedTracks() <= 1);
+            menuItemShare.setVisible(gpsApp.isContextMenuShareVisible() && (gpsApp.getPrefExportGPX() || gpsApp.getPrefExportKML() || gpsApp.getPrefExportTXT()));
+            menuItemExport.setVisible(gpsApp.getPrefExportGPX() || gpsApp.getPrefExportKML() || gpsApp.getPrefExportTXT());
+            menuItemDelete.setVisible(!gpsApp.getSelectedTracks().contains(gpsApp.getCurrentTrack()));
 
             if (menuItemView.isVisible()) {
-                if (!gpsApplication.getViewInApp().equals("")) {
-                    menuItemView.setTitle(gpsApplication.getString(R.string.card_menu_view, gpsApplication.getViewInApp()));
-                    if (gpsApplication.getViewInAppIcon() != null)
-                        menuItemView.setIcon(gpsApplication.getViewInAppIcon());
+                if (!gpsApp.getViewInApp().equals("")) {
+                    menuItemView.setTitle(gpsApp.getString(R.string.card_menu_view, gpsApp.getViewInApp()));
+                    if (gpsApp.getViewInAppIcon() != null)
+                        menuItemView.setIcon(gpsApp.getViewInAppIcon());
                     else
                         menuItemView.setIcon(R.drawable.ic_visibility_24dp);
                 } else {
-                    menuItemView.setTitle(gpsApplication.getString(R.string.card_menu_view_selector)).setIcon(R.drawable.ic_visibility_24dp);
+                    menuItemView.setTitle(gpsApp.getString(R.string.card_menu_view_selector)).setIcon(R.drawable.ic_visibility_24dp);
                 }
             }
         }

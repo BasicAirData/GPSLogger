@@ -137,8 +137,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         // Activate the right image
         if (selectedTrackType != NOT_AVAILABLE)
             tracktypeImageView[selectedTrackType].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
-        else if (trackToEdit.getTrackType() != Track.TRACK_TYPE_ND)
-            tracktypeImageView[trackToEdit.getTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
+        else if (trackToEdit.getEstimatedTrackType() != Track.TRACK_TYPE_ND)
+            tracktypeImageView[trackToEdit.getEstimatedTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
 
         createPlacemarkAlert.setView(view)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -148,7 +148,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                         if (isAdded()) {
                             String trackDescription = etDescription.getText().toString();
                             trackToEdit.setDescription (trackDescription.trim());
-                            if (selectedTrackType != NOT_AVAILABLE) trackToEdit.setTrackType(selectedTrackType);  // the user selected a track type!
+                            if (selectedTrackType != NOT_AVAILABLE) trackToEdit.setType(selectedTrackType);  // the user selected a track type!
                             GPSApplication.getInstance().gpsDataBase.updateTrack(trackToEdit);
                             if (finalizeTrackWithOk) {
                                 // a request to finalize a track

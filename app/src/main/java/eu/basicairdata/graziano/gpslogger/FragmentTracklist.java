@@ -395,7 +395,7 @@ public class FragmentTracklist extends Fragment {
                 PhysicalData phdAltitudeGap;
                 PhysicalData phdOverallDirection;
                 phdDuration = phdformatter.format(track.getDuration(),PhysicalDataFormatter.FORMAT_DURATION);
-                phdDurationMoving = phdformatter.format(track.getDuration_Moving(),PhysicalDataFormatter.FORMAT_DURATION);
+                phdDurationMoving = phdformatter.format(track.getDurationMoving(),PhysicalDataFormatter.FORMAT_DURATION);
                 phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
                 phdSpeedAvg = phdformatter.format(track.getSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
                 phdSpeedAvgMoving = phdformatter.format(track.getSpeedAverageMoving(),PhysicalDataFormatter.FORMAT_SPEED_AVG);

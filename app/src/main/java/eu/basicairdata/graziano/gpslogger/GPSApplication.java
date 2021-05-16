@@ -1509,12 +1509,12 @@ public class GPSApplication extends Application implements LocationListener {
     public void loadJob(int jobType) {
         exportingTaskList.clear();
         synchronized(arrayListTracks) {
-            for (Track T : arrayListTracks) {
-                if (T.isSelected()) {
+            for (Track t : arrayListTracks) {
+                if (t.isSelected()) {
                     ExportingTask et = new ExportingTask();
-                    et.setId(T.getId());
-                    et.setName(getFileName(T));
-                    et.setNumberOfPoints_Total(T.getNumberOfLocations() + T.getNumberOfPlacemarks());
+                    et.setId(t.getId());
+                    et.setName(getFileName(t));
+                    et.setNumberOfPoints_Total(t.getNumberOfLocations() + t.getNumberOfPlacemarks());
                     et.setNumberOfPoints_Processed(0);
                     exportingTaskList.add(et);
                 }
@@ -1850,7 +1850,8 @@ public class GPSApplication extends Application implements LocationListener {
                 // Task: Delete some tracks
                 if (asyncTODO.taskType.startsWith(TASK_DELETETRACKS)) {
 
-                    String sTokens = asyncTODO.taskType.substring(19);
+                    String sTokens = asyncTODO.taskType.substring(asyncTODO.taskType.indexOf(" ") + 1);
+                    Log.w("myApp", "[#] GPSApplication.java - DELETING (" + sTokens + ")");
                     List<String> tokens = new ArrayList<>();
                     StringTokenizer tokenizer = new StringTokenizer(sTokens, " ");
                     while (tokenizer.hasMoreElements()) {
@@ -1984,18 +1985,18 @@ public class GPSApplication extends Application implements LocationListener {
                 endDotBGPaint.setStrokeCap(Paint.Cap.ROUND);
 
                 // Calculate the drawing scale
-                double midLatitude = (track.getMax_Latitude() + track.getMin_Latitude()) / 2;
+                double midLatitude = (track.getLatitudeMax() + track.getLatitudeMin()) / 2;
                 double angleFromEquator = Math.abs(midLatitude);
 
                 distanceProportion = Math.cos(Math.toRadians(angleFromEquator));
                 //Log.w("myApp", "[#] GPSApplication.java - Distance_Proportion = " + Distance_Proportion);
 
-                drawScale = Math.max(track.getMax_Latitude() - track.getMin_Latitude(), distanceProportion * (track.getMax_Longitude() - track.getMin_Longitude()));
-                latOffset = sizeMinusMargins * (1 - (track.getMax_Latitude() - track.getMin_Latitude()) / drawScale) / 2;
-                lonOffset = sizeMinusMargins * (1 - (distanceProportion * (track.getMax_Longitude() - track.getMin_Longitude()) / drawScale)) / 2;
+                drawScale = Math.max(track.getLatitudeMax() - track.getLatitudeMin(), distanceProportion * (track.getLongitudeMax() - track.getLongitudeMin()));
+                latOffset = sizeMinusMargins * (1 - (track.getLatitudeMax() - track.getLatitudeMin()) / drawScale) / 2;
+                lonOffset = sizeMinusMargins * (1 - (distanceProportion * (track.getLongitudeMax() - track.getLongitudeMin()) / drawScale)) / 2;
 
-                minLatitude = track.getMin_Latitude();
-                minLongitude = track.getMin_Longitude();
+                minLatitude = track.getLatitudeMin();
+                minLongitude = track.getLongitudeMin();
 
                 final AsyncThumbnailThreadClass asyncThumbnailThreadClass = new AsyncThumbnailThreadClass();
                 asyncThumbnailThreadClass.start();

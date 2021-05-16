@@ -1,6 +1,9 @@
-/**
+/*
  * SettingsActivity - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 23/7/2016
+ * Created by G.Capelli on 23/7/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,24 +31,22 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+/**
+ * The Activity that shows and manages the Preference Screen.
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")));
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_settings);
-
         toolbar = findViewById(R.id.id_toolbar2);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.menu_settings);
-
         if (savedInstanceState == null) {
             FragmentSettings wvf = new FragmentSettings();
             FragmentManager fm = getSupportFragmentManager();

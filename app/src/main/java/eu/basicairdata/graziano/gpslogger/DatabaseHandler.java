@@ -292,45 +292,45 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_FROM, "");
         trkvalues.put(KEY_TRACK_TO, "");
 
-        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getStart_Latitude());
-        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getStart_Longitude());
-        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getStart_Altitude());
-        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getStart_Accuracy());
-        trkvalues.put(KEY_TRACK_START_SPEED, track.getStart_Speed());
-        trkvalues.put(KEY_TRACK_START_TIME, track.getStart_Time());
+        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getLatitudeStart());
+        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getLongitudeStart());
+        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getAltitudeStart());
+        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getAccuracyStart());
+        trkvalues.put(KEY_TRACK_START_SPEED, track.getSpeedStart());
+        trkvalues.put(KEY_TRACK_START_TIME, track.getTimeStart());
 
-        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getLastFix_Time());
+        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getTimeLastFix());
 
-        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getEnd_Latitude());
-        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getEnd_Longitude());
-        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getEnd_Altitude());
-        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getEnd_Accuracy());
-        trkvalues.put(KEY_TRACK_END_SPEED, track.getEnd_Speed());
-        trkvalues.put(KEY_TRACK_END_TIME, track.getEnd_Time());
+        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getLatitudeEnd());
+        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getLongitudeEnd());
+        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getAltitudeEnd());
+        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getAccuracyEnd());
+        trkvalues.put(KEY_TRACK_END_SPEED, track.getSpeedEnd());
+        trkvalues.put(KEY_TRACK_END_TIME, track.getTimeEnd());
 
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLastStepDistance_Latitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLastStepDistance_Longitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getLastStepDistance_Accuracy());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLatitudeLastStepDistance());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLongitudeLastStepDistance());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getAccuracyLastStepDistance());
 
-        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getLastStepAltitude_Altitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getLastStepAltitude_Accuracy());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getAltitudeLastStepAltitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getAccuracyLastStepAltitude());
 
-        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getMin_Latitude());
-        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getMin_Longitude());
+        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getLatitudeMin());
+        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getLongitudeMin());
 
-        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getMax_Latitude());
-        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getMax_Longitude());
+        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getLatitudeMax());
+        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getLongitudeMax());
 
         trkvalues.put(KEY_TRACK_DURATION, track.getDuration());
-        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDuration_Moving());
+        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDurationMoving());
 
         trkvalues.put(KEY_TRACK_DISTANCE, track.getDistance());
         trkvalues.put(KEY_TRACK_DISTANCE_INPROGRESS, track.getDistanceInProgress());
         trkvalues.put(KEY_TRACK_DISTANCE_LASTALTITUDE, track.getDistanceLastAltitude());
 
-        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitude_Up());
-        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitude_Down());
-        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitude_InProgress());
+        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitudeUp());
+        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitudeDown());
+        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitudeInProgress());
 
         trkvalues.put(KEY_TRACK_SPEED_MAX, track.getSpeedMax());
         trkvalues.put(KEY_TRACK_SPEED_AVERAGE, track.getSpeedAverage());
@@ -386,45 +386,45 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_FROM, "");
         trkvalues.put(KEY_TRACK_TO, "");
 
-        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getStart_Latitude());
-        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getStart_Longitude());
-        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getStart_Altitude());
-        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getStart_Accuracy());
-        trkvalues.put(KEY_TRACK_START_SPEED, track.getStart_Speed());
-        trkvalues.put(KEY_TRACK_START_TIME, track.getStart_Time());
+        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getLatitudeStart());
+        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getLongitudeStart());
+        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getAltitudeStart());
+        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getAccuracyStart());
+        trkvalues.put(KEY_TRACK_START_SPEED, track.getSpeedStart());
+        trkvalues.put(KEY_TRACK_START_TIME, track.getTimeStart());
 
-        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getLastFix_Time());
+        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getTimeLastFix());
 
-        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getEnd_Latitude());
-        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getEnd_Longitude());
-        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getEnd_Altitude());
-        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getEnd_Accuracy());
-        trkvalues.put(KEY_TRACK_END_SPEED, track.getEnd_Speed());
-        trkvalues.put(KEY_TRACK_END_TIME, track.getEnd_Time());
+        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getLatitudeEnd());
+        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getLongitudeEnd());
+        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getAltitudeEnd());
+        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getAccuracyEnd());
+        trkvalues.put(KEY_TRACK_END_SPEED, track.getSpeedEnd());
+        trkvalues.put(KEY_TRACK_END_TIME, track.getTimeEnd());
 
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLastStepDistance_Latitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLastStepDistance_Longitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getLastStepDistance_Accuracy());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLatitudeLastStepDistance());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLongitudeLastStepDistance());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getAccuracyLastStepDistance());
 
-        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getLastStepAltitude_Altitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getLastStepAltitude_Accuracy());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getAltitudeLastStepAltitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getAccuracyLastStepAltitude());
 
-        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getMin_Latitude());
-        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getMin_Longitude());
+        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getLatitudeMin());
+        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getLongitudeMin());
 
-        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getMax_Latitude());
-        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getMax_Longitude());
+        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getLatitudeMax());
+        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getLongitudeMax());
 
         trkvalues.put(KEY_TRACK_DURATION, track.getDuration());
-        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDuration_Moving());
+        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDurationMoving());
 
         trkvalues.put(KEY_TRACK_DISTANCE, track.getDistance());
         trkvalues.put(KEY_TRACK_DISTANCE_INPROGRESS, track.getDistanceInProgress());
         trkvalues.put(KEY_TRACK_DISTANCE_LASTALTITUDE, track.getDistanceLastAltitude());
 
-        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitude_Up());
-        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitude_Down());
-        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitude_InProgress());
+        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitudeUp());
+        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitudeDown());
+        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitudeInProgress());
 
         trkvalues.put(KEY_TRACK_SPEED_MAX, track.getSpeedMax());
         trkvalues.put(KEY_TRACK_SPEED_AVERAGE, track.getSpeedAverage());
@@ -481,45 +481,45 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_FROM, "");
         trkvalues.put(KEY_TRACK_TO, "");
 
-        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getStart_Latitude());
-        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getStart_Longitude());
-        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getStart_Altitude());
-        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getStart_Accuracy());
-        trkvalues.put(KEY_TRACK_START_SPEED, track.getStart_Speed());
-        trkvalues.put(KEY_TRACK_START_TIME, track.getStart_Time());
+        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getLatitudeStart());
+        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getLongitudeStart());
+        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getAltitudeStart());
+        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getAccuracyStart());
+        trkvalues.put(KEY_TRACK_START_SPEED, track.getSpeedStart());
+        trkvalues.put(KEY_TRACK_START_TIME, track.getTimeStart());
 
-        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getLastFix_Time());
+        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getTimeLastFix());
 
-        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getEnd_Latitude());
-        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getEnd_Longitude());
-        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getEnd_Altitude());
-        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getEnd_Accuracy());
-        trkvalues.put(KEY_TRACK_END_SPEED, track.getEnd_Speed());
-        trkvalues.put(KEY_TRACK_END_TIME, track.getEnd_Time());
+        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getLatitudeEnd());
+        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getLongitudeEnd());
+        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getAltitudeEnd());
+        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getAccuracyEnd());
+        trkvalues.put(KEY_TRACK_END_SPEED, track.getSpeedEnd());
+        trkvalues.put(KEY_TRACK_END_TIME, track.getTimeEnd());
 
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLastStepDistance_Latitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLastStepDistance_Longitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getLastStepDistance_Accuracy());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLatitudeLastStepDistance());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLongitudeLastStepDistance());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getAccuracyLastStepDistance());
 
-        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getLastStepAltitude_Altitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getLastStepAltitude_Accuracy());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getAltitudeLastStepAltitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getAccuracyLastStepAltitude());
 
-        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getMin_Latitude());
-        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getMin_Longitude());
+        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getLatitudeMin());
+        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getLongitudeMin());
 
-        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getMax_Latitude());
-        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getMax_Longitude());
+        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getLatitudeMax());
+        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getLongitudeMax());
 
         trkvalues.put(KEY_TRACK_DURATION, track.getDuration());
-        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDuration_Moving());
+        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDurationMoving());
 
         trkvalues.put(KEY_TRACK_DISTANCE, track.getDistance());
         trkvalues.put(KEY_TRACK_DISTANCE_INPROGRESS, track.getDistanceInProgress());
         trkvalues.put(KEY_TRACK_DISTANCE_LASTALTITUDE, track.getDistanceLastAltitude());
 
-        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitude_Up());
-        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitude_Down());
-        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitude_InProgress());
+        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitudeUp());
+        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitudeDown());
+        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitudeInProgress());
 
         trkvalues.put(KEY_TRACK_SPEED_MAX, track.getSpeedMax());
         trkvalues.put(KEY_TRACK_SPEED_AVERAGE, track.getSpeedAverage());
@@ -868,45 +868,45 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_FROM, "");
         trkvalues.put(KEY_TRACK_TO, "");
 
-        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getStart_Latitude());
-        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getStart_Longitude());
-        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getStart_Altitude());
-        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getStart_Accuracy());
-        trkvalues.put(KEY_TRACK_START_SPEED, track.getStart_Speed());
-        trkvalues.put(KEY_TRACK_START_TIME, track.getStart_Time());
+        trkvalues.put(KEY_TRACK_START_LATITUDE, track.getLatitudeStart());
+        trkvalues.put(KEY_TRACK_START_LONGITUDE, track.getLongitudeStart());
+        trkvalues.put(KEY_TRACK_START_ALTITUDE, track.getAltitudeStart());
+        trkvalues.put(KEY_TRACK_START_ACCURACY, track.getAccuracyStart());
+        trkvalues.put(KEY_TRACK_START_SPEED, track.getSpeedStart());
+        trkvalues.put(KEY_TRACK_START_TIME, track.getTimeStart());
 
-        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getLastFix_Time());
+        trkvalues.put(KEY_TRACK_LASTFIX_TIME, track.getTimeLastFix());
 
-        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getEnd_Latitude());
-        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getEnd_Longitude());
-        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getEnd_Altitude());
-        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getEnd_Accuracy());
-        trkvalues.put(KEY_TRACK_END_SPEED, track.getEnd_Speed());
-        trkvalues.put(KEY_TRACK_END_TIME, track.getEnd_Time());
+        trkvalues.put(KEY_TRACK_END_LATITUDE, track.getLatitudeEnd());
+        trkvalues.put(KEY_TRACK_END_LONGITUDE, track.getLongitudeEnd());
+        trkvalues.put(KEY_TRACK_END_ALTITUDE, track.getAltitudeEnd());
+        trkvalues.put(KEY_TRACK_END_ACCURACY, track.getAccuracyEnd());
+        trkvalues.put(KEY_TRACK_END_SPEED, track.getSpeedEnd());
+        trkvalues.put(KEY_TRACK_END_TIME, track.getTimeEnd());
 
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLastStepDistance_Latitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLastStepDistance_Longitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getLastStepDistance_Accuracy());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LATITUDE, track.getLatitudeLastStepDistance());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_LONGITUDE, track.getLongitudeLastStepDistance());
+        trkvalues.put(KEY_TRACK_LASTSTEPDST_ACCURACY, track.getAccuracyLastStepDistance());
 
-        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getLastStepAltitude_Altitude());
-        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getLastStepAltitude_Accuracy());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ALTITUDE, track.getAltitudeLastStepAltitude());
+        trkvalues.put(KEY_TRACK_LASTSTEPALT_ACCURACY, track.getAccuracyLastStepAltitude());
 
-        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getMin_Latitude());
-        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getMin_Longitude());
+        trkvalues.put(KEY_TRACK_MIN_LATITUDE, track.getLatitudeMin());
+        trkvalues.put(KEY_TRACK_MIN_LONGITUDE, track.getLongitudeMin());
 
-        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getMax_Latitude());
-        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getMax_Longitude());
+        trkvalues.put(KEY_TRACK_MAX_LATITUDE, track.getLatitudeMax());
+        trkvalues.put(KEY_TRACK_MAX_LONGITUDE, track.getLongitudeMax());
 
         trkvalues.put(KEY_TRACK_DURATION, track.getDuration());
-        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDuration_Moving());
+        trkvalues.put(KEY_TRACK_DURATION_MOVING, track.getDurationMoving());
 
         trkvalues.put(KEY_TRACK_DISTANCE, track.getDistance());
         trkvalues.put(KEY_TRACK_DISTANCE_INPROGRESS, track.getDistanceInProgress());
         trkvalues.put(KEY_TRACK_DISTANCE_LASTALTITUDE, track.getDistanceLastAltitude());
 
-        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitude_Up());
-        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitude_Down());
-        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitude_InProgress());
+        trkvalues.put(KEY_TRACK_ALTITUDE_UP, track.getAltitudeUp());
+        trkvalues.put(KEY_TRACK_ALTITUDE_DOWN, track.getAltitudeDown());
+        trkvalues.put(KEY_TRACK_ALTITUDE_INPROGRESS, track.getAltitudeInProgress());
 
         trkvalues.put(KEY_TRACK_SPEED_MAX, track.getSpeedMax());
         trkvalues.put(KEY_TRACK_SPEED_AVERAGE, track.getSpeedAverage());
@@ -947,7 +947,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 track = new Track();
-                track.FromDB(cursor.getLong(0),
+                track.fromDB(cursor.getLong(0),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),
@@ -1058,7 +1058,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     Track trk = new Track();
-                    trk.FromDB(cursor.getLong(0),
+                    trk.fromDB(cursor.getLong(0),
                             cursor.getString(1),
                             cursor.getString(2),
                             cursor.getString(3),
