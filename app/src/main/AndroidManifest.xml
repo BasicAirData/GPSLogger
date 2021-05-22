@@ -47,7 +47,8 @@
         <activity android:name=".GPSActivity"
             android:label="@string/app_name"
             android:exported="true"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -58,7 +59,8 @@
             android:theme="@style/MySettingsTheme"
             android:label="@string/menu_settings"
             android:launchMode="singleTask"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GPSActivity" />
