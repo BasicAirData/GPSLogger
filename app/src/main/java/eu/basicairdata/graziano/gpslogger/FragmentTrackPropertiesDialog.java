@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
 
 /**
  * The Dialog that shows the properties of a Track.
@@ -153,7 +155,9 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                             if (finalizeTrackWithOk) {
                                 // a request to finalize a track
                                 EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
-                                Toast.makeText(getActivity(), getString(R.string.toast_track_saved_into_tracklist), Toast.LENGTH_SHORT).show();
+                                Toast toast = Toast.makeText(GPSApplication.getInstance().getApplicationContext(), R.string.toast_track_saved_into_tracklist, Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                                toast.show();
                             } else {
                                 GPSApplication.getInstance().UpdateTrackList();
                                 EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);

@@ -133,6 +133,8 @@ public class GPSApplication extends Application implements LocationListener {
     public static final ColorMatrixColorFilter colorMatrixColorFilter
             = new ColorMatrixColorFilter(NEGATIVE);              // The color filter for Track thumbnails
 
+    public static int TOAST_VERTICAL_OFFSET ;                    // The Y offset, in dp, for Toasts
+
     public static String DIRECTORY_TEMP;                         // The directory to store temporary tracks. Currently /GPSLogger/AppData
     public static String DIRECTORY_EXPORT;                       // The directory where the app exports tracks. Currently /GPSLogger
     public static String DIRECTORY_FILESDIR_TRACKS;              // The directory FilesDir/Tracks
@@ -708,6 +710,26 @@ public class GPSApplication extends Application implements LocationListener {
     // ----------------------------------------------------------------------  Utilities
 
     /**
+     * Converts dp unit to equivalent pixels, depending on device density.
+     *
+     * @param dp A value in dp (density independent pixels) unit. Which we need to convert into pixels
+     * @return A float value to represent px equivalent to dp depending on device density
+     */
+    public float convertDpToPx(float dp) {
+        return dp * getResources().getDisplayMetrics().density;
+    }
+
+    /**
+     * Converts device specific pixels to density independent pixels.
+     *
+     * @param px A value in px (pixels) unit. Which we need to convert into dp
+     * @return A float value to represent dp equivalent to px value
+     */
+    public float convertPxToDp(Context context, float px) {
+        return px / getResources().getDisplayMetrics().density;
+    }
+
+    /**
      * Deletes the file with the given filename.
      *
      * @param filename The name of the file, including the full path
@@ -874,6 +896,8 @@ public class GPSApplication extends Application implements LocationListener {
         //EventBus eventBus = EventBus.builder().addIndex(new EventBusIndex()).build();
         EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
         EventBus.getDefault().register(this);
+
+        TOAST_VERTICAL_OFFSET = (int)(75 * getResources().getDisplayMetrics().density);
 
         DIRECTORY_TEMP = Environment.getExternalStorageDirectory() + "/GPSLogger/Temp";
         DIRECTORY_EXPORT = Environment.getExternalStorageDirectory() + "/GPSLogger";

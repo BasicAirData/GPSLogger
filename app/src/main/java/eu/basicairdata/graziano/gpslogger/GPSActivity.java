@@ -46,6 +46,7 @@ import androidx.preference.PreferenceManager;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,6 +61,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
 
 /**
  * The main Activity.
@@ -199,11 +202,16 @@ public class GPSActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        if (gpsApp.isJustStarted() && (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0))
-            Toast.makeText(context, getString(R.string.toast_active_track_not_empty), Toast.LENGTH_LONG).show();
+        if (gpsApp.isJustStarted() && (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0)) {
+            Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_active_track_not_empty, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+            toast.show();
+        }
         gpsApp.setJustStarted(false);
         if (showToastGrantStoragePermission) {
-            Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
+            Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.please_grant_storage_permission, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+            toast.show();
             showToastGrantStoragePermission = false;
         }
     }
@@ -257,7 +265,11 @@ public class GPSActivity extends AppCompatActivity {
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.setData(Uri.parse(url));
                 startActivity(i);
-            } else Toast.makeText(context, getString(R.string.toast_no_browser_installed), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_no_browser_installed, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                toast.show();
+            }
             return true;
         }
         if (id == R.id.action_shutdown) {
@@ -371,7 +383,9 @@ public class GPSActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, getString(R.string.toast_track_exported), Toast.LENGTH_LONG).show();
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_track_exported, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                        toast.show();
                     }
                 });
                 break;
@@ -379,7 +393,9 @@ public class GPSActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, getString(R.string.please_grant_storage_permission), Toast.LENGTH_LONG).show();
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.please_grant_storage_permission, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                        toast.show();
                     }
                 });
                 break;
@@ -387,7 +403,9 @@ public class GPSActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, getString(R.string.export_unable_to_write_file), Toast.LENGTH_LONG).show();
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.export_unable_to_write_file, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                        toast.show();
                     }
                 });
         }

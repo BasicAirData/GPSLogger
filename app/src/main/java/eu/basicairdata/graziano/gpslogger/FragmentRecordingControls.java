@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
 
 /**
  * The Fragment that displays and manages the bottom bar.
@@ -142,12 +145,17 @@ public class FragmentRecordingControls extends Fragment {
             if (!gpsApp.isBottomBarLocked()) {
                 if (!gpsApp.isStopButtonFlag()) {
                     gpsApp.setRecording(!gpsApp.isRecording());
-                    if (!gpsApp.isFirstFixFound() && (gpsApp.isRecording()))
-                        Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_recording_when_gps_found), Toast.LENGTH_LONG).show();
+                    if (!gpsApp.isFirstFixFound() && (gpsApp.isRecording())) {
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_recording_when_gps_found, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                        toast.show();
+                    }
                     Update();
                 }
             } else {
-                Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                toast.show();
             }
         }
     }
@@ -162,12 +170,17 @@ public class FragmentRecordingControls extends Fragment {
             if (!gpsApp.isBottomBarLocked()) {
                 if (!gpsApp.isStopButtonFlag()) {
                     gpsApp.setPlacemarkRequested(!gpsApp.isPlacemarkRequested());
-                    if (!gpsApp.isFirstFixFound() && (gpsApp.isPlacemarkRequested()))
-                        Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_annotate_when_gps_found), Toast.LENGTH_LONG).show();
+                    if (!gpsApp.isFirstFixFound() && (gpsApp.isPlacemarkRequested())) {
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_annotate_when_gps_found, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                        toast.show();
+                    }
                     Update();
                 }
             } else {
-                Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                toast.show();
             }
         }
     }
@@ -192,11 +205,15 @@ public class FragmentRecordingControls extends Fragment {
                         tpDialog.setFinalizeTrackWithOk(true);
                         tpDialog.show(fm, "");
                     } else {
-                        Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_nothing_to_save), Toast.LENGTH_SHORT).show();
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_nothing_to_save, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                        toast.show();
                     }
                 }
             } else {
-                Toast.makeText(gpsApp.getApplicationContext(), getString(R.string.toast_bottom_bar_locked), Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                toast.show();
             }
         }
     }
