@@ -21,11 +21,17 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -42,11 +48,15 @@ public class FragmentTrack extends Fragment {
     private PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
     final GPSApplication gpsApp = GPSApplication.getInstance();
 
+    private FrameLayout flTrack;
+
     private TextView tvDuration;
     private TextView tvTrackName;
     private TextView tvTrackID;
     private TextView tvDistance;
     private TextView tvDistanceUM;
+    private TextView tvAnnotations;
+    private TextView tvTrackpoints;
     private TextView tvMaxSpeed;
     private TextView tvMaxSpeedUM;
     private TextView tvAverageSpeed;
@@ -57,12 +67,16 @@ public class FragmentTrack extends Fragment {
     private TextView tvTrackStatus;
     private TextView tvDirectionUM;
     private TableLayout tlTrack;
+    private TableLayout tlTrackpoints;
+    private TableLayout tlAnnotations;
     private TableLayout tlDuration;
     private TableLayout tlSpeedMax;
     private TableLayout tlSpeedAvg;
     private TableLayout tlDistance;
     private TableLayout tlAltitudeGap;
     private TableLayout tlOverallDirection;
+
+    private LinearLayout llTrackpointsAnnotations;
 
     private PhysicalData phdDuration;
     private PhysicalData phdSpeedMax;
@@ -78,6 +92,41 @@ public class FragmentTrack extends Fragment {
     private boolean EGMAltitudeCorrection;
     private boolean isValidAltitude;
 
+    /**
+     * The Observer that calculate the new available height when the layout is changed.
+     * If the height is enough, it set the setSpaceForExtraTilesAvailable flag
+     * that enable the visualization of the extra tiles:
+     * <ul>
+     *     <li>Time and Satellites for FragmentGPSFix</li>
+     *     <li>Trackpoints ane Annotation for FragmentTrack</li>
+     *  * </ul>
+     */
+    ViewTreeObserver.OnGlobalLayoutListener viewTreeObserverOnGLL = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                flTrack.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            } else {
+                flTrack.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+            //int width  = flTrack.getMeasuredWidth();
+            //int height = flTrack.getMeasuredHeight();
+            //Log.w("myApp", "[#] FragmentTrack MEASURED: " + width + " x " + height);
+            int viewHeight   = tlDistance.getMeasuredHeight() + (int)(6*getResources().getDisplayMetrics().density);
+            int layoutHeight = flTrack.getHeight() - (int)(6*getResources().getDisplayMetrics().density);
+            boolean isTimeAndSatellitesVisible;
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+                isTimeAndSatellitesVisible = layoutHeight >= 6*viewHeight;
+                //Log.w("myApp", "[#] FragmentTrack MEASURED: " + layoutHeight + " / " + 6*viewHeight + " -> " + isTimeAndSatellitesVisible);
+            } else {
+                isTimeAndSatellitesVisible = layoutHeight >= 4*viewHeight;
+                //Log.w("myApp", "[#] FragmentTrack MEASURED: " + layoutHeight + " / " + 4*viewHeight + " -> " + isTimeAndSatellitesVisible);
+            }
+            GPSApplication.getInstance().setSpaceForExtraTilesAvailable(isTimeAndSatellitesVisible);
+            update();
+        }
+    };
+
     public FragmentTrack() {
         // Required empty public constructor
     }
@@ -88,10 +137,15 @@ public class FragmentTrack extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_track, container, false);
 
+        // FrameLayouts
+        flTrack = view.findViewById(R.id.id_fragmenttrackFrameLayout);
+
         // TextViews
         tvDuration = view.findViewById(R.id.id_textView_Duration);
         tvTrackID = view.findViewById(R.id.id_textView_TrackIDLabel);
         tvTrackName = view.findViewById(R.id.id_textView_TrackName);
+        tvTrackpoints = view.findViewById(R.id.id_textView_Trackpoints);
+        tvAnnotations = view.findViewById(R.id.id_textView_Annotations);
         tvDistance = view.findViewById(R.id.id_textView_Distance);
         tvMaxSpeed = view.findViewById(R.id.id_textView_SpeedMax);
         tvAverageSpeed = view.findViewById(R.id.id_textView_SpeedAvg);
@@ -106,12 +160,17 @@ public class FragmentTrack extends Fragment {
 
         // TableLayouts
         tlTrack = view.findViewById(R.id.id_tableLayout_TrackName) ;
+        tlTrackpoints = view.findViewById(R.id.id_TableLayout_Trackpoints) ;
+        tlAnnotations = view.findViewById(R.id.id_TableLayout_Annotations) ;
         tlDuration = view.findViewById(R.id.id_tableLayout_Duration) ;
         tlSpeedMax = view.findViewById(R.id.id_tableLayout_SpeedMax) ;
         tlDistance = view.findViewById(R.id.id_tableLayout_Distance) ;
         tlSpeedAvg = view.findViewById(R.id.id_tableLayout_SpeedAvg) ;
         tlAltitudeGap = view.findViewById(R.id.id_tableLayout_AltitudeGap) ;
         tlOverallDirection = view.findViewById(R.id.id_tableLayout_OverallDirection) ;
+
+        // LinearLayouts
+        llTrackpointsAnnotations = view.findViewById(R.id.id_linearLayout_Annotation_Trackpoints);
 
         tvTrackStatus.setText(getString(R.string.track_empty) + "\n\n" + getString(R.string.track_start_with_button_below));
         return view;
@@ -129,11 +188,20 @@ public class FragmentTrack extends Fragment {
         }
 
         EventBus.getDefault().register(this);
-        Update();
+
+        ViewTreeObserver vto = flTrack.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(viewTreeObserverOnGLL);
+
+        update();
     }
 
     @Override
     public void onPause() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            flTrack.getViewTreeObserver().removeGlobalOnLayoutListener(viewTreeObserverOnGLL);
+        } else {
+            flTrack.getViewTreeObserver().removeOnGlobalLayoutListener(viewTreeObserverOnGLL);
+        }
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
@@ -144,7 +212,7 @@ public class FragmentTrack extends Fragment {
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_TRACK) {
-            Update();
+            update();
         }
     }
 
@@ -152,7 +220,8 @@ public class FragmentTrack extends Fragment {
      * Updates the user interface of the fragment.
      * It takes care of visibility and value of each tile, and Track Status widgets.
      */
-    public void Update() {
+    public void update() {
+        //Log.w("myApp", "[#] FragmentTrack.java - Update");
         track = gpsApp.getCurrentTrack();
         prefDirections = gpsApp.getPrefShowDirections();
         EGMAltitudeCorrection = gpsApp.getPrefEGM96AltitudeCorrection();
@@ -185,13 +254,17 @@ public class FragmentTrack extends Fragment {
                 tvDistanceUM.setText(phdDistance.um);
                 tvAltitudeGapUM.setText(phdAltitudeGap.um);
 
+                llTrackpointsAnnotations.setVisibility(gpsApp.isSpaceForExtraTilesAvailable() ? View.VISIBLE : View.GONE);
+
+                tvAnnotations.setText(String.valueOf(track.getNumberOfPlacemarks()));
+                tvTrackpoints.setText(String.valueOf(track.getNumberOfLocations()));
+
                 // Colorize the Altitude Gap textview depending on the altitude filter
                 isValidAltitude = track.isValidAltitude();
                 tvAltitudeGap.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
                 tvAltitudeGapUM.setTextColor(isValidAltitude ? getResources().getColor(R.color.textColorPrimary) : getResources().getColor(R.color.textColorSecondary));
 
                 tvTrackStatus.setVisibility(View.INVISIBLE);
-
                 tvDirectionUM.setVisibility(prefDirections == 0 ? View.GONE : View.VISIBLE);
 
                 tlTrack.setVisibility(fTrackName.equals("") ? View.INVISIBLE : View.VISIBLE);
@@ -201,7 +274,8 @@ public class FragmentTrack extends Fragment {
                 tlDistance.setVisibility(phdDistance.value.equals("") ? View.INVISIBLE : View.VISIBLE);
                 tlOverallDirection.setVisibility(phdOverallDirection.value.equals("") ? View.INVISIBLE : View.VISIBLE);
                 tlAltitudeGap.setVisibility(phdAltitudeGap.value.equals("") ? View.INVISIBLE : View.VISIBLE);
-
+                tlTrackpoints.setVisibility(track.getNumberOfLocations() > 0 ? View.VISIBLE : View.INVISIBLE);
+                tlAnnotations.setVisibility(track.getNumberOfPlacemarks() + track.getNumberOfLocations() > 0 ? View.VISIBLE : View.INVISIBLE);
             } else {
                 tvTrackStatus.setVisibility(View.VISIBLE);
 
@@ -212,6 +286,8 @@ public class FragmentTrack extends Fragment {
                 tlDistance.setVisibility(View.INVISIBLE);
                 tlOverallDirection.setVisibility(View.INVISIBLE);
                 tlAltitudeGap.setVisibility(View.INVISIBLE);
+                tlTrackpoints.setVisibility(View.INVISIBLE);
+                tlAnnotations.setVisibility(View.INVISIBLE);
             }
         }
     }

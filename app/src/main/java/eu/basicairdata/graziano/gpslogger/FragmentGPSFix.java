@@ -36,6 +36,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -109,6 +110,41 @@ public class FragmentGPSFix extends Fragment {
     private boolean EGMAltitudeCorrection;
     private boolean isValidAltitude;
     private boolean isBackgroundActivityRestricted;
+
+    /**
+     * The Observer that calculate the new available height when the layout is changed.
+     * If the height is enough, it set the setSpaceForExtraTilesAvailable flag
+     * that enable the visualization of the extra tiles:
+     * <ul>
+     *     <li>Time and Satellites for FragmentGPSFix</li>
+     *     <li>Trackpoints ane Annotation for FragmentTrack</li>
+     *  * </ul>
+     */
+    ViewTreeObserver.OnGlobalLayoutListener viewTreeObserverOnGLL = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                flGPSFix.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            } else {
+                flGPSFix.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+            //int width  = flGPSFix.getMeasuredWidth();
+            //int height = flGPSFix.getMeasuredHeight();
+            //Log.w("myApp", "[#] FragmentGPSFix MEASURED: " + width + " x " + height);
+            int viewHeight   = tlSpeed.getMeasuredHeight() + (int)(6*getResources().getDisplayMetrics().density);
+            int layoutHeight = flGPSFix.getHeight() - (int)(6*getResources().getDisplayMetrics().density);
+            boolean isTimeAndSatellitesVisible;
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+                isTimeAndSatellitesVisible = layoutHeight >= 6*viewHeight;
+                //Log.w("myApp", "[#] FragmentGPSFix MEASURED: " + layoutHeight + " / " + 6*viewHeight + " -> " + isTimeAndSatellitesVisible);
+            } else {
+                isTimeAndSatellitesVisible = layoutHeight >= 4*viewHeight;
+                //Log.w("myApp", "[#] FragmentGPSFix MEASURED: " + layoutHeight + " / " + 4*viewHeight + " -> " + isTimeAndSatellitesVisible);
+            }
+            GPSApplication.getInstance().setSpaceForExtraTilesAvailable(isTimeAndSatellitesVisible);
+            update();
+        }
+    };
 
     public FragmentGPSFix() {
         // Required empty public constructor
@@ -227,11 +263,21 @@ public class FragmentGPSFix extends Fragment {
         }
 
         EventBus.getDefault().register(this);
-        Update();
+
+        ViewTreeObserver vto = flGPSFix.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(viewTreeObserverOnGLL);
+
+        update();
     }
 
     @Override
     public void onPause() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            flGPSFix.getViewTreeObserver().removeGlobalOnLayoutListener(viewTreeObserverOnGLL);
+        } else {
+            flGPSFix.getViewTreeObserver().removeOnGlobalLayoutListener(viewTreeObserverOnGLL);
+        }
+
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
@@ -242,7 +288,7 @@ public class FragmentGPSFix extends Fragment {
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_FIX) {
-            Update();
+            update();
         }
     }
 
@@ -250,8 +296,8 @@ public class FragmentGPSFix extends Fragment {
      * Updates the user interface of the fragment.
      * It takes care of visibility and value of each tile, messages, and GPS Status widgets.
      */
-    public void Update() {
-        //Log.w("myApp", "[#] FragmentGPSFix.java - Update(Location location)");
+    public void update() {
+        //Log.w("myApp", "[#] FragmentGPSFix.java - Update");
         location = gpsApp.getCurrentLocationExtended();
         AltitudeManualCorrection = gpsApp.getPrefAltitudeCorrection();
         prefDirections = gpsApp.getPrefShowDirections();
@@ -301,32 +347,8 @@ public class FragmentGPSFix extends Fragment {
                 tlTime.setVisibility(View.VISIBLE);
                 tlSatellites.setVisibility(location.getNumberOfSatellitesUsedInFix() == NOT_AVAILABLE ? View.INVISIBLE : View.VISIBLE);
 
-                flGPSFix.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                    @Override
-                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                        flGPSFix.removeOnLayoutChangeListener(this);
+                llTimeSatellites.setVisibility(gpsApp.isSpaceForExtraTilesAvailable() ? View.VISIBLE : View.GONE);
 
-                        int ViewHeight   = tlTime.getMeasuredHeight() + (int)(6*getResources().getDisplayMetrics().density);
-                        int LayoutHeight = flGPSFix.getHeight() - (int)(6*getResources().getDisplayMetrics().density);
-                        //Log.w("myApp", "[#]");
-                        //Log.w("myApp", "[#] -----------------------------------");
-                        boolean isTimeAndSatellitesVisible;
-                        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-                            isTimeAndSatellitesVisible = LayoutHeight >= 6*ViewHeight;
-                            //Log.w("myApp", "[#] " + LayoutHeight + " / " + 6*ViewHeight + " -> " + isTimeAndSatellitesVisible);
-                        } else {
-                            isTimeAndSatellitesVisible = LayoutHeight >= 4*ViewHeight;
-                            //Log.w("myApp", "[#] " + LayoutHeight + " / " + 4*ViewHeight + " -> " + isTimeAndSatellitesVisible);
-                        }
-                        llTimeSatellites.setVisibility(isTimeAndSatellitesVisible ? View.VISIBLE : View.GONE);
-
-                        //Log.w("myApp", "[#] -----------------------------------");
-                        //Log.w("myApp", "[#] Available Height = " + LayoutHeight + " px");
-                        //Log.w("myApp", "[#] Density          = " + getResources().getDisplayMetrics().density);
-                        //Log.w("myApp", "[#] Tile Height      = " + ViewHeight + " px");
-                    }
-                });
                 tvGPSFixStatus.setVisibility(View.INVISIBLE);
                 cvWarningBackgroundRestricted.setVisibility(View.GONE);
                 cvWarningGPSDisabled.setVisibility(View.GONE);

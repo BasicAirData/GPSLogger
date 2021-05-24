@@ -303,7 +303,7 @@
                         android:textAppearance="@style/TextAppearanceCardSmall"
                         android:id="@+id/id_textView_card_placemarksLabel"
                         android:layout_marginTop="3dp"
-                        android:text="@string/card_trackinfo_placemarks" />
+                        android:text="@string/card_trackinfo_annotations" />
                 </LinearLayout>
 
                 <LinearLayout

@@ -180,6 +180,8 @@ public class GPSApplication extends Application implements LocationListener {
     private Drawable viewInAppIcon = null;                       // The icon of the default app used as viewer
     private String viewInApp = "";                               // The string of default app name for "View"; "" in case of selector
 
+    private boolean isSpaceForExtraTilesAvailable = true;        // True if there is space to show Time and Satellites in GPS Fix Tab;
+
     // Variables for multiple selection on Tracklist
     private long lastClickId = NOT_AVAILABLE;                    // The last item clicked on Tracklist
     private boolean lastClickState;                              // The state of the last item clicked on Tracklist
@@ -707,27 +709,35 @@ public class GPSApplication extends Application implements LocationListener {
         return isFirstFixFound;
     }
 
+    public boolean isSpaceForExtraTilesAvailable() {
+        return isSpaceForExtraTilesAvailable;
+    }
+
+    public void setSpaceForExtraTilesAvailable(boolean spaceForExtraTilesAvailable) {
+        isSpaceForExtraTilesAvailable = spaceForExtraTilesAvailable;
+    }
+
     // ----------------------------------------------------------------------  Utilities
 
-    /**
-     * Converts dp unit to equivalent pixels, depending on device density.
-     *
-     * @param dp A value in dp (density independent pixels) unit. Which we need to convert into pixels
-     * @return A float value to represent px equivalent to dp depending on device density
-     */
-    public float convertDpToPx(float dp) {
-        return dp * getResources().getDisplayMetrics().density;
-    }
-
-    /**
-     * Converts device specific pixels to density independent pixels.
-     *
-     * @param px A value in px (pixels) unit. Which we need to convert into dp
-     * @return A float value to represent dp equivalent to px value
-     */
-    public float convertPxToDp(Context context, float px) {
-        return px / getResources().getDisplayMetrics().density;
-    }
+//    /**
+//     * Converts dp unit to equivalent pixels, depending on device density.
+//     *
+//     * @param dp A value in dp (density independent pixels) unit. Which we need to convert into pixels
+//     * @return A float value to represent px equivalent to dp depending on device density
+//     */
+//    public float convertDpToPx(float dp) {
+//        return dp * getResources().getDisplayMetrics().density;
+//    }
+//
+//    /**
+//     * Converts device specific pixels to density independent pixels.
+//     *
+//     * @param px A value in px (pixels) unit. Which we need to convert into dp
+//     * @return A float value to represent dp equivalent to px value
+//     */
+//    public float convertPxToDp(Context context, float px) {
+//        return px / getResources().getDisplayMetrics().density;
+//    }
 
     /**
      * Deletes the file with the given filename.

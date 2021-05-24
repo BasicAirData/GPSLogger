@@ -50,7 +50,7 @@ public class FragmentPlacemarkDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity());
-        createPlacemarkAlert.setTitle(R.string.dlg_add_placemark);
+        createPlacemarkAlert.setTitle(R.string.dlg_add_annotation);
         //createPlacemarkAlert.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_location_24dp, getActivity().getTheme()));
 
         LayoutInflater inflater = getActivity().getLayoutInflater();

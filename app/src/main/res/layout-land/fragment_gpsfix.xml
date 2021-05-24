@@ -66,14 +66,11 @@
                     android:gravity="center_horizontal">
 
                     <TextView
+                        android:id="@+id/id_textView_Latitude"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceLargeNumbers"
-                        android:id="@+id/id_textView_Latitude"
-                        android:freezesText="true"
-                        android:textColor="@color/colorPrimaryLight"
-                        android:textStyle="bold"
-                        android:gravity="center_horizontal" />
+                        android:textColor="@color/colorPrimaryLight" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -110,14 +107,11 @@
                     android:gravity="center_horizontal">
 
                     <TextView
+                        android:id="@+id/id_textView_Longitude"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearanceLargeNumbers"
-                        android:id="@+id/id_textView_Longitude"
-                        android:freezesText="true"
-                        android:textColor="@color/colorPrimaryLight"
-                        android:textStyle="bold"
-                        android:gravity="center_horizontal" />
+                        android:textColor="@color/colorPrimaryLight" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -168,13 +162,10 @@
                         android:gravity="center_horizontal">
 
                         <TextView
+                            android:id="@+id/id_textView_Time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceLargeNumbers"
-                            android:id="@+id/id_textView_Time"
-                            android:freezesText="true"
-                            android:textStyle="bold"
-                            android:gravity="center_horizontal" />
+                            android:textAppearance="@style/TextAppearanceLargeNumbers" />
                     </TableRow>
 
                     <TextView
@@ -206,13 +197,10 @@
                         android:gravity="center_horizontal">
 
                         <TextView
+                            android:id="@+id/id_textView_Satellites"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearanceLargeNumbers"
-                            android:id="@+id/id_textView_Satellites"
-                            android:freezesText="true"
-                            android:textStyle="bold"
-                            android:gravity="center_horizontal" />
+                            android:textAppearance="@style/TextAppearanceLargeNumbers" />
                     </TableRow>
 
                     <TextView
@@ -225,6 +213,7 @@
                         android:gravity="center_horizontal" />
 
                 </TableLayout>
+
             </LinearLayout>
 
         </LinearLayout>
@@ -253,13 +242,10 @@
                     android:gravity="center_horizontal">
 
                     <TextView
+                        android:id="@+id/id_textView_Altitude"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearanceLargeNumbers"
-                        android:id="@+id/id_textView_Altitude"
-                        android:freezesText="true"
-                        android:textStyle="bold"
-                        android:gravity="center_horizontal" />
+                        android:textAppearance="@style/TextAppearanceLargeNumbers" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -299,13 +285,10 @@
                     android:gravity="center_horizontal">
 
                     <TextView
+                        android:id="@+id/id_textView_Accuracy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearanceLargeNumbers"
-                        android:id="@+id/id_textView_Accuracy"
-                        android:freezesText="true"
-                        android:textStyle="bold"
-                        android:gravity="center_horizontal" />
+                        android:textAppearance="@style/TextAppearanceLargeNumbers" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -354,13 +337,10 @@
                     android:gravity="center_horizontal">
 
                     <TextView
+                        android:id="@+id/id_textView_Speed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearanceLargeNumbers"
-                        android:id="@+id/id_textView_Speed"
-                        android:freezesText="true"
-                        android:textStyle="bold"
-                        android:gravity="center_horizontal" />
+                        android:textAppearance="@style/TextAppearanceLargeNumbers" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -400,13 +380,10 @@
                     android:gravity="center_horizontal">
 
                     <TextView
+                        android:id="@+id/id_textView_Bearing"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearanceLargeNumbers"
-                        android:id="@+id/id_textView_Bearing"
-                        android:freezesText="true"
-                        android:textStyle="bold"
-                        android:gravity="center_horizontal" />
+                        android:textAppearance="@style/TextAppearanceLargeNumbers" />
 
                     <TextView
                         android:layout_width="wrap_content"

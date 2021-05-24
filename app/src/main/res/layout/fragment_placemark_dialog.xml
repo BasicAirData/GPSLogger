@@ -40,7 +40,7 @@
             android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/dlg_placemark_description" >
+            android:hint="@string/dlg_enter_the_description" >
 
             <requestFocus />
         </EditText>

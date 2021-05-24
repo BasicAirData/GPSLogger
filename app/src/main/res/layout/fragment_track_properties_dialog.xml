@@ -45,7 +45,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginBottom="4dp"
-            android:hint="@string/dlg_placemark_description" >
+            android:hint="@string/dlg_enter_the_description" >
 
             <requestFocus />
         </EditText>

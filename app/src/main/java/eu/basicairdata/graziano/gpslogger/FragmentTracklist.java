@@ -406,12 +406,12 @@ public class FragmentTracklist extends Fragment {
                     extraText.append(getString(R.string.app_name) + " - " + getString(R.string.tab_track) + " " + track.getName()
                             + (track.getDescription().isEmpty() ? "\n" + track.getDescription() + "\n" : "")
                             + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
-                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks));
+                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.annotations));
                 } else {
                     extraText.append(getString(R.string.app_name) + " - " + getString(R.string.tab_track) + " " + track.getName()
                             + (!track.getDescription().isEmpty() ? "\n" + track.getDescription() : "")
                             + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
-                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)
+                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.annotations)
                             + "\n"
                             + "\n" + getString(R.string.distance) + " = " + phdDistance.value + " " + phdDistance.um
                             + "\n" + getString(R.string.duration) + " = " + phdDuration.value + " | " + phdDurationMoving.value

@@ -95,9 +95,9 @@
     <string name="toast_recording_when_gps_found">The recording will begin when the GPS signal is found</string>
     <string name="toast_annotate_when_gps_found">The annotation will be taken when the GPS signal is found</string>
 
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
 
-    <string name="placemarks">Annotations</string>
+    <string name="annotations">Annotations</string>
     <string name="trackpoints">Trackpoints</string>
 
     <!-- Main menu -->
@@ -109,9 +109,9 @@
     <string name="menu_online_help">Online help</string>
     <string name="menu_shutdown">Shutdown</string>
 
-    <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">Add annotation</string>
-    <string name="dlg_placemark_description">Enter the description</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Add annotation</string>
+    <string name="dlg_enter_the_description">Enter the description</string>
     <string name="dlg_button_add">Add</string>
     <string name="dlg_button_cancel">Cancel</string>
 
@@ -124,7 +124,7 @@
     <string name="card_trackinfo_max_speed">Max spd</string>
     <string name="card_trackinfo_average_speed">Avg spd</string>
     <string name="card_trackinfo_geopoints">Points</string>
-    <string name="card_trackinfo_placemarks">Annot</string>
+    <string name="card_trackinfo_annotations">Annot</string>
 
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">Export</string>
