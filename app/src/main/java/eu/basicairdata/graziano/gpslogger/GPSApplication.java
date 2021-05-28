@@ -617,6 +617,7 @@ public class GPSApplication extends Application implements LocationListener {
     public void setRecording(boolean recordingState) {
         prevRecordedFix = null;
         isRecording = recordingState;
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
         if (isRecording) addPreferenceFlag_NoBackup(FLAG_RECORDING);
         else clearPreferenceFlag_NoBackup(FLAG_RECORDING);
     }
