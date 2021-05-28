@@ -165,7 +165,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                         }
                     }
                 })
-                .setNeutralButton(R.string.dlg_button_cancel, new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                     }

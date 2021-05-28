@@ -83,7 +83,7 @@ public class FragmentPlacemarkDialog extends DialogFragment {
                         }
                     }
                 })
-                .setNegativeButton(R.string.dlg_button_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                     }

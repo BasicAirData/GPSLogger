@@ -102,7 +102,6 @@
 
     <!-- Main menu -->
     <string name="menu_settings">Settings</string>
-    <!-- <string name="menu_track_finished">Track finalized</string> -->
     <string name="toast_track_saved_into_tracklist">Track saved into the Tracklist</string>
     <string name="toast_track_exported">Tracks exported in /GPSLogger folder</string>
     <string name="menu_about">About</string>
@@ -113,7 +112,6 @@
     <string name="dlg_add_annotation">Add annotation</string>
     <string name="dlg_enter_the_description">Enter the description</string>
     <string name="dlg_button_add">Add</string>
-    <string name="dlg_button_cancel">Cancel</string>
 
     <!-- Tracklist -->
     <string name="tracklist_empty">Tracklist Empty</string>
