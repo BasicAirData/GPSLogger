@@ -27,7 +27,7 @@
 
     <color name="colorPrimary">#880000</color>
     <color name="colorPrimaryDark">#550000</color>
-    <color name="colorPrimaryLight">#b51111</color>
+    <color name="colorPrimaryLight">#ca1818</color>
     <color name="textColorPrimary">#ffffff</color>
     <color name="textColorCardTitle">#d7d7d7</color>
     <color name="textColorSecondary">#888888</color>
@@ -49,8 +49,8 @@
     <color name="colorCardBackground_Selected">#42ff4f4f</color>
 
     <color name="colorAccent">#ffffff</color>
-    <color name="preference_accent">#ca2222</color>
-    <color name="preference_fallback_accent_color" tools:override="true">#ca2222</color>
+    <color name="preference_accent">#ca1818</color>
+    <color name="preference_fallback_accent_color" tools:override="true">#ca1818</color>
 
     <color name="colorRoundedCornerBottom">#161616</color>
     <color name="colorRoundedCornerTop">#202020</color>
