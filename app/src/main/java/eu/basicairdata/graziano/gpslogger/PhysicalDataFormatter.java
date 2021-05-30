@@ -167,7 +167,7 @@ class PhysicalDataFormatter {
                             case 16:    physicalData.value = gpsApp.getString(R.string.north);             return(physicalData);
                         }
                     case 1:         // Angle
-                        physicalData.value = String.valueOf(Math.round(number));
+                        physicalData.value = String.valueOf(Math.round(number)).concat("°");
                         return(physicalData);
                 }
 
@@ -225,12 +225,14 @@ class PhysicalDataFormatter {
         switch (format) {
             case FORMAT_LATITUDE:   // Latitude
                 physicalData.value = gpsApp.getPrefShowDecimalCoordinates() ?
-                    String.format(Locale.getDefault(), "%.9f", Math.abs(number)) : Location.convert(Math.abs(number), Location.FORMAT_SECONDS);
+                    String.format(Locale.getDefault(), "%.9f", Math.abs(number)) :
+                        Location.convert(Math.abs(number), Location.FORMAT_SECONDS).replaceFirst(":", "°").replaceFirst(":", "' ").concat("\"");
                 physicalData.um = number >= 0 ? gpsApp.getString(R.string.north) : gpsApp.getString(R.string.south);
                 return(physicalData);
             case FORMAT_LONGITUDE:  // Longitude
                 physicalData.value = gpsApp.getPrefShowDecimalCoordinates() ?
-                    String.format(Locale.getDefault(), "%.9f", Math.abs(number)) : Location.convert(Math.abs(number), Location.FORMAT_SECONDS);
+                    String.format(Locale.getDefault(), "%.9f", Math.abs(number)) :
+                        Location.convert(Math.abs(number), Location.FORMAT_SECONDS).replaceFirst(":", "°").replaceFirst(":", "' ").concat("\"");
                 physicalData.um = number >= 0 ?
                     gpsApp.getString(R.string.east) : gpsApp.getString(R.string.west);
                 return(physicalData);
