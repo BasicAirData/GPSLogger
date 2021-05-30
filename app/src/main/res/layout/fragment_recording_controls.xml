@@ -100,6 +100,10 @@
             app:drawableTopCompat="@drawable/ic_lock_24"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:paddingBottom="4dp"
             android:paddingTop="5dp"/>
 
@@ -114,6 +118,10 @@
             android:text="@string/stop"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:paddingBottom="4dp"
             android:paddingTop="5dp"/>
 
@@ -128,6 +136,10 @@
             android:text="@string/annotate"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:paddingBottom="4dp"
             android:paddingTop="5dp"/>
 
@@ -141,6 +153,10 @@
             app:drawableTopCompat="@drawable/ic_record_24"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:paddingBottom="4dp"
             android:paddingTop="5dp"/>
     </LinearLayout>
