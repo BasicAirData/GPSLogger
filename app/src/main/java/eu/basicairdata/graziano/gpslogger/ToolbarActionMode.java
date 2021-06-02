@@ -116,7 +116,7 @@ public class ToolbarActionMode implements ActionMode.Callback {
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         EventBus.getDefault().unregister(this);
-        if ((gpsApp.getNumberOfSelectedTracks() > 0) && gpsApp.getGPSActivity_activeTab() == 2) {
+        if ((gpsApp.getNumberOfSelectedTracks() > 0) && gpsApp.getGPSActivityActiveTab() == 2) {
             GPSApplication.getInstance().deselectAllTracks();
             GPSApplication.getInstance().setLastClickId(NOT_AVAILABLE);
         }
@@ -162,7 +162,7 @@ public class ToolbarActionMode implements ActionMode.Callback {
     }
 
     /**
-     * Evaluate the visibility of the buttons on the Toolbar basing on the selection,
+     * Evaluates the visibility of the buttons on the Toolbar basing on the selection,
      * the installed apps, and the Preferences.
      * It sets also the tooltip text and the icon of the View button.
      */

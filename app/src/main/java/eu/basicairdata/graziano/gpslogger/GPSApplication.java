@@ -203,7 +203,7 @@ public class GPSApplication extends Application implements LocationListener {
     private int numberOfSatellitesTotal = 0;                     // The total Number of Satellites
     private int numberOfSatellitesUsedInFix = 0;                 // The Number of Satellites used in Fix
 
-    private int gpsActivity_activeTab = 0;                       // The active tab on GPSActivity
+    private int gpsActivityActiveTab = 1;                       // The active tab on GPSActivity
     private int jobProgress = 0;
     private int jobsPending = 0;                                 // The number of jobs to be done
     public int jobType = JOB_TYPE_NONE;                          // The type of job that is pending
@@ -666,12 +666,12 @@ public class GPSApplication extends Application implements LocationListener {
         this.jobsPending = jobsPending;
     }
 
-    public int getGPSActivity_activeTab() {
-        return gpsActivity_activeTab;
+    public int getGPSActivityActiveTab() {
+        return gpsActivityActiveTab;
     }
 
-    public void setGPSActivity_activeTab(int gpsActivity_activeTab) {
-        this.gpsActivity_activeTab = gpsActivity_activeTab;
+    public void setGPSActivityActiveTab(int gpsActivityActiveTab) {
+        this.gpsActivityActiveTab = gpsActivityActiveTab;
     }
 
     public List<ExportingTask> getExportingTaskList() {

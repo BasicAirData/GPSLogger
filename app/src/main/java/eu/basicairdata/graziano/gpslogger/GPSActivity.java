@@ -22,7 +22,6 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -90,8 +89,6 @@ public class GPSActivity extends AppCompatActivity {
     private ActionMode actionMode;
     private View bottomSheet;
     private BottomSheetBehavior bottomSheetBehavior;
-    private int activeTab = 1;
-    private final Context context = this;
     private boolean showToastGrantStoragePermission = false;
 
     @Override
@@ -119,8 +116,7 @@ public class GPSActivity extends AppCompatActivity {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
                         super.onTabSelected(tab);
-                        activeTab = tab.getPosition();
-                        gpsApp.setGPSActivity_activeTab(activeTab);
+                        gpsApp.setGPSActivityActiveTab(tab.getPosition());
                         updateBottomSheetPosition();
                         activateActionModeIfNeeded();
                     }
@@ -135,8 +131,7 @@ public class GPSActivity extends AppCompatActivity {
     public void onStart() {
         Log.w("myApp", "[#] " + this + " - onStart()");
         super.onStart();
-        activeTab = tabLayout.getSelectedTabPosition();
-        gpsApp.setGPSActivity_activeTab(activeTab);
+        gpsApp.setGPSActivityActiveTab(tabLayout.getSelectedTabPosition());
     }
 
     @Override
@@ -426,8 +421,8 @@ public class GPSActivity extends AppCompatActivity {
      * Expands/Collapses the bottom bar, basing on the active tab.
      */
     private void updateBottomSheetPosition() {
-        activeTab = tabLayout.getSelectedTabPosition();
-        if (activeTab != 2) {
+        gpsApp.setGPSActivityActiveTab(tabLayout.getSelectedTabPosition());
+        if (gpsApp.getGPSActivityActiveTab() != 2) {
             bottomSheetBehavior.setPeekHeight(1);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             //Log.w("myApp", "[#] GPSActivity.java - mBottomSheetBehavior.setPeekHeight(" + bottomSheet.getHeight() +");");
@@ -556,10 +551,9 @@ public class GPSActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if ((gpsApp.getNumberOfSelectedTracks() > 0) && (activeTab == 2)) {
-                    if (actionMode == null)
-                        actionMode = (startSupportActionMode(new ToolbarActionMode()));
-                    actionMode.setTitle(gpsApp.getNumberOfSelectedTracks() > 1 ? String.valueOf(gpsApp.getNumberOfSelectedTracks()) : "");
+                if ((gpsApp.getNumberOfSelectedTracks() > 0) && (gpsApp.getGPSActivityActiveTab()  == 2)) {
+                    if (actionMode == null) actionMode = (startSupportActionMode(new ToolbarActionMode()));
+                    if (actionMode != null) actionMode.setTitle(gpsApp.getNumberOfSelectedTracks() > 1 ? String.valueOf(gpsApp.getNumberOfSelectedTracks()) : "");
                 } else if (actionMode != null) {
                     actionMode.finish();
                     actionMode = null;
