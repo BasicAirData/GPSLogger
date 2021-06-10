@@ -153,7 +153,7 @@ public class FragmentRecordingControls extends Fragment {
                     Update();
                 }
             } else {
-                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                 toast.show();
             }
@@ -178,7 +178,7 @@ public class FragmentRecordingControls extends Fragment {
                     Update();
                 }
             } else {
-                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                 toast.show();
             }
@@ -205,13 +205,13 @@ public class FragmentRecordingControls extends Fragment {
                         tpDialog.setFinalizeTrackWithOk(true);
                         tpDialog.show(fm, "");
                     } else {
-                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_nothing_to_save, Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_nothing_to_save, Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                         toast.show();
                     }
                 }
             } else {
-                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                 toast.show();
             }
@@ -224,6 +224,11 @@ public class FragmentRecordingControls extends Fragment {
     public void onToggleLock() {
         if (isAdded()) {
             gpsApp.setBottomBarLocked(!gpsApp.isBottomBarLocked());
+            if (gpsApp.isBottomBarLocked()) {
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                toast.show();
+            }
             Update();
         }
     }
