@@ -2,7 +2,10 @@
 
 <!--
   ~ filepaths.xml
-  ~ Created by G.Capelli (BasicAirData) on 30/6/2020
+  ~ Created by G.Capelli on 30/6/2020
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,4 +25,7 @@
     <external-path
         name = "gps_logger"
         path = "GPSLogger" />
+    <files-path
+        name = "private_uri"
+        path = "URI" />
 </paths>

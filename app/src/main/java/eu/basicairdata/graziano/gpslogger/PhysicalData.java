@@ -1,6 +1,9 @@
 /*
  * PhysicalData - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 21/3/2017
+ * Created by G.Capelli on 21/3/2017
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +21,11 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+/**
+ * The data structure that defines a physical measurement.
+ * A physical data includes a number and a unit of measurement.
+ */
 class PhysicalData {
-    String Value;       //The string of the Numerical value of the Physical Quantity
-    String UM;          //The string of the Unit of Measurement
+    String value;       // The Numerical value of the Physical Quantity
+    String um;          // The Unit of Measurement
 }

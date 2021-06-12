@@ -2,7 +2,10 @@
 
 <!--
   ~ main_menu.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/6/2016
+  ~ Created by G.Capelli on 8/6/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -34,16 +37,13 @@
         android:title="@string/menu_about"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_shutdown"
+        android:id="@+id/action_online_help"
         android:orderInCategory="102"
+        android:title="@string/menu_online_help"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_shutdown"
+        android:orderInCategory="103"
         android:title="@string/menu_shutdown"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_track_finished"
-        android:visible="false"
-        android:orderInCategory="105"
-        android:icon="@drawable/ic_done_24dp"
-        android:title="@string/menu_track_finished"
-        app:showAsAction="ifRoom" />
 </menu>

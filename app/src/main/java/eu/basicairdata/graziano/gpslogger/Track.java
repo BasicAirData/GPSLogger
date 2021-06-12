@@ -1,6 +1,9 @@
-/**
+/*
  * Track - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 1/5/2016
+ * Created by G.Capelli on 1/5/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,331 +28,395 @@ import java.util.Locale;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
-
+/**
+ * Describes and manages a Track.
+ */
 public class Track {
 
     // Constants
-    private static final double MIN_ALTITUDE_STEP = 8.0;
-    private static final float MOVEMENT_SPEED_THRESHOLD = 0.5f;     // The minimum speed (in m/s) to consider the user in movement
-    private static final float STANDARD_ACCURACY = 10.0f;
-    private static final float SECURITY_COEFF = 1.7f;
+    private static final double MIN_ALTITUDE_STEP           = 8.0;
+    private static final float  MOVEMENT_SPEED_THRESHOLD    = 0.5f;     // The minimum speed (in m/s) to consider the user in movement
+    private static final float  STANDARD_ACCURACY           = 10.0f;
+    private static final float  SECURITY_COEFFICIENT        = 1.7f;
 
-    private static final int TRACK_TYPE_STEADY   = 0;
-    private static final int TRACK_TYPE_WALK     = 1;
-    private static final int TRACK_TYPE_MOUNTAIN = 2;
-    private static final int TRACK_TYPE_RUN      = 3;
-    private static final int TRACK_TYPE_BICYCLE  = 4;
-    private static final int TRACK_TYPE_CAR      = 5;
-    private static final int TRACK_TYPE_FLIGHT   = 6;
-    private static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
+    public static final int TRACK_TYPE_STEADY   = 0;
+    public static final int TRACK_TYPE_WALK     = 1;
+    public static final int TRACK_TYPE_MOUNTAIN = 2;
+    public static final int TRACK_TYPE_RUN      = 3;
+    public static final int TRACK_TYPE_BICYCLE  = 4;
+    public static final int TRACK_TYPE_CAR      = 5;
+    public static final int TRACK_TYPE_FLIGHT   = 6;
+    public static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
 
     // Variables
-    private long   id;                                              // Saved in DB
-    private String Name                         = "";               // Saved in DB
+    private long    id;                                             // Saved in DB
+    private String  name                        = "";               // Saved in DB
+    private String  description                 = "";               // Saved in DB
+    // The data related to the Start Point
+    private double  latitudeStart               = NOT_AVAILABLE;    // Saved in DB
+    private double  longitudeStart              = NOT_AVAILABLE;    // Saved in DB
+    private double  altitudeStart               = NOT_AVAILABLE;    // Saved in DB
+    private double  egmAltitudeCorrectionStart  = NOT_AVAILABLE;
+    private float   accuracyStart               = STANDARD_ACCURACY;// Saved in DB
+    private float   speedStart                  = NOT_AVAILABLE;    // Saved in DB
+    private long    timeStart                   = NOT_AVAILABLE;    // Saved in DB
+    // The data related to the Last FIX
+    // added to the track
+    private long    timeLastFix                 = NOT_AVAILABLE;    // Saved in DB
+    // The data related to the End Point
+    private double  latitudeEnd                 = NOT_AVAILABLE;    // Saved in DB
+    private double  longitudeEnd                = NOT_AVAILABLE;    // Saved in DB
+    private double  altitudeEnd                 = NOT_AVAILABLE;    // Saved in DB
+    private double  egmAltitudeCorrectionEnd    = NOT_AVAILABLE;
+    private float   accuracyEnd                 = STANDARD_ACCURACY;// Saved in DB
+    private float   speedEnd                    = NOT_AVAILABLE;    // Saved in DB
+    private long    timeEnd                     = NOT_AVAILABLE;    // Saved in DB
+    // The data related to the Point
+    // stored as last Step for Distance calculation
+    private double  latitudeLastStepDistance    = NOT_AVAILABLE;    // Saved in DB
+    private double  longitudeLastStepDistance   = NOT_AVAILABLE;    // Saved in DB
+    private float   accuracyLastStepDistance    = STANDARD_ACCURACY;// Saved in DB
+    // The data related to the Point
+    // stored as last Step for Altitude
+    private double  altitudeLastStepAltitude    = NOT_AVAILABLE;    // Saved in DB
+    private float   accuracyLastStepAltitude    = STANDARD_ACCURACY;// Saved in DB
 
-    private double  Start_Latitude              = NOT_AVAILABLE;    // Saved in DB
-    private double  Start_Longitude             = NOT_AVAILABLE;    // Saved in DB
-    private double  Start_Altitude              = NOT_AVAILABLE;    // Saved in DB
-    private double  Start_EGMAltitudeCorrection = NOT_AVAILABLE;
-    private float   Start_Accuracy              = STANDARD_ACCURACY;// Saved in DB
-    private float   Start_Speed                 = NOT_AVAILABLE;    // Saved in DB
-    private long    Start_Time                  = NOT_AVAILABLE;    // Saved in DB
+    private double  latitudeMin                 = NOT_AVAILABLE;    // Saved in DB
+    private double  longitudeMin                = NOT_AVAILABLE;    // Saved in DB
 
-    private long    LastFix_Time                = NOT_AVAILABLE;    // Saved in DB
+    private double  latitudeMax                 = NOT_AVAILABLE;    // Saved in DB
+    private double  longitudeMax                = NOT_AVAILABLE;    // Saved in DB
 
-    private double  End_Latitude                = NOT_AVAILABLE;    // Saved in DB
-    private double  End_Longitude               = NOT_AVAILABLE;    // Saved in DB
-    private double  End_Altitude                = NOT_AVAILABLE;    // Saved in DB
-    private double  End_EGMAltitudeCorrection   = NOT_AVAILABLE;
-    private float   End_Accuracy                = STANDARD_ACCURACY;// Saved in DB
-    private float   End_Speed                   = NOT_AVAILABLE;    // Saved in DB
-    private long    End_Time                    = NOT_AVAILABLE;    // Saved in DB
+    private long    duration                    = NOT_AVAILABLE;    // Saved in DB
+    private long    durationMoving              = NOT_AVAILABLE;    // Saved in DB
 
-    private double  LastStepDistance_Latitude   = NOT_AVAILABLE;    // Saved in DB
-    private double  LastStepDistance_Longitude  = NOT_AVAILABLE;    // Saved in DB
-    private float   LastStepDistance_Accuracy   = STANDARD_ACCURACY;// Saved in DB
+    private float   distance                    = NOT_AVAILABLE;    // Saved in DB
+    private float   distanceInProgress          = NOT_AVAILABLE;    // Saved in DB
+    private long    distanceLastAltitude        = NOT_AVAILABLE;    // Saved in DB
 
-    private double  LastStepAltitude_Altitude   = NOT_AVAILABLE;    // Saved in DB
-    private float   LastStepAltitude_Accuracy   = STANDARD_ACCURACY;// Saved in DB
+    private double  altitudeUp                  = NOT_AVAILABLE;    // Saved in DB
+    private double  altitudeDown                = NOT_AVAILABLE;    // Saved in DB
+    private double  altitudeInProgress          = NOT_AVAILABLE;    // Saved in DB
 
-    private double  Min_Latitude                = NOT_AVAILABLE;    // Saved in DB
-    private double  Min_Longitude               = NOT_AVAILABLE;    // Saved in DB
+    private float   speedMax                    = NOT_AVAILABLE;    // Saved in DB
+    private float   speedAverage                = NOT_AVAILABLE;    // Saved in DB
+    private float   speedAverageMoving          = NOT_AVAILABLE;    // Saved in DB
 
-    private double  Max_Latitude                = NOT_AVAILABLE;    // Saved in DB
-    private double  Max_Longitude               = NOT_AVAILABLE;    // Saved in DB
+    private long    numberOfLocations           = 0;                // Saved in DB
+    private long    numberOfPlacemarks          = 0;                // Saved in DB
 
-    private long    Duration                    = NOT_AVAILABLE;    // Saved in DB
-    private long    Duration_Moving             = NOT_AVAILABLE;    // Saved in DB
-
-    private float   Distance                    = NOT_AVAILABLE;    // Saved in DB
-    private float   DistanceInProgress          = NOT_AVAILABLE;    // Saved in DB
-    private long    DistanceLastAltitude        = NOT_AVAILABLE;    // Saved in DB
-
-    private double  Altitude_Up                 = NOT_AVAILABLE;    // Saved in DB
-    private double  Altitude_Down               = NOT_AVAILABLE;    // Saved in DB
-    private double  Altitude_InProgress         = NOT_AVAILABLE;    // Saved in DB
-
-    private float   SpeedMax                    = NOT_AVAILABLE;    // Saved in DB
-    private float   SpeedAverage                = NOT_AVAILABLE;    // Saved in DB
-    private float   SpeedAverageMoving          = NOT_AVAILABLE;    // Saved in DB
-
-    private long    NumberOfLocations           = 0;                // Saved in DB
-    private long    NumberOfPlacemarks          = 0;                // Saved in DB
-
-    private int ValidMap                        = 1;                // Saved in DB
+    private int     validMap                    = 1;                // Saved in DB
     // 1 = Map extents valid, OK generation of Thumb
-    // 0 = Do not generate thumb (track crosses antimeridian)
+    // 0 = Do not generate thumb (track crosses anti-meridian)
 
-    private int Type = TRACK_TYPE_ND;                               // Saved in DB
+    private int     type                        = TRACK_TYPE_ND;    // Saved in DB
 
     // True if the card view is selected
-    private boolean Selected = false;
+    private boolean isSelected = false;
 
     // The altitude validator (the anti spikes filter):
     // - Max Acceleration = 12 m/s^2
     // - Stabilization time = 4 s
-    private SpikesChecker AltitudeFilter = new SpikesChecker(12, 4);
+    private final SpikesChecker altitudeFilter = new SpikesChecker(12, 4);
 
+    /**
+     * Add a LocationExtended to the Track, and updates the Track statistics.
+     *
+     * @param location the location to be added to the Track
+     */
     public void add(LocationExtended location) {
-        if (NumberOfLocations == 0) {
+        if (numberOfLocations == 0) {
             // Init "Start" variables
-            Start_Latitude = location.getLocation().getLatitude();
-            Start_Longitude = location.getLocation().getLongitude();
+            latitudeStart = location.getLocation().getLatitude();
+            longitudeStart = location.getLocation().getLongitude();
             if (location.getLocation().hasAltitude()) {
-                Start_Altitude = location.getLocation().getAltitude();
+                altitudeStart = location.getLocation().getAltitude();
             } else {
-                Start_Altitude = NOT_AVAILABLE;
+                altitudeStart = NOT_AVAILABLE;
             }
-            Start_EGMAltitudeCorrection = location.getAltitudeEGM96Correction();
-            Start_Speed = location.getLocation().hasSpeed() ? location.getLocation().getSpeed() : NOT_AVAILABLE;
-            Start_Accuracy = location.getLocation().hasAccuracy() ? location.getLocation().getAccuracy() : STANDARD_ACCURACY;
-            Start_Time = location.getLocation().getTime();
+            egmAltitudeCorrectionStart = location.getAltitudeEGM96Correction();
+            speedStart = location.getLocation().hasSpeed() ? location.getLocation().getSpeed() : NOT_AVAILABLE;
+            accuracyStart = location.getLocation().hasAccuracy() ? location.getLocation().getAccuracy() : STANDARD_ACCURACY;
+            timeStart = location.getLocation().getTime();
 
-            LastStepDistance_Latitude = Start_Latitude;
-            LastStepDistance_Longitude = Start_Longitude;
-            LastStepDistance_Accuracy = Start_Accuracy;
+            latitudeLastStepDistance = latitudeStart;
+            longitudeLastStepDistance = longitudeStart;
+            accuracyLastStepDistance = accuracyStart;
 
-            Max_Latitude = Start_Latitude;
-            Max_Longitude = Start_Longitude;
-            Min_Latitude = Start_Latitude;
-            Min_Longitude = Start_Longitude;
+            latitudeMax = latitudeStart;
+            longitudeMax = longitudeStart;
+            latitudeMin = latitudeStart;
+            longitudeMin = longitudeStart;
 
-            if (Name.equals("")) {
+            if (name.equals("")) {
                 SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
-                Name = df2.format(Start_Time);
+                name = df2.format(timeStart);
             }
 
-            LastFix_Time = Start_Time;
-            End_Time = Start_Time;
+            timeLastFix = timeStart;
+            timeEnd = timeStart;
 
-            Duration_Moving = 0;
-            Duration = 0;
-            Distance = 0;
+            durationMoving = 0;
+            duration = 0;
+            distance = 0;
         }
 
-        LastFix_Time = End_Time;
+        timeLastFix = timeEnd;
 
-        End_Latitude = location.getLocation().getLatitude();
-        End_Longitude = location.getLocation().getLongitude();
+        latitudeEnd = location.getLocation().getLatitude();
+        longitudeEnd = location.getLocation().getLongitude();
         if (location.getLocation().hasAltitude()) {
-            End_Altitude = location.getLocation().getAltitude();
+            altitudeEnd = location.getLocation().getAltitude();
         } else {
-            End_Altitude = NOT_AVAILABLE;
+            altitudeEnd = NOT_AVAILABLE;
         }
-        End_EGMAltitudeCorrection = location.getAltitudeEGM96Correction();
+        egmAltitudeCorrectionEnd = location.getAltitudeEGM96Correction();
 
-        End_Speed = location.getLocation().hasSpeed() ? location.getLocation().getSpeed() : NOT_AVAILABLE;
-        End_Accuracy = location.getLocation().hasAccuracy() ? location.getLocation().getAccuracy() : STANDARD_ACCURACY;
-        End_Time = location.getLocation().getTime();
+        speedEnd = location.getLocation().hasSpeed() ? location.getLocation().getSpeed() : NOT_AVAILABLE;
+        accuracyEnd = location.getLocation().hasAccuracy() ? location.getLocation().getAccuracy() : STANDARD_ACCURACY;
+        timeEnd = location.getLocation().getTime();
 
-        if (End_EGMAltitudeCorrection == NOT_AVAILABLE) getEnd_EGMAltitudeCorrection();
-        if (Start_EGMAltitudeCorrection == NOT_AVAILABLE) getStart_EGMAltitudeCorrection();
+        if (egmAltitudeCorrectionEnd == NOT_AVAILABLE) getEGMAltitudeCorrectionEnd();
+        if (egmAltitudeCorrectionStart == NOT_AVAILABLE) getEGMAltitudeCorrectionStart();
 
         // ---------------------------------------------- Load the new value into antispikes filter
-        if (End_Altitude != NOT_AVAILABLE) AltitudeFilter.load(End_Time, End_Altitude);
+        if (altitudeEnd != NOT_AVAILABLE) altitudeFilter.load(timeEnd, altitudeEnd);
 
         // ------------------------------------------------------------- Coords for thumb and stats
 
-        if (ValidMap != 0) {
-            if (End_Latitude > Max_Latitude) Max_Latitude = End_Latitude;
-            if (End_Longitude > Max_Longitude) Max_Longitude = End_Longitude;
-            if (End_Latitude < Min_Latitude) Min_Latitude = End_Latitude;
-            if (End_Longitude < Min_Longitude) Min_Longitude = End_Longitude;
+        if (validMap != 0) {
+            if (latitudeEnd > latitudeMax) latitudeMax = latitudeEnd;
+            if (longitudeEnd > longitudeMax) longitudeMax = longitudeEnd;
+            if (latitudeEnd < latitudeMin) latitudeMin = latitudeEnd;
+            if (longitudeEnd < longitudeMin) longitudeMin = longitudeEnd;
 
-            if (Math.abs(LastStepDistance_Longitude - End_Longitude) > 90) ValidMap = 0;
+            if (Math.abs(longitudeLastStepDistance - longitudeEnd) > 90) validMap = 0;
             //  YOU PASS FROM -180 TO +180, OR REVERSE. iN THE PACIFIC OCEAN.
             //  in that case the app doesn't generate the thumb map.
         }
 
         // ---------------------------------------------------------------------------------- Times
 
-        Duration = End_Time - Start_Time;
-        if (End_Speed >= MOVEMENT_SPEED_THRESHOLD) Duration_Moving += End_Time - LastFix_Time;
+        duration = timeEnd - timeStart;
+        if (speedEnd >= MOVEMENT_SPEED_THRESHOLD) durationMoving += timeEnd - timeLastFix;
 
         // --------------------------- Spaces (Distances) increment if distance > sum of accuracies
 
         // -- Temp locations for "DistanceTo"
         Location LastStepDistanceLoc = new Location("TEMP");
-        LastStepDistanceLoc.setLatitude(LastStepDistance_Latitude);
-        LastStepDistanceLoc.setLongitude(LastStepDistance_Longitude);
+        LastStepDistanceLoc.setLatitude(latitudeLastStepDistance);
+        LastStepDistanceLoc.setLongitude(longitudeLastStepDistance);
 
         Location EndLoc = new Location("TEMP");
-        EndLoc.setLatitude(End_Latitude);
-        EndLoc.setLongitude(End_Longitude);
+        EndLoc.setLatitude(latitudeEnd);
+        EndLoc.setLongitude(longitudeEnd);
         // -----------------------------------
 
-        DistanceInProgress = LastStepDistanceLoc.distanceTo(EndLoc);
-        float DeltaDistancePlusAccuracy = DistanceInProgress + End_Accuracy;
+        distanceInProgress = LastStepDistanceLoc.distanceTo(EndLoc);
+        float DeltaDistancePlusAccuracy = distanceInProgress + accuracyEnd;
 
-        if (DeltaDistancePlusAccuracy < DistanceInProgress + End_Accuracy) {
-            LastStepDistance_Accuracy = DeltaDistancePlusAccuracy;
+        if (DeltaDistancePlusAccuracy < distanceInProgress + accuracyEnd) {
+            accuracyLastStepDistance = DeltaDistancePlusAccuracy;
             //Log.w("myApp", "[#] Track.java - LastStepDistance_Accuracy updated to " + LastStepDistance_Accuracy );
         }
 
-        if (DistanceInProgress > End_Accuracy + LastStepDistance_Accuracy) {
-            Distance += DistanceInProgress;
-            if (DistanceLastAltitude != NOT_AVAILABLE) DistanceLastAltitude += DistanceInProgress;
-            DistanceInProgress = 0;
+        if (distanceInProgress > accuracyEnd + accuracyLastStepDistance) {
+            distance += distanceInProgress;
+            if (distanceLastAltitude != NOT_AVAILABLE) distanceLastAltitude += distanceInProgress;
+            distanceInProgress = 0;
 
-            LastStepDistance_Latitude = End_Latitude;
-            LastStepDistance_Longitude = End_Longitude;
-            LastStepDistance_Accuracy = End_Accuracy;
+            latitudeLastStepDistance = latitudeEnd;
+            longitudeLastStepDistance = longitudeEnd;
+            accuracyLastStepDistance = accuracyEnd;
         }
 
         // Found a first fix with altitude!!
-        if ((End_Altitude != NOT_AVAILABLE) && (DistanceLastAltitude == NOT_AVAILABLE)) {
-            DistanceLastAltitude = 0;
-            Altitude_Up = 0;
-            Altitude_Down = 0;
-            if (Start_Altitude == NOT_AVAILABLE) Start_Altitude = End_Altitude;
-            LastStepAltitude_Altitude = End_Altitude;
-            LastStepAltitude_Accuracy = End_Accuracy;
+        if ((altitudeEnd != NOT_AVAILABLE) && (distanceLastAltitude == NOT_AVAILABLE)) {
+            distanceLastAltitude = 0;
+            altitudeUp = 0;
+            altitudeDown = 0;
+            if (altitudeStart == NOT_AVAILABLE) altitudeStart = altitudeEnd;
+            altitudeLastStepAltitude = altitudeEnd;
+            accuracyLastStepAltitude = accuracyEnd;
         }
 
-        if ((LastStepAltitude_Altitude != NOT_AVAILABLE) && (End_Altitude != NOT_AVAILABLE)) {
-            Altitude_InProgress = End_Altitude - LastStepAltitude_Altitude;
+        if ((altitudeLastStepAltitude != NOT_AVAILABLE) && (altitudeEnd != NOT_AVAILABLE)) {
+            altitudeInProgress = altitudeEnd - altitudeLastStepAltitude;
             // Improve last step accuracy in case of new data elements:
-            float DeltaAltitudePlusAccuracy = (float) Math.abs(Altitude_InProgress) + End_Accuracy;
-            if (DeltaAltitudePlusAccuracy <= LastStepAltitude_Accuracy) {
-                LastStepAltitude_Accuracy = DeltaAltitudePlusAccuracy;
-                DistanceLastAltitude = 0;
+            float DeltaAltitudePlusAccuracy = (float) Math.abs(altitudeInProgress) + accuracyEnd;
+            if (DeltaAltitudePlusAccuracy <= accuracyLastStepAltitude) {
+                accuracyLastStepAltitude = DeltaAltitudePlusAccuracy;
+                distanceLastAltitude = 0;
                 //Log.w("myApp", "[#] Track.java - LastStepAltitude_Accuracy updated to " + LastStepAltitude_Accuracy );
             }
             // Evaluate the altitude step convalidation:
-            if ((Math.abs(Altitude_InProgress) > MIN_ALTITUDE_STEP) && AltitudeFilter.isValid()
-                    && ((float) Math.abs(Altitude_InProgress) > (SECURITY_COEFF * (LastStepAltitude_Accuracy + End_Accuracy)))) {
+            if ((Math.abs(altitudeInProgress) > MIN_ALTITUDE_STEP) && altitudeFilter.isValid()
+                    && ((float) Math.abs(altitudeInProgress) > (SECURITY_COEFFICIENT * (accuracyLastStepAltitude + accuracyEnd)))) {
                 // Altitude step:
                 // increment distance only if the inclination is relevant (assume deltah=20m in max 5000m)
-                if (DistanceLastAltitude < 5000) {
-                    float hypotenuse = (float) Math.sqrt((double) (DistanceLastAltitude * DistanceLastAltitude) + (Altitude_InProgress * Altitude_InProgress));
-                    Distance = Distance + hypotenuse - DistanceLastAltitude;
+                if (distanceLastAltitude < 5000) {
+                    float hypotenuse = (float) Math.sqrt((double) (distanceLastAltitude * distanceLastAltitude) + (altitudeInProgress * altitudeInProgress));
+                    distance = distance + hypotenuse - distanceLastAltitude;
                     //Log.w("myApp", "[#] Track.java - Distance += " + (hypotenuse - DistanceLastAltitude));
                 }
                 //Reset variables
-                LastStepAltitude_Altitude = End_Altitude;
-                LastStepAltitude_Accuracy = End_Accuracy;
-                DistanceLastAltitude = 0;
+                altitudeLastStepAltitude = altitudeEnd;
+                accuracyLastStepAltitude = accuracyEnd;
+                distanceLastAltitude = 0;
 
-                if (Altitude_InProgress > 0) Altitude_Up += Altitude_InProgress;    // Increment the correct value of Altitude UP/DOWN
-                else Altitude_Down -= Altitude_InProgress;
-                Altitude_InProgress = 0;
+                if (altitudeInProgress > 0) altitudeUp += altitudeInProgress;    // Increment the correct value of Altitude UP/DOWN
+                else altitudeDown -= altitudeInProgress;
+                altitudeInProgress = 0;
             }
 
         }
 
         // --------------------------------------------------------------------------------- Speeds
 
-        if ((End_Speed != NOT_AVAILABLE) && (End_Speed > SpeedMax)) SpeedMax = End_Speed;
-        if (Duration > 0) SpeedAverage = (Distance + DistanceInProgress) / (((float) Duration) / 1000f);
-        if (Duration_Moving > 0) SpeedAverageMoving = (Distance + DistanceInProgress) / (((float) Duration_Moving) / 1000f);
-        NumberOfLocations++;
+        if ((speedEnd != NOT_AVAILABLE) && (speedEnd > speedMax)) speedMax = speedEnd;
+        if (duration > 0) speedAverage = (distance + distanceInProgress) / (((float) duration) / 1000f);
+        if (durationMoving > 0) speedAverageMoving = (distance + distanceInProgress) / (((float) durationMoving) / 1000f);
+        numberOfLocations++;
     }
 
-    // Empty constructor
+    /**
+     * Creates a void Track.
+     */
     public Track(){
     }
 
-    // constructor
-    public Track(String Name){
-        this.Name = Name;
+    /**
+     * Creates a Track with the specified name.
+     *
+     * @param name The name of the Track
+     */
+    public Track(String name){
+        this.name = name;
     }
 
-    public void FromDB(long id, String Name, String From, String To,
-                       double Start_Latitude,double Start_Longitude, double Start_Altitude,
-                       float Start_Accuracy, float Start_Speed, long Start_Time, long LastFix_Time,
-                       double End_Latitude, double End_Longitude, double End_Altitude,
-                       float End_Accuracy, float End_Speed, long End_Time,
-                       double LastStepDistance_Latitude, double LastStepDistance_Longitude, float LastStepDistance_Accuracy,
-                       double LastStepAltitude_Altitude, float LastStepAltitude_Accuracy,
-                       double Min_Latitude, double Min_Longitude,
-                       double Max_Latitude, double Max_Longitude,
-                       long Duration, long Duration_Moving, float Distance, float DistanceInProgress,
-                       long DistanceLastAltitude, double Altitude_Up, double Altitude_Down,
-                       double Altitude_InProgress, float SpeedMax, float   SpeedAverage,
-                       float SpeedAverageMoving, long NumberOfLocations, long NumberOfPlacemarks,
-                       int ValidMap, int Type) {
+    /**
+     * Creates a Track with the given data.
+     * This method is used to load the Track from the Database.
+     *
+     * @param id The id of the Track
+     * @param name The name of the track
+     * @param from The description of the start point
+     * @param to The description of the endpoint
+     * @param latitudeStart The latitude of the start point
+     * @param longitudeStart The longitude of the start point
+     * @param altitudeStart The raw altitude of the start point (without any correction)
+     * @param accuracyStart The accuracy of the start point
+     * @param speedStart The speed of the start point
+     * @param timeStart The time of the start point
+     * @param timeLastFix The time of the last fix
+     * @param latitudeEnd The latitude of the endpoint
+     * @param longitudeEnd The longitude of the endpoint
+     * @param altitudeEnd The raw altitude of the endpoint (without any correction)
+     * @param accuracyEnd The accuracy of the endpoint
+     * @param speedEnd The speed of the endpoint
+     * @param timeEnd The time of the endpoint
+     * @param latitudeLastStepDistance The latitude of the point stored as last step for distance calculation
+     * @param longitudeLastStepDistance The longitude of the point stored as last step for distance calculation
+     * @param accuracyLastStepDistance The accuracy of the point stored as last step for distance calculation
+     * @param altitudeLastStepAltitude The altitude of the point stored as last step for altitude
+     * @param accuracyLastStepAltitude The accuracy of the point stored as last step for altitude
+     * @param latitudeMin The minimum latitude reached
+     * @param longitudeMin The minimum longitude reached
+     * @param latitudeMax The maximum latitude reached
+     * @param longitudeMax The maximum longitude reached
+     * @param duration The duration of the Track
+     * @param durationMoving The time in movement of the Track
+     * @param distance The distance of the Track
+     * @param distanceInProgress The part of the distance of the Track not yet validated
+     * @param distanceLastAltitude The distance walked since the last step of altitude
+     * @param altitudeUp The total ascending
+     * @param altitudeDown The total descending
+     * @param altitudeInProgress The altitude gap since the last altitude step
+     * @param speedMax The maximum speed reached
+     * @param speedAverage The average speed based on total time
+     * @param speedAverageMoving The average speed based on the time in movement
+     * @param numberOfLocations The number of Locations recorded
+     * @param numberOfPlacemarks The number of Placemarks recorded
+     * @param validMap 1 if the map should be drawn
+     * @param type The type of activity done during the Track recording
+     * @param description The description of the Track
+     */
+    public void fromDB(long id, String name, String from, String to,
+                       double latitudeStart, double longitudeStart, double altitudeStart,
+                       float accuracyStart, float speedStart, long timeStart, long timeLastFix,
+                       double latitudeEnd, double longitudeEnd, double altitudeEnd,
+                       float accuracyEnd, float speedEnd, long timeEnd,
+                       double latitudeLastStepDistance, double longitudeLastStepDistance, float accuracyLastStepDistance,
+                       double altitudeLastStepAltitude, float accuracyLastStepAltitude,
+                       double latitudeMin, double longitudeMin,
+                       double latitudeMax, double longitudeMax,
+                       long duration, long durationMoving, float distance, float distanceInProgress,
+                       long distanceLastAltitude, double altitudeUp, double altitudeDown,
+                       double altitudeInProgress, float speedMax, float speedAverage,
+                       float speedAverageMoving, long numberOfLocations, long numberOfPlacemarks,
+                       int validMap, int type, String description) {
         this.id = id;
-        this.Name = Name;
+        this.name = name;
+        this.description = description;
 
-        this.Start_Latitude = Start_Latitude;
-        this.Start_Longitude = Start_Longitude;
-        this.Start_Altitude = Start_Altitude;
-        this.Start_Accuracy = Start_Accuracy;
-        this.Start_Speed = Start_Speed;
-        this.Start_Time = Start_Time;
+        this.latitudeStart = latitudeStart;
+        this.longitudeStart = longitudeStart;
+        this.altitudeStart = altitudeStart;
+        this.accuracyStart = accuracyStart;
+        this.speedStart = speedStart;
+        this.timeStart = timeStart;
 
-        this.LastFix_Time = LastFix_Time;
+        this.timeLastFix = timeLastFix;
 
-        this.End_Latitude = End_Latitude;
-        this.End_Longitude = End_Longitude;
-        this.End_Altitude = End_Altitude;
-        this.End_Accuracy = End_Accuracy;
-        this.End_Speed = End_Speed;
-        this.End_Time = End_Time;
+        this.latitudeEnd = latitudeEnd;
+        this.longitudeEnd = longitudeEnd;
+        this.altitudeEnd = altitudeEnd;
+        this.accuracyEnd = accuracyEnd;
+        this.speedEnd = speedEnd;
+        this.timeEnd = timeEnd;
 
-        this.LastStepDistance_Latitude = LastStepDistance_Latitude;
-        this.LastStepDistance_Longitude = LastStepDistance_Longitude;
-        this.LastStepDistance_Accuracy = LastStepDistance_Accuracy;
+        this.latitudeLastStepDistance = latitudeLastStepDistance;
+        this.longitudeLastStepDistance = longitudeLastStepDistance;
+        this.accuracyLastStepDistance = accuracyLastStepDistance;
 
-        this.LastStepAltitude_Altitude = LastStepAltitude_Altitude;
-        this.LastStepAltitude_Accuracy = LastStepAltitude_Accuracy;
+        this.altitudeLastStepAltitude = altitudeLastStepAltitude;
+        this.accuracyLastStepAltitude = accuracyLastStepAltitude;
 
-        this.Min_Latitude = Min_Latitude;
-        this.Min_Longitude = Min_Longitude;
+        this.latitudeMin = latitudeMin;
+        this.longitudeMin = longitudeMin;
 
-        this.Max_Latitude = Max_Latitude;
-        this.Max_Longitude = Max_Longitude;
+        this.latitudeMax = latitudeMax;
+        this.longitudeMax = longitudeMax;
 
-        this.Duration = Duration;
-        this.Duration_Moving = Duration_Moving;
+        this.duration = duration;
+        this.durationMoving = durationMoving;
 
-        this.Distance = Distance;
-        this.DistanceInProgress = DistanceInProgress;
-        this.DistanceLastAltitude = DistanceLastAltitude;
+        this.distance = distance;
+        this.distanceInProgress = distanceInProgress;
+        this.distanceLastAltitude = distanceLastAltitude;
 
-        this.Altitude_Up = Altitude_Up;
-        this.Altitude_Down = Altitude_Down;
-        this.Altitude_InProgress = Altitude_InProgress;
+        this.altitudeUp = altitudeUp;
+        this.altitudeDown = altitudeDown;
+        this.altitudeInProgress = altitudeInProgress;
 
-        this.SpeedMax = SpeedMax;
-        this.SpeedAverage = SpeedAverage;
-        this.SpeedAverageMoving = SpeedAverageMoving;
+        this.speedMax = speedMax;
+        this.speedAverage = speedAverage;
+        this.speedAverageMoving = speedAverageMoving;
 
-        this.NumberOfLocations = NumberOfLocations;
-        this.NumberOfPlacemarks = NumberOfPlacemarks;
+        this.numberOfLocations = numberOfLocations;
+        this.numberOfPlacemarks = numberOfPlacemarks;
 
-        this.ValidMap = ValidMap;
-        this.Type = Type;
+        this.validMap = validMap;
+        this.type = type;
 
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
             if (egm96.isEGMGridLoaded()) {
-                if (Start_Latitude != NOT_AVAILABLE) Start_EGMAltitudeCorrection = egm96.getEGMCorrection(Start_Latitude, Start_Longitude);
-                if (End_Latitude != NOT_AVAILABLE) End_EGMAltitudeCorrection = egm96.getEGMCorrection(End_Latitude, End_Longitude);
+                if (latitudeStart != NOT_AVAILABLE) egmAltitudeCorrectionStart = egm96.getEGMCorrection(latitudeStart, longitudeStart);
+                if (latitudeEnd != NOT_AVAILABLE) egmAltitudeCorrectionEnd = egm96.getEGMCorrection(latitudeEnd, longitudeEnd);
             }
         }
     }
-
 
     // ------------------------------------------------------------------------ Getters and Setters
 
@@ -362,238 +429,265 @@ public class Track {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
-    public double getStart_Latitude() {
-        return Start_Latitude;
+    public String getDescription() {
+        return description;
     }
 
-    public double getStart_Longitude() {
-        return Start_Longitude;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public double getStart_Altitude() {
-        return Start_Altitude;
+    public double getLatitudeStart() {
+        return latitudeStart;
     }
 
-    public double getStart_EGMAltitudeCorrection() {
+    public double getLongitudeStart() {
+        return longitudeStart;
+    }
 
-        if (Start_EGMAltitudeCorrection == NOT_AVAILABLE) {
+    public double getAltitudeStart() {
+        return altitudeStart;
+    }
+
+    public double getEGMAltitudeCorrectionStart() {
+        if (egmAltitudeCorrectionStart == NOT_AVAILABLE) {
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
                 if (egm96.isEGMGridLoaded()) {
-                    if (Start_Latitude != NOT_AVAILABLE)
-                        Start_EGMAltitudeCorrection = egm96.getEGMCorrection(Start_Latitude, Start_Longitude);
+                    if (latitudeStart != NOT_AVAILABLE)
+                        egmAltitudeCorrectionStart = egm96.getEGMCorrection(latitudeStart, longitudeStart);
                 }
             }
         }
-        return Start_EGMAltitudeCorrection;
+        return egmAltitudeCorrectionStart;
     }
 
-    public float getStart_Accuracy() {
-        return Start_Accuracy;
+    public float getAccuracyStart() {
+        return accuracyStart;
     }
 
-    public float getStart_Speed() {
-        return Start_Speed;
+    public float getSpeedStart() {
+        return speedStart;
     }
 
-    public long getStart_Time() {
-        return Start_Time;
+    public long getTimeStart() {
+        return timeStart;
     }
 
-    public long getLastFix_Time() {
-        return LastFix_Time;
+    public long getTimeLastFix() {
+        return timeLastFix;
     }
 
-    public double getEnd_Latitude() {
-        return End_Latitude;
+    public double getLatitudeEnd() {
+        return latitudeEnd;
     }
 
-    public double getEnd_Longitude() {
-        return End_Longitude;
+    public double getLongitudeEnd() {
+        return longitudeEnd;
     }
 
-    public double getEnd_Altitude() {
-        return End_Altitude;
+    public double getAltitudeEnd() {
+        return altitudeEnd;
     }
 
-    public double getEnd_EGMAltitudeCorrection() {
-        if (End_EGMAltitudeCorrection == NOT_AVAILABLE) {
+    public double getEGMAltitudeCorrectionEnd() {
+        if (egmAltitudeCorrectionEnd == NOT_AVAILABLE) {
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
                 if (egm96.isEGMGridLoaded()) {
-                    if (End_Latitude != NOT_AVAILABLE)
-                        End_EGMAltitudeCorrection = egm96.getEGMCorrection(End_Latitude, End_Longitude);
+                    if (latitudeEnd != NOT_AVAILABLE)
+                        egmAltitudeCorrectionEnd = egm96.getEGMCorrection(latitudeEnd, longitudeEnd);
                 }
             }
         }
-        return End_EGMAltitudeCorrection;
+        return egmAltitudeCorrectionEnd;
     }
 
-    public float getEnd_Accuracy() {
-        return End_Accuracy;
+    public float getAccuracyEnd() {
+        return accuracyEnd;
     }
 
-    public float getEnd_Speed() {
-        return End_Speed;
+    public float getSpeedEnd() {
+        return speedEnd;
     }
 
-    public long getEnd_Time() {
-        return End_Time;
+    public long getTimeEnd() {
+        return timeEnd;
     }
 
-    public double getLastStepDistance_Latitude() {
-        return LastStepDistance_Latitude;
+    public double getLatitudeLastStepDistance() {
+        return latitudeLastStepDistance;
     }
 
-    public double getLastStepDistance_Longitude() {
-        return LastStepDistance_Longitude;
+    public double getLongitudeLastStepDistance() {
+        return longitudeLastStepDistance;
     }
 
-    public float getLastStepDistance_Accuracy() {
-        return LastStepDistance_Accuracy;
+    public float getAccuracyLastStepDistance() {
+        return accuracyLastStepDistance;
     }
 
-    public double getLastStepAltitude_Altitude() {
-        return LastStepAltitude_Altitude;
+    public double getAltitudeLastStepAltitude() {
+        return altitudeLastStepAltitude;
     }
 
-    public float getLastStepAltitude_Accuracy() {
-        return LastStepAltitude_Accuracy;
+    public float getAccuracyLastStepAltitude() {
+        return accuracyLastStepAltitude;
     }
 
-    public double getMin_Latitude() {
-        return Min_Latitude;
+    public double getLatitudeMin() {
+        return latitudeMin;
     }
 
-    public double getMin_Longitude() {
-        return Min_Longitude;
+    public double getLongitudeMin() {
+        return longitudeMin;
     }
 
-    public double getMax_Latitude() {
-        return Max_Latitude;
+    public double getLatitudeMax() {
+        return latitudeMax;
     }
 
-    public double getMax_Longitude() {
-        return Max_Longitude;
+    public double getLongitudeMax() {
+        return longitudeMax;
     }
 
     public long getDuration() {
-        return Duration;
+        return duration;
     }
 
-    public long getDuration_Moving() {
-        return Duration_Moving;
+    public long getDurationMoving() {
+        return durationMoving;
     }
 
     public float getDistance() {
-        return Distance;
+        return distance;
     }
 
     public float getDistanceInProgress() {
-        return DistanceInProgress;
+        return distanceInProgress;
     }
 
     public long getDistanceLastAltitude() {
-        return DistanceLastAltitude;
+        return distanceLastAltitude;
     }
 
-    public double getAltitude_Up() {
-        return Altitude_Up;
+    public double getAltitudeUp() {
+        return altitudeUp;
     }
 
-    public double getAltitude_Down() {
-        return Altitude_Down;
+    public double getAltitudeDown() {
+        return altitudeDown;
     }
 
-    public double getAltitude_InProgress() {
-        return Altitude_InProgress;
+    public double getAltitudeInProgress() {
+        return altitudeInProgress;
     }
 
     public float getSpeedMax() {
-        return SpeedMax;
+        return speedMax;
     }
 
     public float getSpeedAverage() {
-        return SpeedAverage;
+        return speedAverage;
     }
 
     public float getSpeedAverageMoving() {
-        return SpeedAverageMoving;
+        return speedAverageMoving;
     }
 
     public long getNumberOfLocations() {
-        return NumberOfLocations;
+        return numberOfLocations;
     }
 
     public long getNumberOfPlacemarks() {
-        return NumberOfPlacemarks;
+        return numberOfPlacemarks;
     }
 
     public int getValidMap() {
-        return ValidMap;
+        return validMap;
     }
 
     public int getType() {
-        return Type;
+        return type;
+    }
+
+    public void setType(int type){
+        this.type = type;
     }
 
     public boolean isSelected() {
-        return Selected;
+        return isSelected;
     }
 
     public void setSelected(boolean selected) {
-        Selected = selected;
+        isSelected = selected;
     }
 
     // --------------------------------------------------------------------------------------------
 
+    /**
+     * @return true if the altitude is valid. false when in the middle of a spike.
+     */
     public boolean isValidAltitude() {
-        return AltitudeFilter.isValid();
+        return altitudeFilter.isValid();
     }
 
+    /**
+     * Notifies that a Placemark has been added to the Track into the Database
+     *
+     * @return the number of Placemarks on the Track.
+     */
     public long addPlacemark(LocationExtended location) {
-        this.NumberOfPlacemarks++ ;
-
-        if (Name.equals("")) {
+        this.numberOfPlacemarks++ ;
+        // If the Track name has not yet been set, sets it now.
+        // This means that this Placemark is the first item added to the track.
+        if (name.equals("")) {
             SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
-            Name = df2.format(location.getLocation().getTime());
+            name = df2.format(location.getLocation().getTime());
         }
-
-        return NumberOfPlacemarks;
+        return numberOfPlacemarks;
     }
 
+    /**
+     * @return the total distance, including the in-progress part.
+     */
     public float getEstimatedDistance(){
-        if (NumberOfLocations == 0) return NOT_AVAILABLE;
-        if (NumberOfLocations == 1) return 0;
-        return Distance + DistanceInProgress;
+        if (numberOfLocations == 0) return NOT_AVAILABLE;
+        if (numberOfLocations == 1) return 0;
+        return distance + distanceInProgress;
     }
 
-
-    public double getEstimatedAltitudeUp(boolean EGMCorrection){
+    /**
+     * Returns the estimated ascending altitude.
+     *
+     * @param egmCorrection if true, it estimates the altitude using also the EGM Correction.
+     * @return the estimated ascending altitude.
+     */
+    public double getEstimatedAltitudeUp(boolean egmCorrection){
         // Retrieve EGM Corrections if available
-        if ((Start_EGMAltitudeCorrection == NOT_AVAILABLE) || (End_EGMAltitudeCorrection == NOT_AVAILABLE)) {
+        if ((egmAltitudeCorrectionStart == NOT_AVAILABLE) || (egmAltitudeCorrectionEnd == NOT_AVAILABLE)) {
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
                 if (egm96.isEGMGridLoaded()) {
-                    if (Start_Latitude != NOT_AVAILABLE) Start_EGMAltitudeCorrection = egm96.getEGMCorrection(Start_Latitude, Start_Longitude);
-                    if (End_Latitude != NOT_AVAILABLE) End_EGMAltitudeCorrection = egm96.getEGMCorrection(End_Latitude, End_Longitude);
+                    if (latitudeStart != NOT_AVAILABLE) egmAltitudeCorrectionStart = egm96.getEGMCorrection(latitudeStart, longitudeStart);
+                    if (latitudeEnd != NOT_AVAILABLE) egmAltitudeCorrectionEnd = egm96.getEGMCorrection(latitudeEnd, longitudeEnd);
                 }
             }
         }
         double egmcorr = 0;
-        if ((EGMCorrection) && ((Start_EGMAltitudeCorrection != NOT_AVAILABLE) && (End_EGMAltitudeCorrection != NOT_AVAILABLE))) {
-            egmcorr = Start_EGMAltitudeCorrection - End_EGMAltitudeCorrection;
+        if ((egmCorrection) && ((egmAltitudeCorrectionStart != NOT_AVAILABLE) && (egmAltitudeCorrectionEnd != NOT_AVAILABLE))) {
+            egmcorr = egmAltitudeCorrectionStart - egmAltitudeCorrectionEnd;
         }
-        double dresultUp = Altitude_InProgress > 0 ? Altitude_Up + Altitude_InProgress : Altitude_Up;
+        double dresultUp = altitudeInProgress > 0 ? altitudeUp + altitudeInProgress : altitudeUp;
         dresultUp -= egmcorr < 0 ? egmcorr : 0;
-        double dresultDown = Altitude_InProgress < 0 ? Altitude_Down - Altitude_InProgress : Altitude_Down;
+        double dresultDown = altitudeInProgress < 0 ? altitudeDown - altitudeInProgress : altitudeDown;
         dresultDown -= egmcorr > 0 ? egmcorr : 0;
 
         if (dresultUp < 0) {
@@ -607,25 +701,30 @@ public class Track {
         return dresultUp;
     }
 
-
-    public double getEstimatedAltitudeDown(boolean EGMCorrection){
+    /**
+     * Returns the estimated descending altitude.
+     *
+     * @param egmCorrection if true, it estimates the altitude using also the EGM Correction.
+     * @return the estimated descending altitude.
+     */
+    public double getEstimatedAltitudeDown(boolean egmCorrection){
         // Retrieve EGM Corrections if available
-        if ((Start_EGMAltitudeCorrection == NOT_AVAILABLE) || (End_EGMAltitudeCorrection == NOT_AVAILABLE)) {
+        if ((egmAltitudeCorrectionStart == NOT_AVAILABLE) || (egmAltitudeCorrectionEnd == NOT_AVAILABLE)) {
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
                 if (egm96.isEGMGridLoaded()) {
-                    if (Start_Latitude != NOT_AVAILABLE) Start_EGMAltitudeCorrection = egm96.getEGMCorrection(Start_Latitude, Start_Longitude);
-                    if (End_Latitude != NOT_AVAILABLE) End_EGMAltitudeCorrection = egm96.getEGMCorrection(End_Latitude, End_Longitude);
+                    if (latitudeStart != NOT_AVAILABLE) egmAltitudeCorrectionStart = egm96.getEGMCorrection(latitudeStart, longitudeStart);
+                    if (latitudeEnd != NOT_AVAILABLE) egmAltitudeCorrectionEnd = egm96.getEGMCorrection(latitudeEnd, longitudeEnd);
                 }
             }
         }
         double egmcorr = 0;
-        if ((EGMCorrection) && ((Start_EGMAltitudeCorrection != NOT_AVAILABLE) && (End_EGMAltitudeCorrection != NOT_AVAILABLE))) {
-            egmcorr = Start_EGMAltitudeCorrection - End_EGMAltitudeCorrection;
+        if ((egmCorrection) && ((egmAltitudeCorrectionStart != NOT_AVAILABLE) && (egmAltitudeCorrectionEnd != NOT_AVAILABLE))) {
+            egmcorr = egmAltitudeCorrectionStart - egmAltitudeCorrectionEnd;
         }
-        double dresultUp = Altitude_InProgress > 0 ? Altitude_Up + Altitude_InProgress : Altitude_Up;
+        double dresultUp = altitudeInProgress > 0 ? altitudeUp + altitudeInProgress : altitudeUp;
         dresultUp -= egmcorr < 0 ? egmcorr : 0;
-        double dresultDown = Altitude_InProgress < 0 ? Altitude_Down - Altitude_InProgress : Altitude_Down;
+        double dresultDown = altitudeInProgress < 0 ? altitudeDown - altitudeInProgress : altitudeDown;
         dresultDown -= egmcorr > 0 ? egmcorr : 0;
 
         if (dresultUp < 0) {
@@ -639,89 +738,101 @@ public class Track {
         return dresultDown;
     }
 
-    public double getEstimatedAltitudeGap(boolean EGMCorrection){
-        return getEstimatedAltitudeUp(EGMCorrection) - getEstimatedAltitudeDown(EGMCorrection);
+    /**
+     * Returns the estimated gap of altitude.
+     * The Altitude Gap is the difference between the current altitude and the
+     * altitude of the start point.
+     *
+     * @param egmCorrection if true, it estimates the altitude using also the EGM Correction.
+     * @return the estimated altitude gap.
+     */
+    public double getEstimatedAltitudeGap(boolean egmCorrection){
+        return getEstimatedAltitudeUp(egmCorrection) - getEstimatedAltitudeDown(egmCorrection);
     }
 
-
+    /**
+     * @return the overall direction of the Track.
+     */
     public float getBearing() {
-        if (End_Latitude != NOT_AVAILABLE) {
-            if (((Start_Latitude == End_Latitude) && (Start_Longitude == End_Longitude)) || (Distance == 0))
+        if (latitudeEnd != NOT_AVAILABLE) {
+            if (((latitudeStart == latitudeEnd) && (longitudeStart == longitudeEnd)) || (distance == 0))
                 return NOT_AVAILABLE;
-            Location EndLoc = new Location("TEMP");
-            EndLoc.setLatitude(End_Latitude);
-            EndLoc.setLongitude(End_Longitude);
-            Location StartLoc = new Location("TEMP");
-            StartLoc.setLatitude(Start_Latitude);
-            StartLoc.setLongitude(Start_Longitude);
-            float BTo = StartLoc.bearingTo(EndLoc);
-            if (BTo < 0) BTo += 360f;
-            return BTo;
+            Location endLoc = new Location("TEMP");
+            endLoc.setLatitude(latitudeEnd);
+            endLoc.setLongitude(longitudeEnd);
+            Location startLoc = new Location("TEMP");
+            startLoc.setLatitude(latitudeStart);
+            startLoc.setLongitude(longitudeStart);
+            float bTo = startLoc.bearingTo(endLoc);
+            if (bTo < 0) bTo += 360f;
+            return bTo;
         }
         return NOT_AVAILABLE;
     }
 
-
-    // Returns the time, based on preferences (Total or Moving)
+    /**
+     * @return the time, based on preferences (Total or Moving).
+     */
     public long getPrefTime() {
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int pTime = gpsApplication.getPrefShowTrackStatsType();
+        GPSApplication gpsApp = GPSApplication.getInstance();
+        int pTime = gpsApp.getPrefShowTrackStatsType();
         switch (pTime) {
             case 0:         // Total based
-                return Duration;
+                return duration;
             case 1:         // Moving based
-                return Duration_Moving;
+                return durationMoving;
             default:
-                return Duration;
+                return duration;
         }
     }
 
-
-    // Returns the average speed, based on preferences (Total or Moving)
+    /**
+     * @return the average speed, based on preferences (Total or Moving)
+     */
     public float getPrefSpeedAverage() {
-        if (NumberOfLocations == 0) return NOT_AVAILABLE;
-        GPSApplication gpsApplication = GPSApplication.getInstance();
-        int pTime = gpsApplication.getPrefShowTrackStatsType();
+        if (numberOfLocations == 0) return NOT_AVAILABLE;
+        GPSApplication gpsApp = GPSApplication.getInstance();
+        int pTime = gpsApp.getPrefShowTrackStatsType();
         switch (pTime) {
             case 0:         // Total based
-                return SpeedAverage;
+                return speedAverage;
             case 1:         // Moving based
-                return SpeedAverageMoving;
+                return speedAverageMoving;
             default:
-                return SpeedAverage;
+                return speedAverage;
         }
     }
 
-
-    public int getTrackType() {
-
-        //if (Type != TRACK_TYPE_ND) return Type;
-
-        if ((Distance == NOT_AVAILABLE) || (SpeedMax == NOT_AVAILABLE)) {
-            if (NumberOfPlacemarks == 0) return TRACK_TYPE_ND;
+    /**
+     * @return the track Type. If not set, it returns an estimation of the activity Type, basing on Track's data.
+     */
+    public int getEstimatedTrackType() {
+        if (type != TRACK_TYPE_ND) return type;
+        if ((distance == NOT_AVAILABLE) || (speedMax == NOT_AVAILABLE)) {
+            if (numberOfPlacemarks == 0) return TRACK_TYPE_ND;
             else return TRACK_TYPE_STEADY;
         }
-        if ((Distance < 15.0f) || (SpeedMax == 0.0f) || (SpeedAverageMoving == NOT_AVAILABLE)) return TRACK_TYPE_STEADY;
-        if (SpeedMax < (7.0f / 3.6f)) {
-            if ((Altitude_Up != NOT_AVAILABLE) && (Altitude_Down != NOT_AVAILABLE))
-                if ((Altitude_Down + Altitude_Up > (0.1f * Distance)) && (Distance > 500.0f)) return TRACK_TYPE_MOUNTAIN;
+        if ((distance < 15.0f) || (speedMax == 0.0f) || (speedAverageMoving == NOT_AVAILABLE)) return TRACK_TYPE_STEADY;
+        if (speedMax < (7.0f / 3.6f)) {
+            if ((altitudeUp != NOT_AVAILABLE) && (altitudeDown != NOT_AVAILABLE))
+                if ((altitudeDown + altitudeUp > (0.1f * distance)) && (distance > 500.0f)) return TRACK_TYPE_MOUNTAIN;
             else return TRACK_TYPE_WALK;
         }
-        if (SpeedMax < (15.0f / 3.6f)) {
-            if (SpeedAverageMoving > 8.0f / 3.6f) return TRACK_TYPE_RUN;
+        if (speedMax < (15.0f / 3.6f)) {
+            if (speedAverageMoving > 8.0f / 3.6f) return TRACK_TYPE_RUN;
             else {
-                if ((Altitude_Up != NOT_AVAILABLE) && (Altitude_Down != NOT_AVAILABLE))
-                    if ((Altitude_Down + Altitude_Up > (0.1f * Distance)) && (Distance > 500.0f)) return TRACK_TYPE_MOUNTAIN;
+                if ((altitudeUp != NOT_AVAILABLE) && (altitudeDown != NOT_AVAILABLE))
+                    if ((altitudeDown + altitudeUp > (0.1f * distance)) && (distance > 500.0f)) return TRACK_TYPE_MOUNTAIN;
                 else return TRACK_TYPE_WALK;
             }
         }
-        if (SpeedMax < (50.0f / 3.6f)) {
-            if ((SpeedAverageMoving + SpeedMax) / 2 > 35.0f / 3.6f) return TRACK_TYPE_CAR;
-            if ((SpeedAverageMoving + SpeedMax) / 2 > 20.0f / 3.6)  return TRACK_TYPE_BICYCLE;
-            else if ((SpeedAverageMoving + SpeedMax) / 2 > 12.0f / 3.6f) return TRACK_TYPE_RUN;
+        if (speedMax < (50.0f / 3.6f)) {
+            if ((speedAverageMoving + speedMax) / 2 > 35.0f / 3.6f) return TRACK_TYPE_CAR;
+            if ((speedAverageMoving + speedMax) / 2 > 20.0f / 3.6)  return TRACK_TYPE_BICYCLE;
+            else if ((speedAverageMoving + speedMax) / 2 > 12.0f / 3.6f) return TRACK_TYPE_RUN;
             else {
-                if ((Altitude_Up != NOT_AVAILABLE) && (Altitude_Down != NOT_AVAILABLE))
-                    if ((Altitude_Down + Altitude_Up > (0.1f * Distance)) && (Distance > 500.0f))
+                if ((altitudeUp != NOT_AVAILABLE) && (altitudeDown != NOT_AVAILABLE))
+                    if ((altitudeDown + altitudeUp > (0.1f * distance)) && (distance > 500.0f))
                         return TRACK_TYPE_MOUNTAIN;
                     else return TRACK_TYPE_WALK;
             }
@@ -736,9 +847,8 @@ public class Track {
                 else return TRACK_TYPE_WALK;
             }*/
         }
-        if ((Altitude_Up != NOT_AVAILABLE) && (Altitude_Down != NOT_AVAILABLE))
-            if ((Altitude_Down + Altitude_Up > 5000.0) && (SpeedMax > 300.0f / 3.6f)) return TRACK_TYPE_FLIGHT;
-
+        if ((altitudeUp != NOT_AVAILABLE) && (altitudeDown != NOT_AVAILABLE))
+            if ((altitudeDown + altitudeUp > 5000.0) && (speedMax > 300.0f / 3.6f)) return TRACK_TYPE_FLIGHT;
         return TRACK_TYPE_CAR;
     }
 }

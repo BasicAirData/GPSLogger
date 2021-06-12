@@ -1,6 +1,9 @@
-/**
+/*
  * EGM96 - Singleton Java Class for Android
- * Created by G.Capelli (BasicAirData) on 24/4/2016
+ * Created by G.Capelli on 24/4/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +21,6 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,6 +37,11 @@ import java.io.OutputStream;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
+/**
+ * The Class that manage the EGM96 Altitude Correction.
+ * It loads the geoid heights from the WW15MGH.DAC binary file into a 1440x721 array
+ * and uses it to return the altitude correction basing on coordinates.
+ */
 class EGM96 {
 
     // ---------------------------------------------------------------------------- Singleton Class
@@ -42,6 +49,9 @@ class EGM96 {
 
     private EGM96(){}
 
+    /**
+     * The Singleton instance
+     */
     public static EGM96 getInstance(){
         return instance;
     }
@@ -67,7 +77,7 @@ class EGM96 {
 
 
     private static final int BOUNDARY = 3; // The grid extensions (in each of the 4 sides) of the real 721 x 1440 grid
-    private short[][] EGMGrid = new short[BOUNDARY + 1440 + BOUNDARY][BOUNDARY + 721 + BOUNDARY];
+    private final short[][] EGMGrid = new short[BOUNDARY + 1440 + BOUNDARY][BOUNDARY + 721 + BOUNDARY];
     private boolean isEGMGridLoaded = false;
     private boolean isEGMGridLoading = false;
     private boolean isEGMFileCopying = false;
@@ -76,11 +86,21 @@ class EGM96 {
 
     public static final double EGM96_VALUE_INVALID = NOT_AVAILABLE;
 
-    public void LoadGridFromFile(String FileName, String FileNameLocalCopy) {
+    /**
+     * It loads the EGM96 grid from the WW15MGH.DAC file, that can be located
+     * into the private FilesDir or into a specified public folder.
+     * <p>
+     * The method verifies that the EGM grid is already loaded and, if not,
+     * it starts the thread that loads the grid in background.
+     *
+     * @param fileName the full path of the EGM Grid File stored into the public folder
+     * @param fileNameLocalCopy the full path of the EGM Grid File stored into the private FilesDir folder
+     */
+    public void LoadGridFromFile(String fileName, String fileNameLocalCopy) {
         if (!isEGMGridLoaded && !isEGMGridLoading) {
             isEGMGridLoading = true;
-            EGMFileName = FileName;
-            EGMFileNameLocalCopy = FileNameLocalCopy;
+            EGMFileName = fileName;
+            EGMFileNameLocalCopy = fileNameLocalCopy;
             new Thread(new LoadEGM96Grid()).start();
         } else {
             if (isEGMGridLoading) Log.w("myApp", "[#] EGM96.java - Grid is already loading, please wait");
@@ -97,21 +117,41 @@ class EGM96 {
 //        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
 //    }
 
+    /**
+     * Returns true if the EGM Grid is loaded and ready to work.
+     *
+     * @return true if the grid is ready
+     */
     public boolean isEGMGridLoaded() {
         return isEGMGridLoaded;
     }
 
+    /**
+     * Returns true if the EGM Grid is loading in background.
+     *
+     * @return true if the grid is loading
+     */
     public boolean isEGMGridLoading() {
         return isEGMGridLoading;
     }
 
-    public double getEGMCorrection(double Latitude, double Longitude) {
-        // This function calculates and return the EGM96 altitude correction value of the input coordinates, in m;
-        // Input coordinates are: -90 < Latitude < 90; -180 < Longitude < 360 (android range -180 < Longitude < 180);
-
+    /**
+     * Returns the Altitude Correction (in meters) for the specified coordinates.
+     * You can calculate the Orthometric altitude (related to the sea level) using
+     * the following formula:
+     * <b>Orthometric_Height = Ellipsoidal_Height (from GPS) - EGM_Correction</b>
+     * The valid range to input coordinates is:
+     * -90 <= Latitude <= 90;
+     * -180 <= Longitude <= 360 (also if the android range is -180 < Longitude < 180);
+     *
+     * @param latitude the latitude of the location
+     * @param longitude the longitude of the location
+     * @return the altitude correction in meters
+     */
+    public double getEGMCorrection(double latitude, double longitude) {
         if (isEGMGridLoaded) {
-            double Lat = 90.0 - Latitude;
-            double Lon = Longitude;
+            double Lat = 90.0 - latitude;
+            double Lon = longitude;
             if (Lon < 0) Lon += 360.0;
 
             int ilon = (int) (Lon / 0.25) + BOUNDARY;
@@ -124,13 +164,13 @@ class EGM96 {
                 short hc21 = EGMGrid[ilon + 1][ilat];
                 short hc22 = EGMGrid[ilon + 1][ilat + 1];
 
-                // Interpolation:
+                // Bilinear Interpolation:
                 // Latitude
                 double hc1 = hc11 + (hc12 - hc11) * (Lat % 0.25) / 0.25;
                 double hc2 = hc21 + (hc22 - hc21) * (Lat % 0.25) / 0.25;
                 // Longitude
                 //double hc = (hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100;
-                //Log.w("myApp", "[#] EGM96.java - getEGMCorrection(" + Latitude + ", " + Longitude + ") = " + hc);
+                //Log.w("myApp", "[#] EGM96.java - getEGMCorrection(" + latitude + ", " + longitude + ") = " + hc);
 
                 return ((hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100);
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -140,6 +180,12 @@ class EGM96 {
         else return EGM96_VALUE_INVALID;
     }
 
+    /**
+     * Makes a copy of a file into a specified destination.
+     *
+     * @param in the source stream
+     * @param out the destination stream
+     */
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
@@ -148,16 +194,21 @@ class EGM96 {
         }
     }
 
+    /**
+     * Deletes a file.
+     */
     private void DeleteFile(String filename) {
         File file = new File(filename);
         if (file.exists ()) file.delete();
     }
 
 
-    // The Thread that loads the grid in background ------------------------------------------------
+    // The Runnable that loads the grid in background ----------------------------------------------
 
+    /**
+     * The EGM Grid background loader.
+     */
     private class LoadEGM96Grid implements Runnable {
-        // Thread: Load EGM grid
 
         @Override
         public void run() {
@@ -267,10 +318,13 @@ class EGM96 {
         }
     }
 
-    // The Thread that copies the EGM grid in FilesDir (in background) -----------------------------
+    // The Runnable that copies the EGM grid in FilesDir (in background) ---------------------------
 
+    /**
+     * Makes a copy of the EGM Grid File into the private FilesDir.
+     * The copy of the file is performed in background.
+     */
     private class CopyEGM96Grid implements Runnable {
-        // Thread: Copy the EGM grid in FilesDir
 
         @Override
         public void run() {
@@ -280,14 +334,13 @@ class EGM96 {
             if (isEGMFileCopying) return;
 
             isEGMFileCopying = true;
-
             File sd_cpy = new File(EGMFileNameLocalCopy);
             if (sd_cpy.exists()) sd_cpy.delete();
 
             File sd_old = new File(EGMFileName);
             if (sd_old.exists()) {
-                InputStream in = null;
-                OutputStream out = null;
+                InputStream in;
+                OutputStream out;
                 try {
                     in = new FileInputStream(EGMFileName);
                     out = new FileOutputStream(EGMFileNameLocalCopy);
@@ -300,12 +353,10 @@ class EGM96 {
                     Log.w("myApp", "[#] EGM96.java - EGM File copy completed");
                     DeleteFile(EGMFileName);    // Delete the EGM file from the shared folder
                     Log.w("myApp", "[#] EGM96.java - EGM File deleted from shared folder");
-
                 } catch(Exception e) {
                     Log.w("MyApp", "[#] EGM96.java - Unable to make local copy of EGM file: " + e.getMessage());
                 }
             }
-
             isEGMFileCopying = false;
         }
     }

@@ -1,6 +1,9 @@
-/**
+/*
  * EventBusMSG - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 05/08/17.
+ * Created by G.Capelli on 05/08/17.
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +21,10 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+/**
+ * The messages that can be sent/received with EventBus by the components of the app.
+ */
 public class EventBusMSG {
-
     static final short APP_RESUME                       =   1;  // Sent to components on app resume
     static final short APP_PAUSE                        =   2;  // Sent to components on app pause
     static final short NEW_TRACK                        =   3;  // Request to create a new track
@@ -47,4 +52,5 @@ public class EventBusMSG {
     static final short ACTION_BULK_VIEW_TRACKS          =  42;  // View the selected tracks
     static final short ACTION_BULK_SHARE_TRACKS         =  43;  // Share the selected tracks
     static final short TRACKLIST_RANGE_SELECTION        =  44;  // Select/Deselect a range of tracks
+    static final short ACTION_EDIT_TRACK                =  45;  // Edit the selected track
 }

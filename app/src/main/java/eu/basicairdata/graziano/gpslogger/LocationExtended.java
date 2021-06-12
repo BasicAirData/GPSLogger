@@ -1,6 +1,9 @@
 /*
  * LocationExtended - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 2/6/2016
+ * Created by G.Capelli on 2/6/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,79 +25,96 @@ import android.location.Location;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
-
+/**
+ * The Location Class, including some extra stuff in order to manage the orthometric
+ * height using the EGM Correction.
+ */
 public class LocationExtended {
+    private Location location;
+    private String description              = "";
+    private double altitudeEGM96Correction  = NOT_AVAILABLE;
+    private int numberOfSatellites          = NOT_AVAILABLE;
+    private int numberOfSatellitesUsedInFix = NOT_AVAILABLE;
 
-    private Location _Location;
-    private String _Description = "";
-    private double _AltitudeEGM96Correction = NOT_AVAILABLE;
-    private int _NumberOfSatellites = NOT_AVAILABLE;
-    private int _NumberOfSatellitesUsedInFix = NOT_AVAILABLE;
-
-
-    // Constructor
+    /**
+     * The constructor.
+     *
+     * @param location the base Location
+     */
     public LocationExtended(Location location) {
-        _Location = location;
+        this.location = location;
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
-            if (egm96.isEGMGridLoaded()) _AltitudeEGM96Correction = egm96.getEGMCorrection(_Location.getLatitude(), _Location.getLongitude());
+            if (egm96.isEGMGridLoaded()) altitudeEGM96Correction = egm96.getEGMCorrection(this.location.getLatitude(), this.location.getLongitude());
         }
     }
 
-    // Getters and Setters -------------------------------------------------------------------------
+    // ------------------------------------------------------------------------- Getters and Setters
 
     public Location getLocation() {
-        return _Location;
+        return location;
     }
 
-    public double getLatitude() { return _Location.getLatitude(); }
-    public double getLongitude() { return _Location.getLongitude(); }
-    public double getAltitude() { return _Location.hasAltitude() ? _Location.getAltitude() : NOT_AVAILABLE; }
-    public float getSpeed() { return _Location.hasSpeed() ? _Location.getSpeed() : NOT_AVAILABLE; }
-    public float getAccuracy() { return _Location.hasAccuracy() ? _Location.getAccuracy() : NOT_AVAILABLE; }
-    public float getBearing() { return _Location.hasBearing() ? _Location.getBearing() : NOT_AVAILABLE; }
-    public long getTime() { return _Location.getTime(); }
+    public double getLatitude() { return location.getLatitude(); }
+
+    public double getLongitude() { return location.getLongitude(); }
+
+    public double getAltitude() { return location.hasAltitude() ? location.getAltitude() : NOT_AVAILABLE; }
+
+    public float getSpeed() { return location.hasSpeed() ? location.getSpeed() : NOT_AVAILABLE; }
+
+    public float getAccuracy() { return location.hasAccuracy() ? location.getAccuracy() : NOT_AVAILABLE; }
+
+    public float getBearing() { return location.hasBearing() ? location.getBearing() : NOT_AVAILABLE; }
+
+    public long getTime() { return location.getTime(); }
 
     public String getDescription() {
-        return _Description;
+        return description;
     }
 
-    public void setDescription(String Description) {
-        this._Description = Description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setNumberOfSatellites(int numberOfSatellites) {
-        _NumberOfSatellites = numberOfSatellites;
+        this.numberOfSatellites = numberOfSatellites;
     }
 
     public int getNumberOfSatellites() {
-        return _NumberOfSatellites;
+        return numberOfSatellites;
     }
 
     public void setNumberOfSatellitesUsedInFix(int numberOfSatellites) {
-        _NumberOfSatellitesUsedInFix = numberOfSatellites;
+        numberOfSatellitesUsedInFix = numberOfSatellites;
     }
 
     public int getNumberOfSatellitesUsedInFix() {
-        return _NumberOfSatellitesUsedInFix;
+        return numberOfSatellitesUsedInFix;
     }
 
+    /**
+     * @return the altitude correction, in meters, based on EGM96
+     */
     public double getAltitudeEGM96Correction(){
-        if (_AltitudeEGM96Correction == NOT_AVAILABLE) {
+        if (altitudeEGM96Correction == NOT_AVAILABLE) {
             //Log.w("myApp", "[#] LocationExtended.java - _AltitudeEGM96Correction == NOT_AVAILABLE");
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
-                if (egm96.isEGMGridLoaded()) _AltitudeEGM96Correction = egm96.getEGMCorrection(_Location.getLatitude(), _Location.getLongitude());
+                if (egm96.isEGMGridLoaded()) altitudeEGM96Correction = egm96.getEGMCorrection(location.getLatitude(), location.getLongitude());
             }
         }
-        return _AltitudeEGM96Correction;
+        return altitudeEGM96Correction;
     }
 
+    /**
+     * @return the orthometric altitude in meters
+     */
     public double getAltitudeCorrected(double AltitudeManualCorrection, boolean EGMCorrection) {
-        if (_Location != null) {
-            if (!_Location.hasAltitude()) return NOT_AVAILABLE;
-            if ((EGMCorrection) && (getAltitudeEGM96Correction() != NOT_AVAILABLE)) return _Location.getAltitude() - getAltitudeEGM96Correction() + AltitudeManualCorrection;
-            else return _Location.getAltitude() + AltitudeManualCorrection;
+        if (location != null) {
+            if (!location.hasAltitude()) return NOT_AVAILABLE;
+            if ((EGMCorrection) && (getAltitudeEGM96Correction() != NOT_AVAILABLE)) return location.getAltitude() - getAltitudeEGM96Correction() + AltitudeManualCorrection;
+            else return location.getAltitude() + AltitudeManualCorrection;
         }
         return NOT_AVAILABLE;
     }

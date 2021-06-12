@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -50,7 +53,6 @@
     <string name="gps_not_accessible">GPS non accessible</string>
     <string name="gps_disabled">GPS désactivé</string>
     <string name="gps_out_of_service">GPS hors service</string>
-    <string name="gps_temporary_unavailable">GPS temporairement indisponible</string>
     <string name="gps_searching">Acquisition GPS</string>
     <string name="gps_stabilizing">Stabilisation du signal</string>
     <string name="warning_location_denied">L\'application ne peut pas accéder à la localisation</string>
@@ -65,23 +67,34 @@
     <string name="overall_direction">Orient. générale</string>
     <string name="altitude_gap">Écart d\'altitude</string>
     <!-- Track Status message -->
-    <string name="track_empty">Nouveau Tracé\n\nLancer l\'enregistrement des points\nou ajouter un repère\nà l\'aide des bouton ci-dessous</string>
+    <string name="track_empty">Nouveau Tracé</string>
+    <string name="track_start_with_button_below">Lancer l\'enregistrement des points\nou ajouter une annotation\nà l\'aide des bouton ci-dessous</string>
     <!-- Recording buttons (bottom side) -->
-    <string name="placemarks">Repères</string>
+    <string name="record">Enregistrer</string>
+    <string name="pause">Pause</string>
+    <string name="annotate">Annoter</string>
+    <string name="stop">Stop</string>
+    <string name="lock">Verrouiller</string>
+    <string name="unlock">Déverrouiller</string>
+    <string name="finalize_track">Finaliser le tracé</string>
+    <string name="toast_bottom_bar_locked">La barre inférieure est verrouillée</string>
+    <string name="toast_nothing_to_save">Rien à enregistrer</string>
+    <string name="toast_recording_when_gps_found">L\'enregistrement commencera quand le signal GPS sera trouvé</string>
+    <string name="toast_annotate_when_gps_found">L\'annotation sera prise en compte quand le signal GPS sera trouvé</string>
+    <string name="ok">OK</string>
+    <string name="annotations">Annotations</string>
     <string name="trackpoints">Points de tracé</string>
     <!-- Main menu -->
     <string name="menu_settings">Paramètres</string>
-    <string name="menu_track_finished">Tracé finalisé</string>
-    <string name="toast_track_finished_click_again">Double-cliquer pour finaliser ce tracé</string>
     <string name="toast_track_saved_into_tracklist">Tracé archivé</string>
     <string name="toast_track_exported">Tracés exportés dans le dossier /GPSLogger</string>
     <string name="menu_about">À propos</string>
+    <string name="menu_online_help">Aide en ligne</string>
     <string name="menu_shutdown">Éteindre</string>
-    <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">Ajouter un repère</string>
-    <string name="dlg_placemark_description">Saisissez la description</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Ajouter une annotation</string>
+    <string name="dlg_enter_the_description">Entrer une description</string>
     <string name="dlg_button_add">Ajouter</string>
-    <string name="dlg_button_cancel">Annuler</string>
     <!-- Tracklist -->
     <string name="tracklist_empty">Archives vides</string>
     <string name="card_trackinfo_length">Longueur</string>
@@ -90,13 +103,14 @@
     <string name="card_trackinfo_max_speed">Vit max</string>
     <string name="card_trackinfo_average_speed">Vit moy</string>
     <string name="card_trackinfo_geopoints">Points</string>
-    <string name="card_trackinfo_placemarks">Repères</string>
+    <string name="card_trackinfo_annotations">Annot</string>
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">Exporter</string>
     <string name="card_menu_view_selector">Ouvrir avec...</string>
     <string name="card_menu_view">Ouvrir avec %1$s</string>
     <string name="card_menu_delete">Supprimer</string>
     <string name="card_menu_share">Partager avec ...</string>
+    <string name="card_menu_edit">Modifier les infos</string>
     <!-- Tracklist toasts and messagebox -->
     <string name="card_message_delete_also_exported">Voulez-vous également supprimer tous les fichiers exportés des tracés sélectionnés ?</string>
     <string name="card_message_delete_confirmation">Voulez-vous vraiment supprimer les tracés sélectionnés ?</string>
@@ -128,9 +142,9 @@
     <string name="pref_unit_of_measurement_imperial">Impérial</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Aérien / Nautique</string>
     <string name="pref_unit_of_measurement_speed">Afficher les vitesses en</string>
-    <string name="pref_track_viewer">Visionneuse des Tracés</string>
+    <string name="pref_track_viewer">Visionneuse de Tracés</string>
     <string name="pref_track_viewer_not_installed">Aucune visionneuse GPX/KML installée</string>
-    <string name="pref_track_viewer_select_every_time">Sélectionner à chaque fois</string>
+    <string name="pref_track_viewer_select_every_time">Demander à chaque fois</string>
     <string name="pref_category_tracking">TRAÇAGE</string>
     <string name="pref_GPS_distance">Densité de Collecte</string>
     <string name="pref_GPS_distance_max">Maximale</string>
@@ -177,10 +191,11 @@
     <string name="toast_download_completed">Téléchargement terminé</string>
     <string name="toast_download_failed">Échec du téléchargement. Veuillez réessayer plus tard</string>
     <string name="toast_active_track_not_empty">Le tracé actif n\'est pas vide</string>
+    <string name="toast_no_browser_installed">Aucun navigateur internet installé</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger enregistre vos parcours en utilisant le GPS. Vous pouvez les afficher dans votre visualiseur préféré, les partager et les exporter dans le dossier GPSLogger de votre appareil au format KML, GPX et TXT.\n\nCe programme est un logiciel libre, publié sous les termes de la GNU General Public License.\nPour plus de détails, voir : http://www.gnu.org/licenses/gpl.txt\n\nPour la mise en garde sur les fichiers EGM96 geoid, voir : http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger enregistre vos parcours en utilisant le GPS. Vous pouvez les afficher dans votre visualiseur préféré, les partager et les exporter dans le dossier GPSLogger de votre appareil au format KML, GPX et TXT.\n\nCe programme est un logiciel libre, publié sous les termes de la GNU General Public License.\nPour plus de détails, voir : http://www.gnu.org/licenses/gpl.txt\n\nPour la mise en garde sur les fichiers EGM96 geoid, voir : http://earth-info.nga.mil/GandG/disclaim.html\n\nSi vous aimez cette application, vous pouvez prendre un instant pour noter GPS Logger sur le Google Play Store.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger enregistre vos parcours en utilisant le GPS. Vous pouvez les afficher dans votre visualiseur préféré, les partager et les exporter dans le dossier GPSLogger de votre appareil au format KML, GPX et TXT.\n\nCe programme est un logiciel libre, publié sous les termes de la GNU General Public License.\nPour plus de détails, voir : http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Si vous aimez cette application, vous pouvez prendre un instant pour noter GPS Logger sur le Google Play Store.</string>
     <string name="about_ok">Fermer</string>
     <string name="about_rate_this_app">Noter l\'Appli</string>
     <string name="about_unable_to_rate">Impossible d\'accéder au Store</string>

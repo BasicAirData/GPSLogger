@@ -2,7 +2,10 @@
 
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -58,7 +61,6 @@
     <string name="gps_not_accessible">GPS not accessible</string>
     <string name="gps_disabled">GPS disabled</string>
     <string name="gps_out_of_service">GPS out of service</string>
-    <string name="gps_temporary_unavailable">GPS temporary unavailable</string>
     <string name="gps_searching">Looking for GPS</string>
     <string name="gps_stabilizing">Stabilizing signal</string>
 
@@ -76,26 +78,40 @@
     <string name="altitude_gap">Altitude Gap</string>
 
     <!-- Track Status message -->
-    <string name="track_empty">New Track\n\nStart recording Trackpoints\nor add a Placemark\nusing one of the buttons below</string>
+    <string name="track_empty">New Track</string>
+    <string name="track_start_with_button_below">Start recording Trackpoints\nor add an Annotation\nusing one of the buttons below</string>
 
     <!-- Recording buttons (bottom side) -->
-    <string name="placemarks">Placemarks</string>
+    <string name="record">Record</string>
+    <string name="pause">Pause</string>
+    <string name="annotate">Annotate</string>
+    <string name="stop">Stop</string>
+    <string name="lock">Lock</string>
+    <string name="unlock">Unlock</string>
+
+    <string name="finalize_track">Finalize Track</string>
+    <string name="toast_bottom_bar_locked">The bottom bar is locked</string>
+    <string name="toast_nothing_to_save">Nothing to save</string>
+    <string name="toast_recording_when_gps_found">The recording will begin when the GPS signal is found</string>
+    <string name="toast_annotate_when_gps_found">The annotation will be taken when the GPS signal is found</string>
+
+    <string name="ok">OK</string>
+
+    <string name="annotations">Annotations</string>
     <string name="trackpoints">Trackpoints</string>
 
     <!-- Main menu -->
     <string name="menu_settings">Settings</string>
-    <string name="menu_track_finished">Track finalized</string>
-    <string name="toast_track_finished_click_again">Double click to finalize this track</string>
     <string name="toast_track_saved_into_tracklist">Track saved into the Tracklist</string>
     <string name="toast_track_exported">Tracks exported in /GPSLogger folder</string>
     <string name="menu_about">About</string>
+    <string name="menu_online_help">Online help</string>
     <string name="menu_shutdown">Shutdown</string>
 
-    <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">Add Placemark</string>
-    <string name="dlg_placemark_description">Enter the description</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Add annotation</string>
+    <string name="dlg_enter_the_description">Enter the description</string>
     <string name="dlg_button_add">Add</string>
-    <string name="dlg_button_cancel">Cancel</string>
 
     <!-- Tracklist -->
     <string name="tracklist_empty">Tracklist Empty</string>
@@ -106,7 +122,7 @@
     <string name="card_trackinfo_max_speed">Max spd</string>
     <string name="card_trackinfo_average_speed">Avg spd</string>
     <string name="card_trackinfo_geopoints">Points</string>
-    <string name="card_trackinfo_placemarks">Places</string>
+    <string name="card_trackinfo_annotations">Annot</string>
 
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">Export</string>
@@ -114,6 +130,7 @@
     <string name="card_menu_view">View in %1$s</string>
     <string name="card_menu_delete">Delete</string>
     <string name="card_menu_share">Share with ...</string>
+    <string name="card_menu_edit">Edit details</string>
 
     <!-- Tracklist toasts and messagebox -->
     <string name="card_message_delete_also_exported">Do you also want to delete all exported files of the selected tracks?</string>
@@ -151,7 +168,7 @@
 
     <string name="pref_track_viewer">Track Viewer</string>
     <string name="pref_track_viewer_not_installed">No GPX/KML Viewer installed</string>
-    <string name="pref_track_viewer_select_every_time">Select every Time</string>
+    <string name="pref_track_viewer_select_every_time">Ask every Time</string>
 
     <string name="pref_category_tracking">TRACKING</string>
     <string name="pref_GPS_distance">Collecting Density</string>
@@ -203,11 +220,12 @@
     <string name="toast_download_completed">Download completed</string>
     <string name="toast_download_failed">Download failed. Try again later</string>
     <string name="toast_active_track_not_empty">The active track is not empty</string>
+    <string name="toast_no_browser_installed">No Internet browser installed</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger records your tracks using GPS. You can view them in your preferred viewer, share, and export them in GPSLogger folder of your device in KML, GPX, and TXT format.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt\n\nFor EGM96 geoid file disclaimer see: http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger records your tracks using GPS. You can view them in your preferred viewer, share, and export them in GPSLogger folder of your device in KML, GPX, and TXT format.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt\n\nFor EGM96 geoid file disclaimer see: http://earth-info.nga.mil/GandG/disclaim.html\n\nIf You enjoy using this app, please take a moment to rate GPS Logger in the Google Store.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger records your tracks using GPS. You can view them in your preferred viewer, share, and export them in GPSLogger folder of your device in KML, GPX, and TXT format.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">If You enjoy using this app, please take a moment to rate GPS Logger in the Google Play Store.</string>
     <string name="about_ok">Close</string>
     <string name="about_rate_this_app">Rate this App</string>
     <string name="about_unable_to_rate">Unable to reach the Store</string>

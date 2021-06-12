@@ -1,6 +1,9 @@
 /*
  * SpikesChecker - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 15/9/2016
+ * Created by G.Capelli on 15/9/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,58 +23,69 @@ package eu.basicairdata.graziano.gpslogger;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
-
+/**
+ * Checks the evolution of the altitudes with the purpose to detect the altitude spikes.
+ */
 class SpikesChecker {
 
-    private long    Good_Time               = NOT_AVAILABLE;   // The time of the last good value
+    private long    goodTime            = NOT_AVAILABLE;    // The time of the last good value
 
-    private double  Prev_Altitude           = NOT_AVAILABLE;   // the previous data loaded
-    private long    Prev_Time               = NOT_AVAILABLE;
-    private float   Prev_VerticalSpeed      = NOT_AVAILABLE;
+    private double  prevAltitude        = NOT_AVAILABLE;    // the previous data loaded
+    private long    prevTime            = NOT_AVAILABLE;
+    private float   prevVerticalSpeed   = NOT_AVAILABLE;
 
-    private double  New_Altitude            = NOT_AVAILABLE;   // the new (current) data loaded
-    private long    New_Time                = NOT_AVAILABLE;
-    private float   New_VerticalSpeed       = NOT_AVAILABLE;
+    private double  newAltitude         = NOT_AVAILABLE;    // the new (current) data loaded
+    private long    newTime             = NOT_AVAILABLE;
+    private float   newVerticalSpeed    = NOT_AVAILABLE;
 
-    private long    Time_Interval           = NOT_AVAILABLE;    // Interval between fixes (in seconds)
-    private float   VerticalAcceleration;
+    private long    timeInterval        = NOT_AVAILABLE;    // Interval between fixes (in seconds)
+    private float   verticalAcceleration;
 
-    private final float MAX_ACCELERATION;     // The maximum vertical acceleration allowed
-    private final int STABILIZATION_TIME;  // Stabilization window, in seconds. It must be > 0
+    private final float MAX_ACCELERATION;                   // The maximum vertical acceleration allowed
+    private final int   STABILIZATION_TIME;                 // Stabilization window, in seconds. It must be > 0
 
-    // Constructor
-    SpikesChecker(float max_acceleration, int Stabilization_Time) {
-        MAX_ACCELERATION = max_acceleration;
-        STABILIZATION_TIME = Stabilization_Time;
+    /**
+     * Creates a SpikesChecker with the given parameters.
+     *
+     * @param maxAcceleration The maximum valid acceleration
+     * @param stabilizationTime The time that passes from an invalid value to the next valid one
+     */
+    SpikesChecker(float maxAcceleration, int stabilizationTime) {
+        MAX_ACCELERATION = maxAcceleration;
+        STABILIZATION_TIME = stabilizationTime;
     }
 
-    void load(long Time, double Altitude) {
-        if (Time > New_Time) {
-            Prev_Time = New_Time;
-            New_Time = Time;
-            Prev_Altitude = New_Altitude;
-            Prev_VerticalSpeed = New_VerticalSpeed;
+    /**
+     * Loads a new sample into the checker.
+     *
+     * @param time The time of the sample
+     * @param altitude The related altitude in meters
+     */
+    void load(long time, double altitude) {
+        if (time > newTime) {
+            prevTime = newTime;
+            newTime = time;
+            prevAltitude = newAltitude;
+            prevVerticalSpeed = newVerticalSpeed;
         }
-
-        Time_Interval = Prev_Time != NOT_AVAILABLE ? (New_Time - Prev_Time) / 1000 : NOT_AVAILABLE;
-        New_Altitude = Altitude;
-
-        if ((Time_Interval > 0) && (Prev_Altitude != NOT_AVAILABLE)) {
-            New_VerticalSpeed = (float) (New_Altitude - Prev_Altitude) / Time_Interval;
-
-            if (Prev_VerticalSpeed != NOT_AVAILABLE) {
-                if (Time_Interval > 1000) VerticalAcceleration = NOT_AVAILABLE; // Prevent Vertical Acceleration value from exploding
-                else VerticalAcceleration = 2 * (-Prev_VerticalSpeed * Time_Interval + (float)(New_Altitude - Prev_Altitude)) / (Time_Interval * Time_Interval);
+        timeInterval = prevTime != NOT_AVAILABLE ? (newTime - prevTime) / 1000 : NOT_AVAILABLE;
+        newAltitude = altitude;
+        if ((timeInterval > 0) && (prevAltitude != NOT_AVAILABLE)) {
+            newVerticalSpeed = (float) (newAltitude - prevAltitude) / timeInterval;
+            if (prevVerticalSpeed != NOT_AVAILABLE) {
+                if (timeInterval > 1000) verticalAcceleration = NOT_AVAILABLE; // Prevent Vertical Acceleration value from exploding
+                else verticalAcceleration = 2 * (-prevVerticalSpeed * timeInterval + (float)(newAltitude - prevAltitude)) / (timeInterval * timeInterval);
             }
         }
-
-        if (Math.abs(VerticalAcceleration) >= MAX_ACCELERATION) Good_Time = New_Time ;
-
+        if (Math.abs(verticalAcceleration) >= MAX_ACCELERATION) goodTime = newTime;
         //Log.w("myApp", "[#] SpikesChecker.java - Vertical Acceleration = " + VerticalAcceleration);
         //Log.w("myApp", "[#] SpikesChecker.java - Validation window = " + (New_Time - Good_Time) / 1000);
     }
 
+    /**
+     * @return true if the last altitude loaded is valid (is not a spike).
+     */
     boolean isValid() {
-        return (New_Time - Good_Time) / 1000 >= STABILIZATION_TIME;
+        return (newTime - goodTime) / 1000 >= STABILIZATION_TIME;
     }
 }

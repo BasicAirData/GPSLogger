@@ -1,6 +1,9 @@
-/**
+/*
  * FragmentSettings - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 23/7/2016
+ * Created by G.Capelli on 23/7/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +30,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.EditTextPreference;
@@ -55,23 +57,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
-
+/**
+ * The Fragment that manages the Settings on the SettingsActivity
+ */
 public class FragmentSettings extends PreferenceFragmentCompat {
 
     private static final float M_TO_FT = 3.280839895f;
-
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
-
     private SharedPreferences prefs;
     public double altcor;       // manual offset
-    public double altcorm;    // Manual offset in m
-
-    private ProgressDialog mProgressDialog;
-    public boolean Downloaded = false;
-
+    public double altcorm;      // Manual offset in m
+    private ProgressDialog progressDialog;
+    public boolean isDownloaded = false;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -79,39 +78,34 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         addPreferencesFromResource(R.xml.app_preferences);
 
-        File tsd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger");
-        boolean isGPSLoggerFolder = true;
-        if (!tsd.exists()) {
-            isGPSLoggerFolder = tsd.mkdir();
-        }
-        tsd = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-        if (!tsd.exists()) {
-            isGPSLoggerFolder = tsd.mkdir();
-        }
-        Log.w("myApp", "[#] FragmentSettings.java - " + (isGPSLoggerFolder ? "Folder /GPSLogger/AppData OK" : "Unable to create folder /GPSLogger/AppData"));
+        File tsd = new File(GPSApplication.DIRECTORY_EXPORT);
+        if (!tsd.exists()) tsd.mkdir();
+        tsd = new File(GPSApplication.DIRECTORY_TEMP);
+        if (!tsd.exists()) tsd.mkdir();
+        //Log.w("myApp", "[#] FragmentSettings.java - " + (isGPSLoggerFolder ? "Folder /GPSLogger/AppData OK" : "Unable to create folder /GPSLogger/AppData"));
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        // Chech if EGM96 file is downloaded and complete;
+        // Check if EGM96 file is downloaded and the size of the file is correct;
         File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-        File sd_old = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+        File sd_old = new File(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC");
         if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
-            Downloaded = true;
+            isDownloaded = true;
         } else {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences.Editor editor1 = settings.edit();
             editor1.putBoolean("prefEGM96AltitudeCorrection", false);
             editor1.commit();
-            SwitchPreferenceCompat EGM96 = (SwitchPreferenceCompat) super.findPreference("prefEGM96AltitudeCorrection");
-            EGM96.setChecked(false);
+            SwitchPreferenceCompat egm96 = super.findPreference("prefEGM96AltitudeCorrection");
+            egm96.setChecked(false);
         }
 
         // Instantiate Progress dialog
-        mProgressDialog = new ProgressDialog(getActivity());
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setMessage(getString(R.string.pref_EGM96AltitudeCorrection_download_progress));
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage(getString(R.string.pref_EGM96AltitudeCorrection_download_progress));
 
         prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -122,31 +116,27 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
                     editor.commit();
-                    EditTextPreference pAltitudeCorrection = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
-                    pAltitudeCorrection.setText(prefs.getString("prefAltitudeCorrectionRaw", "0"));
+                    EditTextPreference etpAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
+                    etpAltitudeCorrection.setText(prefs.getString("prefAltitudeCorrectionRaw", "0"));
                 }
-
                 if (key.equals("prefAltitudeCorrectionRaw")) {
                     try {
-                        double d = Double.parseDouble(sharedPreferences.getString("prefAltitudeCorrectionRaw", "0"));
-                        altcor = d;
+                        altcor = Double.parseDouble(sharedPreferences.getString("prefAltitudeCorrectionRaw", "0"));
                     }
                     catch(NumberFormatException nfe)
                     {
                         altcor = 0;
-                        EditTextPreference Alt = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
-                        Alt.setText("0");
+                        EditTextPreference etpAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
+                        etpAltitudeCorrection.setText("0");
                     }
-
                     altcorm = prefs.getString("prefUM", "0").equals("0") ? altcor : altcor / M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrection", String.valueOf(altcorm));
                     editor.commit();
                 }
-
                 if (key.equals("prefEGM96AltitudeCorrection")) {
                     if (sharedPreferences.getBoolean(key, false)) {
-                        if (!Downloaded) {
+                        if (!isDownloaded) {
                             // execute this when the downloader must be fired
                             final DownloadTask downloadTask = new DownloadTask(getActivity());
                             // Original Link not available anymore
@@ -155,7 +145,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                             // The connection is not secured with HTTPS for now, we chosen to use it anyway.
                             downloadTask.execute("http://download.osgeo.org/proj/vdatum/egm96_15/outdated/WW15MGH.DAC");
 
-                            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
                                 public void onCancel(DialogInterface dialog) {
                                     downloadTask.cancel(true);
@@ -166,7 +156,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         }
                     }
                 }
-
                 if (key.equals("prefColorTheme")) {
                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
                     SharedPreferences.Editor editor1 = settings.edit();
@@ -177,7 +166,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
                     //getActivity().recreate();
                 }
-
                 SetupPreferences();
             }
         };
@@ -189,10 +177,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         // Remove dividers between preferences
         setDivider(new ColorDrawable(Color.TRANSPARENT));
         setDividerHeight(0);
-
         prefs.registerOnSharedPreferenceChangeListener(prefListener);
         //Log.w("myApp", "[#] FragmentSettings.java - onResume");
-        GPSApplication.getInstance().getExternalViewerChecker().makeAppInfoList();
+        GPSApplication.getInstance().getExternalViewerChecker().makeExternalViewersList();
         SetupPreferences();
     }
 
@@ -204,33 +191,30 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         super.onPause();
     }
 
-
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         Log.w("myApp", "[#] FragmentSettings.java - onCreatePreferences");
     }
 
     public void SetupPreferences() {
-
-        ListPreference pUM = (ListPreference) findPreference("prefUM");
-        ListPreference pUMSpeed = (ListPreference) findPreference("prefUMSpeed");
-        ListPreference pGPSDistance = (ListPreference) findPreference("prefGPSdistance");
-        ListPreference pGPSUpdateFrequency = (ListPreference) findPreference("prefGPSupdatefrequency");
-        ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
-        ListPreference pGPXVersion = (ListPreference) findPreference("prefGPXVersion");
-        ListPreference pShowTrackStatsType = (ListPreference) findPreference("prefShowTrackStatsType");
-        ListPreference pShowDirections = (ListPreference) findPreference("prefShowDirections");
-        ListPreference pColorTheme = (ListPreference) findPreference("prefColorTheme");
-        EditTextPreference pAltitudeCorrection = (EditTextPreference) findPreference("prefAltitudeCorrectionRaw");
-        Preference pTracksViewer = (Preference) findPreference("prefTracksViewer");
+        ListPreference pUM = findPreference("prefUM");
+        ListPreference pUMSpeed = findPreference("prefUMSpeed");
+        ListPreference pGPSDistance = findPreference("prefGPSdistance");
+        ListPreference pGPSUpdateFrequency = findPreference("prefGPSupdatefrequency");
+        ListPreference pKMLAltitudeMode = findPreference("prefKMLAltitudeMode");
+        ListPreference pGPXVersion = findPreference("prefGPXVersion");
+        ListPreference pShowTrackStatsType = findPreference("prefShowTrackStatsType");
+        ListPreference pShowDirections = findPreference("prefShowDirections");
+        ListPreference pColorTheme = findPreference("prefColorTheme");
+        EditTextPreference pAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
+        Preference pTracksViewer = findPreference("prefTracksViewer");
 
         // Keep Screen On Flag
         if (prefs.getBoolean("prefKeepScreenOn", true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Track Viewer
-
-        final ArrayList<AppInfo> ail = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getAppInfoList());
+        final ArrayList<ExternalViewer> evList = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getExternalViewersList());
         switch (GPSApplication.getInstance().getExternalViewerChecker().size()) {
             case 0:
                 pTracksViewer.setEnabled(false);    // No viewers installed
@@ -254,17 +238,17 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                             View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
                             ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
 
-                            final ArrayList<AppInfo> aild = new ArrayList<>();
+                            final ArrayList<ExternalViewer> aild = new ArrayList<>();
 
                             // Add "Select every Time" menu item
-                            AppInfo askai = new AppInfo();
+                            ExternalViewer askai = new ExternalViewer();
                             askai.label = getString(R.string.pref_track_viewer_select_every_time);
                             askai.icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_visibility_24dp, getActivity().getTheme());
 
                             aild.add(askai);
-                            aild.addAll(ail);
+                            aild.addAll(evList);
 
-                            AppDialogList clad = new AppDialogList(getActivity(), aild);
+                            ExternalViewerAdapter clad = new ExternalViewerAdapter(getActivity(), aild);
 
                             lv.setAdapter(clad);
                             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -287,23 +271,21 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 });
         }
         // ------------
-
-        if (ail.isEmpty())
+        if (evList.isEmpty())
             pTracksViewer.setSummary(R.string.pref_track_viewer_not_installed);                                        // no Viewers installed
-        else if (ail.size() == 1)
-            pTracksViewer.setSummary(ail.get(0).label + (ail.get(0).fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)"));                                                                              // 1 Viewer installed
+        else if (evList.size() == 1)
+            pTracksViewer.setSummary(evList.get(0).label + (evList.get(0).fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)"));                                                                              // 1 Viewer installed
         else {
             pTracksViewer.setSummary(R.string.pref_track_viewer_select_every_time);                                       // ask every time
             String pn = prefs.getString("prefTracksViewer", "");
             Log.w("myApp", "[#] FragmentSettings.java - prefTracksViewer = " + pn);
-            for (AppInfo ai : ail) {
-                if (ai.packageName.equals(pn)) {
-                    //Log.w("myApp", "[#] FragmentSettings.java - Found " + ai.Label);
-                    pTracksViewer.setSummary(ai.label + (ai.fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)"));                                // Default Viewer available!
+            for (ExternalViewer ev : evList) {
+                if (ev.packageName.equals(pn)) {
+                    //Log.w("myApp", "[#] FragmentSettings.java - Found " + ev.Label);
+                    pTracksViewer.setSummary(ev.label + (ev.fileType.equals(FILETYPE_GPX) ? " (GPX)" : " (KML)"));                                // Default Viewer available!
                 }
             }
         }
-
 
         altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
         altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
@@ -341,7 +323,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         //pViewTracksWith.setSummary(pViewTracksWith.getEntry());
     }
 
-
+    /**
+     * Sets the PrefEGM96 to false
+     */
     public void PrefEGM96SetToFalse() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor1 = settings.edit();
@@ -351,6 +335,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         EGM96.setChecked(false);
     }
 
+    /**
+     * Sets the PrefEGM96 to true
+     */
     public void PrefEGM96SetToTrue() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor1 = settings.edit();
@@ -360,13 +347,17 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         EGM96.setChecked(true);
     }
 
+    // ------------------------------------------------------------- Download of the EGM96 grid file
 
-    // ----------------------------------------------------------------.----- EGM96 - Download file
-
-
-    // usually, subclasses of AsyncTask are declared inside the activity class.
-    // that way, you can easily modify the UI thread from here
+    /**
+     * The Class that manages the download of the EGM96 grid file.
+     * The WW15MGH.DAC file is downloaded into the getFilesDir() folder.
+     * It displays and keeps updated a progress dialog
+     * that shows the progress of the download
+     */
     private class DownloadTask extends AsyncTask<String, Integer, String> {
+        // usually, subclasses of AsyncTask are declared inside the activity class.
+        // that way, you can easily modify the UI thread from here
 
         private Context context;
         //private PowerManager.WakeLock mWakeLock;
@@ -441,61 +432,32 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             //mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
             //        getClass().getName());
             //mWakeLock.acquire();
-            mProgressDialog.show();
+            progressDialog.show();
         }
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
             // if we get here, length is known, now set indeterminate to false
-            mProgressDialog.setIndeterminate(false);
-            mProgressDialog.setMax(2028);
-            mProgressDialog.setProgress(progress[0]);
+            progressDialog.setIndeterminate(false);
+            progressDialog.setMax(2028);
+            progressDialog.setProgress(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             if (getActivity() != null) {
                 //mWakeLock.release();
-                mProgressDialog.dismiss();
+                progressDialog.dismiss();
                 if (result != null)
                     Toast.makeText(context, getString(R.string.toast_download_error) + ": " + result, Toast.LENGTH_LONG).show();
                 else {
                     File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-                    File sd_old = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/WW15MGH.DAC");
+                    File sd_old = new File(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC");
                     if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
-                        Downloaded = true;
+                        isDownloaded = true;
                         Toast.makeText(context, getString(R.string.toast_download_completed), Toast.LENGTH_SHORT).show();
                         PrefEGM96SetToTrue();
-
-                        // Ask to switch to Absolute Altitude Mode if not already active.
-                        /*
-                        ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
-                        if (!(pKMLAltitudeMode.getValue().equals("0"))) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.StyledDialog));
-                            builder.setMessage(getResources().getString(R.string.pref_message_switch_to_absolute_altitude_mode));
-                            builder.setIcon(android.R.drawable.ic_menu_info_details);
-                            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
-                                    SharedPreferences.Editor editor1 = settings.edit();
-                                    editor1.putString("prefKMLAltitudeMode", "0");
-                                    editor1.commit();
-                                    ListPreference pKMLAltitudeMode = (ListPreference) findPreference("prefKMLAltitudeMode");
-                                    pKMLAltitudeMode.setValue("0");
-                                    pKMLAltitudeMode.setSummary(R.string.pref_KML_altitude_mode_absolute);
-                                }
-                            });
-                            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
-                        }
-                        */
-
                     } else {
                         Toast.makeText(context, getString(R.string.toast_download_failed), Toast.LENGTH_SHORT).show();
                     }

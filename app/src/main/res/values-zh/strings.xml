@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -50,7 +53,6 @@
     <string name="gps_not_accessible">无法访问 GPS</string>
     <string name="gps_disabled">GPS处于停用状态</string>
     <string name="gps_out_of_service">GPS无服务</string>
-    <string name="gps_temporary_unavailable">GPS暂时不可用</string>
     <string name="gps_searching">正在寻找GPS</string>
     <string name="gps_stabilizing">正在稳定信号</string>
     <string name="warning_location_denied">应用无法访问位置信息</string>
@@ -65,23 +67,34 @@
     <string name="overall_direction">总体方向</string>
     <string name="altitude_gap">高度差</string>
     <!-- Track Status message -->
-    <string name="track_empty">新轨迹\n\n开始记录路点\n或者使用下方其中一个按钮\n添加位置标记</string>
+    <string name="track_empty">新轨迹</string>
+    <string name="track_start_with_button_below">开始记录路点\n或者使用下方其中一个按钮\n添加批注</string>
     <!-- Recording buttons (bottom side) -->
-    <string name="placemarks">位置标记</string>
+    <string name="record">记录</string>
+    <string name="pause">暂停</string>
+    <string name="annotate">批注</string>
+    <string name="stop">停止</string>
+    <string name="lock">锁定</string>
+    <string name="unlock">解锁</string>
+    <string name="finalize_track">完成轨迹</string>
+    <string name="toast_bottom_bar_locked">底部栏已锁定</string>
+    <string name="toast_nothing_to_save">没有要保存的数据</string>
+    <string name="toast_recording_when_gps_found">当找到 GPS 信号时，记录将开始</string>
+    <string name="toast_annotate_when_gps_found">当找到 GPS 信号时，将添加批注</string>
+    <string name="ok">确定</string>
+    <string name="annotations">批注</string>
     <string name="trackpoints">路点</string>
     <!-- Main menu -->
     <string name="menu_settings">设置</string>
-    <string name="menu_track_finished">已结束轨迹记录</string>
-    <string name="toast_track_finished_click_again">双击结束轨迹记录</string>
     <string name="toast_track_saved_into_tracklist">此轨迹已保存至轨迹列表中</string>
     <string name="toast_track_exported">已把轨迹导出至/GPSLogger目录</string>
     <string name="menu_about">关于</string>
+    <string name="menu_online_help">在线帮助</string>
     <string name="menu_shutdown">关闭</string>
-    <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">添加位置标记</string>
-    <string name="dlg_placemark_description">输入描述</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">添加批注</string>
+    <string name="dlg_enter_the_description">输入描述</string>
     <string name="dlg_button_add">添加</string>
-    <string name="dlg_button_cancel">取消</string>
     <!-- Tracklist -->
     <string name="tracklist_empty">轨迹列表为空</string>
     <string name="card_trackinfo_length">长度</string>
@@ -90,13 +103,14 @@
     <string name="card_trackinfo_max_speed">最高速</string>
     <string name="card_trackinfo_average_speed">均速</string>
     <string name="card_trackinfo_geopoints">路点</string>
-    <string name="card_trackinfo_placemarks">位置标记</string>
+    <string name="card_trackinfo_annotations">批注</string>
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">导出</string>
     <string name="card_menu_view_selector">查看</string>
     <string name="card_menu_view">使用%1$s查看</string>
     <string name="card_menu_delete">删除</string>
     <string name="card_menu_share">分享</string>
+    <string name="card_menu_edit">编辑详细信息</string>
     <!-- Tracklist toasts and messagebox -->
     <string name="card_message_delete_also_exported">您是否还想删除所选轨道的所有导出文件？</string>
     <string name="card_message_delete_confirmation">您确定要删除已选择的轨迹？</string>
@@ -177,10 +191,11 @@
     <string name="toast_download_completed">下载已完成</string>
     <string name="toast_download_failed">下载失败。请稍后再试</string>
     <string name="toast_active_track_not_empty">当前活动轨迹非空</string>
+    <string name="toast_no_browser_installed">未安装互联网浏览器</string>
     <!-- About Dialog -->
     <string name="about_version">版本</string>
-    <string name="about_description">版权所有(C)2016 BasicAirData \nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger使用GPS记录您的轨迹。您可以在喜欢的查看器中查看它们，并以KML，GPX和TXT格式将它们分享，导出到设备的GPSLogger文件夹中。\n\n此程序是免费软件，根据GNU通用公共许可证条款发布。\n有关详细信息，请参阅：http://www.gnu.org/licenses/gpl.txt\n\n对于EGM96大地水准面文件免责声明请参阅：http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">版权所有(C)2016 BasicAirData \nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger使用GPS记录您的轨迹。您可以在喜欢的查看器中查看它们，并以KML，GPX和TXT格式将它们分享，导出到设备的GPSLogger文件夹中。\n\n此程序是免费软件，根据GNU通用公共许可证条款发布。\n有关详细信息，请参阅：http://www.gnu.org/licenses/gpl.txt\n\n对于EGM96大地水准面文件免责声明请参阅：http://earth-info.nga.mil/GandG/disclaim.html\n \n如果您喜欢使用此应用程序，请花点时间在Google Store中为GPS Logger评分。</string>
+    <string name="about_description">版权所有(C)2016 BasicAirData \nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger使用GPS记录您的轨迹。您可以在喜欢的查看器中查看它们，并以KML，GPX和TXT格式将它们分享，导出到设备的GPSLogger文件夹中。\n\n此程序是免费软件，根据GNU通用公共许可证条款发布。\n有关详细信息，请参阅：http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">如果您喜欢使用此应用程序，请花点时间在Google Store中为GPS Logger评分。</string>
     <string name="about_ok">关闭</string>
     <string name="about_rate_this_app">评价此应用</string>
     <string name="about_unable_to_rate">无法访问Google应用商店</string>

@@ -1,6 +1,9 @@
-/**
+/*
  * FragmentTracklist - Java Class for Android
- * Created by G.Capelli (BasicAirData) on 19/6/2016
+ * Created by G.Capelli on 19/6/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,13 +30,13 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,26 +59,21 @@ import java.util.List;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 
-
+/**
+ * The Fragment that displays and manages the list of the archived Tracks
+ * on the third tab (Tracklist) of the main Activity (GPSActivity).
+ */
 public class FragmentTracklist extends Fragment {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-
     private TrackAdapter adapter;
     private final List<Track> data = Collections.synchronizedList(new ArrayList<Track>());
-
     private View view;
-    private TextView TVTracklistEmpty;
-
+    private TextView tvTracklistEmpty;
 
     public FragmentTracklist() {
         // Required empty public constructor
-    }
-
-    private boolean FileExists(String filename) {
-        File file = new File(filename);
-        return file.exists ();
     }
 
     @Override
@@ -85,16 +83,14 @@ public class FragmentTracklist extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tracklist, container, false);
 
-        TVTracklistEmpty    = view.findViewById(R.id.id_textView_TracklistEmpty);
-        recyclerView        = view.findViewById(R.id.my_recycler_view);
-
+        tvTracklistEmpty = view.findViewById(R.id.id_textView_TracklistEmpty);
+        recyclerView = view.findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.getItemAnimator().setChangeDuration(0);
         adapter = new TrackAdapter(data);
-
         switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
             case Configuration.UI_MODE_NIGHT_NO:
                 // Night mode is not active, we're in day time
@@ -107,26 +103,9 @@ public class FragmentTracklist extends Fragment {
                 adapter.isLightTheme = false;
                 break;
         }
-
         recyclerView.setAdapter(adapter);
-
         return view;
     }
-
-    public boolean CheckStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission GRANTED");
-            return true;    // Permission Granted
-        } else {
-            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission DENIED");
-            List<String> listPermissionsNeeded = new ArrayList<>();
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-    }
-
 
     @Override
     public void onResume() {
@@ -140,9 +119,8 @@ public class FragmentTracklist extends Fragment {
         }
 
         EventBus.getDefault().register(this);
-        Update();
+        update();
     }
-
 
     @Override
     public void onPause() {
@@ -150,19 +128,21 @@ public class FragmentTracklist extends Fragment {
         super.onPause();
     }
 
-
+    /**
+     * The EventBus receiver for Normal Messages.
+     */
     @Subscribe
     public void onEvent(final EventBusMSGNormal msg) {
         int i = 0;
         boolean found = false;
-        switch (msg.MSGType) {
+        switch (msg.eventBusMSG) {
             case EventBusMSG.TRACKLIST_SELECT:
             case EventBusMSG.TRACKLIST_DESELECT:
                 synchronized (data) {
                     do {
-                        if (data.get(i).getId() == msg.id) {
+                        if (data.get(i).getId() == msg.trackID) {
                             found = true;
-                            data.get(i).setSelected(msg.MSGType == EventBusMSG.TRACKLIST_SELECT);
+                            data.get(i).setSelected(msg.eventBusMSG == EventBusMSG.TRACKLIST_SELECT);
                         }
                         i++;
                     } while ((i < data.size()) && !found);
@@ -176,7 +156,7 @@ public class FragmentTracklist extends Fragment {
                                 data.get(i).setSelected(GPSApplication.getInstance().getLastClickState());
                                 found = !found;
                             }
-                            if (data.get(i).getId() == msg.id) {
+                            if (data.get(i).getId() == msg.trackID) {
                                 data.get(i).setSelected(GPSApplication.getInstance().getLastClickState());
                                 found = !found;
                             }
@@ -192,7 +172,9 @@ public class FragmentTracklist extends Fragment {
         }
     }
 
-
+    /**
+     * The EventBus receiver for Short Messages.
+     */
     @Subscribe
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_TRACK) {
@@ -230,29 +212,43 @@ public class FragmentTracklist extends Fragment {
             return;
         }
         if (msg == EventBusMSG.NOTIFY_TRACKS_DELETED) {
-            DeleteSomeTracks();
+            deleteSomeTracks();
             return;
         }
         if (msg == EventBusMSG.UPDATE_TRACKLIST) {
-            Update();
+            update();
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_SHARE_TRACKS) {
-            GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_SHARE);
+            GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_SHARE);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                CheckStoragePermission();   // Ask for storage permission
-            } else GPSApplication.getInstance().ExecuteJob();
-            GPSApplication.getInstance().DeselectAllTracks();
+                checkStoragePermission();   // Ask for storage permission
+            } else GPSApplication.getInstance().executeJob();
+            GPSApplication.getInstance().deselectAllTracks();
             return;
         }
-        if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
-            final ArrayList<AppInfo> ail = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getAppInfoList());
+        if (msg == EventBusMSG.ACTION_EDIT_TRACK) {
+            for (Track T : GPSApplication.getInstance().getTrackList()) {
+                if (T.isSelected()) {
+                    GPSApplication.getInstance().setTrackToEdit(T);
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                    tpDialog.setTitleResource(R.string.card_menu_edit);
+                    tpDialog.setFinalizeTrackWithOk(false);
+                    tpDialog.show(fm, "");
+                    break;
+                }
+            }
+        }
 
-            if (!ail.isEmpty()) {
-                if (ail.size() == 1) {
+        if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
+            final ArrayList<ExternalViewer> evList = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getExternalViewersList());
+
+            if (!evList.isEmpty()) {
+                if (evList.size() == 1) {
                     // 1 Viewer installed, let's use it
-                    GPSApplication.getInstance().setTrackViewer(ail.get(0));
-                    OpenTrack();
+                    GPSApplication.getInstance().setTrackViewer(evList.get(0));
+                    openTrack();
                 }
                 else {
                     // 2 or more viewers installed
@@ -260,10 +256,10 @@ public class FragmentTracklist extends Fragment {
 
                     String pn = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefTracksViewer", "");
                     boolean foundDefault = false;
-                    for (AppInfo ai : ail) {
-                        if (ai.packageName.equals(pn)) {
+                    for (ExternalViewer ev : evList) {
+                        if (ev.packageName.equals(pn)) {
                             // Default Viewer available!
-                            GPSApplication.getInstance().setTrackViewer(ai);
+                            GPSApplication.getInstance().setTrackViewer(ev);
                             foundDefault = true;
                         }
                     }
@@ -274,14 +270,14 @@ public class FragmentTracklist extends Fragment {
                         View view = getLayoutInflater().inflate(R.layout.appdialog_list, null);
                         ListView lv = (ListView) view.findViewById(R.id.id_appdialog_list);
 
-                        AppDialogList clad = new AppDialogList(getActivity(), ail);
+                        ExternalViewerAdapter clad = new ExternalViewerAdapter(getActivity(), evList);
 
                         lv.setAdapter(clad);
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                GPSApplication.getInstance().setTrackViewer(ail.get(position));
-                                OpenTrack();
+                                GPSApplication.getInstance().setTrackViewer(evList.get(position));
+                                openTrack();
                                 dialog.dismiss();
                             }
                         });
@@ -289,18 +285,18 @@ public class FragmentTracklist extends Fragment {
                         dialog.show();
                     } else {
                         // Default Track Viewer found! Let's use it.
-                        OpenTrack();
+                        openTrack();
                     }
                 }
             }
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_EXPORT_TRACKS) {
-            GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_EXPORT);
+            GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_EXPORT);
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                CheckStoragePermission();   // Ask for storage permission
-            } else GPSApplication.getInstance().ExecuteJob();
-            GPSApplication.getInstance().DeselectAllTracks();
+                checkStoragePermission();   // Ask for storage permission
+            } else GPSApplication.getInstance().executeJob();
+            GPSApplication.getInstance().deselectAllTracks();
             return;
         }
         if (msg == EventBusMSG.ACTION_BULK_DELETE_TRACKS) {
@@ -310,9 +306,9 @@ public class FragmentTracklist extends Fragment {
             boolean fileexist = false;
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 for (Track track : selectedTracks) {
-                    fileexist |= FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".kml")
-                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".gpx")
-                            || FileExists(Environment.getExternalStorageDirectory() + "/GPSLogger/" + track.getName() + ".txt");
+                    fileexist |= fileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".kml")
+                            || fileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".gpx")
+                            || fileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".txt");
                 }
             }
             if (fileexist) {
@@ -323,16 +319,16 @@ public class FragmentTracklist extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(true); // Delete also exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().ExecuteJob();
+                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().executeJob();
                     }
                 });
                 builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().ExecuteJob();
+                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().executeJob();
                     }
                 });
                 builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -350,8 +346,8 @@ public class FragmentTracklist extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
-                        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().ExecuteJob();
+                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
+                        GPSApplication.getInstance().executeJob();
                     }
                 });
                 builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -380,7 +376,7 @@ public class FragmentTracklist extends Fragment {
 
             for (ExportingTask ET : selectedTracks) {
 
-                Track track = GPSApplication.getInstance().GPSDataBase.getTrack(ET.getId());
+                Track track = GPSApplication.getInstance().gpsDataBase.getTrack(ET.getId());
                 if (track == null) return;
 
                 if (i > 0) {
@@ -399,7 +395,7 @@ public class FragmentTracklist extends Fragment {
                 PhysicalData phdAltitudeGap;
                 PhysicalData phdOverallDirection;
                 phdDuration = phdformatter.format(track.getDuration(),PhysicalDataFormatter.FORMAT_DURATION);
-                phdDurationMoving = phdformatter.format(track.getDuration_Moving(),PhysicalDataFormatter.FORMAT_DURATION);
+                phdDurationMoving = phdformatter.format(track.getDurationMoving(),PhysicalDataFormatter.FORMAT_DURATION);
                 phdSpeedMax = phdformatter.format(track.getSpeedMax(),PhysicalDataFormatter.FORMAT_SPEED);
                 phdSpeedAvg = phdformatter.format(track.getSpeedAverage(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
                 phdSpeedAvgMoving = phdformatter.format(track.getSpeedAverageMoving(),PhysicalDataFormatter.FORMAT_SPEED_AVG);
@@ -408,37 +404,39 @@ public class FragmentTracklist extends Fragment {
                 phdOverallDirection = phdformatter.format(track.getBearing(),PhysicalDataFormatter.FORMAT_BEARING);
                 if (track.getNumberOfLocations() <= 1) {
                     extraText.append(getString(R.string.app_name) + " - " + getString(R.string.tab_track) + " " + track.getName()
+                            + (track.getDescription().isEmpty() ? "\n" + track.getDescription() + "\n" : "")
                             + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
-                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks));
+                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.annotations));
                 } else {
                     extraText.append(getString(R.string.app_name) + " - " + getString(R.string.tab_track) + " " + track.getName()
+                            + (!track.getDescription().isEmpty() ? "\n" + track.getDescription() : "")
                             + "\n" + track.getNumberOfLocations() + " " + getString(R.string.trackpoints)
-                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.placemarks)
+                            + "\n" + track.getNumberOfPlacemarks() + " " + getString(R.string.annotations)
                             + "\n"
-                            + "\n" + getString(R.string.distance) + " = " + phdDistance.Value + " " + phdDistance.UM
-                            + "\n" + getString(R.string.duration) + " = " + phdDuration.Value + " | " + phdDurationMoving.Value
-                            + "\n" + getString(R.string.altitude_gap) + " = " + phdAltitudeGap.Value + " " + phdAltitudeGap.UM
-                            + "\n" + getString(R.string.max_speed) + " = " + phdSpeedMax.Value + " " + phdSpeedMax.UM
-                            + "\n" + getString(R.string.average_speed) + " = " + phdSpeedAvg.Value + " | " + phdSpeedAvgMoving.Value + " " + phdSpeedAvg.UM
-                            + "\n" + getString(R.string.overall_direction) + " = " + phdOverallDirection.Value + " " + phdOverallDirection.UM
+                            + "\n" + getString(R.string.distance) + " = " + phdDistance.value + " " + phdDistance.um
+                            + "\n" + getString(R.string.duration) + " = " + phdDuration.value + " | " + phdDurationMoving.value
+                            + "\n" + getString(R.string.altitude_gap) + " = " + phdAltitudeGap.value + " " + phdAltitudeGap.um
+                            + "\n" + getString(R.string.max_speed) + " = " + phdSpeedMax.value + " " + phdSpeedMax.um
+                            + "\n" + getString(R.string.average_speed) + " = " + phdSpeedAvg.value + " | " + phdSpeedAvgMoving.value + " " + phdSpeedAvg.um
+                            + "\n" + getString(R.string.overall_direction) + " = " + phdOverallDirection.value + " " + phdOverallDirection.um
                             + "\n"
                             + "\n" + getString(R.string.pref_track_stats) + ": " + getString(R.string.pref_track_stats_totaltime) + " | " + getString(R.string.pref_track_stats_movingtime));
                 }
 
-                String fname = track.getName() + ".kml";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                String fname = GPSApplication.getInstance().getFileName(track) + ".kml";
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists () && GPSApplication.getInstance().getPrefExportKML()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
-                fname = track.getName() + ".gpx";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                fname = GPSApplication.getInstance().getFileName(track) + ".gpx";
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists ()  && GPSApplication.getInstance().getPrefExportGPX()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
                 }
-                fname = track.getName() + ".txt";
-                file = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData/", fname);
+                fname = GPSApplication.getInstance().getFileName(track) + ".txt";
+                file = new File(GPSApplication.DIRECTORY_TEMP + "/", fname);
                 if (file.exists ()  && GPSApplication.getInstance().getPrefExportTXT()) {
                     Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
                     files.add(uri);
@@ -473,17 +471,46 @@ public class FragmentTracklist extends Fragment {
         }
     }
 
-
-    public void OpenTrack() {
-        GPSApplication.getInstance().LoadJob(GPSApplication.JOB_TYPE_VIEW);
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            CheckStoragePermission();   // Ask for storage permission
-        } else GPSApplication.getInstance().ExecuteJob();
-        GPSApplication.getInstance().DeselectAllTracks();
+    /**
+     * Checks the permission to access the External Storage.
+     */
+    public boolean checkStoragePermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission GRANTED");
+            return true;    // Permission Granted
+        } else {
+            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission DENIED");
+            List<String> listPermissionsNeeded = new ArrayList<>();
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
     }
 
+    /**
+     * @return true if a specified file exists
+     */
+    private boolean fileExists(String filename) {
+        File file = new File(filename);
+        return file.exists ();
+    }
 
-    public void Update() {
+    /**
+     * Opens a Track with an external viewer using the GPSApplication Job executor.
+     */
+    public void openTrack() {
+        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_VIEW);
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            checkStoragePermission();   // Ask for storage permission
+        } else GPSApplication.getInstance().executeJob();
+        GPSApplication.getInstance().deselectAllTracks();
+    }
+
+    /**
+     * Updates the user interface of the fragment.
+     */
+    public void update() {
         if (isAdded()) {
             Log.w("myApp", "[#] FragmentTracklist.java - Updating Tracklist");
             final List<Track> TI = GPSApplication.getInstance().getTrackList();
@@ -493,21 +520,21 @@ public class FragmentTracklist extends Fragment {
                 if (!TI.isEmpty()) {
                     data.addAll(TI);
                     if (data.get(0).getId() == GPSApplication.getInstance().getCurrentTrack().getId()) {
-                        GPSApplication.getInstance().setisCurrentTrackVisible(true);
+                        GPSApplication.getInstance().setCurrentTrackVisible(true);
                         //Log.w("myApp", "[#] FragmentTracklist.java - current track, VISIBLE into the tracklist ("
                         //    + GPSApplication.getInstance().getCurrentTrack().getId() + ")");
                     } else {
-                        GPSApplication.getInstance().setisCurrentTrackVisible(false);
+                        GPSApplication.getInstance().setCurrentTrackVisible(false);
                         //Log.w("myApp", "[#] FragmentTracklist.java - current track empty, NOT VISIBLE into the tracklist");
                     }
                 } else {
-                    GPSApplication.getInstance().setisCurrentTrackVisible(false);
+                    GPSApplication.getInstance().setCurrentTrackVisible(false);
                 }
                 try {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+                            tvTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
                             adapter.notifyDataSetChanged();
                         }
                     });
@@ -518,8 +545,11 @@ public class FragmentTracklist extends Fragment {
         }
     }
 
-
-    public void DeleteSomeTracks() {
+    /**
+     * Deletes some tracks from the CardView Adapter via notification,
+     * in order to show a graceful animation of the deletion.
+     */
+    public void deleteSomeTracks() {
         try {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -532,13 +562,13 @@ public class FragmentTracklist extends Fragment {
                                 adapter.notifyItemRemoved(i);
                             }
                         }
-                        TVTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+                        tvTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
                     }
                 }
             });
         } catch (NullPointerException e) {
             //Log.w("myApp", "[#] FragmentTracklist.java - Unable to manage UI");
-            Update();
+            update();
         }
     }
 }

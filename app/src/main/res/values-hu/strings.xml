@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -50,63 +53,74 @@
     <string name="gps_not_accessible">GPS nem elérhető</string>
     <string name="gps_disabled">GPS kikapcsolva</string>
     <string name="gps_out_of_service">GPS nem működik</string>
-    <string name="gps_temporary_unavailable">GPS átmenetileg nem elérhető</string>
     <string name="gps_searching">GPS jel keresése</string>
     <string name="gps_stabilizing">Jel stabilizálás</string>
-    <string name="warning_location_denied">Az alkalmazás nem fér hozzá a helymeghatározáshoz</string>
-    <string name="warning_background_restricted">Az alkalmazás nem működik a háttérben.\nKattintson ide a Rendszerbeállítások megnyitásához, ahol az akkumulátor szakaszban engedélyezheti a háttérben futást</string>
-    <string name="warning_enable_location_service">A GPS-érzékelő le van tiltva.\nKattintson ide a Rendszerbeállítások megnyitásához, ahol engedélyezheti a Helyszolgáltatást és beállíthatja a helymeghatározási módszert, hogy a GPS-érzékelőt használja</string>
+    <string name="warning_location_denied">Alkalmazás nem fér hozzá a helymeghatározáshoz</string>
+    <string name="warning_background_restricted">Az alkalmazás nem működik háttérben.\nKattintson ide a Rendszerbeállítások megnyitásához, ahol az akkumulátor szakaszban engedélyezheti a háttérben futást</string>
+    <string name="warning_enable_location_service">GPS-érzékelő kikapcsolva.\nKattintson ide a Rendszerbeállítások megnyitásához, ahol engedélyezheti a Helyszolgáltatást és beállíthatja a helymeghatározási módszert, hogy a GPS-érzékelőt használja</string>
     <!-- Track -->
     <string name="track_id">Útvonal</string>
     <string name="duration">Időtartam</string>
     <string name="max_speed">Max Sebesség</string>
-    <string name="average_speed">Átl Sebesség</string>
+    <string name="average_speed">Átl. Sebesség</string>
     <string name="distance">Távolság</string>
-    <string name="overall_direction">Átfogó Irány</string>
+    <string name="overall_direction">Irány</string>
     <string name="altitude_gap">Szintkülönbség</string>
     <!-- Track Status message -->
-    <string name="track_empty">Új Útvonal\n\nÚtvonal pontok rögzítéséhez\nvagy hely jelölő hozzáadásához\nhasználja a lenti gombokat</string>
+    <string name="track_empty">Új Útvonal</string>
+    <string name="track_start_with_button_below">Indítsd el az útvonalpontok Rögzítését\nvagy adj hozzá Jegyzetet\naz alábbi gombok egyikével</string>
     <!-- Recording buttons (bottom side) -->
-    <string name="placemarks">Hely jelölők</string>
+    <string name="record">Rögzítés</string>
+    <string name="pause">Szünet</string>
+    <string name="annotate">Jegyzet</string>
+    <string name="stop">Leállítás</string>
+    <string name="lock">Zárolás</string>
+    <string name="unlock">Feloldás</string>
+    <string name="finalize_track">Útvonal véglegesítés</string>
+    <string name="toast_bottom_bar_locked">Gombsor lezárva</string>
+    <string name="toast_nothing_to_save">Nincs mit menteni</string>
+    <string name="toast_recording_when_gps_found">Rögzítés akkor indul el, ha lesz GPS jel</string>
+    <string name="toast_annotate_when_gps_found">Jegyzet akkor készül el, ha lesz GPS jel</string>
+    <string name="ok">OK</string>
+    <string name="annotations">Jegyzetek</string>
     <string name="trackpoints">Útpontok</string>
     <!-- Main menu -->
     <string name="menu_settings">Beállítások</string>
-    <string name="menu_track_finished">Útvonal rögzítés vége</string>
-    <string name="toast_track_finished_click_again">Dupla kattintásra Útvonal rögzítés vége</string>
-    <string name="toast_track_saved_into_tracklist">Útvonal mentve az Útvonal listába</string>
-    <string name="toast_track_exported">Útvonal exportálva a /GPSLogger mappába</string>
+    <string name="toast_track_saved_into_tracklist">Útvonal mentve az Útvonalak listába</string>
+    <string name="toast_track_exported">Útvonal exportálva /GPSLogger mappába</string>
     <string name="menu_about">Névjegy</string>
+    <string name="menu_online_help">Online súgó</string>
     <string name="menu_shutdown">Kikapcsolás</string>
-    <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">Hely jelölő hozzáadása</string>
-    <string name="dlg_placemark_description">Leírás</string>
-    <string name="dlg_button_add">Hozzáadás</string>
-    <string name="dlg_button_cancel">Mégse</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Jegyzet hozzáadása</string>
+    <string name="dlg_enter_the_description">Leírás</string>
+    <string name="dlg_button_add">Hozzáad</string>
     <!-- Tracklist -->
-    <string name="tracklist_empty">Útvonal lista üres</string>
+    <string name="tracklist_empty">Útvonalak lista üres</string>
     <string name="card_trackinfo_length">Hossz</string>
     <string name="card_trackinfo_duration">Időtartam</string>
     <string name="card_trackinfo_altitude_gap">Szint Δ</string>
     <string name="card_trackinfo_max_speed">Max Seb</string>
     <string name="card_trackinfo_average_speed">Átl Seb</string>
     <string name="card_trackinfo_geopoints">Pontok</string>
-    <string name="card_trackinfo_placemarks">Helyek</string>
+    <string name="card_trackinfo_annotations">Jegyzet</string>
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">Exportálás</string>
     <string name="card_menu_view_selector">Nézd meg...</string>
     <string name="card_menu_view">Nézd meg %1$s</string>
     <string name="card_menu_delete">Törlés</string>
     <string name="card_menu_share">Megosztás...</string>
+    <string name="card_menu_edit">Részletek szerkesztése</string>
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">A kiválasztott útvonal összes exportált fájlját törölni szeretné?</string>
-    <string name="card_message_delete_confirmation">Valóban szeretné törölni a kiválasztott útvonalat?</string>
+    <string name="card_message_delete_also_exported">Kiválasztott útvonal összes exportált fájlját törölni szeretné?</string>
+    <string name="card_message_delete_confirmation">Valóban szeretné törölni a kiválasztott útvonalakat?</string>
     <string name="yes">Igen</string>
     <string name="no">Nem</string>
     <string name="cancel">Mégse</string>
     <string name="export_unable_to_write_file">Fájl nem írható</string>
     <string name="please_grant_storage_permission">Funkció eléréséhez kérjük engedélyezd a tárolóhelyhez való hozzáférést</string>
     <!-- Notification App killed messagebox -->
-    <string name="dlg_app_killed">Háttérben kikapcsolták az alkalmazást.</string>
+    <string name="dlg_app_killed">Az alkalmazás leállt miközben a háttérben rögzített</string>
     <string name="dlg_app_killed_description">Kérjük, ellenőrizze az Android beállításokat, hogy az alkalmazás nincs-e optimalizálva az akkumulátorhoz és nem korlátozott-e a háttérben futás.</string>
     <string name="open_android_app_settings">Beállítások megnyitása</string>
     <!-- Preferences -->
@@ -118,8 +132,8 @@
     <string name="pref_color_theme_light">Világos</string>
     <string name="pref_show_decimal_coordinates">Decimális koordináta formátum</string>
     <string name="pref_show_decimal_coordinates_summary">Koordináta megjelenítése Decimális számrendszerben</string>
-    <string name="pref_show_gps_time_local">A GPS idő megjelenítése a helyi időzónában</string>
-    <string name="pref_show_gps_time_local_summary">a globális GPS idő helyett</string>
+    <string name="pref_show_gps_time_local">Helyi idő megjelenítése</string>
+    <string name="pref_show_gps_time_local_summary">globális GPS idő helyett</string>
     <string name="pref_show_directions">Irány Megjelenítése</string>
     <string name="pref_show_directions_angle">Fok</string>
     <string name="pref_show_directions_cardinal">Égtáj</string>
@@ -128,9 +142,9 @@
     <string name="pref_unit_of_measurement_imperial">Angolszász</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Légi / Tengeri</string>
     <string name="pref_unit_of_measurement_speed">Sebesség mértékegység</string>
-    <string name="pref_track_viewer">Útvonal néző</string>
-    <string name="pref_track_viewer_not_installed">Nincs GPX/KML néző telepítve</string>
-    <string name="pref_track_viewer_select_every_time">Választás mindig</string>
+    <string name="pref_track_viewer">Útvonal megjelenítő</string>
+    <string name="pref_track_viewer_not_installed">Nincs GPX/KML megjelenítő telepítve</string>
+    <string name="pref_track_viewer_select_every_time">Kiválasztás minden egyes alkalommal</string>
     <string name="pref_category_tracking">Útvonal rögzítés</string>
     <string name="pref_GPS_distance">Rögzítési sűrűség</string>
     <string name="pref_GPS_distance_max">Maximum</string>
@@ -146,7 +160,7 @@
     <string name="pref_GPS_distance_66ft">66 láb</string>
     <string name="pref_GPS_update_frequency">GPS Frissítési idő</string>
     <string name="pref_GPS_update_frequency_max">Elérhető legrövidebb</string>
-    <string name="pref_GPS_update_frequency_1s">1 másodperc (legjobb pontosság)</string>
+    <string name="pref_GPS_update_frequency_1s">1 másodperc (legnagyobb pontosság)</string>
     <string name="pref_GPS_update_frequency_2s">2 másodperc</string>
     <string name="pref_GPS_update_frequency_3s">3 másodperc (kevésbé pontos)</string>
     <string name="pref_category_altitude_corrections">MAGASSÁG KORREKCIÓ</string>
@@ -157,18 +171,18 @@
     <string name="pref_AltitudeCorrection_summary_offset">Eltolás</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">Nincs eltolás definiálva</string>
     <string name="pref_category_exporting">EXPORTÁLÁS</string>
-    <string name="pref_export_TXT">Útvonal exportálása TXT-be</string>
-    <string name="pref_export_TXT_summary">Egyszerű szöveg, vesszővel tagolt értékek</string>
-    <string name="pref_export_KML">Útvonal exportálása KML-be</string>
+    <string name="pref_export_TXT">Útvonal exportálás TXT-be</string>
+    <string name="pref_export_TXT_summary">Egyszerű szöveg, vesszővel tagolt értékekkel</string>
+    <string name="pref_export_KML">Útvonal exportálás KML-be</string>
     <string name="pref_export_KML_summary">Keyhole Markup nyelv (v.2.2)</string>
-    <string name="pref_export_GPX">Útvonal exportálása GPX-be</string>
+    <string name="pref_export_GPX">Útvonal exportálás GPX-be</string>
     <string name="pref_export_GPX_summary">Szabványos GPS eXchange formátum</string>
-    <string name="pref_GPX_version">Szabványos GPX verzió</string>
+    <string name="pref_GPX_version">GPX Standard verzió</string>
     <string name="pref_GPX_version_1_0">GPX 1.0</string>
     <string name="pref_GPX_version_1_1">GPX 1.1</string>
     <string name="pref_KML_altitude_mode">KML Magasság mód</string>
-    <string name="pref_KML_altitude_mode_absolute">Abszolút</string>
-    <string name="pref_KML_altitude_mode_projected">Földre vetített</string>
+    <string name="pref_KML_altitude_mode_absolute">Tengerszinttől</string>
+    <string name="pref_KML_altitude_mode_projected">Föld felszínre</string>
     <string name="pref_track_stats">Útvonal statisztika alapja</string>
     <string name="pref_track_stats_totaltime">Teljes idő</string>
     <string name="pref_track_stats_movingtime">Mozgásban töltött idő</string>
@@ -176,11 +190,12 @@
     <string name="toast_download_error">Letöltési hiba</string>
     <string name="toast_download_completed">Letöltés kész</string>
     <string name="toast_download_failed">Sikertelen letöltés. Kérjük, próbálja újra később</string>
-    <string name="toast_active_track_not_empty">Az aktív útvonal nem üres</string>
+    <string name="toast_active_track_not_empty">Aktív útvonal nem üres</string>
+    <string name="toast_no_browser_installed">Nincs Internet böngésző telepítve</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger a GPS segítségével rögzíti az útvonalat. Megtekintheti őket az Ön által preferált viewer programban, megoszthatja és exportálhatja azokat a készülék GPSLogger mappájából KML, GPX és TXT formátumban.\n\nEz a program szabad felhasználású szoftver, a GNU General Public License feltételei szerint kiadva.\nTovábbi részletek: http://www.gnu.org/licenses/gpl.txt\n\nAz EGM96 geoid fájl felelősség vállalásáért lásd: http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger a GPS segítségével rögzíti az útvonalat. Megtekintheti őket az Ön által preferált viewer programban, megoszthatja és exportálhatja azokat a készülék GPSLogger mappájából KML, GPX és TXT formátumban.\n\nEz a program szabad felhasználású szoftver, a GNU General Public License feltételei szerint kiadva.\nTovábbi részletek: http://www.gnu.org/licenses/gpl.txt\n\nAz EGM96 geoid fájl felelősség vállalásáért lásd: http://earth-info.nga.mil/GandG/disclaim.html\n\nHa szereti ezt az alkalmazást, kérjük, szánjon egy pillanatot arra, hogy értékelje a GPS Loggert a Google Áruházban.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger GPS segítségével rögzíti az útvonalakat. Megtekintheti őket az Ön által preferált megjelenítő programban, megoszthatja vagy exportálhatja készüléke GPSLogger mappájába KML, GPX és TXT formátumban.\n\nEz a program ingyenes szoftver, amelyet a GNU General Public License feltételei szerint adtak ki.\nTovábbi információ: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Ha szereti ezt az alkalmazást, kérjük, szánjon egy pillanatot arra, hogy értékelje a GPS Loggert a Google Play Áruházban.</string>
     <string name="about_ok">Bezárás</string>
     <string name="about_rate_this_app">Értékelés</string>
     <string name="about_unable_to_rate">Nem érhető el a Store</string>

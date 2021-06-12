@@ -2,7 +2,10 @@
 
 <!--
   ~ card_menu.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/6/2016
+  ~ Created by G.Capelli on 8/6/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -26,6 +29,11 @@
         android:icon="@drawable/ic_visibility_24dp"
         android:visible="true"
         android:title="@string/card_menu_view_selector" />
+    <item
+        android:id="@+id/cardmenu_edit"
+        android:icon="@drawable/ic_edit_24"
+        android:visible="true"
+        android:title="@string/card_menu_edit" />
     <item
         android:id="@+id/cardmenu_share"
         android:icon="@drawable/ic_share_24dp"

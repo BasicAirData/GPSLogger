@@ -1,6 +1,6 @@
 /*
- * LatLng - Java Class for Android
- * Created by G.Capelli on 3/7/2016
+ * ExternalViewer - Java Class for Android
+ * Created by G.Capelli on 23/9/2020
  * This file is part of BasicAirData GPS Logger
  *
  * Copyright (C) 2011 BasicAirData
@@ -21,11 +21,16 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.graphics.drawable.Drawable;
+
 /**
- * The data structure that describes a 2D point on the Earth surface.
- * It is used to create the thumbnails of the Tracks.
+ * The data structure that describes a Track Viewer.
  */
-class LatLng {
-    double latitude;
-    double longitude;
+public class ExternalViewer {
+    String label = "";                      // The name of the app
+    String packageName = "";                // The full package name
+    String mimeType = "";                   // The mimetype to use with the ACTION_VIEW intent (for example "application/gpx+xml")
+    String fileType = "";                   // "GPX" or "KML"
+    boolean requiresFileProvider = true;    // True if the app requires the FileProvider method to open the track
+    Drawable icon = null;                   // The app's icon
 }
