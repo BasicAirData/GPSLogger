@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -50,7 +53,6 @@
     <string name="gps_not_accessible">GPS inacessível</string>
     <string name="gps_disabled">GPS desativado</string>
     <string name="gps_out_of_service">GPS fora de serviço</string>
-    <string name="gps_temporary_unavailable">GPS temporariamente indesponível</string>
     <string name="gps_searching">A procurar o GPS</string>
     <string name="gps_stabilizing">A estabilizar o sinal</string>
     <string name="warning_location_denied">A aplicação não consegue aceder à Localização</string>
@@ -65,23 +67,34 @@
     <string name="overall_direction">Orientação</string>
     <string name="altitude_gap">Altitude Gap</string>
     <!-- Track Status message -->
-    <string name="track_empty">Novo Percurso\n\nComeçar a gravação de Pontos\nou adicionar um Lugar\nusando um dos botões abaixo</string>
+    <string name="track_empty">Nova gravação de percurso</string>
+    <string name="track_start_with_button_below">Começar a gravação de Pontos\nou adicionar uma Anotação\nusando um dos botões abaixo</string>
     <!-- Recording buttons (bottom side) -->
-    <string name="placemarks">Lugares</string>
+    <string name="record">Gravar</string>
+    <string name="pause">Pausa</string>
+    <string name="annotate">Anotar</string>
+    <string name="stop">Parar</string>
+    <string name="lock">Bloquear</string>
+    <string name="unlock">Desbloquear</string>
+    <string name="finalize_track">Finalizar Percurso</string>
+    <string name="toast_bottom_bar_locked">A barra inferior está bloqueada</string>
+    <string name="toast_nothing_to_save">Nada para guardar</string>
+    <string name="toast_recording_when_gps_found">A gravação começará quando o sinal de GPS for encontrado</string>
+    <string name="toast_annotate_when_gps_found">A anotação será efetuada quando o sinal de GPS for encontrado</string>
+    <string name="ok">OK</string>
+    <string name="annotations">Anotações</string>
     <string name="trackpoints">Pontos</string>
     <!-- Main menu -->
     <string name="menu_settings">Definições</string>
-    <string name="menu_track_finished">Rastreio acabado</string>
-    <string name="toast_track_finished_click_again">Clique duplo para acabar de seguir</string>
-    <string name="toast_track_saved_into_tracklist">Percurso salvo na tracklist</string>
+    <string name="toast_track_saved_into_tracklist">Percurso arquivado</string>
     <string name="toast_track_exported">Trajetos exportados para a pasta /GPSLogger</string>
     <string name="menu_about">Sobre</string>
+    <string name="menu_online_help">Ajuda online</string>
     <string name="menu_shutdown">Sair</string>
-    <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">Adicionar lugar</string>
-    <string name="dlg_placemark_description">Descrição</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Adicionar anotação</string>
+    <string name="dlg_enter_the_description">Introduza a descrição</string>
     <string name="dlg_button_add">Adicionar</string>
-    <string name="dlg_button_cancel">Cancelar</string>
     <!-- Tracklist -->
     <string name="tracklist_empty">Arquivo vazio</string>
     <string name="card_trackinfo_length">Distancia</string>
@@ -90,13 +103,14 @@
     <string name="card_trackinfo_max_speed">Vel Máx</string>
     <string name="card_trackinfo_average_speed">Vel Méd</string>
     <string name="card_trackinfo_geopoints">Pontos</string>
-    <string name="card_trackinfo_placemarks">Lugares</string>
+    <string name="card_trackinfo_annotations">Anot</string>
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">Exportar</string>
     <string name="card_menu_view_selector">Ver em...</string>
     <string name="card_menu_view">Ver em %1$s</string>
     <string name="card_menu_delete">Apagar</string>
     <string name="card_menu_share">Partilhar com...</string>
+    <string name="card_menu_edit">Editar detalhes</string>
     <!-- Tracklist toasts and messagebox -->
     <string name="card_message_delete_also_exported">Também pretende eliminar todos os ficheiros exportados dos percursos selecionados?</string>
     <string name="card_message_delete_confirmation">Pretende eliminar os percursos selecionados?</string>
@@ -126,14 +140,14 @@
     <string name="pref_unit_of_measurement">Sistema de medição</string>
     <string name="pref_unit_of_measurement_metric">Métrico</string>
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
-    <string name="pref_unit_of_measurement_aerial_nautical">Aérea / Náutica</string>
+    <string name="pref_unit_of_measurement_aerial_nautical">Aéreo / Náutico</string>
     <string name="pref_unit_of_measurement_speed">Mostrar velocidades em</string>
     <string name="pref_track_viewer">Visualizador de Percursos</string>
     <string name="pref_track_viewer_not_installed">Nenhum Visualizador de GPX/KML instalado</string>
     <string name="pref_track_viewer_select_every_time">Selecionar cada vez</string>
     <string name="pref_category_tracking">RASTREAMENTO</string>
-    <string name="pref_GPS_distance">Coletando a densidade</string>
-    <string name="pref_GPS_distance_max">Máximo</string>
+    <string name="pref_GPS_distance">Densidade de coleta</string>
+    <string name="pref_GPS_distance_max">Máxima</string>
     <string name="pref_GPS_distance_1m">1 metro</string>
     <string name="pref_GPS_distance_2m">2 metros</string>
     <string name="pref_GPS_distance_5m">5 metros</string>
@@ -177,10 +191,11 @@
     <string name="toast_download_completed">Transferência concluída</string>
     <string name="toast_download_failed">Falha na transferência. Tente novamente.</string>
     <string name="toast_active_track_not_empty">O percurso ativo não está vazio</string>
+    <string name="toast_no_browser_installed">Nenhum navegador instalado</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nO BasicAirData GPS Logger regista os seus percursos utilizando GPS. Pode consultá-los no seu visualizador preferido, partilhá-los e exportá-los para a pasta GPSLogger no seu dispositivo nos formatos KML, GPX e TXT.\n\nEste software é gratuito, sendo editado nos termos da GNU General Public License.\nPara mais informações, consulte: http://www.gnu.org/licenses/gpl.txt\n\nConsulte a exclusão de responsabilidade do ficheiro EGM96 geoid em: http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nO BasicAirData GPS Logger regista os seus percursos utilizando GPS. Pode consultá-los no seu visualizador preferido, partilhá-los e exportá-los para a pasta GPSLogger no seu dispositivo nos formatos KML, GPX e TXT.\n\nEste software é gratuito, sendo editado nos termos da GNU General Public License.\nPara mais informações, consulte: http://www.gnu.org/licenses/gpl.txt\n\nConsulte a exclusão de responsabilidade do ficheiro EGM96 geoid em: http://earth-info.nga.mil/GandG/disclaim.html\n\nSe aprecia a aplicação, dedique um momento a classificar o GPS Logger na Google Store.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nO BasicAirData GPS Logger regista os seus percursos utilizando GPS. Pode consultá-los no seu visualizador preferido, partilhá-los e exportá-los para a pasta GPSLogger no seu dispositivo nos formatos KML, GPX e TXT.\n\nEste software é gratuito, sendo editado nos termos da GNU General Public License.\nPara mais informações, consulte: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Se aprecia a aplicação, dedique um momento a classificar o GPS Logger na Google Play Store.</string>
     <string name="about_ok">Fechar</string>
     <string name="about_rate_this_app">Classificar este app</string>
     <string name="about_unable_to_rate">Não é possível aceder à Loja</string>

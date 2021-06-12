@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -50,7 +53,6 @@
     <string name="gps_not_accessible">GPS non accessibile</string>
     <string name="gps_disabled">GPS disabilitato</string>
     <string name="gps_out_of_service">GPS fuori servizio</string>
-    <string name="gps_temporary_unavailable">GPS temporaneamente non disponibile</string>
     <string name="gps_searching">Ricerca del segnale GPS</string>
     <string name="gps_stabilizing">Stabilizzazione del segnale</string>
     <string name="warning_location_denied">L\'App non può accedere alla Posizione</string>
@@ -65,23 +67,34 @@
     <string name="overall_direction">Direzione</string>
     <string name="altitude_gap">Dislivello</string>
     <!-- Track Status message -->
-    <string name="track_empty">Nuovo itinerario\n\nInizia a registrare punti\no aggiungi un\'annotazione\nusando uno dei pulsanti qui sotto</string>
+    <string name="track_empty">Nuovo itinerario</string>
+    <string name="track_start_with_button_below">Inizia a registrare punti\no aggiungi un\'annotazione\nusando uno dei pulsanti qui sotto</string>
     <!-- Recording buttons (bottom side) -->
-    <string name="placemarks">Annotazioni</string>
+    <string name="record">Registra</string>
+    <string name="pause">Pausa</string>
+    <string name="annotate">Annota</string>
+    <string name="stop">Stop</string>
+    <string name="lock">Blocca</string>
+    <string name="unlock">Sblocca</string>
+    <string name="finalize_track">Finalizza Itinerario</string>
+    <string name="toast_bottom_bar_locked">La barra inferiore è bloccata</string>
+    <string name="toast_nothing_to_save">Niente da salvare</string>
+    <string name="toast_recording_when_gps_found">La registrazione inizierà quando il segnale GPS verrà trovato</string>
+    <string name="toast_annotate_when_gps_found">L\'annotazione verrà presa quando il segnale GPS verrà trovato</string>
+    <string name="ok">OK</string>
+    <string name="annotations">Annotazioni</string>
     <string name="trackpoints">Punti GPS</string>
     <!-- Main menu -->
     <string name="menu_settings">Impostazioni</string>
-    <string name="menu_track_finished">Itinerario finalizzato</string>
-    <string name="toast_track_finished_click_again">Doppio clic per finalizzare questo itinerario</string>
     <string name="toast_track_saved_into_tracklist">Itinerario archiviato</string>
     <string name="toast_track_exported">Itinerari esportati nella cartella /GPSLogger</string>
     <string name="menu_about">Info</string>
+    <string name="menu_online_help">Guida in linea</string>
     <string name="menu_shutdown">Spegni</string>
-    <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">Aggiungi Annotazione</string>
-    <string name="dlg_placemark_description">Inserisci una descrizione</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Aggiungi annotazione</string>
+    <string name="dlg_enter_the_description">Inserisci una descrizione</string>
     <string name="dlg_button_add">Aggiungi</string>
-    <string name="dlg_button_cancel">Annulla</string>
     <!-- Tracklist -->
     <string name="tracklist_empty">Archivio vuoto</string>
     <string name="card_trackinfo_length">Lungh</string>
@@ -90,13 +103,14 @@
     <string name="card_trackinfo_max_speed">Vel max</string>
     <string name="card_trackinfo_average_speed">Vel med</string>
     <string name="card_trackinfo_geopoints">Punti</string>
-    <string name="card_trackinfo_placemarks">Annotaz</string>
+    <string name="card_trackinfo_annotations">Annot</string>
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">Esporta</string>
     <string name="card_menu_view_selector">Visualizza in ...</string>
     <string name="card_menu_view">Visualizza in %1$s</string>
     <string name="card_menu_delete">Elimina</string>
     <string name="card_menu_share">Condividi con ...</string>
+    <string name="card_menu_edit">Modifica dettagli</string>
     <!-- Tracklist toasts and messagebox -->
     <string name="card_message_delete_also_exported">Vuoi anche eliminare tutti i file esportati degli itinerari selezionati?</string>
     <string name="card_message_delete_confirmation">Vuoi veramente eliminare gli itinerari selezionati?</string>
@@ -177,10 +191,11 @@
     <string name="toast_download_completed">Download completato</string>
     <string name="toast_download_failed">Download non riuscito. Riprova più tardi</string>
     <string name="toast_active_track_not_empty">L\'itinerario attivo non è vuoto</string>
+    <string name="toast_no_browser_installed">Nessun browser web installato</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra i tuoi percorsi utilizzando il GPS. È possibile visualizzarli nel tuo visualizzatore preferito, condividerli ed esportarli nella cartella /GPSLogger del dispositivo in formato KML, GPX e TXT.\n\nQuesto programma è software libero, rilasciato sotto i termini della GNU General Public license.\nPer maggiori dettagli si veda: http://www.gnu.org/licenses/gpl.txt\n\nPer l\'EGM96 geoid file disclaimer vedi: http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra i tuoi percorsi utilizzando il GPS. È possibile visualizzarli nel tuo visualizzatore preferito, condividerli ed esportarli nella cartella /GPSLogger del dispositivo in formato KML, GPX e TXT.\n\nQuesto programma è software libero, rilasciato sotto i termini della GNU General Public license.\nPer maggiori dettagli si veda: http://www.gnu.org/licenses/gpl.txt\n\nPer l\'EGM96 geoid file disclaimer vedi: http://earth-info.nga.mil/GandG/disclaim.html\n\nSe ti piace utilizzare questa applicazione, prenditi un momento per valutare GPS Logger nel Google Store.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger registra i tuoi percorsi utilizzando il GPS. È possibile visualizzarli nel tuo visualizzatore preferito, condividerli ed esportarli nella cartella /GPSLogger del dispositivo in formato KML, GPX e TXT.\n\nQuesto programma è software libero, rilasciato sotto i termini della GNU General Public license.\nPer maggiori dettagli si veda: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Se ti piace utilizzare questa applicazione, prenditi un momento per valutare GPS Logger nel Google Play Store.</string>
     <string name="about_ok">Chiudi</string>
     <string name="about_rate_this_app">Valuta questa app</string>
     <string name="about_unable_to_rate">Impossibile accedere allo Store</string>

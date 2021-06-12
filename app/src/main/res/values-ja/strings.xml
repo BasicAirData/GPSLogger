@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ strings.xml
-  ~ Created by G.Capelli (BasicAirData) on 8/5/2016
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -50,7 +53,6 @@
     <string name="gps_not_accessible">GPSにアクセスできません</string>
     <string name="gps_disabled">GPS が無効です</string>
     <string name="gps_out_of_service">GPS 圏外</string>
-    <string name="gps_temporary_unavailable">GPS は一時的に利用できません</string>
     <string name="gps_searching">GPS を探しています</string>
     <string name="gps_stabilizing">信号の安定化中</string>
     <string name="warning_location_denied">アプリは位置情報にアクセスできません</string>
@@ -65,23 +67,17 @@
     <string name="overall_direction">全体の向き</string>
     <string name="altitude_gap">高低差</string>
     <!-- Track Status message -->
-    <string name="track_empty">新しい追跡\n\n下のボタンを使用して\n追跡ポイントの記録を開始\nまたは目印を追加します</string>
+    <string name="track_empty">新しい追跡</string>
     <!-- Recording buttons (bottom side) -->
-    <string name="placemarks">目印</string>
     <string name="trackpoints">追跡ポイント</string>
     <!-- Main menu -->
     <string name="menu_settings">設定</string>
-    <string name="menu_track_finished">追跡完了</string>
-    <string name="toast_track_finished_click_again">ダブルクリックするとこの追跡を終了します</string>
     <string name="toast_track_saved_into_tracklist">追跡リストに追跡を保存しました</string>
     <string name="toast_track_exported">/GPSLogger フォルダーに追跡をエクスポートしました</string>
     <string name="menu_about">アプリについて</string>
     <string name="menu_shutdown">シャットダウン</string>
-    <!-- Placemark Creation dialog -->
-    <string name="dlg_add_placemark">目印を追加</string>
-    <string name="dlg_placemark_description">説明を入力してください</string>
+    <!-- Annotation Creation dialog -->
     <string name="dlg_button_add">追加</string>
-    <string name="dlg_button_cancel">キャンセル</string>
     <!-- Tracklist -->
     <string name="tracklist_empty">追跡リストは空です</string>
     <string name="card_trackinfo_length">長さ</string>
@@ -90,7 +86,6 @@
     <string name="card_trackinfo_max_speed">最高速度</string>
     <string name="card_trackinfo_average_speed">平均速度</string>
     <string name="card_trackinfo_geopoints">ポイント</string>
-    <string name="card_trackinfo_placemarks">場所</string>
     <!-- Context menu of Tracklist -->
     <string name="card_menu_export">エクスポート</string>
     <string name="card_menu_view_selector">表示 ...</string>
@@ -179,8 +174,8 @@
     <string name="toast_active_track_not_empty">有効な追跡が空ではありません</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger は、GPS を使用して、追跡を記録します。 それをお好みのビューアで表示したり、KML、GPX、TXT 形式で共有、およびお使いのデバイスの GPSLogger フォルダーにエクスポートすることができます。\n\nこのプログラムは GNU 一般公衆ライセンスの条件の下でリリースされるフリー ソフトウェアです。\n詳細は、こちらを参照してください: http://www.gnu.org/licenses/gpl.txt\n\nEGM96 ジオイド ファイルの免責事項はこちらを参照してください: http://earth-info.nga.mil/GandG/disclaim.html</string>
-    <string name="about_description_googleplaystore">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger は、GPS を使用して、追跡を記録します。 それをお好みのビューアで表示したり、KML、GPX、TXT 形式で共有、およびお使いのデバイスの GPSLogger フォルダーにエクスポートすることができます。\n\nこのプログラムは GNU 一般公衆ライセンスの条件の下でリリースされるフリー ソフトウェアです。\n詳細は、こちらを参照してください: http://www.gnu.org/licenses/gpl.txt\n\nEGM96 ジオイド ファイルの免責事項はこちらを参照してください: http://earth-info.nga.mil/GandG/disclaim.html\n\nこのアプリを使って楽しんでいただけたら、少し時間をいただき Google ストアで GPS Logger を評価してください。</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger は、GPS を使用して、追跡を記録します。 それをお好みのビューアで表示したり、KML、GPX、TXT 形式で共有、およびお使いのデバイスの GPSLogger フォルダーにエクスポートすることができます。\n\nこのプログラムは GNU 一般公衆ライセンスの条件の下でリリースされるフリー ソフトウェアです。\n詳細は、こちらを参照してください: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">このアプリを使って楽しんでいただけたら、少し時間をいただき Google ストアで GPS Logger を評価してください。</string>
     <string name="about_ok">閉じる</string>
     <string name="about_rate_this_app">このアプリを評価</string>
     <string name="about_unable_to_rate">ストアにアクセスできません</string>
