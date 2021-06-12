@@ -138,8 +138,8 @@ public class FragmentGPSFix extends Fragment {
                 isTimeAndSatellitesVisible = layoutHeight >= 6*viewHeight;
                 //Log.w("myApp", "[#] FragmentGPSFix MEASURED: " + layoutHeight + " / " + 6*viewHeight + " -> " + isTimeAndSatellitesVisible);
             } else {
-                isTimeAndSatellitesVisible = layoutHeight >= 4*viewHeight;
-                //Log.w("myApp", "[#] FragmentGPSFix MEASURED: " + layoutHeight + " / " + 4*viewHeight + " -> " + isTimeAndSatellitesVisible);
+                isTimeAndSatellitesVisible = layoutHeight >= 3.9*viewHeight;
+                //Log.w("myApp", "[#] FragmentGPSFix MEASURED: " + layoutHeight + " / " + 3.9*viewHeight + " -> " + isTimeAndSatellitesVisible);
             }
             GPSApplication.getInstance().setSpaceForExtraTilesAvailable(isTimeAndSatellitesVisible);
             update();
