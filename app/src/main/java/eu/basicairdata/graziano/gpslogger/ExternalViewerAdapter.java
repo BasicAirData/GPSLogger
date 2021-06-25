@@ -90,7 +90,7 @@ public class ExternalViewerAdapter extends BaseAdapter {
         holder.description.setText(listData.get(position).label);
         if (holder.description.getText().length() > 18){
             String tooLongLabel = holder.description.getText().toString();
-            holder.description.setText(tooLongLabel.substring(0, Math.min(tooLongLabel.length(), 18))+ "...");
+            holder.description.setText(tooLongLabel.substring(0, Math.min(tooLongLabel.length(), 18)) + "...");
         }
         holder.format.setText(listData.get(position).fileType.equals(FILETYPE_GPX) ? "GPX" : listData.get(position).fileType.equals(FILETYPE_KML) ? "KML" : "");
         return convertView;
