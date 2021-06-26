@@ -1913,17 +1913,21 @@ public class GPSApplication extends Application implements LocationListener {
                                 }
                                 if (track != null) {
                                     // Delete track files
-                                    for (File f : fileFind(DIRECTORY_TEMP, track.getName())) {
-                                        Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
-                                        fileDelete(f.getAbsolutePath());
+                                    if (fileFind(DIRECTORY_TEMP, track.getName()) != null) {
+                                        for (File f : fileFind(DIRECTORY_TEMP, track.getName())) {
+                                            Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
+                                            fileDelete(f.getAbsolutePath());
+                                        }
                                     }
                                     // Delete thumbnail
                                     fileDelete(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
                                     // Delete exported files
                                     if (deleteAlsoExportedFiles) {
-                                        for (File f : fileFind(DIRECTORY_EXPORT, track.getName())) {
-                                            Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
-                                            fileDelete(f.getAbsolutePath());
+                                        if (fileFind(DIRECTORY_EXPORT, track.getName()) != null) {
+                                            for (File f : fileFind(DIRECTORY_EXPORT, track.getName())) {
+                                                Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
+                                                fileDelete(f.getAbsolutePath());
+                                            }
                                         }
                                     }
 
