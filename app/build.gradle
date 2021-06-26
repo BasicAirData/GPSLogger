@@ -1,6 +1,9 @@
-/**
+/*
  * build.gradle
- * Created by G.Capelli (BasicAirData) on 8/5/2016
+ * Created by G.Capelli on 8/5/2016
+ * This file is part of BasicAirData GPS Logger
+ *
+ * Copyright (C) 2011 BasicAirData
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +44,7 @@ android {
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-        versionName '3.0.1'
+        versionName '3.0.2'
         versionCode 39
         // -----------------------------------------------------------------------------------------
 
