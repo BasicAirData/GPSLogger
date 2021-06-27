@@ -38,7 +38,7 @@ public class ActionsBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
         //Log.w("myApp", "[#] EVENT");
         String broadcastedAction = intent.getAction();
-        if (broadcastedAction != null) {
+        if (broadcastedAction != null) {  // https://github.com/BasicAirData/GPSLogger/issues/132
             switch (broadcastedAction) {
                 case Intent.ACTION_SCREEN_OFF:
                     // Turns off the EventBus Signals of the Recording Thread
@@ -51,7 +51,9 @@ public class ActionsBroadcastReceiver extends BroadcastReceiver {
                     break;
                 case Intent.ACTION_SHUTDOWN:
                     // Gracefully finish to write data and close the Database
-                    GPSApplication.getInstance().onShutdown();
+                    if (GPSApplication.getInstance() != null) {  // https://github.com/BasicAirData/GPSLogger/issues/146
+                        GPSApplication.getInstance().onShutdown();
+                    }
                     break;
             }
         }
