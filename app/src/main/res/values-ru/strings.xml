@@ -82,7 +82,7 @@
     <string name="toast_recording_when_gps_found">Запись начнётся при обнаружении сигнала GPS</string>
     <string name="toast_annotate_when_gps_found">Метка будет установлена при обнаружении сигнала GPS</string>
     <string name="ok">ОК</string>
-    <string name="annotations">Пометки</string>
+    <string name="annotations">Метки</string>
     <string name="trackpoints">Точки GPS</string>
     <!-- Main menu -->
     <string name="menu_settings">Настройки</string>
