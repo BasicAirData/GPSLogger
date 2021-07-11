@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ strings.xml
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <!-- Tabs -->
+    <string name="tab_gpsfix">GPS инфо</string>
+    <string name="tab_track">Трек</string>
+    <string name="tab_tracklist">Архив</string>
+    <!-- GPS Fix -->
+    <string name="latitude">Широта</string>
+    <string name="longitude">Долгота</string>
+    <string name="altitude">Высота</string>
+    <string name="speed">Скорость</string>
+    <string name="direction">Направление</string>
+    <string name="accuracy">Точность</string>
+    <string name="time">Время</string>
+    <string name="satellites">Спутники</string>
+    <string name="north">С</string>
+    <string name="north_northeast">ССВ</string>
+    <string name="northeast">СВ</string>
+    <string name="east_northeast">ВСВ</string>
+    <string name="east">В</string>
+    <string name="east_southeast">ВЮВ</string>
+    <string name="southeast">ЮВ</string>
+    <string name="south_southeast">ЮЮВ</string>
+    <string name="south">Ю</string>
+    <string name="south_southwest">ЮЮЗ</string>
+    <string name="southwest">ЮЗ</string>
+    <string name="west_southwest">ЗЮЗ</string>
+    <string name="west">З</string>
+    <string name="west_northwest">ЗСЗ</string>
+    <string name="northwest">СЗ</string>
+    <string name="north_northwest">ССЗ</string>
+    <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPS недоступен</string>
+    <string name="gps_disabled">GPS отключен</string>
+    <string name="gps_out_of_service">GPS из службы</string>
+    <string name="gps_searching">Поиск GPS</string>
+    <string name="gps_stabilizing">Стабилизация сигнала</string>
+    <string name="warning_location_denied">Приложение не может получить доступ к местоположению</string>
+    <string name="warning_background_restricted">Приложение не может работать в фоновом режиме.\nНажмите здесь, чтобы перейти в Системные Настройки > Батарея, где можно разрешить работу в Фоне</string>
+    <string name="warning_enable_location_service">Датчик GPS отключен.\nНажмите сюда, чтобы перейти в Системные Настройки, где Вы можете включить службу GPS, и установить режим работы датчика GPS</string>
+    <!-- Track -->
+    <string name="track_id">Трек</string>
+    <string name="duration">Длительность</string>
+    <string name="max_speed">Макс. скорость</string>
+    <string name="average_speed">Сред. скорость</string>
+    <string name="distance">Расстояние</string>
+    <string name="overall_direction">Направление</string>
+    <string name="altitude_gap">Перепад высот</string>
+    <!-- Track Status message -->
+    <string name="track_empty">Новый Трек</string>
+    <string name="track_start_with_button_below">Начните запись Трека\nили добавьте Метку,\nиспользуя книпки внизу</string>
+    <!-- Recording buttons (bottom side) -->
+    <string name="record">Запись</string>
+    <string name="pause">Пауза</string>
+    <string name="annotate">Метка</string>
+    <string name="stop">Стоп</string>
+    <string name="lock">Блокировать</string>
+    <string name="unlock">Разблокировать</string>
+    <string name="finalize_track">Завершить Трек</string>
+    <string name="toast_bottom_bar_locked">Нижняя панель заблокирована</string>
+    <string name="toast_nothing_to_save">Нечего сохранять</string>
+    <string name="toast_recording_when_gps_found">Запись начнётся при обнаружении сигнала GPS</string>
+    <string name="toast_annotate_when_gps_found">Метка будет установлена при обнаружении сигнала GPS</string>
+    <string name="ok">ОК</string>
+    <string name="annotations">Метки</string>
+    <string name="trackpoints">Точки GPS</string>
+    <!-- Main menu -->
+    <string name="menu_settings">Настройки</string>
+    <string name="toast_track_saved_into_tracklist">Трек архивирован</string>
+    <string name="toast_track_exported">Треки экспортированы в папку /GPSLogger</string>
+    <string name="menu_about">О программе</string>
+    <string name="menu_online_help">Онлайн справка</string>
+    <string name="menu_shutdown">Выключить</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Добавить метку</string>
+    <string name="dlg_enter_the_description">Введите описание</string>
+    <string name="dlg_button_add">Добавить</string>
+    <!-- Tracklist -->
+    <string name="tracklist_empty">Архив пустой</string>
+    <string name="card_trackinfo_length">Длина</string>
+    <string name="card_trackinfo_duration">Время</string>
+    <string name="card_trackinfo_altitude_gap">Δ высот</string>
+    <string name="card_trackinfo_max_speed">Макс.ск.</string>
+    <string name="card_trackinfo_average_speed">Сред.ск.</string>
+    <string name="card_trackinfo_geopoints">Точки</string>
+    <string name="card_trackinfo_annotations">Меток</string>
+    <!-- Context menu of Tracklist -->
+    <string name="card_menu_export">Экспорт</string>
+    <string name="card_menu_view_selector">Посмотреть в ...</string>
+    <string name="card_menu_view">Посмотреть в %1$s</string>
+    <string name="card_menu_delete">Удалить</string>
+    <string name="card_menu_share">Поделиться с ...</string>
+    <string name="card_menu_edit">Редактировать детали</string>
+    <!-- Tracklist toasts and messagebox -->
+    <string name="card_message_delete_also_exported">Хотите также удалить все экспортированные файлы выбранных треков?</string>
+    <string name="card_message_delete_confirmation">Вы действительно хотите удалить выбранные треки?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="cancel">Отмена</string>
+    <string name="export_unable_to_write_file">Невозможно записать файл</string>
+    <string name="please_grant_storage_permission">Чтобы включить эту функцию, пожалуйста, разрешите доступ к хранилищу</string>
+    <!-- Notification App killed messagebox -->
+    <string name="dlg_app_killed">Приложение было закрыто во время фоновой записи.</string>
+    <string name="dlg_app_killed_description">Пожалуйста, проверьте в настройках Android, что приложение не ограничено для использования батареи и для работы в фоне.</string>
+    <string name="open_android_app_settings">Открыть настройки</string>
+    <!-- Preferences -->
+    <string name="pref_category_interface">ИНТЕРФЕЙС</string>
+    <string name="pref_keep_screen_on">Оставить экран включённым</string>
+    <string name="pref_keep_screen_on_summary">Батарейка садится быстрее</string>
+    <string name="pref_color_theme">Цветовая тема</string>
+    <string name="pref_color_theme_dark">Тёмная</string>
+    <string name="pref_color_theme_light">Светлая</string>
+    <string name="pref_show_decimal_coordinates">Показать десятичные координаты</string>
+    <string name="pref_show_decimal_coordinates_summary">Дробная часть в десятичной нотации</string>
+    <string name="pref_show_gps_time_local">Показывать Локальное Время GPS</string>
+    <string name="pref_show_gps_time_local_summary">вместо глобального времени GPS</string>
+    <string name="pref_show_directions">Показать направление</string>
+    <string name="pref_show_directions_angle">Градусы к востоку от севера</string>
+    <string name="pref_show_directions_cardinal">По сторонам света</string>
+    <string name="pref_unit_of_measurement">Система измерения</string>
+    <string name="pref_unit_of_measurement_metric">Метрическая</string>
+    <string name="pref_unit_of_measurement_imperial">Английская</string>
+    <string name="pref_unit_of_measurement_aerial_nautical">Воздушная / Морская</string>
+    <string name="pref_unit_of_measurement_speed">Показывать скорости в</string>
+    <string name="pref_track_viewer">Просмотрщик треков</string>
+    <string name="pref_track_viewer_not_installed">Не установлен просмотрщик GPX/KML</string>
+    <string name="pref_track_viewer_select_every_time">Спрашивать каждый раз</string>
+    <string name="pref_category_tracking">ОТСЛЕЖИВАНИЕ</string>
+    <string name="pref_GPS_distance">Сбор плотности</string>
+    <string name="pref_GPS_distance_max">Максимальная</string>
+    <string name="pref_GPS_distance_1m">1 метр</string>
+    <string name="pref_GPS_distance_2m">2 метра</string>
+    <string name="pref_GPS_distance_5m">5 метров</string>
+    <string name="pref_GPS_distance_10m">10 метров</string>
+    <string name="pref_GPS_distance_20m">20 метров</string>
+    <string name="pref_GPS_distance_3ft">3 фута</string>
+    <string name="pref_GPS_distance_6ft">6 футов</string>
+    <string name="pref_GPS_distance_16ft">16 футов</string>
+    <string name="pref_GPS_distance_33ft">33 фута</string>
+    <string name="pref_GPS_distance_66ft">66 футов</string>
+    <string name="pref_GPS_update_frequency">Интервал обновления GPS</string>
+    <string name="pref_GPS_update_frequency_max">Кратчайший из доступных</string>
+    <string name="pref_GPS_update_frequency_1s">1 секунда (лучшая точность)</string>
+    <string name="pref_GPS_update_frequency_2s">2 секунды</string>
+    <string name="pref_GPS_update_frequency_3s">3 секунды (менее точного)</string>
+    <string name="pref_category_altitude_corrections">КОРРЕКЦИЯ ВЫСОТЫ</string>
+    <string name="pref_EGM96AltitudeCorrection">Коррекция по EGM96</string>
+    <string name="pref_EGM96AltitudeCorrection_summary">Автоматическая коррекция высоты на основе модели геоида NGA</string>
+    <string name="pref_EGM96AltitudeCorrection_download_progress">Загрузка файла 2028kB:\nЗначения высот для Геоида EGM96..</string>
+    <string name="pref_AltitudeCorrection">Ручная коррекция</string>
+    <string name="pref_AltitudeCorrection_summary_offset">Смещение</string>
+    <string name="pref_AltitudeCorrection_summary_not_defined">Смещение не задано</string>
+    <string name="pref_category_exporting">ЭКСПОРТ</string>
+    <string name="pref_export_TXT">Экспорт треков в TXT</string>
+    <string name="pref_export_TXT_summary">Обычный текст, значения разделены запятыми</string>
+    <string name="pref_export_KML">Экспорт треков в KML</string>
+    <string name="pref_export_KML_summary">Язык разметки Keyhole (v.2.2)</string>
+    <string name="pref_export_GPX">Экспорт треков в GPX</string>
+    <string name="pref_export_GPX_summary">Стандартный формат GPS eXchange</string>
+    <string name="pref_GPX_version">Версия стандарта GPX</string>
+    <string name="pref_GPX_version_1_0">GPX 1.0</string>
+    <string name="pref_GPX_version_1_1">GPX 1.1</string>
+    <string name="pref_KML_altitude_mode">Режим высоты в KML</string>
+    <string name="pref_KML_altitude_mode_absolute">Абсолютный</string>
+    <string name="pref_KML_altitude_mode_projected">Зажим на землю</string>
+    <string name="pref_track_stats">Считать Статистику за</string>
+    <string name="pref_track_stats_totaltime">Общее время</string>
+    <string name="pref_track_stats_movingtime">Время в движении</string>
+    <!-- Preferences toasts -->
+    <string name="toast_download_error">Ошибка загрузки</string>
+    <string name="toast_download_completed">Загрузка завершена</string>
+    <string name="toast_download_failed">Ошибка загрузки. Повторите попытку позже</string>
+    <string name="toast_active_track_not_empty">Текущий трек не пуст</string>
+    <string name="toast_no_browser_installed">Интернет-браузер не установлен</string>
+    <!-- About Dialog -->
+    <string name="about_version">вер.</string>
+    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger записывает ваши треки с помощью GPS. Вы можете просматривать их в выбранном приложении, делиться ими, и экспортировать их в папку GPSLogger вашего устройства в форматах KML, GPX и TXT.\n\nЭта программа является свободным программным обеспечением и опубликована на условиях Универсальной Общественной Лицензии GNU.\nПодробнее см.: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Если вам понравилось это приложение, пожалуйста,  уделите минутку, чтобы оценить GPS Logger в Google Play Store.</string>
+    <string name="about_ok">Закрыть</string>
+    <string name="about_rate_this_app">Поставить оценку</string>
+    <string name="about_unable_to_rate">Не удалось связаться с Google Store</string>
+    <!-- Notification icon -->
+    <string name="notification_contenttext">активный</string>
+    <!-- Exit confirmation -->
+    <string name="message_exit_finalizing">Вы закрываете приложение.\nХотите закрыть текущий трек?</string>
+    <!-- Units of Measurement -->
+    <string name="UM_m">м</string>
+    <string name="UM_km">км</string>
+    <string name="UM_m_s">м/с</string>
+    <string name="UM_km_h">км/ч</string>
+    <string name="UM_ft">фт</string>
+    <string name="UM_mi">ми</string>
+    <string name="UM_fps">фт/с</string>
+    <string name="UM_mph">ми/ч</string>
+    <string name="UM_nm">NM</string>
+    <string name="UM_kn">уз</string>
+</resources>
