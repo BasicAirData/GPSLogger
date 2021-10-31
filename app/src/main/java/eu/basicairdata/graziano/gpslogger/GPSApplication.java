@@ -741,6 +741,39 @@ public class GPSApplication extends Application implements LocationListener {
 //    }
 
     /**
+     * Creates the application folders.
+     * - DIRECTORY_EXPORT = The external folder where to export the tracks
+     * - DIRECTORY_TEMP = Where the app saves the tracks to be shared or viewed
+     * - getApplicationContext().getFilesDir() + "/Thumbnails" = The private folder that contains the thumbnails of the tracks
+     * - DIRECTORY_FILESDIR_TRACKS = The folder that contains the empty kml and gpx
+     */
+    public void createFolders() {
+        File sd = new File(DIRECTORY_EXPORT);
+        if (!sd.exists()) {
+            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
+        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+
+        sd = new File(DIRECTORY_TEMP);
+        if (!sd.exists()) {
+            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
+        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+
+        sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
+        if (!sd.exists()) {
+            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
+        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+
+        sd = new File(DIRECTORY_FILESDIR_TRACKS);
+        if (!sd.exists()) {
+            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
+        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+    }
+
+    /**
      * Deletes the file with the given filename.
      *
      * @param filename The name of the file, including the full path
@@ -910,7 +943,7 @@ public class GPSApplication extends Application implements LocationListener {
 
         TOAST_VERTICAL_OFFSET = (int)(75 * getResources().getDisplayMetrics().density);
 
-        DIRECTORY_TEMP = Environment.getExternalStorageDirectory() + "/GPSLogger/Temp";
+        DIRECTORY_TEMP = getApplicationContext().getCacheDir() + "/Tracks";
         DIRECTORY_EXPORT = Environment.getExternalStorageDirectory() + "/GPSLogger";
         DIRECTORY_FILESDIR_TRACKS = getApplicationContext().getFilesDir() + "/URI";
         FILE_EMPTY_GPX = DIRECTORY_FILESDIR_TRACKS + "/empty.gpx";
@@ -919,42 +952,10 @@ public class GPSApplication extends Application implements LocationListener {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
         gpsStatusListener = new MyGPSStatus();                                              // GPS Satellites
 
-        // Creates EXPORTING folder
-        File sd = new File(DIRECTORY_EXPORT);   // Create the Directories if not exist
-        if (!sd.exists()) {
-            sd.mkdir();
-            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-        }
-        // Creates TEMP folder into EXPORTING folder
-        sd = new File(DIRECTORY_TEMP);
-        if (!sd.exists()) {
-            File oldTemp = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-            if (oldTemp.exists()) {                         // The old "AppData" folder exists
-                boolean success = oldTemp.renameTo(sd);     // Try to rename it to "Temp"
-                if (!success) {
-                    sd.mkdir();                             // In case of failure it creates "Temp" leaving also "AppData"
-                    Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-                } else Log.w("myApp", "[#] GPSApplication.java - Folder AppData renamed to: " + sd.getAbsolutePath());
-            }
-            else {
-                sd.mkdir();
-                Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-            }
-        }
-        // Creates THUMBNAILS folder into private FilesDir
-        sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
-        if (!sd.exists()) {
-            sd.mkdir();
-            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-        }
-        // Creates TRACKS folder into private FilesDir
-        sd = new File(DIRECTORY_FILESDIR_TRACKS);
-        if (!sd.exists()) {
-            sd.mkdir();
-            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-        }
+        createFolders();
+
         // Creates the empty GPX
-        sd = new File(FILE_EMPTY_GPX);
+        File sd = new File(FILE_EMPTY_GPX);
         if (!sd.exists()) {
             try {
                 sd.createNewFile();
@@ -974,6 +975,7 @@ public class GPSApplication extends Application implements LocationListener {
             }
         }
 
+        // TODO: check the implementation of the manual load of the EGM Grid
         // Loads the EGM Grid
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
@@ -1380,13 +1382,9 @@ public class GPSApplication extends Application implements LocationListener {
 
         if (!trackViewer.fileType.isEmpty()) {
             file = new File(DIRECTORY_TEMP + "/", exportingTask.getName() + trackViewer.fileType);
-            if (trackViewer.requiresFileProvider) {
-                Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
-                getApplicationContext().grantUriPermission(trackViewer.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(uri, trackViewer.mimeType);
-            } else {
-                intent.setDataAndType(Uri.fromFile(file), trackViewer.mimeType);
-            }
+            Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
+            getApplicationContext().grantUriPermission(trackViewer.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(uri, trackViewer.mimeType);
             try {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 startActivity(intent);
@@ -1587,6 +1585,7 @@ public class GPSApplication extends Application implements LocationListener {
                 case JOB_TYPE_EXPORT:
                 case JOB_TYPE_VIEW:
                 case JOB_TYPE_SHARE:
+                    createFolders();
                     startExportingStatusChecker();
                     break;
                 default:

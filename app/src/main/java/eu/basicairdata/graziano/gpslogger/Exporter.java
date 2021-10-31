@@ -177,6 +177,8 @@ class Exporter extends Thread {
     public void run() {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
+        Log.w("myApp", "[#] Exporter.java - STARTED");
+
         kmlFile = null;
         gpxFile = null;
         txtFile = null;
@@ -194,16 +196,10 @@ class Exporter extends Thread {
         long startTime = System.currentTimeMillis();
 
         // ------------------------------------------------- Create the Directory tree if not exist
-        sd = new File(GPSApplication.DIRECTORY_EXPORT);
+        sd = new File(saveIntoFolder);
         if (!sd.exists()) {
             if (!sd.mkdir()) {
-                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
-                return;
-            }
-        }
-        sd = new File(GPSApplication.DIRECTORY_TEMP);
-        if (!sd.exists()) {
-            if (!sd.mkdir()) {
+                Log.w("myApp", "[#] Exporter.java - UNABLE TO CREATE THE FOLDER");
                 exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
                 return;
             }

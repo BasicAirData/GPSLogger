@@ -302,27 +302,7 @@ public class GPSActivity extends AppCompatActivity {
                     }
                     if (perms.containsKey(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
-                            // ---------------------------------------------------- Create the Directories if not exist
-                            File sd = new File(GPSApplication.DIRECTORY_EXPORT);
-                            if (!sd.exists()) {
-                                sd.mkdir();
-                            }
-                            sd = new File(GPSApplication.DIRECTORY_TEMP);
-                            if (!sd.exists()) {
-                                sd.mkdir();
-                            }
-                            sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
-                            if (!sd.exists()) {
-                                sd.mkdir();
-                            }
-                            EGM96 egm96 = EGM96.getInstance();
-                            if (egm96 != null) {
-                                if (!egm96.isEGMGridLoaded()) {
-                                    //Log.w("myApp", "[#] GPSApplication.java - Loading EGM Grid...");
-                                    egm96.LoadGridFromFile(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-                                }
-                            }
+                            gpsApp.createFolders();
                             if (gpsApp.getJobsPending() > 0) gpsApp.executeJob();
                         } else {
                             Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
