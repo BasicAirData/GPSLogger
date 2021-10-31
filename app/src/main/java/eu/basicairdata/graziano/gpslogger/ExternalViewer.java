@@ -31,6 +31,5 @@ public class ExternalViewer {
     String packageName = "";                // The full package name
     String mimeType = "";                   // The mimetype to use with the ACTION_VIEW intent (for example "application/gpx+xml")
     String fileType = "";                   // "GPX" or "KML"
-    boolean requiresFileProvider = true;    // True if the app requires the FileProvider method to open the track
     Drawable icon = null;                   // The app's icon
 }

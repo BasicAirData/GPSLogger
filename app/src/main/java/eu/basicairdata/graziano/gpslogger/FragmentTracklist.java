@@ -221,9 +221,7 @@ public class FragmentTracklist extends Fragment {
         }
         if (msg == EventBusMSG.ACTION_BULK_SHARE_TRACKS) {
             GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_SHARE);
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                checkStoragePermission();   // Ask for storage permission
-            } else GPSApplication.getInstance().executeJob();
+            GPSApplication.getInstance().executeJob();
             GPSApplication.getInstance().deselectAllTracks();
             return;
         }
@@ -240,7 +238,6 @@ public class FragmentTracklist extends Fragment {
                 }
             }
         }
-
         if (msg == EventBusMSG.ACTION_BULK_VIEW_TRACKS) {
             final ArrayList<ExternalViewer> evList = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getExternalViewersList());
 
@@ -501,9 +498,7 @@ public class FragmentTracklist extends Fragment {
      */
     public void openTrack() {
         GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_VIEW);
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            checkStoragePermission();   // Ask for storage permission
-        } else GPSApplication.getInstance().executeJob();
+        GPSApplication.getInstance().executeJob();
         GPSApplication.getInstance().deselectAllTracks();
     }
 
