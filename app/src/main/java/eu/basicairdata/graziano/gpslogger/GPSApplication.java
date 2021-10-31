@@ -742,15 +742,19 @@ public class GPSApplication extends Application implements LocationListener {
 
     /**
      * Creates the application folders.
+     * - DIRECTORY_EXPORT = The external folder where to export the tracks
+     * - DIRECTORY_TEMP = Where the app saves the tracks to be shared or viewed
+     * - getApplicationContext().getFilesDir() + "/Thumbnails" = The private folder that contains the thumbnails of the tracks
+     * - DIRECTORY_FILESDIR_TRACKS = The folder that contains the empty kml and gpx
      */
     public void createFolders() {
-        File sd = new File(GPSApplication.DIRECTORY_EXPORT);
+        File sd = new File(DIRECTORY_EXPORT);
         if (!sd.exists()) {
             if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
             else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
         } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
 
-        sd = new File(GPSApplication.DIRECTORY_TEMP);
+        sd = new File(DIRECTORY_TEMP);
         if (!sd.exists()) {
             if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
             else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
