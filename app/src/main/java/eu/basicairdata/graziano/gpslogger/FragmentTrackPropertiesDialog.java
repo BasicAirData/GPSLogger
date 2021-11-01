@@ -80,6 +80,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         AlertDialog.Builder createPlacemarkAlert = new AlertDialog.Builder(getActivity());
         trackToEdit = GPSApplication.getInstance().getTrackToEdit();
 
+        if (trackToEdit == null) dismiss();
+
         if (savedInstanceState != null) {
             title = savedInstanceState.getInt(KEY_TITLE, 0);
             selectedTrackType = savedInstanceState.getInt(KEY_SELTRACKTYPE, NOT_AVAILABLE);
@@ -94,11 +96,13 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_track_properties_dialog, null);
 
-        etDescription = view.findViewById(R.id.track_description);
-        if (!trackToEdit.getDescription().isEmpty()) {
-            etDescription.setText(trackToEdit.getDescription());
+        if (trackToEdit != null) {
+            etDescription = view.findViewById(R.id.track_description);
+            if (!trackToEdit.getDescription().isEmpty()) {
+                etDescription.setText(trackToEdit.getDescription());
+            }
+            etDescription.setHint(GPSApplication.getInstance().getString(R.string.track_id) + " " + trackToEdit.getId());
         }
-        etDescription.setHint(GPSApplication.getInstance().getString(R.string.track_id) + " " + trackToEdit.getId());
 
 //        DescEditText.postDelayed(new Runnable()
 //        {
@@ -139,7 +143,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         // Activate the right image
         if (selectedTrackType != NOT_AVAILABLE)
             tracktypeImageView[selectedTrackType].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
-        else if (trackToEdit.getEstimatedTrackType() != Track.TRACK_TYPE_ND)
+        else if ((trackToEdit != null) && (trackToEdit.getEstimatedTrackType() != Track.TRACK_TYPE_ND))
             tracktypeImageView[trackToEdit.getEstimatedTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
 
         createPlacemarkAlert.setView(view)
