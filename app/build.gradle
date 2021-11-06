@@ -86,7 +86,7 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:3.8.0'
 
-    def eventbus_version = '3.1.1'
+    def eventbus_version = '3.2.0'
     implementation "org.greenrobot:eventbus:$eventbus_version"
     annotationProcessor "org.greenrobot:eventbus-annotation-processor:$eventbus_version"
 }
