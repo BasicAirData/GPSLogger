@@ -22,6 +22,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -55,12 +56,12 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.DIRECTORY_EXPORT;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
 
 /**
@@ -81,6 +82,7 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_O
 public class GPSActivity extends AppCompatActivity {
 
     private static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+    private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 2;
 
     private final GPSApplication gpsApp = GPSApplication.getInstance();
     private Toolbar toolbar;
@@ -300,20 +302,21 @@ public class GPSActivity extends AppCompatActivity {
                             Log.w("myApp", "[#] GPSActivity.java - INTERNET = PERMISSION_DENIED");
                         }
                     }
-                    if (perms.containsKey(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                            gpsApp.createFolders();
-                            if (gpsApp.getJobsPending() > 0) gpsApp.executeJob();
-                        } else {
-                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
-                            if (gpsApp.getJobsPending() > 0) {
-                                // Shows toast "Unable to write the file"
-                                showToastGrantStoragePermission = true;
-                                EventBus.getDefault().post(EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED);
-                                gpsApp.setJobsPending(0);
-                            }
-                        }
-                    }
+                    // TODO: Manage Android 4 storage permission
+//                    if (perms.containsKey(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                        if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+//                            gpsApp.createFolders();
+//                            if (gpsApp.getJobsPending() > 0) gpsApp.executeJob();
+//                        } else {
+//                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
+//                            if (gpsApp.getJobsPending() > 0) {
+//                                // Shows toast "Unable to write the file"
+//                                showToastGrantStoragePermission = true;
+//                                EventBus.getDefault().post(EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED);
+//                                gpsApp.setJobsPending(0);
+//                            }
+//                        }
+//                    }
                 }
                 break;
             }
@@ -358,7 +361,7 @@ public class GPSActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_track_exported, Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), gpsApp.getString(R.string.toast_track_exported, DIRECTORY_EXPORT), Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                         toast.show();
                     }
@@ -383,6 +386,10 @@ public class GPSActivity extends AppCompatActivity {
                         toast.show();
                     }
                 });
+                break;
+
+            case EventBusMSG.ACTION_BULK_EXPORT_TRACKS:
+                openDirectory();
         }
     }
 
@@ -562,4 +569,45 @@ public class GPSActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
+            // The result data contains a URI for the document or directory that
+            // the user selected.
+
+            if (resultData != null) {
+                Uri treeUri = resultData.getData();
+                grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                gpsApp.getContentResolver().takePersistableUriPermission(treeUri, Intent
+                        .FLAG_GRANT_READ_URI_PERMISSION | Intent
+                        .FLAG_GRANT_WRITE_URI_PERMISSION);
+                //getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+
+                gpsApp.setDirectoryExport(treeUri.toString());
+                gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
+                gpsApp.executeJob();
+                gpsApp.deselectAllTracks();
+
+                // Perform operations on the document using its URI.
+            }
+        }
+        gpsApp.isExportFolderWritable();
+        super.onActivityResult(resultCode, resultCode, resultData);
+    }
+
+
+    public void openDirectory() {
+        // Choose a directory using the system's file picker.
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+
+        // Optionally, specify a URI for the directory that should be opened in
+        // the system file picker when it loads.
+
+        startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
+    }
+
 }

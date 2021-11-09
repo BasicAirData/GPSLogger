@@ -73,7 +73,7 @@
     <!-- Main menu -->
     <string name="menu_settings">設定</string>
     <string name="toast_track_saved_into_tracklist">追跡リストに追跡を保存しました</string>
-    <string name="toast_track_exported">/GPSLogger フォルダーに追跡をエクスポートしました</string>
+    <string name="toast_track_exported">%1$s フォルダーに追跡をエクスポートしました</string>
     <string name="menu_about">アプリについて</string>
     <string name="menu_shutdown">シャットダウン</string>
     <!-- Annotation Creation dialog -->

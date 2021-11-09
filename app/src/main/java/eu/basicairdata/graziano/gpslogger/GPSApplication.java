@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.UriPermission;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -716,6 +717,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setSpaceForExtraTilesAvailable(boolean spaceForExtraTilesAvailable) {
         isSpaceForExtraTilesAvailable = spaceForExtraTilesAvailable;
+    }
+
+    public void setDirectoryExport(String directoryExport) {
+        DIRECTORY_EXPORT = directoryExport;
     }
 
     // ----------------------------------------------------------------------  Utilities
@@ -1628,6 +1633,25 @@ public class GPSApplication extends Application implements LocationListener {
         int defaultHeight = (int) (24 * density);
         Log.w("myApp", "[#] GPSApplication.java - getBitmap: !(Build.VERSION.SDK_INT >= 26) && (drawable instanceof AdaptiveIconDrawable)");
         return Bitmap.createBitmap(defaultWidth, defaultHeight, Bitmap.Config.ARGB_8888);
+    }
+
+
+    public boolean isExportFolderWritable() {
+        // TODO: manage Android 4 storage permission
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return true;
+
+        Uri uri = Uri.parse(DIRECTORY_EXPORT);
+
+        final List<UriPermission> list = getApplicationContext().getContentResolver().getPersistedUriPermissions();
+        for (final UriPermission item : list) {
+            Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable check: " + item.getUri());
+            if (item.getUri().equals(uri)) {
+                Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable = TRUE: " + item.getUri());
+                return true;
+            }
+        }
+        Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable = FALSE");
+        return false;
     }
 
     // ---------------------------------------------------------------------- Preferences

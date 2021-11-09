@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">Beállítások</string>
     <string name="toast_track_saved_into_tracklist">Útvonal mentve az Útvonalak listába</string>
-    <string name="toast_track_exported">Útvonal exportálva /GPSLogger mappába</string>
+    <string name="toast_track_exported">Útvonal exportálva %1$s mappába</string>
     <string name="menu_about">Névjegy</string>
     <string name="menu_online_help">Online súgó</string>
     <string name="menu_shutdown">Kikapcsolás</string>

@@ -26,8 +26,8 @@
         name = "gps_logger"
         path = "GPSLogger" />
     <cache-path
-        name = "temp"
-        path = "Tracks" />
+        name = "cache"
+        path = "." />
     <files-path
         name = "private_uri"
         path = "URI" />

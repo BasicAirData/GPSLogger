@@ -288,14 +288,15 @@ public class FragmentTracklist extends Fragment {
             }
             return;
         }
-        if (msg == EventBusMSG.ACTION_BULK_EXPORT_TRACKS) {
-            GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_EXPORT);
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                checkStoragePermission();   // Ask for storage permission
-            } else GPSApplication.getInstance().executeJob();
-            GPSApplication.getInstance().deselectAllTracks();
-            return;
-        }
+        // TODO: Manage Android 4 storage permission
+//        if (msg == EventBusMSG.ACTION_BULK_EXPORT_TRACKS) {
+//            GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_EXPORT);
+//            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                checkStoragePermission();   // Ask for storage permission
+//            } else GPSApplication.getInstance().executeJob();
+//            GPSApplication.getInstance().deselectAllTracks();
+//            return;
+//        }
         if (msg == EventBusMSG.ACTION_BULK_DELETE_TRACKS) {
             final ArrayList<Track> selectedTracks = GPSApplication.getInstance().getSelectedTracks();
 

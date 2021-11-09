@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">设置</string>
     <string name="toast_track_saved_into_tracklist">此轨迹已保存至轨迹列表中</string>
-    <string name="toast_track_exported">已把轨迹导出至/GPSLogger目录</string>
+    <string name="toast_track_exported">已把轨迹导出至%1$s目录</string>
     <string name="menu_about">关于</string>
     <string name="menu_online_help">在线帮助</string>
     <string name="menu_shutdown">关闭</string>

@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">Настройки</string>
     <string name="toast_track_saved_into_tracklist">Трек архивирован</string>
-    <string name="toast_track_exported">Треки экспортированы в папку /GPSLogger</string>
+    <string name="toast_track_exported">Треки экспортированы в папку %1$s</string>
     <string name="menu_about">О программе</string>
     <string name="menu_online_help">Онлайн справка</string>
     <string name="menu_shutdown">Выключить</string>
