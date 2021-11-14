@@ -21,15 +21,21 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.EditTextPreference;
@@ -64,6 +70,8 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
  */
 public class FragmentSettings extends PreferenceFragmentCompat {
 
+    private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
+
     private static final float M_TO_FT = 3.280839895f;
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private SharedPreferences prefs;
@@ -78,7 +86,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         addPreferencesFromResource(R.xml.app_preferences);
 
-        File tsd = new File(GPSApplication.DIRECTORY_EXPORT);
+        // TODO: check it!
+        File tsd = new File(GPSApplication.getInstance().getPrefExportFolder());
         if (!tsd.exists()) tsd.mkdir();
         tsd = new File(GPSApplication.DIRECTORY_TEMP);
         if (!tsd.exists()) tsd.mkdir();
@@ -166,6 +175,10 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
                     //getActivity().recreate();
                 }
+                if (key.equals("prefExportFolder")) {
+                    Log.w("myApp", "[#] FragmentSettings.java - clicked prefExportFolder");
+                    //TODO
+                }
                 SetupPreferences();
             }
         };
@@ -206,6 +219,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         ListPreference pShowTrackStatsType = findPreference("prefShowTrackStatsType");
         ListPreference pShowDirections = findPreference("prefShowDirections");
         ListPreference pColorTheme = findPreference("prefColorTheme");
+        Preference pExportFolder = findPreference("prefExportFolder");
         EditTextPreference pAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
         Preference pTracksViewer = findPreference("prefTracksViewer");
 
@@ -270,6 +284,29 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     }
                 });
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            pExportFolder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Log.w("myApp", "[#] FragmentSettings.java - pExportFolder preference clicked");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        // Choose a directory using the system's file picker.
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                        intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+                        intent.putExtra("android.content.extra.FANCY", true);
+                        //intent.putExtra("android.content.extra.SHOW_FILESIZE", true);
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+
+                        startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
+                    }
+                    return false;
+                }
+            });
+        } else pExportFolder.setVisible(false);
+
         // ------------
         if (evList.isEmpty())
             pTracksViewer.setSummary(R.string.pref_track_viewer_not_installed);                                        // no Viewers installed
@@ -320,7 +357,38 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         pGPXVersion.setSummary(pGPXVersion.getEntry());
         pShowTrackStatsType.setSummary(pShowTrackStatsType.getEntry());
         pShowDirections.setSummary(pShowDirections.getEntry());
+        if (GPSApplication.getInstance().isExportFolderWritable())
+            pExportFolder.setSummary(prefs.getString("prefExportFolder", "").replace("%3A","/").replace("%20"," "));
+        else
+            pExportFolder.setSummary(getString(R.string.pref_not_set));
         //pViewTracksWith.setSummary(pViewTracksWith.getEntry());
+    }
+
+    @Override
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
+            // The result data contains a URI for the document or directory that
+            // the user selected.
+
+            if (resultData != null) {
+                Uri treeUri = resultData.getData();
+                getActivity().grantUriPermission(getActivity().getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                GPSApplication.getInstance().getContentResolver().takePersistableUriPermission(treeUri, Intent
+                        .FLAG_GRANT_READ_URI_PERMISSION | Intent
+                        .FLAG_GRANT_WRITE_URI_PERMISSION);
+                //getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.getPath());
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.getEncodedPath());
+
+                GPSApplication.getInstance().setPrefExportFolder(treeUri.toString());
+                SetupPreferences();
+            }
+        }
+        super.onActivityResult(resultCode, resultCode, resultData);
     }
 
     /**

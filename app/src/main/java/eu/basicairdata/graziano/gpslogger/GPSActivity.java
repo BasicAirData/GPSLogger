@@ -34,6 +34,8 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -61,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.DIRECTORY_EXPORT;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
 
 /**
@@ -361,7 +362,8 @@ public class GPSActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), gpsApp.getString(R.string.toast_track_exported, DIRECTORY_EXPORT), Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(),
+                                gpsApp.getString(R.string.toast_track_exported, gpsApp.getPrefExportFolder()), Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                         toast.show();
                     }
@@ -389,7 +391,13 @@ public class GPSActivity extends AppCompatActivity {
                 break;
 
             case EventBusMSG.ACTION_BULK_EXPORT_TRACKS:
-                openDirectory();
+                if (!gpsApp.isExportFolderWritable()) {
+                    openDirectory();
+                } else {
+                    gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
+                    gpsApp.executeJob();
+                    gpsApp.deselectAllTracks();
+                }
         }
     }
 
@@ -570,7 +578,12 @@ public class GPSActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Executes the local exportation into the selected folder.
+     * For Android >= LOLLYPOP
+     */
     @Override
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
@@ -586,8 +599,10 @@ public class GPSActivity extends AppCompatActivity {
                 //getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                 Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.getPath());
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.getEncodedPath());
 
-                gpsApp.setDirectoryExport(treeUri.toString());
+                gpsApp.setPrefExportFolder(treeUri.toString());
                 gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
                 gpsApp.executeJob();
                 gpsApp.deselectAllTracks();
@@ -595,19 +610,23 @@ public class GPSActivity extends AppCompatActivity {
                 // Perform operations on the document using its URI.
             }
         }
-        gpsApp.isExportFolderWritable();
         super.onActivityResult(resultCode, resultCode, resultData);
     }
 
-
     public void openDirectory() {
-        // Choose a directory using the system's file picker.
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Choose a directory using the system's file picker.
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+            intent.putExtra("android.content.extra.FANCY", true);
+            //intent.putExtra("android.content.extra.SHOW_FILESIZE", true);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
 
-        // Optionally, specify a URI for the directory that should be opened in
-        // the system file picker when it loads.
-
-        startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
+            startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
+        } else {
+            // TODO: Ask the permission to access to External Storage (the old way)
+        }
     }
-
 }

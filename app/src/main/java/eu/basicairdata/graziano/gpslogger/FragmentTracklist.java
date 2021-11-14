@@ -298,64 +298,23 @@ public class FragmentTracklist extends Fragment {
 //            return;
 //        }
         if (msg == EventBusMSG.ACTION_BULK_DELETE_TRACKS) {
-            final ArrayList<Track> selectedTracks = GPSApplication.getInstance().getSelectedTracks();
-
-            // Check if exist at least one exported file:
-            boolean fileexist = false;
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                for (Track track : selectedTracks) {
-                    fileexist |= fileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".kml")
-                            || fileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".gpx")
-                            || fileExists(GPSApplication.DIRECTORY_EXPORT + "/" + GPSApplication.getInstance().getFileName(track) + ".txt");
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
+            builder.setIcon(android.R.drawable.ic_menu_info_details);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
+                    GPSApplication.getInstance().executeJob();
                 }
-            }
-            if (fileexist) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(getResources().getString(R.string.card_message_delete_also_exported));
-                builder.setIcon(android.R.drawable.ic_menu_info_details);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        GPSApplication.getInstance().setDeleteAlsoExportedFiles(true); // Delete also exported files
-                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().executeJob();
-                    }
-                });
-                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
-                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().executeJob();
-                    }
-                });
-                builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
-                builder.setIcon(android.R.drawable.ic_menu_info_details);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        GPSApplication.getInstance().setDeleteAlsoExportedFiles(false); // Don't delete exported files
-                        GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_DELETE);
-                        GPSApplication.getInstance().executeJob();
-                    }
-                });
-                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
             return;
         }
         if (msg == EventBusMSG.INTENT_SEND) {

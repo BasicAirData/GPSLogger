@@ -118,6 +118,11 @@ class Exporter extends Thread {
         } else {
             pickedDir = DocumentFile.fromFile(new File(saveIntoFolder));
         }
+        if (!pickedDir.exists()) {
+            Log.w("myApp", "[#] Exporter.java - UNABLE TO CREATE THE FOLDER");
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+            return false;
+        }
 
         if (exportKML) {
             kmlFile = pickedDir.findFile(fName + ".kml");

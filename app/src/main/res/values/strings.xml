@@ -165,6 +165,8 @@
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Aerial / Nautical</string>
     <string name="pref_unit_of_measurement_speed">Show Speeds in</string>
+    <string name="pref_exportation_folder">Local Exportation Folder</string>
+    <string name="pref_not_set">Not set</string>
 
     <string name="pref_track_viewer">Track Viewer</string>
     <string name="pref_track_viewer_not_installed">No GPX/KML Viewer installed</string>
