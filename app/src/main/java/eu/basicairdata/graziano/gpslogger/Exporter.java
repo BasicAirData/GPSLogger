@@ -111,36 +111,46 @@ class Exporter extends Thread {
     private boolean tryToInitFiles(String fName) {
         // Create files, deleting old version if exists
 
-        DocumentFile pickedDir;
-        if (saveIntoFolder.startsWith("content")) {
-            Uri uri = Uri.parse(saveIntoFolder);
-            pickedDir = DocumentFile.fromTreeUri(getInstance(), uri);
-        } else {
-            pickedDir = DocumentFile.fromFile(new File(saveIntoFolder));
-        }
-        if (!pickedDir.exists()) {
-            Log.w("myApp", "[#] Exporter.java - UNABLE TO CREATE THE FOLDER");
+        try {
+            DocumentFile pickedDir;
+            if (saveIntoFolder.startsWith("content")) {
+                Uri uri = Uri.parse(saveIntoFolder);
+                pickedDir = DocumentFile.fromTreeUri(getInstance(), uri);
+            } else {
+                pickedDir = DocumentFile.fromFile(new File(saveIntoFolder));
+            }
+            if (!pickedDir.exists()) {
+                Log.w("myApp", "[#] Exporter.java - UNABLE TO CREATE THE FOLDER");
+                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+                return false;
+            }
+
+            if (exportKML) {
+                kmlFile = pickedDir.findFile(fName + ".kml");
+                if ((kmlFile != null) && (kmlFile.exists())) kmlFile.delete();
+                kmlFile = pickedDir.createFile("", fName + ".kml");
+                Log.w("myApp", "[#] Exporter.java - Export " + kmlFile.getUri().toString());
+            }
+            if (exportGPX) {
+                gpxFile = pickedDir.findFile(fName + ".gpx");
+                if ((gpxFile != null) && (gpxFile.exists())) gpxFile.delete();
+                gpxFile = pickedDir.createFile("", fName + ".gpx");
+                Log.w("myApp", "[#] Exporter.java - Export " + gpxFile.getUri().toString());
+            }
+            if (exportTXT) {
+                txtFile = pickedDir.findFile(fName + ".txt");
+                if ((txtFile != null) && (txtFile.exists())) txtFile.delete();
+                txtFile = pickedDir.createFile("", fName + ".txt");
+                Log.w("myApp", "[#] Exporter.java - Export " + txtFile.getUri().toString());
+            }
+        } catch (SecurityException e) {
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: SecurityException");
             exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
             return false;
-        }
-
-        if (exportKML) {
-            kmlFile = pickedDir.findFile(fName + ".kml");
-            if ((kmlFile != null) && (kmlFile.exists())) kmlFile.delete();
-            kmlFile = pickedDir.createFile("", fName + ".kml");
-            Log.w("myApp", "[#] Exporter.java - Export " + kmlFile.getUri().toString());
-        }
-        if (exportGPX) {
-            gpxFile = pickedDir.findFile(fName + ".gpx");
-            if ((gpxFile != null) && (gpxFile.exists())) gpxFile.delete();
-            gpxFile = pickedDir.createFile("", fName + ".gpx");
-            Log.w("myApp", "[#] Exporter.java - Export " + gpxFile.getUri().toString());
-        }
-        if (exportTXT) {
-            txtFile = pickedDir.findFile(fName + ".txt");
-            if ((txtFile != null) && (txtFile.exists())) txtFile.delete();
-            txtFile = pickedDir.createFile("", fName + ".txt");
-            Log.w("myApp", "[#] Exporter.java - Export " + txtFile.getUri().toString());
+        } catch (NullPointerException e) {
+            Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
+            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
+            return false;
         }
 
         // Check if all the files are writable:

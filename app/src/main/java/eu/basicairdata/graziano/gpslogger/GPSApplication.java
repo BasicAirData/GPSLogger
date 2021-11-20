@@ -318,6 +318,11 @@ public class GPSApplication extends Application implements LocationListener {
             // Exportation Failed
             if (exportersFailed != 0) {
                 EventBus.getDefault().post(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE);
+                if ((jobType == JOB_TYPE_EXPORT) && (getPrefExportFolder().startsWith("content://"))) {
+                    Log.w("myApp", "[#] GPSApplication.java - Unable to export into " + getPrefExportFolder()
+                                    + ". Preference reset");
+                    GPSApplication.getInstance().setPrefExportFolder("");
+                }
                 jobProgress = 0;
                 jobsPending = 0;
                 EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
@@ -1644,18 +1649,25 @@ public class GPSApplication extends Application implements LocationListener {
             for (final UriPermission item : list) {
                 Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable check: " + item.getUri());
                 if (item.getUri().equals(uri)) {
-                    DocumentFile pickedDir;
-                    if (prefExportFolder.startsWith("content")) {
-                        pickedDir = DocumentFile.fromTreeUri(getInstance(), uri);
-                    } else {
-                        pickedDir = DocumentFile.fromFile(new File(prefExportFolder));
+                    try {
+                        DocumentFile pickedDir;
+                        if (prefExportFolder.startsWith("content")) {
+                            pickedDir = DocumentFile.fromTreeUri(getInstance(), uri);
+                        } else {
+                            pickedDir = DocumentFile.fromFile(new File(prefExportFolder));
+                        }
+                        if ((pickedDir == null) || (!pickedDir.exists())) {
+                            Log.w("myApp", "[#] GPSApplication.java - THE EXPORT FOLDER DOESN'T EXIST");
+                            return false;
+                        }
+                        if ((!pickedDir.canRead()) || !pickedDir.canWrite()) {
+                            Log.w("myApp", "[#] GPSApplication.java - CANNOT READ/WRITE INTO THE EXPORT FOLDER");
+                            return false;
+                        }
+                        return true;
+                    } catch (IllegalArgumentException e) {
+                        Log.w("myApp", "[#] GPSApplication.java - IllegalArgumentException - isExportFolderWritable = FALSE: " + item.getUri());
                     }
-                    if (!pickedDir.exists()) {
-                        Log.w("myApp", "[#] GPSApplication.java - THE EXPORT FOLDER DOESN'T EXIST");
-                        return false;
-                    }
-                    Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable = TRUE: " + item.getUri());
-                    return true;
                 }
             }
             Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable = FALSE");
