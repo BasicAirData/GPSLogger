@@ -1669,6 +1669,9 @@ public class GPSApplication extends Application implements LocationListener {
                         Log.w("myApp", "[#] GPSApplication.java - IllegalArgumentException - isExportFolderWritable = FALSE: " + item.getUri());
                     }
                 }
+                // Releases the unused persistable permission
+                getApplicationContext().getContentResolver().releasePersistableUriPermission(item.getUri(),
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             }
             Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable = FALSE");
             return false;
