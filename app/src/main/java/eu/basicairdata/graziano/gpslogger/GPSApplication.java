@@ -860,6 +860,20 @@ public class GPSApplication extends Application implements LocationListener {
             return track.getName() + " - " + stringToDescFileName(track.getDescription());
     }
 
+    /**
+     * Extracts the folder name starting from the encoded uri.
+     *
+     * @param uriPath The encoded URI path
+     * @return the path of the folder
+     */
+    public String extractFolderNameFromEncodedUri(String uriPath) {
+        String spath = Uri.decode(uriPath);
+        if (spath.contains(":")) {
+            String[] spathParts = spath.split(":");
+            return spathParts[spathParts.length - 1];
+        } else return spath;
+    }
+
     // ---------------------------------------------------------------------- Preferences Excluded from Backup
     // These are Boolean SharedPreferences that are excluded by automatic Backups
 

@@ -357,11 +357,13 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         pGPXVersion.setSummary(pGPXVersion.getEntry());
         pShowTrackStatsType.setSummary(pShowTrackStatsType.getEntry());
         pShowDirections.setSummary(pShowDirections.getEntry());
-        if (GPSApplication.getInstance().isExportFolderWritable())
-            pExportFolder.setSummary(prefs.getString("prefExportFolder", "").replace("%3A","/").replace("%20"," "));
-        else
-            pExportFolder.setSummary(getString(R.string.pref_not_set));
-        //pViewTracksWith.setSummary(pViewTracksWith.getEntry());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (GPSApplication.getInstance().isExportFolderWritable())
+                pExportFolder.setSummary(GPSApplication.getInstance().extractFolderNameFromEncodedUri(prefs.getString("prefExportFolder", "")));
+            else
+                pExportFolder.setSummary(getString(R.string.pref_not_set));
+        }
     }
 
     @Override

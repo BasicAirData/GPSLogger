@@ -363,7 +363,7 @@ public class GPSActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast toast = Toast.makeText(gpsApp.getApplicationContext(),
-                                gpsApp.getString(R.string.toast_track_exported, gpsApp.getPrefExportFolder()), Toast.LENGTH_LONG);
+                                gpsApp.getString(R.string.toast_track_exported, gpsApp.extractFolderNameFromEncodedUri(gpsApp.getPrefExportFolder())), Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                         toast.show();
                     }
