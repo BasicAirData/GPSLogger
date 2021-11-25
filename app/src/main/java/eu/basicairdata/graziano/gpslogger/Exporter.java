@@ -252,13 +252,13 @@ class Exporter extends Thread {
 
         //EventBus.getDefault().post(new EventBusMSGLong(EventBusMSG.TRACK_SETPROGRESS, track.getId(), 1));
 
-        if (egmAltitudeCorrection && EGM96.getInstance().isEGMGridLoading()) {
+        if (egmAltitudeCorrection && EGM96.getInstance().isLoading()) {
             try {
                 Log.w("myApp", "[#] Exporter.java - Wait, EGMGrid is loading");
                 do {
                     Thread.sleep(200);
                     // Lazy polling until EGM grid finish to load
-                } while (EGM96.getInstance().isEGMGridLoading());
+                } while (EGM96.getInstance().isLoading());
             } catch (InterruptedException e) {
                 Log.w("myApp", "[#] Exporter.java - Cannot wait!!");
             }

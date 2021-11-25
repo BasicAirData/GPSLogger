@@ -75,7 +75,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.Permissions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -998,15 +997,6 @@ public class GPSApplication extends Application implements LocationListener {
             }
         }
 
-        // TODO: check the implementation of the manual load of the EGM Grid
-        // Loads the EGM Grid
-        EGM96 egm96 = EGM96.getInstance();
-        if (egm96 != null) {
-            if (!egm96.isEGMGridLoaded()) {
-                egm96.LoadGridFromFile(DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-            }
-        }
-
         // Determine the app installation source
         try {
             String installer;
@@ -1765,9 +1755,7 @@ public class GPSApplication extends Application implements LocationListener {
         // Load EGM Grid if needed
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
-            if (!egm96.isEGMGridLoaded()) {
-                egm96.LoadGridFromFile(DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-            }
+            egm96.loadGrid(prefExportFolder, getApplicationContext().getFilesDir().toString());
         }
 
         // Request of UI Update
