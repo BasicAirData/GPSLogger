@@ -391,12 +391,24 @@ public class GPSActivity extends AppCompatActivity {
                 break;
 
             case EventBusMSG.ACTION_BULK_EXPORT_TRACKS:
-                if (!gpsApp.isExportFolderWritable()) {
-                    openDirectory();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    // Android 5+
+                    if (!gpsApp.isExportFolderWritable()) {
+                        openDirectory();
+                    } else {
+                        gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
+                        gpsApp.executeJob();
+                        gpsApp.deselectAllTracks();
+                    }
                 } else {
-                    gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
-                    gpsApp.executeJob();
-                    gpsApp.deselectAllTracks();
+                    // Android 4
+                    if (gpsApp.isExportFolderWritable()) {
+                        gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
+                        gpsApp.executeJob();
+                        gpsApp.deselectAllTracks();
+                    } else {
+                        EventBus.getDefault().post(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE);
+                    }
                 }
         }
     }
@@ -623,10 +635,7 @@ public class GPSActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                     | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-
             startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
-        } else {
-            // TODO: Ask the permission to access to External Storage (the old way)
         }
     }
 }

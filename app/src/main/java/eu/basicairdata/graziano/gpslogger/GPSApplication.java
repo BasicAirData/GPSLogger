@@ -1685,10 +1685,9 @@ public class GPSApplication extends Application implements LocationListener {
                 File sd = new File(prefExportFolder);
                 if (!sd.exists()) {
                     return sd.mkdir();
-                }
+                } else return true;
             }
             return false;
-            // If not
         }
     }
 
