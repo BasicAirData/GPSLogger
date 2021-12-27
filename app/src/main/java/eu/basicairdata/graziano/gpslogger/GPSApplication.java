@@ -867,11 +867,12 @@ public class GPSApplication extends Application implements LocationListener {
      */
     public String extractFolderNameFromEncodedUri(String uriPath) {
         String spath = Uri.decode(uriPath);
-        if (spath.contains(":")) {
-            String[] spathParts = spath.split(":");
+        String pathSeparator = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ? ":" : "/";
+        if (spath.contains(pathSeparator)) {
+            String[] spathParts = spath.split(pathSeparator);
             return spathParts[spathParts.length - 1];
         } else return spath;
-    }
+}
 
     // ---------------------------------------------------------------------- Preferences Excluded from Backup
     // These are Boolean SharedPreferences that are excluded by automatic Backups
