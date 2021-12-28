@@ -96,11 +96,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         // Check if EGM96 file is downloaded and the size of the file is correct;
-        File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-        File sd_old = new File(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC");
-        if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
-            isDownloaded = true;
-        } else {
+        isDownloaded = EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getApplicationContext().getFilesDir().toString()) ||
+                EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getPrefExportFolder());
+        if (!isDownloaded) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences.Editor editor1 = settings.edit();
             editor1.putBoolean("prefEGM96AltitudeCorrection", false);
@@ -145,6 +143,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 }
                 if (key.equals("prefEGM96AltitudeCorrection")) {
                     if (sharedPreferences.getBoolean(key, false)) {
+                        isDownloaded = EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getApplicationContext().getFilesDir().toString()) ||
+                                EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getPrefExportFolder());
                         if (!isDownloaded) {
                             // execute this when the downloader must be fired
                             final DownloadTask downloadTask = new DownloadTask(getActivity());
@@ -162,6 +162,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                             });
 
                             PrefEGM96SetToFalse();
+                        } else {
+                            EGM96.getInstance().loadGrid(GPSApplication.getInstance().getPrefExportFolder(), GPSApplication.getInstance().getApplicationContext().getFilesDir().toString());
                         }
                     }
                 }
@@ -174,10 +176,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     getActivity().getWindow().setWindowAnimations(R.style.MyCrossfadeAnimation_Window);
                     AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("prefColorTheme", "2")));
                     //getActivity().recreate();
-                }
-                if (key.equals("prefExportFolder")) {
-                    Log.w("myApp", "[#] FragmentSettings.java - clicked prefExportFolder");
-                    //TODO
                 }
                 SetupPreferences();
             }
@@ -401,8 +399,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         SharedPreferences.Editor editor1 = settings.edit();
         editor1.putBoolean("prefEGM96AltitudeCorrection", false);
         editor1.commit();
-        SwitchPreferenceCompat EGM96 = (SwitchPreferenceCompat) super.findPreference("prefEGM96AltitudeCorrection");
-        EGM96.setChecked(false);
+        SwitchPreferenceCompat prefEGM96 = super.findPreference("prefEGM96AltitudeCorrection");
+        prefEGM96.setChecked(false);
     }
 
     /**
@@ -413,8 +411,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         SharedPreferences.Editor editor1 = settings.edit();
         editor1.putBoolean("prefEGM96AltitudeCorrection", true);
         editor1.commit();
-        SwitchPreferenceCompat EGM96 = (SwitchPreferenceCompat) super.findPreference("prefEGM96AltitudeCorrection");
-        EGM96.setChecked(true);
+        SwitchPreferenceCompat prefEGM96 = super.findPreference("prefEGM96AltitudeCorrection");
+        prefEGM96.setChecked(true);
+        EGM96.getInstance().loadGrid(GPSApplication.getInstance().getPrefExportFolder(), GPSApplication.getInstance().getApplicationContext().getFilesDir().toString());
     }
 
     // ------------------------------------------------------------- Download of the EGM96 grid file
@@ -522,10 +521,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (result != null)
                     Toast.makeText(context, getString(R.string.toast_download_error) + ": " + result, Toast.LENGTH_LONG).show();
                 else {
-                    File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-                    File sd_old = new File(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC");
-                    if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
-                        isDownloaded = true;
+                    isDownloaded = EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getApplicationContext().getFilesDir().toString()) ||
+                            EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getPrefExportFolder());
+                    if (isDownloaded) {
                         Toast.makeText(context, getString(R.string.toast_download_completed), Toast.LENGTH_SHORT).show();
                         PrefEGM96SetToTrue();
                     } else {

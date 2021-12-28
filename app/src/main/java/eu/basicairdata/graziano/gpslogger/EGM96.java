@@ -115,6 +115,27 @@ class EGM96 {
         }
     }
 
+    /**
+     * Returns true if the grid file exists into the requested folder.
+     *
+     * @param path the full path to search the EGM File into
+     */
+    public boolean isGridAvailable(String path) {
+        DocumentFile gridFolder;
+        DocumentFile gridDocument;
+        try {
+            if (path.startsWith("content"))
+                gridFolder = DocumentFile.fromTreeUri(GPSApplication.getInstance(), Uri.parse(path));
+            else gridFolder = DocumentFile.fromFile(new File(path));
+            gridDocument = gridFolder.findFile("WW15MGH.DAC");
+            Log.w("myApp", "[#] EGM96.java - Check existence of EGM Grid into " + path + ": " +
+                    (((gridDocument != null) && gridDocument.exists() && (gridDocument.length() == 2076480)) ? "TRUE" : "FALSE"));
+            return ((gridDocument != null) && gridDocument.exists() && (gridDocument.length() == 2076480));
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
 //    public void unloadGrid() {
 //        isEGMGridLoaded = false;
 //        isEGMGridLoading = false;
