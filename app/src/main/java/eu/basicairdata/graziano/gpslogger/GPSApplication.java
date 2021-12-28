@@ -872,7 +872,7 @@ public class GPSApplication extends Application implements LocationListener {
             String[] spathParts = spath.split(pathSeparator);
             return spathParts[spathParts.length - 1];
         } else return spath;
-}
+    }
 
     // ---------------------------------------------------------------------- Preferences Excluded from Backup
     // These are Boolean SharedPreferences that are excluded by automatic Backups
@@ -949,15 +949,15 @@ public class GPSApplication extends Application implements LocationListener {
 
         // -----------------------
         // TODO: Uncomment it to run the Week Rollover Tests (For Test Purpose)
-        // SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-        // editor.putBoolean("prefGPSWeekRolloverCorrected", false);
-        // editor.commit();
+//        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+//        editor.putBoolean("prefGPSWeekRolloverCorrected", false);
+//        editor.commit();
         // -----------------------
 
         // -----------------------
         // TODO: Uncomment it to reload the EGM Grid File (For Test Purpose)
-        //File file = new File(getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-        //if (file.exists ()) file.delete();
+//        File file = new File(getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+//        if (file.exists ()) file.delete();
         // -----------------------
 
         // Starts and registers EventBus
