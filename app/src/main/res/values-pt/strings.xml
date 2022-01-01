@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">Definições</string>
     <string name="toast_track_saved_into_tracklist">Percurso arquivado</string>
-    <string name="toast_track_exported">Trajetos exportados para a pasta /GPSLogger</string>
+    <string name="toast_track_exported">Trajetos exportados para a pasta %1$s</string>
     <string name="menu_about">Sobre</string>
     <string name="menu_online_help">Ajuda online</string>
     <string name="menu_shutdown">Sair</string>

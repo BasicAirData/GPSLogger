@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">Ajustes</string>
     <string name="toast_track_saved_into_tracklist">Itinerario archivado</string>
-    <string name="toast_track_exported">Itinerarios exportados en la carpeta /GPSLogger</string>
+    <string name="toast_track_exported">Itinerarios exportados en la carpeta %1$s</string>
     <string name="menu_about">Acerca de</string>
     <string name="menu_online_help">Ayuda en línea</string>
     <string name="menu_shutdown">Salir</string>

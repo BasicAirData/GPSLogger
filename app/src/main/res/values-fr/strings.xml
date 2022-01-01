@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">Paramètres</string>
     <string name="toast_track_saved_into_tracklist">Tracé archivé</string>
-    <string name="toast_track_exported">Tracés exportés dans le dossier /GPSLogger</string>
+    <string name="toast_track_exported">Tracés exportés dans le dossier %1$s</string>
     <string name="menu_about">À propos</string>
     <string name="menu_online_help">Aide en ligne</string>
     <string name="menu_shutdown">Éteindre</string>

@@ -91,6 +91,12 @@
             android:summary="@string/pref_show_decimal_coordinates_summary"
             android:defaultValue="false" />
 
+        <androidx.preference.Preference
+            android:key="prefExportFolder"
+            android:title="@string/pref_exportation_folder"
+            android:summary=" "
+            android:defaultValue="" />
+
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
