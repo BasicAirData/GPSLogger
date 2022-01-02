@@ -92,6 +92,8 @@ public class GPSApplication extends Application implements LocationListener {
     //private static final int UM_IMPERIAL_FPS = 8;
     //private static final int UM_IMPERIAL_MPH = 9;
 
+    private static final float M_TO_FT = 3.280839895f;
+
     private static final int STABILIZER_TIME = 3000;                // The application discards fixes for 3000 ms (minimum)
     private static final int DEFAULT_SWITCHOFF_HANDLER_TIME = 5000; // Default time for turning off GPS on exit
     private static final int GPS_UNAVAILABLE_HANDLER_TIME = 7000;   // The "GPS temporary unavailable" time
@@ -1699,12 +1701,12 @@ public class GPSApplication extends Application implements LocationListener {
      */
     private void LoadPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
 
         // Conversion from the previous versions of GPS Logger preferences
         if (preferences.contains("prefShowImperialUnits")) {       // The old boolean setting for imperial units in v.1.1.5
             Log.w("myApp", "[#] GPSApplication.java - Old setting prefShowImperialUnits present. Converting to new preference PrefUM.");
             boolean imperialUM = preferences.getBoolean("prefShowImperialUnits", false);
-            SharedPreferences.Editor editor = preferences.edit();
             editor.putString("prefUM", (imperialUM ? "8" : "0"));
             editor.remove("prefShowImperialUnits");
             editor.commit();
@@ -1712,7 +1714,6 @@ public class GPSApplication extends Application implements LocationListener {
 
         // Remove the prefIsStoragePermissionChecked in preferences if present
         if (preferences.contains("prefIsStoragePermissionChecked")) {
-            SharedPreferences.Editor editor = preferences.edit();
             editor.remove("prefIsStoragePermissionChecked");
             editor.commit();
         }
@@ -1735,6 +1736,15 @@ public class GPSApplication extends Application implements LocationListener {
         prefShowTrackStatsType = Integer.valueOf(preferences.getString("prefShowTrackStatsType", "0"));
         prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));
 
+        double altcorm = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
+        double altcor = preferences.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
+        double distfilterm = Double.valueOf(preferences.getString("prefGPSDistance", "0"));
+        double distfilter = preferences.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
+        editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
+        editor.putString("prefGPSDistanceRaw", String.valueOf(distfilter));
+        //editor.remove("prefGPSDistanceRaw");
+        editor.commit();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) prefExportFolder = preferences.getString("prefExportFolder", "");
         else setPrefExportFolder(Environment.getExternalStorageDirectory() + "/GPSLogger");
 
@@ -1746,7 +1756,6 @@ public class GPSApplication extends Application implements LocationListener {
 
         // If no Exportation formats are enabled, enable the GPX one
         if (!prefExportKML && !prefExportGPX && !prefExportTXT) {
-            SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("prefExportGPX", true);
             editor.commit();
             prefExportGPX = true;

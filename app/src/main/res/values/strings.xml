@@ -173,18 +173,8 @@
     <string name="pref_track_viewer_select_every_time">Ask every Time</string>
 
     <string name="pref_category_tracking">TRACKING</string>
-    <string name="pref_GPS_distance">Collecting Density</string>
-    <string name="pref_GPS_distance_max">Maximum</string>
-    <string name="pref_GPS_distance_1m">1 meter</string>
-    <string name="pref_GPS_distance_2m">2 meters</string>
-    <string name="pref_GPS_distance_5m">5 meters</string>
-    <string name="pref_GPS_distance_10m">10 meters</string>
-    <string name="pref_GPS_distance_20m">20 meters</string>
-    <string name="pref_GPS_distance_3ft">3 feet</string>
-    <string name="pref_GPS_distance_6ft">6 feet</string>
-    <string name="pref_GPS_distance_16ft">16 feet</string>
-    <string name="pref_GPS_distance_33ft">33 feet</string>
-    <string name="pref_GPS_distance_66ft">66 feet</string>
+    <string name="pref_GPS_distance_filter">Distance Filter</string>
+    <string name="pref_GPS_distance_filter_disabled">disabled</string>
 
     <string name="pref_GPS_update_frequency">GPS Update Interval</string>
     <string name="pref_GPS_update_frequency_max">The shortest available</string>
