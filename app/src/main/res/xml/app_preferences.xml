@@ -103,7 +103,7 @@
         android:title="@string/pref_category_tracking">
 
         <androidx.preference.EditTextPreference
-            android:key="prefGPSDistanceRaw"
+            android:key="prefGPSdistanceRaw"
             android:title="@string/pref_GPS_distance_filter"
             android:summary=" "
             android:maxLines="1"

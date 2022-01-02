@@ -1738,10 +1738,10 @@ public class GPSApplication extends Application implements LocationListener {
 
         double altcorm = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
         double altcor = preferences.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
-        double distfilterm = Double.valueOf(preferences.getString("prefGPSDistance", "0"));
+        double distfilterm = Double.valueOf(preferences.getString("prefGPSdistance", "0"));
         double distfilter = preferences.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
         editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
-        editor.putString("prefGPSDistanceRaw", String.valueOf(distfilter));
+        editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
         //editor.remove("prefGPSDistanceRaw");
         editor.commit();
 

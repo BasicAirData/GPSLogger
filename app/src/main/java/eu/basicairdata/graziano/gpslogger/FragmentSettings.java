@@ -123,16 +123,16 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (key.equals("prefUM")) {
                     altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
                     altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
-                    distfilterm = Double.valueOf(prefs.getString("prefGPSDistance", "0"));
+                    distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
                     distfilter = prefs.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
-                    editor.putString("prefGPSDistanceRaw", String.valueOf(distfilter));
+                    editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
                     editor.commit();
                     EditTextPreference etpAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
                     etpAltitudeCorrection.setText(prefs.getString("prefAltitudeCorrectionRaw", "0"));
-                    EditTextPreference etpGPSDistance = findPreference("prefGPSDistanceRaw");
-                    etpGPSDistance.setText(prefs.getString("prefGPSDistanceRaw", "0"));
+                    EditTextPreference etpGPSDistance = findPreference("prefGPSdistanceRaw");
+                    etpGPSDistance.setText(prefs.getString("prefGPSdistanceRaw", "0"));
                 }
                 if (key.equals("prefAltitudeCorrectionRaw")) {
                     try {
@@ -149,19 +149,19 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     editor.putString("prefAltitudeCorrection", String.valueOf(altcorm));
                     editor.commit();
                 }
-                if (key.equals("prefGPSDistanceRaw")) {
+                if (key.equals("prefGPSdistanceRaw")) {
                     try {
-                        distfilter = Double.parseDouble(sharedPreferences.getString("prefGPSDistanceRaw", "0"));
+                        distfilter = Double.parseDouble(sharedPreferences.getString("prefGPSdistanceRaw", "0"));
                     }
                     catch(NumberFormatException nfe)
                     {
                         distfilter = 0;
-                        EditTextPreference etpDistanceFilter = findPreference("prefGPSDistanceRaw");
+                        EditTextPreference etpDistanceFilter = findPreference("prefGPSdistanceRaw");
                         etpDistanceFilter.setText("0");
                     }
                     distfilterm = prefs.getString("prefUM", "0").equals("0") ? distfilter : distfilter / M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("prefGPSDistance", String.valueOf(distfilterm));
+                    editor.putString("prefGPSdistance", String.valueOf(distfilterm));
                     editor.commit();
                 }
                 if (key.equals("prefEGM96AltitudeCorrection")) {
@@ -233,7 +233,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     public void SetupPreferences() {
         ListPreference pUM = findPreference("prefUM");
         ListPreference pUMSpeed = findPreference("prefUMSpeed");
-        EditTextPreference pGPSDistance = findPreference("prefGPSDistanceRaw");
+        EditTextPreference pGPSDistance = findPreference("prefGPSdistanceRaw");
         ListPreference pGPSUpdateFrequency = findPreference("prefGPSupdatefrequency");
         ListPreference pKMLAltitudeMode = findPreference("prefKMLAltitudeMode");
         ListPreference pGPXVersion = findPreference("prefGPXVersion");
@@ -348,12 +348,12 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
         altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
 
-        distfilterm = Double.valueOf(prefs.getString("prefGPSDistance", "0"));
+        distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
         distfilter = prefs.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
-        editor.putString("prefGPSDistanceRaw", String.valueOf(distfilter));
+        editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
         editor.commit();
 
         if (prefs.getString("prefUM", "0").equals("0")) {       // Metric
