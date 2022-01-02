@@ -361,7 +361,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             //pGPSDistance.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
             pGPSDistance.setSummary(distfilter != 0
                     ? Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_m)
-                    : Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_m) + " (" + getString(R.string.pref_GPS_distance_filter_disabled) + ")");
+                    : getString(R.string.pref_GPS_distance_filter_disabled));
             pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
 
         }
@@ -369,14 +369,14 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             pUMSpeed.setEntries(R.array.UMSpeed_Imperial);
             pGPSDistance.setSummary(distfilter != 0
                     ? Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_ft)
-                    : Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_ft) + " (" + getString(R.string.pref_GPS_distance_filter_disabled) + ")");
+                    : getString(R.string.pref_GPS_distance_filter_disabled));
             pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
         if (prefs.getString("prefUM", "0").equals("16")) {       // Aerial / Nautical
             pUMSpeed.setEntries(R.array.UMSpeed_AerialNautical);
             pGPSDistance.setSummary(distfilter != 0
                     ? Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_ft)
-                    : Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_ft) + " (" + getString(R.string.pref_GPS_distance_filter_disabled) + ")");
+                    : getString(R.string.pref_GPS_distance_filter_disabled));
             pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
 
