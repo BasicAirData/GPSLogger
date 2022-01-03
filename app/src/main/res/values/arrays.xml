@@ -22,32 +22,6 @@
   -->
 
 <resources>
-    <!-- Collecting Density -->
-    <string-array name="GPSDistance_Metric">
-        <item>@string/pref_GPS_distance_max</item>
-        <item>@string/pref_GPS_distance_1m</item>
-        <item>@string/pref_GPS_distance_2m</item>
-        <item>@string/pref_GPS_distance_5m</item>
-        <item>@string/pref_GPS_distance_10m</item>
-        <item>@string/pref_GPS_distance_20m</item>
-    </string-array>
-    <string-array name="GPSDistance_Imperial">
-        <item>@string/pref_GPS_distance_max</item>
-        <item>@string/pref_GPS_distance_3ft</item>
-        <item>@string/pref_GPS_distance_6ft</item>
-        <item>@string/pref_GPS_distance_16ft</item>
-        <item>@string/pref_GPS_distance_33ft</item>
-        <item>@string/pref_GPS_distance_66ft</item>
-    </string-array>
-    <string-array name="GPSDistanceValues">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>5</item>
-        <item>10</item>
-        <item>20</item>
-    </string-array>
-
     <!-- GPS Update Interval -->
     <string-array name="GPSupdatefrequency">
         <item>@string/pref_GPS_update_frequency_max</item>

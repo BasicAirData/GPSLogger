@@ -73,8 +73,11 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
 
     private static final float M_TO_FT = 3.280839895f;
+
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private SharedPreferences prefs;
+    public double distfilter;   // distance filter
+    public double distfilterm;  // distance filter in m
     public double altcor;       // manual offset
     public double altcorm;      // Manual offset in m
     private ProgressDialog progressDialog;
@@ -120,11 +123,16 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (key.equals("prefUM")) {
                     altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
                     altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
+                    distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
+                    distfilter = prefs.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
+                    editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
                     editor.commit();
                     EditTextPreference etpAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
                     etpAltitudeCorrection.setText(prefs.getString("prefAltitudeCorrectionRaw", "0"));
+                    EditTextPreference etpGPSDistance = findPreference("prefGPSdistanceRaw");
+                    etpGPSDistance.setText(prefs.getString("prefGPSdistanceRaw", "0"));
                 }
                 if (key.equals("prefAltitudeCorrectionRaw")) {
                     try {
@@ -139,6 +147,21 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     altcorm = prefs.getString("prefUM", "0").equals("0") ? altcor : altcor / M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrection", String.valueOf(altcorm));
+                    editor.commit();
+                }
+                if (key.equals("prefGPSdistanceRaw")) {
+                    try {
+                        distfilter = Double.parseDouble(sharedPreferences.getString("prefGPSdistanceRaw", "0"));
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        distfilter = 0;
+                        EditTextPreference etpDistanceFilter = findPreference("prefGPSdistanceRaw");
+                        etpDistanceFilter.setText("0");
+                    }
+                    distfilterm = prefs.getString("prefUM", "0").equals("0") ? distfilter : distfilter / M_TO_FT;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("prefGPSdistance", String.valueOf(distfilterm));
                     editor.commit();
                 }
                 if (key.equals("prefEGM96AltitudeCorrection")) {
@@ -210,7 +233,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     public void SetupPreferences() {
         ListPreference pUM = findPreference("prefUM");
         ListPreference pUMSpeed = findPreference("prefUMSpeed");
-        ListPreference pGPSDistance = findPreference("prefGPSdistance");
+        EditTextPreference pGPSDistance = findPreference("prefGPSdistanceRaw");
         ListPreference pGPSUpdateFrequency = findPreference("prefGPSupdatefrequency");
         ListPreference pKMLAltitudeMode = findPreference("prefKMLAltitudeMode");
         ListPreference pGPXVersion = findPreference("prefGPXVersion");
@@ -325,21 +348,36 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
         altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
 
+        distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
+        distfilter = prefs.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
+        editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
+        editor.commit();
+
         if (prefs.getString("prefUM", "0").equals("0")) {       // Metric
             pUMSpeed.setEntries(R.array.UMSpeed_Metric);
-            pGPSDistance.setEntries(R.array.GPSDistance_Metric);
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor*1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            //pGPSDistance.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pGPSDistance.setSummary(distfilter != 0
+                    ? Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_m)
+                    : getString(R.string.pref_GPS_distance_filter_disabled));
+            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
 
         }
         if (prefs.getString("prefUM", "0").equals("8")) {       // Imperial
             pUMSpeed.setEntries(R.array.UMSpeed_Imperial);
-            pGPSDistance.setEntries(R.array.GPSDistance_Imperial);
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor*1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pGPSDistance.setSummary(distfilter != 0
+                    ? Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_ft)
+                    : getString(R.string.pref_GPS_distance_filter_disabled));
+            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
         if (prefs.getString("prefUM", "0").equals("16")) {       // Aerial / Nautical
             pUMSpeed.setEntries(R.array.UMSpeed_AerialNautical);
-            pGPSDistance.setEntries(R.array.GPSDistance_Imperial);
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor*1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pGPSDistance.setSummary(distfilter != 0
+                    ? Double.valueOf(Math.round(distfilter *1000d)/1000d).toString() + " " + getString(R.string.UM_ft)
+                    : getString(R.string.pref_GPS_distance_filter_disabled));
+            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
 
         Log.w("myApp", "[#] FragmentSettings.java - prefAltitudeCorrectionRaw = " + prefs.getString("prefAltitudeCorrectionRaw", "0")) ;
@@ -349,7 +387,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         pColorTheme.setSummary(pColorTheme.getEntry());
         pUMSpeed.setSummary(pUMSpeed.getEntry());
         pUM.setSummary(pUM.getEntry());
-        pGPSDistance.setSummary(pGPSDistance.getEntry());
         pGPSUpdateFrequency.setSummary(pGPSUpdateFrequency.getEntry());
         pKMLAltitudeMode.setSummary(pKMLAltitudeMode.getEntry());
         pGPXVersion.setSummary(pGPXVersion.getEntry());
