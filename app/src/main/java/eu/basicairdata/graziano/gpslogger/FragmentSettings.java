@@ -244,6 +244,12 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         EditTextPreference pAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
         Preference pTracksViewer = findPreference("prefTracksViewer");
 
+        // Adds the unit of measurement to EditTexts title
+        pGPSDistance.setDialogTitle(getString(R.string.pref_GPS_distance_filter) + " ("
+                + (prefs.getString("prefUM", "0").equals("0") ? getString(R.string.UM_m) : getString(R.string.UM_ft)) + ")");
+        pAltitudeCorrection.setDialogTitle(getString(R.string.pref_AltitudeCorrection) + " ("
+                + (prefs.getString("prefUM", "0").equals("0") ? getString(R.string.UM_m) : getString(R.string.UM_ft)) + ")");
+
         // Keep Screen On Flag
         if (prefs.getBoolean("prefKeepScreenOn", true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
