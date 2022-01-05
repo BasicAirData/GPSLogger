@@ -122,9 +122,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 Log.w("myApp", "[#] FragmentSettings.java - SharedPreferences.OnSharedPreferenceChangeListener, key = " + key);
                 if (key.equals("prefUM")) {
                     altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
-                    altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
+                    altcor = isUMMetric() ? altcorm : altcorm * M_TO_FT;
                     distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
-                    distfilter = prefs.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
+                    distfilter = isUMMetric() ? distfilterm : distfilterm * M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
                     editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
@@ -144,7 +144,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         EditTextPreference etpAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
                         etpAltitudeCorrection.setText("0");
                     }
-                    altcorm = prefs.getString("prefUM", "0").equals("0") ? altcor : altcor / M_TO_FT;
+                    altcorm = isUMMetric() ? altcor : altcor / M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrection", String.valueOf(altcorm));
                     editor.commit();
@@ -159,7 +159,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         EditTextPreference etpDistanceFilter = findPreference("prefGPSdistanceRaw");
                         etpDistanceFilter.setText("0");
                     }
-                    distfilterm = prefs.getString("prefUM", "0").equals("0") ? distfilter : distfilter / M_TO_FT;
+                    distfilterm = isUMMetric() ? distfilter : distfilter / M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefGPSdistance", String.valueOf(distfilterm));
                     editor.commit();
@@ -230,6 +230,17 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         Log.w("myApp", "[#] FragmentSettings.java - onCreatePreferences");
     }
 
+    /**
+     * Returns true when the Unit of Measurement is set to Metric, false otherwise
+     */
+    private boolean isUMMetric() {
+        return prefs.getString("prefUM", "0").equals("0");
+    }
+
+    /**
+     * Sets up the Preference screen, by setting the right summaries, adding listeners
+     * and manage the visibility of each preference.
+     */
     public void SetupPreferences() {
         ListPreference pUM = findPreference("prefUM");
         ListPreference pUMSpeed = findPreference("prefUMSpeed");
@@ -246,9 +257,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         // Adds the unit of measurement to EditTexts title
         pGPSDistance.setDialogTitle(getString(R.string.pref_GPS_distance_filter) + " ("
-                + (prefs.getString("prefUM", "0").equals("0") ? getString(R.string.UM_m) : getString(R.string.UM_ft)) + ")");
+                + (isUMMetric() ? getString(R.string.UM_m) : getString(R.string.UM_ft)) + ")");
         pAltitudeCorrection.setDialogTitle(getString(R.string.pref_AltitudeCorrection) + " ("
-                + (prefs.getString("prefUM", "0").equals("0") ? getString(R.string.UM_m) : getString(R.string.UM_ft)) + ")");
+                + (isUMMetric() ? getString(R.string.UM_m) : getString(R.string.UM_ft)) + ")");
 
         // Keep Screen On Flag
         if (prefs.getBoolean("prefKeepScreenOn", true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -352,17 +363,17 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         }
 
         altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
-        altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
+        altcor = isUMMetric() ? altcorm : altcorm * M_TO_FT;
 
         distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
-        distfilter = prefs.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
+        distfilter = isUMMetric() ? distfilterm : distfilterm * M_TO_FT;
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
         editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
         editor.commit();
 
-        if (prefs.getString("prefUM", "0").equals("0")) {       // Metric
+        if (isUMMetric()) {       // Metric
             pUMSpeed.setEntries(R.array.UMSpeed_Metric);
             //pGPSDistance.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
             pGPSDistance.setSummary(distfilter != 0
@@ -407,6 +418,12 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         }
     }
 
+    /**
+     * It manages the return code of the Intent.ACTION_OPEN_DOCUMENT_TREE
+     * that returns the local exportation folder.
+     *
+     * it Requires api >= Build.VERSION_CODES.LOLLIPOP
+     */
     @Override
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
@@ -471,7 +488,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         // usually, subclasses of AsyncTask are declared inside the activity class.
         // that way, you can easily modify the UI thread from here
 
-        private Context context;
+        private final Context context;
         //private PowerManager.WakeLock mWakeLock;
 
         public DownloadTask(Context context) {
