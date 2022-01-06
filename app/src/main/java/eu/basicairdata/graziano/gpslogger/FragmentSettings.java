@@ -44,11 +44,14 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
+
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -152,6 +155,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (key.equals("prefGPSdistanceRaw")) {
                     try {
                         distfilter = Double.parseDouble(sharedPreferences.getString("prefGPSdistanceRaw", "0"));
+                        distfilter = Math.abs(distfilter);
                     }
                     catch(NumberFormatException nfe)
                     {
@@ -203,6 +207,22 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 SetupPreferences();
             }
         };
+
+        EditTextPreference gpsDistanceETP = getPreferenceManager().findPreference("prefGPSdistanceRaw");
+        gpsDistanceETP.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+            @Override
+            public void onBindEditText(EditText editText) {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+        });
+
+        EditTextPreference altitudeCorrectionETP = getPreferenceManager().findPreference("prefAltitudeCorrectionRaw");
+        altitudeCorrectionETP.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+            @Override
+            public void onBindEditText(EditText editText) {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+        });
     }
 
     @Override
@@ -365,7 +385,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
         altcor = isUMMetric() ? altcorm : altcorm * M_TO_FT;
 
-        distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
+        distfilterm = Math.abs(Double.valueOf(prefs.getString("prefGPSdistance", "0")));
         distfilter = isUMMetric() ? distfilterm : distfilterm * M_TO_FT;
 
         SharedPreferences.Editor editor = prefs.edit();
