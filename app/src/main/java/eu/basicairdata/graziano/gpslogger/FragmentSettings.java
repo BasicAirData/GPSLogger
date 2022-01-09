@@ -396,28 +396,27 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             }
         }
 
+        // Set all summaries
         try {
             altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
-        }
-        catch(NumberFormatException nfe) {
+        } catch(NumberFormatException nfe) {
             altcorm = 0;
         }
         altcor = isUMMetric() ? altcorm : altcorm * M_TO_FT;
 
         try {
             distfilterm = Math.abs(Double.valueOf(prefs.getString("prefGPSdistance", "0")));
-        }
-        catch(NumberFormatException nfe) {
+        } catch(NumberFormatException nfe) {
             distfilterm = 0;
         }
         distfilter = isUMMetric() ? distfilterm : distfilterm * M_TO_FT;
 
         try {
             intervalfilter = Double.valueOf(prefs.getString("prefGPSinterval", "0"));
-        }
-        catch(NumberFormatException nfe) {
+        } catch(NumberFormatException nfe) {
             intervalfilter = 0;
         }
+
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
         editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
@@ -434,7 +433,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     ? df.format(distfilter) + " " + getString(R.string.UM_m)
                     : getString(R.string.pref_GPS_filter_disabled));
             pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
-
         }
         if (prefs.getString("prefUM", "0").equals("8")) {       // Imperial
             pUMSpeed.setEntries(R.array.UMSpeed_Imperial);
@@ -455,10 +453,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 ? df.format(intervalfilter) + " " + getString(R.string.UM_s)
                 : getString(R.string.pref_GPS_filter_disabled));
 
-        Log.w("myApp", "[#] FragmentSettings.java - prefAltitudeCorrectionRaw = " + prefs.getString("prefAltitudeCorrectionRaw", "0")) ;
-        Log.w("myApp", "[#] FragmentSettings.java - prefAltitudeCorrection = " + prefs.getString("prefAltitudeCorrection", "0")) ;
-
-        // Set all summaries
         pColorTheme.setSummary(pColorTheme.getEntry());
         pUMSpeed.setSummary(pUMSpeed.getEntry());
         pUM.setSummary(pUM.getEntry());
