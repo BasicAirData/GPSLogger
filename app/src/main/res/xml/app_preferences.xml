@@ -109,6 +109,13 @@
             android:maxLines="1"
             android:defaultValue="0" />
 
+        <androidx.preference.EditTextPreference
+            android:key="prefGPSinterval"
+            android:title="@string/pref_GPS_interval_filter"
+            android:summary=" "
+            android:maxLines="1"
+            android:defaultValue="0" />
+
         <androidx.preference.ListPreference
             android:key="prefGPSupdatefrequency"
             android:title="@string/pref_GPS_update_frequency"
