@@ -102,13 +102,6 @@
     <androidx.preference.PreferenceCategory
         android:title="@string/pref_category_tracking">
 
-        <androidx.preference.EditTextPreference
-            android:key="prefGPSdistanceRaw"
-            android:title="@string/pref_GPS_distance_filter"
-            android:summary=" "
-            android:maxLines="1"
-            android:defaultValue="0" />
-
         <androidx.preference.ListPreference
             android:key="prefGPSupdatefrequency"
             android:title="@string/pref_GPS_update_frequency"
@@ -116,6 +109,20 @@
             android:entries="@array/GPSupdatefrequency"
             android:entryValues="@array/GPSupdatefrequencyValues"
             android:defaultValue="1000" />
+
+        <androidx.preference.EditTextPreference
+            android:key="prefGPSinterval"
+            android:title="@string/pref_GPS_interval_filter"
+            android:summary=" "
+            android:maxLines="1"
+            android:defaultValue="0" />
+
+        <androidx.preference.EditTextPreference
+            android:key="prefGPSdistanceRaw"
+            android:title="@string/pref_GPS_distance_filter"
+            android:summary=" "
+            android:maxLines="1"
+            android:defaultValue="0" />
 
     </androidx.preference.PreferenceCategory>
 

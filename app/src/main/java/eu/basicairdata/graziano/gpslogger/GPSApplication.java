@@ -149,6 +149,7 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
     private int     prefUM                      = UM_METRIC_KMH; // The units of measurement to use for visualization
     private float   prefGPSdistance             = 0f;            // The distance filter value
+    private float   prefGPSinterval             = 0f;            // The interval filter value
     private long    prefGPSupdatefrequency      = 1000L;         // The GPS Update frequency in milliseconds
     private boolean prefEGM96AltitudeCorrection;                 // True if the EGM96 altitude correction is active
     private double  prefAltitudeCorrection      = 0d;            // The manual offset for the altitude correction, in meters
@@ -1110,7 +1111,10 @@ public class GPSApplication extends Application implements LocationListener {
 
             if (gpsStatus == GPS_OK) {
                 AsyncTODO ast = new AsyncTODO();
-                if ((isRecording) && ((prefGPSdistance == 0) || (prevRecordedFix == null) || (forceRecord) || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance))) {
+                if ((isRecording) && ((prevRecordedFix == null)
+                        || (forceRecord)
+                        || (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
+                            && (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))) {
                     prevRecordedFix = eloc;
                     ast.taskType = TASK_ADDLOCATION;
                     ast.location = eloc;
@@ -1724,7 +1728,18 @@ public class GPSApplication extends Application implements LocationListener {
         prefShowLocalTime = preferences.getBoolean("prefShowLocalTime", true);
         //prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
         prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
-        prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
+        try {
+            prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
+        }
+        catch(NumberFormatException nfe) {
+            prefGPSdistance = 0;
+        }
+        try {
+            prefGPSinterval = Float.valueOf(preferences.getString("prefGPSinterval", "0"));
+            }
+        catch(NumberFormatException nfe) {
+            prefGPSinterval = 0;
+        }
         prefEGM96AltitudeCorrection = preferences.getBoolean("prefEGM96AltitudeCorrection", false);
         prefAltitudeCorrection = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
         Log.w("myApp", "[#] GPSApplication.java - Manual Correction set to " + prefAltitudeCorrection + " m");
