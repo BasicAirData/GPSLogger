@@ -1111,10 +1111,18 @@ public class GPSApplication extends Application implements LocationListener {
 
             if (gpsStatus == GPS_OK) {
                 AsyncTODO ast = new AsyncTODO();
+                // Distance Filter and Interval Filter in AND
+//                if ((isRecording) && ((prevRecordedFix == null)
+//                        || (forceRecord)
+//                        || (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
+//                        && (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))) {
+                // Distance Filter and Interval Filter in OR
                 if ((isRecording) && ((prevRecordedFix == null)
                         || (forceRecord)
-                        || (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
-                            && (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))) {
+                        || ((prefGPSinterval > 0) && (prefGPSdistance > 0) && (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
+                                                                               || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
+                        || ((prefGPSinterval > 0) && (prefGPSdistance == 0) && ((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f)))
+                        || ((prefGPSinterval == 0) && (prefGPSdistance > 0) && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance))))){
                     prevRecordedFix = eloc;
                     ast.taskType = TASK_ADDLOCATION;
                     ast.location = eloc;
