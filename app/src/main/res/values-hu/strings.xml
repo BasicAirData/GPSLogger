@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">Beállítások</string>
     <string name="toast_track_saved_into_tracklist">Útvonal mentve az Útvonalak listába</string>
-    <string name="toast_track_exported">Útvonal exportálva %1$s mappába</string>
+    <string name="toast_track_exported">Útvonal exportálva \"%1$s\" mappába</string>
     <string name="menu_about">Névjegy</string>
     <string name="menu_online_help">Online súgó</string>
     <string name="menu_shutdown">Kikapcsolás</string>
@@ -142,22 +142,15 @@
     <string name="pref_unit_of_measurement_imperial">Angolszász</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Légi / Tengeri</string>
     <string name="pref_unit_of_measurement_speed">Sebesség mértékegység</string>
+    <string name="pref_exportation_folder">Exportálási mappa</string>
+    <string name="pref_not_set">Nincs beállítva</string>
     <string name="pref_track_viewer">Útvonal megjelenítő</string>
     <string name="pref_track_viewer_not_installed">Nincs GPX/KML megjelenítő telepítve</string>
     <string name="pref_track_viewer_select_every_time">Kiválasztás minden egyes alkalommal</string>
     <string name="pref_category_tracking">Útvonal rögzítés</string>
-    <string name="pref_GPS_distance">Rögzítési sűrűség</string>
-    <string name="pref_GPS_distance_max">Maximum</string>
-    <string name="pref_GPS_distance_1m">1 méter</string>
-    <string name="pref_GPS_distance_2m">2 méter</string>
-    <string name="pref_GPS_distance_5m">5 méter</string>
-    <string name="pref_GPS_distance_10m">10 méter</string>
-    <string name="pref_GPS_distance_20m">20 méter</string>
-    <string name="pref_GPS_distance_3ft">3 láb</string>
-    <string name="pref_GPS_distance_6ft">6 láb</string>
-    <string name="pref_GPS_distance_16ft">16 láb</string>
-    <string name="pref_GPS_distance_33ft">33 láb</string>
-    <string name="pref_GPS_distance_66ft">66 láb</string>
+    <string name="pref_GPS_distance_filter">Távolság szűrő</string>
+    <string name="pref_GPS_interval_filter">Időköz szűrő</string>
+    <string name="pref_GPS_filter_disabled">Letiltva</string>
     <string name="pref_GPS_update_frequency">GPS Frissítési idő</string>
     <string name="pref_GPS_update_frequency_max">Elérhető legrövidebb</string>
     <string name="pref_GPS_update_frequency_1s">1 másodperc (legnagyobb pontosság)</string>
@@ -214,4 +207,5 @@
     <string name="UM_mph">mph</string>
     <string name="UM_nm">NM</string>
     <string name="UM_kn">kn</string>
+    <string name="UM_s">s</string>
 </resources>

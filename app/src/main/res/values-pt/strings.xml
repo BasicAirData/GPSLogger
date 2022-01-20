@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">Definições</string>
     <string name="toast_track_saved_into_tracklist">Percurso arquivado</string>
-    <string name="toast_track_exported">Trajetos exportados para a pasta %1$s</string>
+    <string name="toast_track_exported">Trajetos exportados para a pasta \"%1$s\"</string>
     <string name="menu_about">Sobre</string>
     <string name="menu_online_help">Ajuda online</string>
     <string name="menu_shutdown">Sair</string>
@@ -142,22 +142,15 @@
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Aéreo / Náutico</string>
     <string name="pref_unit_of_measurement_speed">Mostrar velocidades em</string>
+    <string name="pref_exportation_folder">Pasta de exportação local</string>
+    <string name="pref_not_set">Não definida</string>
     <string name="pref_track_viewer">Visualizador de Percursos</string>
     <string name="pref_track_viewer_not_installed">Nenhum Visualizador de GPX/KML instalado</string>
     <string name="pref_track_viewer_select_every_time">Selecionar cada vez</string>
     <string name="pref_category_tracking">RASTREAMENTO</string>
-    <string name="pref_GPS_distance">Densidade de coleta</string>
-    <string name="pref_GPS_distance_max">Máxima</string>
-    <string name="pref_GPS_distance_1m">1 metro</string>
-    <string name="pref_GPS_distance_2m">2 metros</string>
-    <string name="pref_GPS_distance_5m">5 metros</string>
-    <string name="pref_GPS_distance_10m">10 metros</string>
-    <string name="pref_GPS_distance_20m">20 metros</string>
-    <string name="pref_GPS_distance_3ft">3 pés</string>
-    <string name="pref_GPS_distance_6ft">6 pés</string>
-    <string name="pref_GPS_distance_16ft">16 pés</string>
-    <string name="pref_GPS_distance_33ft">33 pés</string>
-    <string name="pref_GPS_distance_66ft">66 pés</string>
+    <string name="pref_GPS_distance_filter">Filtro de distância</string>
+    <string name="pref_GPS_interval_filter">Filtro de intervalo</string>
+    <string name="pref_GPS_filter_disabled">Desativado</string>
     <string name="pref_GPS_update_frequency">Intervalo de atualizaçõ do GPS</string>
     <string name="pref_GPS_update_frequency_max">Mais curto disponível</string>
     <string name="pref_GPS_update_frequency_1s">1 segundo (melhor precisão)</string>
@@ -214,4 +207,5 @@
     <string name="UM_mph">mph</string>
     <string name="UM_nm">NM</string>
     <string name="UM_kn">kn</string>
+    <string name="UM_s">s</string>
 </resources>
