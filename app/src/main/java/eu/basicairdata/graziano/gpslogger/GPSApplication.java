@@ -1114,19 +1114,19 @@ public class GPSApplication extends Application implements LocationListener {
 
                 // Distance Filter and Interval Filter in AND
                 // The Trackpoint is recorded when both filters are True.
-//                if ((isRecording) && ((prevRecordedFix == null)
-//                        || (forceRecord)
-//                        || (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
-//                        && (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))) {
+                if ((isRecording) && ((prevRecordedFix == null)
+                        || (forceRecord)
+                        || (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
+                        && (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))) {
 
                 // Distance Filter and Interval Filter in OR
                 // The Trackpoint is recorded when at less one filter is True.
-                if ((isRecording) && ((prevRecordedFix == null)
-                        || (forceRecord)
-                        || ((prefGPSinterval > 0) && (prefGPSdistance > 0) && (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
-                                                                               || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
-                        || ((prefGPSinterval > 0) && (prefGPSdistance == 0) && ((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f)))
-                        || ((prefGPSinterval == 0) && (prefGPSdistance > 0) && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance))))){
+//                if ((isRecording) && ((prevRecordedFix == null)
+//                        || (forceRecord)
+//                        || ((prefGPSinterval > 0) && (prefGPSdistance > 0) && (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
+//                                                                               || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
+//                        || ((prefGPSinterval > 0) && (prefGPSdistance == 0) && ((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f)))
+//                        || ((prefGPSinterval == 0) && (prefGPSdistance > 0) && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance))))){
 
                     prevRecordedFix = eloc;
                     ast.taskType = TASK_ADDLOCATION;
