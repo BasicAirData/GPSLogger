@@ -1,0 +1,2 @@
+- Added Russian language
+- A couple of small refinements

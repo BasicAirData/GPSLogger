@@ -1,0 +1,6 @@
+- Introduced a more informative notification
+- Added some messages that help the users with the setup of the GPS service
+- Fixed the GPX compatibility with Memory-Map and Geosetter
+- The app now works in background also with the location permission "allowed only while the app is in Use" (Android 10+)
+- Some optimizations to reduce battery usage when the screen is OFF
+- A good number of small improvements

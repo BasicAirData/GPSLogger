@@ -1,0 +1,4 @@
+- Added support for GPX 1.1 (adding compatibility with Garmin Connect and many other third-party apps)
+- You can choose the GPX version on settings
+- Added the French language
+- Some minor bugs fixed

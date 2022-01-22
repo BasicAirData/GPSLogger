@@ -1,0 +1,6 @@
+- New selector and preference for external GPX/KML viewer, independent from system default apps
+- Added Portuguese language
+- Earth works again as track viewer
+- Fixed a bug that can cause possible data corruption on some devices when the system shuts down during recording
+- A couple of small bugs fixed
+- Some refinements in light theme

@@ -1,0 +1,1 @@
+- Fixes crash when deletes a track without thumbnail

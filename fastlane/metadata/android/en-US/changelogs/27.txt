@@ -1,0 +1,7 @@
+- High frequency recording (up to 20 Hz), thought for Bluetooth GPS receivers
+- Possibility to shutdown the app without finalize the active track
+- You can resume the recording of a track after a crash or a system reboot
+- Improved exportation Speed
+- Added Hungarian and Brazilian Portuguese languages
+- Small optimizations all around
+- A couple of bugs fixed

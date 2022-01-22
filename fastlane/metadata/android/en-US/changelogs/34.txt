@@ -1,0 +1,3 @@
+- You can show GPS time in your local timezone
+- Fixed the satellites count on dual band GNSS devices
+- A couple of small improvements

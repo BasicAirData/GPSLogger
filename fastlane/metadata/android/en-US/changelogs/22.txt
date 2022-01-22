@@ -1,0 +1,4 @@
+- A more polite behaviour of service and notification icon
+- You can choose a KML or a GPX viewer to view your tracks
+- Many optimizations and improvements for KML files
+- Some small enhancements and a couple of bugs fixed
