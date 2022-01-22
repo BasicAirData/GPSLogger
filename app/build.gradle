@@ -32,10 +32,10 @@ android {
         abortOnError false
     }
 
-//    aaptOptions {
-//        // Disable PNG Crunching
-//        cruncherEnabled = false
-//    }
+    aaptOptions {
+        // Disable PNG Crunching
+        cruncherEnabled = false
+    }
 
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
