@@ -1122,7 +1122,9 @@ public class GPSApplication extends Application implements LocationListener {
                 // Distance Filter and Interval Filter in OR
                 // The Trackpoint is recorded when at less one filter is True.
                 if ((isRecording) && ((prevRecordedFix == null)
-                        || (forceRecord) || ((prefGPSinterval > 0)
+                        || (forceRecord)
+                        || ((prefGPSinterval == 0) && (prefGPSdistance == 0))
+                        || ((prefGPSinterval > 0)
                             && (prefGPSdistance > 0)
                             && (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
                                 || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
@@ -1758,6 +1760,9 @@ public class GPSApplication extends Application implements LocationListener {
         catch(NumberFormatException nfe) {
             prefGPSinterval = 0;
         }
+
+        Log.w("myApp", "[#] GPSApplication.java - prefGPSdistance = " + prefGPSdistance + " m");
+
         prefEGM96AltitudeCorrection = preferences.getBoolean("prefEGM96AltitudeCorrection", false);
         prefAltitudeCorrection = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
         Log.w("myApp", "[#] GPSApplication.java - Manual Correction set to " + prefAltitudeCorrection + " m");
