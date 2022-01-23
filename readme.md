@@ -47,6 +47,9 @@ Please go on location section of your Android settings: the phone could be set t
 <b>How can I view my recorded tracks?</b><br>
 You can view your tracks by going on tracklist tab and clicking on it. An actionbar will appear, that should contain an eye icon, or the icon of a KML/GPX viewer. At least one KML/GPX viewer must be installed on your device; if not (in this case the icon will not be visible), please install it. If you installed more than one viewer, into GPS Logger's settings you can choose which one to use. Good viewers for Android are GPX Viewer, Earth, or WRPElevationChart, but there are lots of good alternatives around.
 
+<b>How can I select a range of tracks on Tracklist?</b><br>
+Select/deselect the first track of the range with a click, then long-click on the last one to select/deselect all the range. If the first click selects a track, all the range will be selected; if the first click deselects it, all the range will be deselected.
+
 <b>The "View" icon is not visible on actionbar.</b><br>
 The "View" icon is visible, by selecting one single track of the tracklist, if you have at least one external viewer installed on your device. If you installed more than one viewer, into GPS Logger's settings you can choose which one to use. Good viewers for Android are GPX Viewer, Earth, or WRPElevationChart, but there are lots of good alternatives around.
 
