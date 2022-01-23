@@ -32,6 +32,17 @@
 
     <!--<uses-feature android:name="android.hardware.location.gps" android:required="true" />-->
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="application/gpx+xml" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="application/vnd.google-earth.kml+xml" />
+        </intent>
+    </queries>
+
     <application
         android:name=".GPSApplication"
         android:allowBackup="true"
