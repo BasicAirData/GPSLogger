@@ -22,6 +22,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +34,8 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -55,7 +58,6 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +83,7 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_O
 public class GPSActivity extends AppCompatActivity {
 
     private static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+    private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 2;
 
     private final GPSApplication gpsApp = GPSApplication.getInstance();
     private Toolbar toolbar;
@@ -300,40 +303,21 @@ public class GPSActivity extends AppCompatActivity {
                             Log.w("myApp", "[#] GPSActivity.java - INTERNET = PERMISSION_DENIED");
                         }
                     }
-                    if (perms.containsKey(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_GRANTED");
-                            // ---------------------------------------------------- Create the Directories if not exist
-                            File sd = new File(GPSApplication.DIRECTORY_EXPORT);
-                            if (!sd.exists()) {
-                                sd.mkdir();
-                            }
-                            sd = new File(GPSApplication.DIRECTORY_TEMP);
-                            if (!sd.exists()) {
-                                sd.mkdir();
-                            }
-                            sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
-                            if (!sd.exists()) {
-                                sd.mkdir();
-                            }
-                            EGM96 egm96 = EGM96.getInstance();
-                            if (egm96 != null) {
-                                if (!egm96.isEGMGridLoaded()) {
-                                    //Log.w("myApp", "[#] GPSApplication.java - Loading EGM Grid...");
-                                    egm96.LoadGridFromFile(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-                                }
-                            }
-                            if (gpsApp.getJobsPending() > 0) gpsApp.executeJob();
-                        } else {
-                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
-                            if (gpsApp.getJobsPending() > 0) {
-                                // Shows toast "Unable to write the file"
-                                showToastGrantStoragePermission = true;
-                                EventBus.getDefault().post(EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED);
-                                gpsApp.setJobsPending(0);
-                            }
-                        }
-                    }
+                    // TODO: Manage Android 4 storage permission
+//                    if (perms.containsKey(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                        if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+//                            gpsApp.createFolders();
+//                            if (gpsApp.getJobsPending() > 0) gpsApp.executeJob();
+//                        } else {
+//                            Log.w("myApp", "[#] GPSActivity.java - WRITE_EXTERNAL_STORAGE = PERMISSION_DENIED");
+//                            if (gpsApp.getJobsPending() > 0) {
+//                                // Shows toast "Unable to write the file"
+//                                showToastGrantStoragePermission = true;
+//                                EventBus.getDefault().post(EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED);
+//                                gpsApp.setJobsPending(0);
+//                            }
+//                        }
+//                    }
                 }
                 break;
             }
@@ -378,7 +362,8 @@ public class GPSActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_track_exported, Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(),
+                                gpsApp.getString(R.string.toast_track_exported, gpsApp.extractFolderNameFromEncodedUri(gpsApp.getPrefExportFolder())), Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                         toast.show();
                     }
@@ -403,6 +388,28 @@ public class GPSActivity extends AppCompatActivity {
                         toast.show();
                     }
                 });
+                break;
+
+            case EventBusMSG.ACTION_BULK_EXPORT_TRACKS:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    // Android 5+
+                    if (!gpsApp.isExportFolderWritable()) {
+                        openDirectory();
+                    } else {
+                        gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
+                        gpsApp.executeJob();
+                        gpsApp.deselectAllTracks();
+                    }
+                } else {
+                    // Android 4
+                    if (gpsApp.isExportFolderWritable()) {
+                        gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
+                        gpsApp.executeJob();
+                        gpsApp.deselectAllTracks();
+                    } else {
+                        EventBus.getDefault().post(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE);
+                    }
+                }
         }
     }
 
@@ -580,6 +587,55 @@ public class GPSActivity extends AppCompatActivity {
                 listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
+        }
+    }
+
+    /**
+     * Executes the local exportation into the selected folder.
+     * For Android >= LOLLYPOP
+     */
+    @Override
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
+            // The result data contains a URI for the document or directory that
+            // the user selected.
+
+            if (resultData != null) {
+                Uri treeUri = resultData.getData();
+                grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                gpsApp.getContentResolver().takePersistableUriPermission(treeUri, Intent
+                        .FLAG_GRANT_READ_URI_PERMISSION | Intent
+                        .FLAG_GRANT_WRITE_URI_PERMISSION);
+                //getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.getPath());
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.getEncodedPath());
+
+                gpsApp.setPrefExportFolder(treeUri.toString());
+                gpsApp.loadJob(GPSApplication.JOB_TYPE_EXPORT);
+                gpsApp.executeJob();
+                gpsApp.deselectAllTracks();
+
+                // Perform operations on the document using its URI.
+            }
+        }
+        super.onActivityResult(resultCode, resultCode, resultData);
+    }
+
+    public void openDirectory() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Choose a directory using the system's file picker.
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+            intent.putExtra("android.content.extra.FANCY", true);
+            //intent.putExtra("android.content.extra.SHOW_FILESIZE", true);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+            startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
         }
     }
 }

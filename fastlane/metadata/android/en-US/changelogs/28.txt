@@ -1,0 +1,1 @@
+- Fix wrong timezone in timestamps of GPX and TXT files

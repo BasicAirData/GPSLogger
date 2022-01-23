@@ -1,0 +1,2 @@
+- Fixes the sharing feature on Android 10
+- Some small refinements

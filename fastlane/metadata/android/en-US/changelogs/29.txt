@@ -1,0 +1,4 @@
+- Added a light theme for bright environments
+- GPS Fix tab now shows also GPS time and satellites (when possible)
+- Fixed a bug that caused some crashes on Motorola Android 9 devices
+- Some layout refinements for cards

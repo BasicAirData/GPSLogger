@@ -1,0 +1,1 @@
+- Fixes the problem with Earth when it is the only viewer installed

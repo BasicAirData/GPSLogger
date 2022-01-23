@@ -1,0 +1,10 @@
+- You can choose the local exportation folder
+- Added a Time Interval Filter
+- The Distance Filter can be set to any value
+- Removed the permission to access the whole storage
+- Some bugs fixed
+- Small improvements all around
+
+- The Japanese language has been removed, as it is no longer maintained by any user.
+This open source app is translated in many languages thanks to the precious collaboration of some willing users around the world.
+Anyone can freely help to translate and keep updated languages here: https://crowdin.com/project/gpslogger

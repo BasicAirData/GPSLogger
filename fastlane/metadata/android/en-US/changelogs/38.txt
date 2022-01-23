@@ -1,0 +1,7 @@
+- A new bottom bar, strongly inspired by audio recorders
+- A Lock button that avoids accidental clicks
+- Ability to add a description to tracks, that is used also to name the files
+- Visualization of the number of satellites when the app is looking for GPS
+- Improved the compatibility with external viewers
+- A link to the online help
+- Lots of small changes and improvements

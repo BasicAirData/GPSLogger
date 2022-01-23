@@ -1,0 +1,2 @@
+- You can select/deselect a range of tracks with a long click on tracklist
+- A couple of bugs fixed

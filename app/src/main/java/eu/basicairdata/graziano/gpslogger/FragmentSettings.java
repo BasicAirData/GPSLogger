@@ -21,15 +21,21 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.EditTextPreference;
@@ -38,11 +44,14 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
+
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -55,7 +64,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
@@ -64,11 +75,17 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
  */
 public class FragmentSettings extends PreferenceFragmentCompat {
 
+    private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
+
     private static final float M_TO_FT = 3.280839895f;
+
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private SharedPreferences prefs;
-    public double altcor;       // manual offset
-    public double altcorm;      // Manual offset in m
+    public double intervalfilter;   // iterval filter
+    public double distfilter;        // distance filter
+    public double distfilterm;       // distance filter in m
+    public double altcor;            // manual offset
+    public double altcorm;           // Manual offset in m
     private ProgressDialog progressDialog;
     public boolean isDownloaded = false;
 
@@ -78,7 +95,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         addPreferencesFromResource(R.xml.app_preferences);
 
-        File tsd = new File(GPSApplication.DIRECTORY_EXPORT);
+        // TODO: check it!
+        File tsd = new File(GPSApplication.getInstance().getPrefExportFolder());
         if (!tsd.exists()) tsd.mkdir();
         tsd = new File(GPSApplication.DIRECTORY_TEMP);
         if (!tsd.exists()) tsd.mkdir();
@@ -87,11 +105,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         // Check if EGM96 file is downloaded and the size of the file is correct;
-        File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-        File sd_old = new File(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC");
-        if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
-            isDownloaded = true;
-        } else {
+        isDownloaded = EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getApplicationContext().getFilesDir().toString()) ||
+                EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getPrefExportFolder());
+        if (!isDownloaded) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences.Editor editor1 = settings.edit();
             editor1.putBoolean("prefEGM96AltitudeCorrection", false);
@@ -112,12 +128,17 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 Log.w("myApp", "[#] FragmentSettings.java - SharedPreferences.OnSharedPreferenceChangeListener, key = " + key);
                 if (key.equals("prefUM")) {
                     altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
-                    altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
+                    altcor = isUMMetric() ? altcorm : altcorm * M_TO_FT;
+                    distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
+                    distfilter = isUMMetric() ? distfilterm : distfilterm * M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
+                    editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
                     editor.commit();
                     EditTextPreference etpAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
                     etpAltitudeCorrection.setText(prefs.getString("prefAltitudeCorrectionRaw", "0"));
+                    EditTextPreference etpGPSDistance = findPreference("prefGPSdistanceRaw");
+                    etpGPSDistance.setText(prefs.getString("prefGPSdistanceRaw", "0"));
                 }
                 if (key.equals("prefAltitudeCorrectionRaw")) {
                     try {
@@ -129,13 +150,31 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         EditTextPreference etpAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
                         etpAltitudeCorrection.setText("0");
                     }
-                    altcorm = prefs.getString("prefUM", "0").equals("0") ? altcor : altcor / M_TO_FT;
+                    altcorm = isUMMetric() ? altcor : altcor / M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrection", String.valueOf(altcorm));
                     editor.commit();
                 }
+                if (key.equals("prefGPSdistanceRaw")) {
+                    try {
+                        distfilter = Double.parseDouble(sharedPreferences.getString("prefGPSdistanceRaw", "0"));
+                        distfilter = Math.abs(distfilter);
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        distfilter = 0;
+                        EditTextPreference etpDistanceFilter = findPreference("prefGPSdistanceRaw");
+                        etpDistanceFilter.setText("0");
+                    }
+                    distfilterm = isUMMetric() ? distfilter : distfilter / M_TO_FT;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("prefGPSdistance", String.valueOf(distfilterm));
+                    editor.commit();
+                }
                 if (key.equals("prefEGM96AltitudeCorrection")) {
                     if (sharedPreferences.getBoolean(key, false)) {
+                        isDownloaded = EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getApplicationContext().getFilesDir().toString()) ||
+                                EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getPrefExportFolder());
                         if (!isDownloaded) {
                             // execute this when the downloader must be fired
                             final DownloadTask downloadTask = new DownloadTask(getActivity());
@@ -153,6 +192,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                             });
 
                             PrefEGM96SetToFalse();
+                        } else {
+                            EGM96.getInstance().loadGrid(GPSApplication.getInstance().getPrefExportFolder(), GPSApplication.getInstance().getApplicationContext().getFilesDir().toString());
                         }
                     }
                 }
@@ -169,6 +210,30 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 SetupPreferences();
             }
         };
+
+        EditTextPreference gpsDistanceETP = getPreferenceManager().findPreference("prefGPSdistanceRaw");
+        gpsDistanceETP.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+            @Override
+            public void onBindEditText(EditText editText) {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+        });
+
+        EditTextPreference altitudeCorrectionETP = getPreferenceManager().findPreference("prefAltitudeCorrectionRaw");
+        altitudeCorrectionETP.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+            @Override
+            public void onBindEditText(EditText editText) {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+        });
+
+        EditTextPreference gpsIntervalETP = getPreferenceManager().findPreference("prefGPSinterval");
+        gpsIntervalETP.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+            @Override
+            public void onBindEditText(EditText editText) {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            }
+        });
     }
 
     @Override
@@ -196,18 +261,39 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         Log.w("myApp", "[#] FragmentSettings.java - onCreatePreferences");
     }
 
+    /**
+     * Returns true when the Unit of Measurement is set to Metric, false otherwise
+     */
+    private boolean isUMMetric() {
+        return prefs.getString("prefUM", "0").equals("0");
+    }
+
+    /**
+     * Sets up the Preference screen, by setting the right summaries, adding listeners
+     * and manage the visibility of each preference.
+     */
     public void SetupPreferences() {
         ListPreference pUM = findPreference("prefUM");
         ListPreference pUMSpeed = findPreference("prefUMSpeed");
-        ListPreference pGPSDistance = findPreference("prefGPSdistance");
+        EditTextPreference pGPSDistance = findPreference("prefGPSdistanceRaw");
+        EditTextPreference pGPSInterval = findPreference("prefGPSinterval");
         ListPreference pGPSUpdateFrequency = findPreference("prefGPSupdatefrequency");
         ListPreference pKMLAltitudeMode = findPreference("prefKMLAltitudeMode");
         ListPreference pGPXVersion = findPreference("prefGPXVersion");
         ListPreference pShowTrackStatsType = findPreference("prefShowTrackStatsType");
         ListPreference pShowDirections = findPreference("prefShowDirections");
         ListPreference pColorTheme = findPreference("prefColorTheme");
+        Preference pExportFolder = findPreference("prefExportFolder");
         EditTextPreference pAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
         Preference pTracksViewer = findPreference("prefTracksViewer");
+
+        // Adds the unit of measurement to EditTexts title
+        pGPSDistance.setDialogTitle(getString(R.string.pref_GPS_distance_filter) + " ("
+                + (isUMMetric() ? getString(R.string.UM_m) : getString(R.string.UM_ft)) + ")");
+        pAltitudeCorrection.setDialogTitle(getString(R.string.pref_AltitudeCorrection) + " ("
+                + (isUMMetric() ? getString(R.string.UM_m) : getString(R.string.UM_ft)) + ")");
+        pGPSInterval.setDialogTitle(getString(R.string.pref_GPS_interval_filter) + " ("
+                + getString(R.string.UM_s) + ")");
 
         // Keep Screen On Flag
         if (prefs.getBoolean("prefKeepScreenOn", true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -270,6 +356,29 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     }
                 });
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            pExportFolder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Log.w("myApp", "[#] FragmentSettings.java - pExportFolder preference clicked");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        // Choose a directory using the system's file picker.
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                        intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+                        intent.putExtra("android.content.extra.FANCY", true);
+                        //intent.putExtra("android.content.extra.SHOW_FILESIZE", true);
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+
+                        startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
+                    }
+                    return false;
+                }
+            });
+        } else pExportFolder.setVisible(false);
+
         // ------------
         if (evList.isEmpty())
             pTracksViewer.setSummary(R.string.pref_track_viewer_not_installed);                                        // no Viewers installed
@@ -287,40 +396,111 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             }
         }
 
-        altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
-        altcor = prefs.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
+        // Set all summaries
+        try {
+            altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
+        } catch(NumberFormatException nfe) {
+            altcorm = 0;
+        }
+        altcor = isUMMetric() ? altcorm : altcorm * M_TO_FT;
 
-        if (prefs.getString("prefUM", "0").equals("0")) {       // Metric
+        try {
+            distfilterm = Math.abs(Double.valueOf(prefs.getString("prefGPSdistance", "0")));
+        } catch(NumberFormatException nfe) {
+            distfilterm = 0;
+        }
+        distfilter = isUMMetric() ? distfilterm : distfilterm * M_TO_FT;
+
+        try {
+            intervalfilter = Double.valueOf(prefs.getString("prefGPSinterval", "0"));
+        } catch(NumberFormatException nfe) {
+            intervalfilter = 0;
+        }
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
+        editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
+        editor.commit();
+
+        DecimalFormat df = new DecimalFormat();
+        df.setMinimumFractionDigits(0);
+        df.setMaximumFractionDigits(3);
+
+        if (isUMMetric()) {       // Metric
             pUMSpeed.setEntries(R.array.UMSpeed_Metric);
-            pGPSDistance.setEntries(R.array.GPSDistance_Metric);
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor*1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
-
+            //pGPSDistance.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pGPSDistance.setSummary(distfilter != 0
+                    ? df.format(distfilter) + " " + getString(R.string.UM_m)
+                    : getString(R.string.pref_GPS_filter_disabled));
+            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
         if (prefs.getString("prefUM", "0").equals("8")) {       // Imperial
             pUMSpeed.setEntries(R.array.UMSpeed_Imperial);
-            pGPSDistance.setEntries(R.array.GPSDistance_Imperial);
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor*1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pGPSDistance.setSummary(distfilter != 0
+                    ? df.format(distfilter) + " " + getString(R.string.UM_ft)
+                    : getString(R.string.pref_GPS_filter_disabled));
+            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
         if (prefs.getString("prefUM", "0").equals("16")) {       // Aerial / Nautical
             pUMSpeed.setEntries(R.array.UMSpeed_AerialNautical);
-            pGPSDistance.setEntries(R.array.GPSDistance_Imperial);
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor*1000d)/1000d).toString() + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pGPSDistance.setSummary(distfilter != 0
+                    ? df.format(distfilter) + " " + getString(R.string.UM_ft)
+                    : getString(R.string.pref_GPS_filter_disabled));
+            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
 
-        Log.w("myApp", "[#] FragmentSettings.java - prefAltitudeCorrectionRaw = " + prefs.getString("prefAltitudeCorrectionRaw", "0")) ;
-        Log.w("myApp", "[#] FragmentSettings.java - prefAltitudeCorrection = " + prefs.getString("prefAltitudeCorrection", "0")) ;
+        pGPSInterval.setSummary(intervalfilter != 0
+                ? df.format(intervalfilter) + " " + getString(R.string.UM_s)
+                : getString(R.string.pref_GPS_filter_disabled));
 
-        // Set all summaries
         pColorTheme.setSummary(pColorTheme.getEntry());
         pUMSpeed.setSummary(pUMSpeed.getEntry());
         pUM.setSummary(pUM.getEntry());
-        pGPSDistance.setSummary(pGPSDistance.getEntry());
         pGPSUpdateFrequency.setSummary(pGPSUpdateFrequency.getEntry());
         pKMLAltitudeMode.setSummary(pKMLAltitudeMode.getEntry());
         pGPXVersion.setSummary(pGPXVersion.getEntry());
         pShowTrackStatsType.setSummary(pShowTrackStatsType.getEntry());
         pShowDirections.setSummary(pShowDirections.getEntry());
-        //pViewTracksWith.setSummary(pViewTracksWith.getEntry());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (GPSApplication.getInstance().isExportFolderWritable())
+                pExportFolder.setSummary(GPSApplication.getInstance().extractFolderNameFromEncodedUri(prefs.getString("prefExportFolder", "")));
+            else
+                pExportFolder.setSummary(getString(R.string.pref_not_set));
+        }
+    }
+
+    /**
+     * It manages the return code of the Intent.ACTION_OPEN_DOCUMENT_TREE
+     * that returns the local exportation folder.
+     *
+     * it Requires api >= Build.VERSION_CODES.LOLLIPOP
+     */
+    @Override
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
+            // The result data contains a URI for the document or directory that
+            // the user selected.
+
+            if (resultData != null) {
+                Uri treeUri = resultData.getData();
+                getActivity().grantUriPermission(getActivity().getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                GPSApplication.getInstance().getContentResolver().takePersistableUriPermission(treeUri, Intent
+                        .FLAG_GRANT_READ_URI_PERMISSION | Intent
+                        .FLAG_GRANT_WRITE_URI_PERMISSION);
+                //getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.getPath());
+                Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.getEncodedPath());
+
+                GPSApplication.getInstance().setPrefExportFolder(treeUri.toString());
+                SetupPreferences();
+            }
+        }
+        super.onActivityResult(resultCode, resultCode, resultData);
     }
 
     /**
@@ -331,8 +511,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         SharedPreferences.Editor editor1 = settings.edit();
         editor1.putBoolean("prefEGM96AltitudeCorrection", false);
         editor1.commit();
-        SwitchPreferenceCompat EGM96 = (SwitchPreferenceCompat) super.findPreference("prefEGM96AltitudeCorrection");
-        EGM96.setChecked(false);
+        SwitchPreferenceCompat prefEGM96 = super.findPreference("prefEGM96AltitudeCorrection");
+        prefEGM96.setChecked(false);
     }
 
     /**
@@ -343,8 +523,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         SharedPreferences.Editor editor1 = settings.edit();
         editor1.putBoolean("prefEGM96AltitudeCorrection", true);
         editor1.commit();
-        SwitchPreferenceCompat EGM96 = (SwitchPreferenceCompat) super.findPreference("prefEGM96AltitudeCorrection");
-        EGM96.setChecked(true);
+        SwitchPreferenceCompat prefEGM96 = super.findPreference("prefEGM96AltitudeCorrection");
+        prefEGM96.setChecked(true);
+        EGM96.getInstance().loadGrid(GPSApplication.getInstance().getPrefExportFolder(), GPSApplication.getInstance().getApplicationContext().getFilesDir().toString());
     }
 
     // ------------------------------------------------------------- Download of the EGM96 grid file
@@ -359,7 +540,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         // usually, subclasses of AsyncTask are declared inside the activity class.
         // that way, you can easily modify the UI thread from here
 
-        private Context context;
+        private final Context context;
         //private PowerManager.WakeLock mWakeLock;
 
         public DownloadTask(Context context) {
@@ -452,10 +633,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 if (result != null)
                     Toast.makeText(context, getString(R.string.toast_download_error) + ": " + result, Toast.LENGTH_LONG).show();
                 else {
-                    File sd = new File(getActivity().getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-                    File sd_old = new File(GPSApplication.DIRECTORY_TEMP + "/WW15MGH.DAC");
-                    if ((sd.exists() && (sd.length() == 2076480)) || (sd_old.exists() && (sd_old.length() == 2076480))) {
-                        isDownloaded = true;
+                    isDownloaded = EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getApplicationContext().getFilesDir().toString()) ||
+                            EGM96.getInstance().isGridAvailable(GPSApplication.getInstance().getPrefExportFolder());
+                    if (isDownloaded) {
                         Toast.makeText(context, getString(R.string.toast_download_completed), Toast.LENGTH_SHORT).show();
                         PrefEGM96SetToTrue();
                     } else {

@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.UriPermission;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -62,7 +63,9 @@ import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
+
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -88,6 +91,8 @@ public class GPSApplication extends Application implements LocationListener {
     private static final int UM_METRIC_KMH = 1;
     //private static final int UM_IMPERIAL_FPS = 8;
     //private static final int UM_IMPERIAL_MPH = 9;
+
+    private static final float M_TO_FT = 3.280839895f;
 
     private static final int STABILIZER_TIME = 3000;                // The application discards fixes for 3000 ms (minimum)
     private static final int DEFAULT_SWITCHOFF_HANDLER_TIME = 5000; // Default time for turning off GPS on exit
@@ -136,7 +141,6 @@ public class GPSApplication extends Application implements LocationListener {
     public static int TOAST_VERTICAL_OFFSET ;                    // The Y offset, in dp, for Toasts
 
     public static String DIRECTORY_TEMP;                         // The directory to store temporary tracks. Currently /GPSLogger/AppData
-    public static String DIRECTORY_EXPORT;                       // The directory where the app exports tracks. Currently /GPSLogger
     public static String DIRECTORY_FILESDIR_TRACKS;              // The directory FilesDir/Tracks
     public static String FILE_EMPTY_GPX;
     public static String FILE_EMPTY_KML;
@@ -145,6 +149,7 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
     private int     prefUM                      = UM_METRIC_KMH; // The units of measurement to use for visualization
     private float   prefGPSdistance             = 0f;            // The distance filter value
+    private float   prefGPSinterval             = 0f;            // The interval filter value
     private long    prefGPSupdatefrequency      = 1000L;         // The GPS Update frequency in milliseconds
     private boolean prefEGM96AltitudeCorrection;                 // True if the EGM96 altitude correction is active
     private double  prefAltitudeCorrection      = 0d;            // The manual offset for the altitude correction, in meters
@@ -157,6 +162,7 @@ public class GPSApplication extends Application implements LocationListener {
     private int     prefShowDirections          = 0;             // Visualization of headings: 0="NSWE"; 1="Degrees"
     private boolean prefGPSWeekRolloverCorrected;                // A flag for Week Rollover correction
     private boolean prefShowLocalTime           = true;          // I true the app shows GPS Time instead of local time
+    private String  prefExportFolder            = "";            // The folder for tracks exportation
 
     private boolean mustUpdatePrefs             = true;          // True if preferences needs to be updated
 
@@ -207,7 +213,6 @@ public class GPSApplication extends Application implements LocationListener {
     private int jobProgress = 0;
     private int jobsPending = 0;                                 // The number of jobs to be done
     public int jobType = JOB_TYPE_NONE;                          // The type of job that is pending
-    private boolean deleteAlsoExportedFiles;                     // When true, the deletion of some tracks will delete also the exported files of the tracks
 
     private int numberOfStabilizationSamples = 3;
     private int stabilizer = numberOfStabilizationSamples;       // The number of stabilization FIXes before the first valid Location
@@ -315,6 +320,11 @@ public class GPSApplication extends Application implements LocationListener {
             // Exportation Failed
             if (exportersFailed != 0) {
                 EventBus.getDefault().post(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE);
+                if ((jobType == JOB_TYPE_EXPORT) && (getPrefExportFolder().startsWith("content://"))) {
+                    Log.w("myApp", "[#] GPSApplication.java - Unable to export into " + getPrefExportFolder()
+                                    + ". Preference reset");
+                    GPSApplication.getInstance().setPrefExportFolder("");
+                }
                 jobProgress = 0;
                 jobsPending = 0;
                 EventBus.getDefault().post(EventBusMSG.UPDATE_JOB_PROGRESS);
@@ -590,6 +600,19 @@ public class GPSApplication extends Application implements LocationListener {
         return prefShowLocalTime;
     }
 
+    public String getPrefExportFolder() {
+        return prefExportFolder;
+    }
+
+    public void setPrefExportFolder(String folder) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("prefExportFolder", folder);
+        editor.commit();
+        prefExportFolder = folder;
+        Log.w("myApp", "[#] GPSApplication.java - prefExportFolder = " + folder);
+    }
+
     public LocationExtended getCurrentLocationExtended() {
         return currentLocationExtended;
     }
@@ -678,10 +701,6 @@ public class GPSApplication extends Application implements LocationListener {
         return exportingTaskList;
     }
 
-    public void setDeleteAlsoExportedFiles(boolean deleteAlsoExportedFiles) {
-        this.deleteAlsoExportedFiles = deleteAlsoExportedFiles;
-    }
-
     public boolean isJustStarted() {
         return isJustStarted;
     }
@@ -739,6 +758,32 @@ public class GPSApplication extends Application implements LocationListener {
 //    public float convertPxToDp(Context context, float px) {
 //        return px / getResources().getDisplayMetrics().density;
 //    }
+
+    /**
+     * Creates the private application folders. No permission are needed to create them.
+     * - DIRECTORY_TEMP = Where the app saves the tracks to be shared or viewed
+     * - getApplicationContext().getFilesDir() + "/Thumbnails" = The private folder that contains the thumbnails of the tracks
+     * - DIRECTORY_FILESDIR_TRACKS = The folder that contains the empty kml and gpx
+     */
+    public void createPrivateFolders() {
+        File sd = new File(DIRECTORY_TEMP);
+        if (!sd.exists()) {
+            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
+        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+
+        sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
+        if (!sd.exists()) {
+            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
+        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+
+        sd = new File(DIRECTORY_FILESDIR_TRACKS);
+        if (!sd.exists()) {
+            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
+            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
+        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+    }
 
     /**
      * Deletes the file with the given filename.
@@ -817,6 +862,21 @@ public class GPSApplication extends Application implements LocationListener {
             return track.getName() + " - " + stringToDescFileName(track.getDescription());
     }
 
+    /**
+     * Extracts the folder name starting from the encoded uri.
+     *
+     * @param uriPath The encoded URI path
+     * @return the path of the folder
+     */
+    public String extractFolderNameFromEncodedUri(String uriPath) {
+        String spath = Uri.decode(uriPath);
+        String pathSeparator = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ? ":" : "/";
+        if (spath.contains(pathSeparator)) {
+            String[] spathParts = spath.split(pathSeparator);
+            return spathParts[spathParts.length - 1];
+        } else return spath;
+    }
+
     // ---------------------------------------------------------------------- Preferences Excluded from Backup
     // These are Boolean SharedPreferences that are excluded by automatic Backups
 
@@ -892,15 +952,15 @@ public class GPSApplication extends Application implements LocationListener {
 
         // -----------------------
         // TODO: Uncomment it to run the Week Rollover Tests (For Test Purpose)
-        // SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-        // editor.putBoolean("prefGPSWeekRolloverCorrected", false);
-        // editor.commit();
+//        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+//        editor.putBoolean("prefGPSWeekRolloverCorrected", false);
+//        editor.commit();
         // -----------------------
 
         // -----------------------
         // TODO: Uncomment it to reload the EGM Grid File (For Test Purpose)
-        //File file = new File(getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-        //if (file.exists ()) file.delete();
+//        File file = new File(getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
+//        if (file.exists ()) file.delete();
         // -----------------------
 
         // Starts and registers EventBus
@@ -910,8 +970,7 @@ public class GPSApplication extends Application implements LocationListener {
 
         TOAST_VERTICAL_OFFSET = (int)(75 * getResources().getDisplayMetrics().density);
 
-        DIRECTORY_TEMP = Environment.getExternalStorageDirectory() + "/GPSLogger/Temp";
-        DIRECTORY_EXPORT = Environment.getExternalStorageDirectory() + "/GPSLogger";
+        DIRECTORY_TEMP = getApplicationContext().getCacheDir() + "/Tracks";
         DIRECTORY_FILESDIR_TRACKS = getApplicationContext().getFilesDir() + "/URI";
         FILE_EMPTY_GPX = DIRECTORY_FILESDIR_TRACKS + "/empty.gpx";
         FILE_EMPTY_KML = DIRECTORY_FILESDIR_TRACKS + "/empty.kml";
@@ -919,42 +978,10 @@ public class GPSApplication extends Application implements LocationListener {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);     // Location Manager
         gpsStatusListener = new MyGPSStatus();                                              // GPS Satellites
 
-        // Creates EXPORTING folder
-        File sd = new File(DIRECTORY_EXPORT);   // Create the Directories if not exist
-        if (!sd.exists()) {
-            sd.mkdir();
-            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-        }
-        // Creates TEMP folder into EXPORTING folder
-        sd = new File(DIRECTORY_TEMP);
-        if (!sd.exists()) {
-            File oldTemp = new File(Environment.getExternalStorageDirectory() + "/GPSLogger/AppData");
-            if (oldTemp.exists()) {                         // The old "AppData" folder exists
-                boolean success = oldTemp.renameTo(sd);     // Try to rename it to "Temp"
-                if (!success) {
-                    sd.mkdir();                             // In case of failure it creates "Temp" leaving also "AppData"
-                    Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-                } else Log.w("myApp", "[#] GPSApplication.java - Folder AppData renamed to: " + sd.getAbsolutePath());
-            }
-            else {
-                sd.mkdir();
-                Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-            }
-        }
-        // Creates THUMBNAILS folder into private FilesDir
-        sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
-        if (!sd.exists()) {
-            sd.mkdir();
-            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-        }
-        // Creates TRACKS folder into private FilesDir
-        sd = new File(DIRECTORY_FILESDIR_TRACKS);
-        if (!sd.exists()) {
-            sd.mkdir();
-            Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-        }
+        createPrivateFolders();
+
         // Creates the empty GPX
-        sd = new File(FILE_EMPTY_GPX);
+        File sd = new File(FILE_EMPTY_GPX);
         if (!sd.exists()) {
             try {
                 sd.createNewFile();
@@ -971,14 +998,6 @@ public class GPSApplication extends Application implements LocationListener {
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.w("myApp", "[#] GPSApplication.java - Unable to create " + sd.getAbsolutePath());
-            }
-        }
-
-        // Loads the EGM Grid
-        EGM96 egm96 = EGM96.getInstance();
-        if (egm96 != null) {
-            if (!egm96.isEGMGridLoaded()) {
-                egm96.LoadGridFromFile(DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
             }
         }
 
@@ -1092,7 +1111,30 @@ public class GPSApplication extends Application implements LocationListener {
 
             if (gpsStatus == GPS_OK) {
                 AsyncTODO ast = new AsyncTODO();
-                if ((isRecording) && ((prefGPSdistance == 0) || (prevRecordedFix == null) || (forceRecord) || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance))) {
+
+                // Distance Filter and Interval Filter in AND
+                // The Trackpoint is recorded when both filters are True.
+//                if ((isRecording) && ((prevRecordedFix == null)
+//                        || (forceRecord)
+//                        || (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
+//                        && (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))) {
+
+                // Distance Filter and Interval Filter in OR
+                // The Trackpoint is recorded when at less one filter is True.
+                if ((isRecording) && ((prevRecordedFix == null)
+                        || (forceRecord)
+                        || ((prefGPSinterval == 0) && (prefGPSdistance == 0))
+                        || ((prefGPSinterval > 0)
+                            && (prefGPSdistance > 0)
+                            && (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
+                                || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
+                        || ((prefGPSinterval > 0)
+                            && (prefGPSdistance == 0)
+                            && ((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f)))
+                        || ((prefGPSinterval == 0)
+                            && (prefGPSdistance > 0)
+                            && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance))))){
+
                     prevRecordedFix = eloc;
                     ast.taskType = TASK_ADDLOCATION;
                     ast.location = eloc;
@@ -1380,13 +1422,9 @@ public class GPSApplication extends Application implements LocationListener {
 
         if (!trackViewer.fileType.isEmpty()) {
             file = new File(DIRECTORY_TEMP + "/", exportingTask.getName() + trackViewer.fileType);
-            if (trackViewer.requiresFileProvider) {
-                Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
-                getApplicationContext().grantUriPermission(trackViewer.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(uri, trackViewer.mimeType);
-            } else {
-                intent.setDataAndType(Uri.fromFile(file), trackViewer.mimeType);
-            }
+            Uri uri = FileProvider.getUriForFile(GPSApplication.getInstance(), "eu.basicairdata.graziano.gpslogger.fileprovider", file);
+            getApplicationContext().grantUriPermission(trackViewer.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(uri, trackViewer.mimeType);
             try {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 startActivity(intent);
@@ -1509,7 +1547,7 @@ public class GPSApplication extends Application implements LocationListener {
     public void executeExportingTask(ExportingTask exportingTask) {
         switch (jobType) {
             case JOB_TYPE_EXPORT:
-                exporter = new Exporter(exportingTask, prefExportKML, prefExportGPX, prefExportTXT, DIRECTORY_EXPORT);
+                exporter = new Exporter(exportingTask, prefExportKML, prefExportGPX, prefExportTXT, prefExportFolder);
                 exporter.start();
                 break;
             case JOB_TYPE_VIEW:
@@ -1587,6 +1625,7 @@ public class GPSApplication extends Application implements LocationListener {
                 case JOB_TYPE_EXPORT:
                 case JOB_TYPE_VIEW:
                 case JOB_TYPE_SHARE:
+                    createPrivateFolders();
                     startExportingStatusChecker();
                     break;
                 default:
@@ -1631,6 +1670,54 @@ public class GPSApplication extends Application implements LocationListener {
         return Bitmap.createBitmap(defaultWidth, defaultHeight, Bitmap.Config.ARGB_8888);
     }
 
+
+    public boolean isExportFolderWritable() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Uri uri = Uri.parse(prefExportFolder);
+            Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable: " + prefExportFolder);
+
+            final List<UriPermission> list = getApplicationContext().getContentResolver().getPersistedUriPermissions();
+            for (final UriPermission item : list) {
+                Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable check: " + item.getUri());
+                if (item.getUri().equals(uri)) {
+                    try {
+                        DocumentFile pickedDir;
+                        if (prefExportFolder.startsWith("content")) {
+                            pickedDir = DocumentFile.fromTreeUri(getInstance(), uri);
+                        } else {
+                            pickedDir = DocumentFile.fromFile(new File(prefExportFolder));
+                        }
+                        if ((pickedDir == null) || (!pickedDir.exists())) {
+                            Log.w("myApp", "[#] GPSApplication.java - THE EXPORT FOLDER DOESN'T EXIST");
+                            return false;
+                        }
+                        if ((!pickedDir.canRead()) || !pickedDir.canWrite()) {
+                            Log.w("myApp", "[#] GPSApplication.java - CANNOT READ/WRITE INTO THE EXPORT FOLDER");
+                            return false;
+                        }
+                        return true;
+                    } catch (IllegalArgumentException e) {
+                        Log.w("myApp", "[#] GPSApplication.java - IllegalArgumentException - isExportFolderWritable = FALSE: " + item.getUri());
+                    }
+                }
+                // Releases the unused persistable permission
+                getApplicationContext().getContentResolver().releasePersistableUriPermission(item.getUri(),
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+            Log.w("myApp", "[#] GPSApplication.java - isExportFolderWritable = FALSE");
+            return false;
+        } else {
+            // Old Android 4, check that the app has the storage permission and the folder /GPSLogger exists.
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                File sd = new File(prefExportFolder);
+                if (!sd.exists()) {
+                    return sd.mkdir();
+                } else return true;
+            }
+            return false;
+        }
+    }
+
     // ---------------------------------------------------------------------- Preferences
 
     /**
@@ -1638,12 +1725,12 @@ public class GPSApplication extends Application implements LocationListener {
      */
     private void LoadPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
 
         // Conversion from the previous versions of GPS Logger preferences
         if (preferences.contains("prefShowImperialUnits")) {       // The old boolean setting for imperial units in v.1.1.5
             Log.w("myApp", "[#] GPSApplication.java - Old setting prefShowImperialUnits present. Converting to new preference PrefUM.");
             boolean imperialUM = preferences.getBoolean("prefShowImperialUnits", false);
-            SharedPreferences.Editor editor = preferences.edit();
             editor.putString("prefUM", (imperialUM ? "8" : "0"));
             editor.remove("prefShowImperialUnits");
             editor.commit();
@@ -1651,7 +1738,6 @@ public class GPSApplication extends Application implements LocationListener {
 
         // Remove the prefIsStoragePermissionChecked in preferences if present
         if (preferences.contains("prefIsStoragePermissionChecked")) {
-            SharedPreferences.Editor editor = preferences.edit();
             editor.remove("prefIsStoragePermissionChecked");
             editor.commit();
         }
@@ -1662,7 +1748,21 @@ public class GPSApplication extends Application implements LocationListener {
         prefShowLocalTime = preferences.getBoolean("prefShowLocalTime", true);
         //prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
         prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
-        prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
+        try {
+            prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
+        }
+        catch(NumberFormatException nfe) {
+            prefGPSdistance = 0;
+        }
+        try {
+            prefGPSinterval = Float.valueOf(preferences.getString("prefGPSinterval", "0"));
+            }
+        catch(NumberFormatException nfe) {
+            prefGPSinterval = 0;
+        }
+
+        Log.w("myApp", "[#] GPSApplication.java - prefGPSdistance = " + prefGPSdistance + " m");
+
         prefEGM96AltitudeCorrection = preferences.getBoolean("prefEGM96AltitudeCorrection", false);
         prefAltitudeCorrection = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
         Log.w("myApp", "[#] GPSApplication.java - Manual Correction set to " + prefAltitudeCorrection + " m");
@@ -1674,6 +1774,18 @@ public class GPSApplication extends Application implements LocationListener {
         prefShowTrackStatsType = Integer.valueOf(preferences.getString("prefShowTrackStatsType", "0"));
         prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));
 
+        double altcorm = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
+        double altcor = preferences.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
+        double distfilterm = Double.valueOf(preferences.getString("prefGPSdistance", "0"));
+        double distfilter = preferences.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
+        editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
+        editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
+        //editor.remove("prefGPSDistanceRaw");
+        editor.commit();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) prefExportFolder = preferences.getString("prefExportFolder", "");
+        else setPrefExportFolder(Environment.getExternalStorageDirectory() + "/GPSLogger");
+
         long oldGPSupdatefrequency = prefGPSupdatefrequency;
         prefGPSupdatefrequency = Long.valueOf(preferences.getString("prefGPSupdatefrequency", "1000"));
 
@@ -1682,7 +1794,6 @@ public class GPSApplication extends Application implements LocationListener {
 
         // If no Exportation formats are enabled, enable the GPX one
         if (!prefExportKML && !prefExportGPX && !prefExportTXT) {
-            SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("prefExportGPX", true);
             editor.commit();
             prefExportGPX = true;
@@ -1691,9 +1802,7 @@ public class GPSApplication extends Application implements LocationListener {
         // Load EGM Grid if needed
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
-            if (!egm96.isEGMGridLoaded()) {
-                egm96.LoadGridFromFile(DIRECTORY_TEMP + "/WW15MGH.DAC", getApplicationContext().getFilesDir() + "/WW15MGH.DAC");
-            }
+            egm96.loadGrid(prefExportFolder, getApplicationContext().getFilesDir().toString());
         }
 
         // Request of UI Update
@@ -1921,15 +2030,6 @@ public class GPSApplication extends Application implements LocationListener {
                                     }
                                     // Delete thumbnail
                                     fileDelete(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
-                                    // Delete exported files
-                                    if (deleteAlsoExportedFiles) {
-                                        if (fileFind(DIRECTORY_EXPORT, track.getName()) != null) {
-                                            for (File f : fileFind(DIRECTORY_EXPORT, track.getName())) {
-                                                Log.w("myApp", "[#] GPSApplication.java - Deleting: " + f.getAbsolutePath());
-                                                fileDelete(f.getAbsolutePath());
-                                            }
-                                        }
-                                    }
 
                                     tracksDeleted++;
                                     jobProgress = (int) Math.round(1000L * tracksDeleted / tracksToBeDeleted);

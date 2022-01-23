@@ -91,18 +91,16 @@
             android:summary="@string/pref_show_decimal_coordinates_summary"
             android:defaultValue="false" />
 
+        <androidx.preference.Preference
+            android:key="prefExportFolder"
+            android:title="@string/pref_exportation_folder"
+            android:summary=" "
+            android:defaultValue="" />
+
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
         android:title="@string/pref_category_tracking">
-
-        <androidx.preference.ListPreference
-            android:key="prefGPSdistance"
-            android:title="@string/pref_GPS_distance"
-            android:summary=" "
-            android:entries="@array/GPSDistance_Metric"
-            android:entryValues="@array/GPSDistanceValues"
-            android:defaultValue="0" />
 
         <androidx.preference.ListPreference
             android:key="prefGPSupdatefrequency"
@@ -111,6 +109,20 @@
             android:entries="@array/GPSupdatefrequency"
             android:entryValues="@array/GPSupdatefrequencyValues"
             android:defaultValue="1000" />
+
+        <androidx.preference.EditTextPreference
+            android:key="prefGPSinterval"
+            android:title="@string/pref_GPS_interval_filter"
+            android:summary=" "
+            android:maxLines="1"
+            android:defaultValue="0" />
+
+        <androidx.preference.EditTextPreference
+            android:key="prefGPSdistanceRaw"
+            android:title="@string/pref_GPS_distance_filter"
+            android:summary=" "
+            android:maxLines="1"
+            android:defaultValue="0" />
 
     </androidx.preference.PreferenceCategory>
 

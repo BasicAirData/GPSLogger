@@ -411,7 +411,7 @@ public class Track {
 
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
-            if (egm96.isEGMGridLoaded()) {
+            if (egm96.isLoaded()) {
                 if (latitudeStart != NOT_AVAILABLE) egmAltitudeCorrectionStart = egm96.getEGMCorrection(latitudeStart, longitudeStart);
                 if (latitudeEnd != NOT_AVAILABLE) egmAltitudeCorrectionEnd = egm96.getEGMCorrection(latitudeEnd, longitudeEnd);
             }
@@ -460,7 +460,7 @@ public class Track {
         if (egmAltitudeCorrectionStart == NOT_AVAILABLE) {
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
-                if (egm96.isEGMGridLoaded()) {
+                if (egm96.isLoaded()) {
                     if (latitudeStart != NOT_AVAILABLE)
                         egmAltitudeCorrectionStart = egm96.getEGMCorrection(latitudeStart, longitudeStart);
                 }
@@ -501,7 +501,7 @@ public class Track {
         if (egmAltitudeCorrectionEnd == NOT_AVAILABLE) {
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
-                if (egm96.isEGMGridLoaded()) {
+                if (egm96.isLoaded()) {
                     if (latitudeEnd != NOT_AVAILABLE)
                         egmAltitudeCorrectionEnd = egm96.getEGMCorrection(latitudeEnd, longitudeEnd);
                 }
@@ -675,7 +675,7 @@ public class Track {
         if ((egmAltitudeCorrectionStart == NOT_AVAILABLE) || (egmAltitudeCorrectionEnd == NOT_AVAILABLE)) {
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
-                if (egm96.isEGMGridLoaded()) {
+                if (egm96.isLoaded()) {
                     if (latitudeStart != NOT_AVAILABLE) egmAltitudeCorrectionStart = egm96.getEGMCorrection(latitudeStart, longitudeStart);
                     if (latitudeEnd != NOT_AVAILABLE) egmAltitudeCorrectionEnd = egm96.getEGMCorrection(latitudeEnd, longitudeEnd);
                 }
@@ -712,7 +712,7 @@ public class Track {
         if ((egmAltitudeCorrectionStart == NOT_AVAILABLE) || (egmAltitudeCorrectionEnd == NOT_AVAILABLE)) {
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
-                if (egm96.isEGMGridLoaded()) {
+                if (egm96.isLoaded()) {
                     if (latitudeStart != NOT_AVAILABLE) egmAltitudeCorrectionStart = egm96.getEGMCorrection(latitudeStart, longitudeStart);
                     if (latitudeEnd != NOT_AVAILABLE) egmAltitudeCorrectionEnd = egm96.getEGMCorrection(latitudeEnd, longitudeEnd);
                 }

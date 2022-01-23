@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">设置</string>
     <string name="toast_track_saved_into_tracklist">此轨迹已保存至轨迹列表中</string>
-    <string name="toast_track_exported">已把轨迹导出至/GPSLogger目录</string>
+    <string name="toast_track_exported">已把轨迹导出至\"%1$s\"目录</string>
     <string name="menu_about">关于</string>
     <string name="menu_online_help">在线帮助</string>
     <string name="menu_shutdown">关闭</string>
@@ -142,22 +142,15 @@
     <string name="pref_unit_of_measurement_imperial">英制</string>
     <string name="pref_unit_of_measurement_aerial_nautical">空中/航海</string>
     <string name="pref_unit_of_measurement_speed">显示速度单位</string>
+    <string name="pref_exportation_folder">本地导出文件夹</string>
+    <string name="pref_not_set">未设置</string>
     <string name="pref_track_viewer">轨迹查看器</string>
     <string name="pref_track_viewer_not_installed">未安装 GPX/KML 查看器</string>
     <string name="pref_track_viewer_select_every_time">每次选择</string>
     <string name="pref_category_tracking">轨迹记录</string>
-    <string name="pref_GPS_distance">记录密度</string>
-    <string name="pref_GPS_distance_max">最大值</string>
-    <string name="pref_GPS_distance_1m">1米</string>
-    <string name="pref_GPS_distance_2m">2米</string>
-    <string name="pref_GPS_distance_5m">5米</string>
-    <string name="pref_GPS_distance_10m">10米</string>
-    <string name="pref_GPS_distance_20m">20米</string>
-    <string name="pref_GPS_distance_3ft">3英尺</string>
-    <string name="pref_GPS_distance_6ft">6英尺</string>
-    <string name="pref_GPS_distance_16ft">16英尺</string>
-    <string name="pref_GPS_distance_33ft">33英尺</string>
-    <string name="pref_GPS_distance_66ft">66英尺</string>
+    <string name="pref_GPS_distance_filter">距离筛选器</string>
+    <string name="pref_GPS_interval_filter">时间间隔筛选器</string>
+    <string name="pref_GPS_filter_disabled">已停用</string>
     <string name="pref_GPS_update_frequency">GPS更新间隔</string>
     <string name="pref_GPS_update_frequency_max">最短可用间隔</string>
     <string name="pref_GPS_update_frequency_1s">1秒 (最佳精度)</string>
@@ -214,4 +207,5 @@
     <string name="UM_mph">英里/时</string>
     <string name="UM_nm">海里</string>
     <string name="UM_kn">节</string>
+    <string name="UM_s">秒</string>
 </resources>

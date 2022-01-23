@@ -25,6 +25,9 @@
     <external-path
         name = "gps_logger"
         path = "GPSLogger" />
+    <cache-path
+        name = "cache"
+        path = "." />
     <files-path
         name = "private_uri"
         path = "URI" />

@@ -87,7 +87,7 @@
     <!-- Main menu -->
     <string name="menu_settings">Настройки</string>
     <string name="toast_track_saved_into_tracklist">Трек архивирован</string>
-    <string name="toast_track_exported">Треки экспортированы в папку /GPSLogger</string>
+    <string name="toast_track_exported">Треки экспортированы в папку \"%1$s\"</string>
     <string name="menu_about">О программе</string>
     <string name="menu_online_help">Онлайн справка</string>
     <string name="menu_shutdown">Выключить</string>
@@ -142,22 +142,15 @@
     <string name="pref_unit_of_measurement_imperial">Английская</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Воздушная / Морская</string>
     <string name="pref_unit_of_measurement_speed">Показывать скорости в</string>
+    <string name="pref_exportation_folder">Локальная папка экспорта</string>
+    <string name="pref_not_set">Не задано</string>
     <string name="pref_track_viewer">Просмотрщик треков</string>
     <string name="pref_track_viewer_not_installed">Не установлен просмотрщик GPX/KML</string>
     <string name="pref_track_viewer_select_every_time">Спрашивать каждый раз</string>
     <string name="pref_category_tracking">ОТСЛЕЖИВАНИЕ</string>
-    <string name="pref_GPS_distance">Сбор плотности</string>
-    <string name="pref_GPS_distance_max">Максимальная</string>
-    <string name="pref_GPS_distance_1m">1 метр</string>
-    <string name="pref_GPS_distance_2m">2 метра</string>
-    <string name="pref_GPS_distance_5m">5 метров</string>
-    <string name="pref_GPS_distance_10m">10 метров</string>
-    <string name="pref_GPS_distance_20m">20 метров</string>
-    <string name="pref_GPS_distance_3ft">3 фута</string>
-    <string name="pref_GPS_distance_6ft">6 футов</string>
-    <string name="pref_GPS_distance_16ft">16 футов</string>
-    <string name="pref_GPS_distance_33ft">33 фута</string>
-    <string name="pref_GPS_distance_66ft">66 футов</string>
+    <string name="pref_GPS_distance_filter">Фильтр расстояния</string>
+    <string name="pref_GPS_interval_filter">Фильтр интервала</string>
+    <string name="pref_GPS_filter_disabled">Отключено</string>
     <string name="pref_GPS_update_frequency">Интервал обновления GPS</string>
     <string name="pref_GPS_update_frequency_max">Кратчайший из доступных</string>
     <string name="pref_GPS_update_frequency_1s">1 секунда (лучшая точность)</string>
@@ -214,4 +207,5 @@
     <string name="UM_mph">ми/ч</string>
     <string name="UM_nm">NM</string>
     <string name="UM_kn">уз</string>
+    <string name="UM_s">с</string>
 </resources>

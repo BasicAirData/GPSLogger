@@ -1,0 +1,6 @@
+- A new tracklist, featuring improved cards and multiple selection
+- GPS timestamp rollover fix for old GPS hardware
+- Fix the download of the EGM grid for Android 5+
+- Added Simplified Chinese language
+- Small enhancements and optimizations all around
+- Some bugs fixed

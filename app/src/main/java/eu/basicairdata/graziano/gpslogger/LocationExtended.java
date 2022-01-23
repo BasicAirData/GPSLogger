@@ -45,7 +45,7 @@ public class LocationExtended {
         this.location = location;
         EGM96 egm96 = EGM96.getInstance();
         if (egm96 != null) {
-            if (egm96.isEGMGridLoaded()) altitudeEGM96Correction = egm96.getEGMCorrection(this.location.getLatitude(), this.location.getLongitude());
+            if (egm96.isLoaded()) altitudeEGM96Correction = egm96.getEGMCorrection(this.location.getLatitude(), this.location.getLongitude());
         }
     }
 
@@ -101,7 +101,7 @@ public class LocationExtended {
             //Log.w("myApp", "[#] LocationExtended.java - _AltitudeEGM96Correction == NOT_AVAILABLE");
             EGM96 egm96 = EGM96.getInstance();
             if (egm96 != null) {
-                if (egm96.isEGMGridLoaded()) altitudeEGM96Correction = egm96.getEGMCorrection(location.getLatitude(), location.getLongitude());
+                if (egm96.isLoaded()) altitudeEGM96Correction = egm96.getEGMCorrection(location.getLatitude(), location.getLongitude());
             }
         }
         return altitudeEGM96Correction;

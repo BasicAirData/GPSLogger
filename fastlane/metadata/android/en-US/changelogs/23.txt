@@ -1,0 +1,3 @@
+- Special care of GPX files
+- Some small enhancements
+- A couple of bugs fixed
