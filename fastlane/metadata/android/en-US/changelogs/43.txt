@@ -1,0 +1,5 @@
+- Some memory optimizations
+- Bug fixing release
+
+- The Japanese language has been removed, as it is no longer maintained by any user.
+This open source app is translated in many languages thanks to the precious collaboration of some willing users around the world. Anyone can freely help to translate and keep updated languages here: https://crowdin.com/project/gpslogger
