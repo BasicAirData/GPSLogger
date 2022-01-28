@@ -152,20 +152,6 @@ class Exporter extends Thread {
             exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
             return false;
         }
-
-        // Check if all the files are writable:
-//        try {
-//            if ((exportGPX && !(gpxFile.createNewFile())) || (exportKML && !(kmlFile.createNewFile())) || (exportTXT && !(txtFile.createNewFile()))) {
-//                Log.w("myApp", "[#] Exporter.java - Unable to write the file " + fName);
-//                return false;
-//            }
-//        } catch (SecurityException e) {
-//            Log.w("myApp", "[#] Exporter.java - Unable to write the file: SecurityException");
-//            return false;
-//        } catch (IOException e) {
-//            Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
-//            return false;
-//        }
         return true;
     }
 
@@ -228,15 +214,6 @@ class Exporter extends Thread {
         elements_total = track.getNumberOfLocations() + track.getNumberOfPlacemarks();
         long startTime = System.currentTimeMillis();
 
-        // ------------------------------------------------- Create the Directory tree if not exist
-
-//        if (!sd.exists()) {
-//            if (!sd.mkdir()) {
-//                Log.w("myApp", "[#] Exporter.java - UNABLE TO CREATE THE FOLDER");
-//                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
-//                return;
-//            }
-//        }
         // ----------------------------------------------------------------------------------------
 
         if (track == null) {
@@ -275,19 +252,6 @@ class Exporter extends Thread {
 
         //final String newLine = System.getProperty("line.separator"); //\n\r
         final String newLine = "\r\n";
-
-        // Verify if Folder exists
-//        sd = new File(saveIntoFolder);
-//        boolean success = true;
-//        if (!sd.exists()) {
-//            success = sd.mkdir();
-//        }
-//        if (!success) {
-//            Log.w("myApp", "[#] Exporter.java - Unable to sd.mkdir");
-//            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
-//            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
-//            return;
-//        }
 
         // If the file is not writable abort exportation:
         boolean fileWritable = tryToInitFiles(gpsApp.getFileName(track));               // Try to use the name with the description

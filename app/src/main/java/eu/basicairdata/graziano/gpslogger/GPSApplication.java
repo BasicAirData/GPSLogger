@@ -456,15 +456,6 @@ public class GPSApplication extends Application implements LocationListener {
         Log.w("myApp", "[#] GPSApplication.java - StartAndBindGPSService");
     }
 
-    /* private void UnbindGPSService() {                                                //UNUSED
-        try {
-            unbindService(GPSServiceConnection);                                        //Unbind to the service
-            Log.w("myApp", "[#] GPSApplication.java - Service unbound");
-        } catch (Exception e) {
-            Log.w("myApp", "[#] GPSApplication.java - Unable to unbind the GPSService");
-        }
-    } */
-
     /**
      * Stops and Unbinds to the Foreground Service GPSService
      */
@@ -685,10 +676,6 @@ public class GPSApplication extends Application implements LocationListener {
         return jobsPending;
     }
 
-    public void setJobsPending(int jobsPending) {
-        this.jobsPending = jobsPending;
-    }
-
     public int getGPSActivityActiveTab() {
         return gpsActivityActiveTab;
     }
@@ -738,26 +725,6 @@ public class GPSApplication extends Application implements LocationListener {
     }
 
     // ----------------------------------------------------------------------  Utilities
-
-//    /**
-//     * Converts dp unit to equivalent pixels, depending on device density.
-//     *
-//     * @param dp A value in dp (density independent pixels) unit. Which we need to convert into pixels
-//     * @return A float value to represent px equivalent to dp depending on device density
-//     */
-//    public float convertDpToPx(float dp) {
-//        return dp * getResources().getDisplayMetrics().density;
-//    }
-//
-//    /**
-//     * Converts device specific pixels to density independent pixels.
-//     *
-//     * @param px A value in px (pixels) unit. Which we need to convert into dp
-//     * @return A float value to represent dp equivalent to px value
-//     */
-//    public float convertPxToDp(Context context, float px) {
-//        return px / getResources().getDisplayMetrics().density;
-//    }
 
     /**
      * Creates the private application folders. No permission are needed to create them.

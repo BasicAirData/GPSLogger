@@ -136,15 +136,6 @@ class EGM96 {
         }
     }
 
-//    public void unloadGrid() {
-//        isEGMGridLoaded = false;
-//        isEGMGridLoading = false;
-//        //listener.onEGMGridLoaded(isEGMGridLoaded);
-//        EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
-//        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-//        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACKLIST);
-//    }
-
     /**
      * Returns true if the EGM Grid is loaded and ready to work.
      *
