@@ -87,11 +87,6 @@ public class GPSApplication extends Application implements LocationListener {
     //private static final float M_TO_FT = 3.280839895f;
     public static final int NOT_AVAILABLE = -100000;
 
-    //private static final int UM_METRIC_MS = 0;
-    private static final int UM_METRIC_KMH = 1;
-    //private static final int UM_IMPERIAL_FPS = 8;
-    //private static final int UM_IMPERIAL_MPH = 9;
-
     private static final float M_TO_FT = 3.280839895f;
 
     private static final int STABILIZER_TIME = 3000;                // The application discards fixes for 3000 ms (minimum)
@@ -147,7 +142,8 @@ public class GPSApplication extends Application implements LocationListener {
 
     // Preferences Variables
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
-    private int     prefUM                      = UM_METRIC_KMH; // The units of measurement to use for visualization
+    private int     prefUM                      = PhysicalData.UM_METRIC;     // The units of measurement to use for visualization
+    private int     prefUMOfSpeed               = PhysicalData.UM_SPEED_KMH;  // The units of measurement to use for visualization of the speeds
     private float   prefGPSdistance             = 0f;            // The distance filter value
     private float   prefGPSinterval             = 0f;            // The interval filter value
     private long    prefGPSupdatefrequency      = 1000L;         // The GPS Update frequency in milliseconds
@@ -577,6 +573,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public int getPrefUM() {
         return prefUM;
+    }
+
+    public int getPrefUMOfSpeed() {
+        return prefUMOfSpeed;
     }
 
     public int getPrefShowTrackStatsType() {
@@ -1714,7 +1714,8 @@ public class GPSApplication extends Application implements LocationListener {
         prefShowDecimalCoordinates = preferences.getBoolean("prefShowDecimalCoordinates", false);
         prefShowLocalTime = preferences.getBoolean("prefShowLocalTime", true);
         //prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
-        prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
+        prefUM = Integer.valueOf(preferences.getString("prefUM", "0"));
+        prefUMOfSpeed = Integer.valueOf(preferences.getString("prefUMOfSpeed", "1"));
         try {
             prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
         }

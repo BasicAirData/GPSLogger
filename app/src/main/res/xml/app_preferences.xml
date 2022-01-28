@@ -64,11 +64,10 @@
             android:defaultValue="0" />
 
         <androidx.preference.ListPreference
-            android:key="prefUMSpeed"
+            android:key="prefUMOfSpeed"
             android:title="@string/pref_unit_of_measurement_speed"
-            android:summary=" "
-            android:entries="@array/UMSpeed_Metric"
-            android:entryValues="@array/UMSpeedValues"
+            android:entries="@array/UMOfSpeed"
+            android:entryValues="@array/UMOfSpeedValues"
             android:defaultValue="1" />
 
         <androidx.preference.ListPreference

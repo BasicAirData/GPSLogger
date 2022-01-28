@@ -66,7 +66,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
@@ -274,7 +273,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
      */
     public void SetupPreferences() {
         ListPreference pUM = findPreference("prefUM");
-        ListPreference pUMSpeed = findPreference("prefUMSpeed");
+        ListPreference pUMSpeed = findPreference("prefUMOfSpeed");
         EditTextPreference pGPSDistance = findPreference("prefGPSdistanceRaw");
         EditTextPreference pGPSInterval = findPreference("prefGPSinterval");
         ListPreference pGPSUpdateFrequency = findPreference("prefGPSupdatefrequency");
@@ -427,7 +426,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         df.setMaximumFractionDigits(3);
 
         if (isUMMetric()) {       // Metric
-            pUMSpeed.setEntries(R.array.UMSpeed_Metric);
+            // TODO: change the value of the UM for speeds?
+            //pUMSpeed.setEntries(R.array.UMSpeed_Metric);
             //pGPSDistance.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
             pGPSDistance.setSummary(distfilter != 0
                     ? df.format(distfilter) + " " + getString(R.string.UM_m)
@@ -435,14 +435,16 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
         if (prefs.getString("prefUM", "0").equals("8")) {       // Imperial
-            pUMSpeed.setEntries(R.array.UMSpeed_Imperial);
+            // TODO: change the value of the UM for speeds?
+            //pUMSpeed.setEntries(R.array.UMSpeed_Imperial);
             pGPSDistance.setSummary(distfilter != 0
                     ? df.format(distfilter) + " " + getString(R.string.UM_ft)
                     : getString(R.string.pref_GPS_filter_disabled));
             pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
         if (prefs.getString("prefUM", "0").equals("16")) {       // Aerial / Nautical
-            pUMSpeed.setEntries(R.array.UMSpeed_AerialNautical);
+            // TODO: change the value of the UM for speeds?
+            //pUMSpeed.setEntries(R.array.UMSpeed_AerialNautical);
             pGPSDistance.setSummary(distfilter != 0
                     ? df.format(distfilter) + " " + getString(R.string.UM_ft)
                     : getString(R.string.pref_GPS_filter_disabled));

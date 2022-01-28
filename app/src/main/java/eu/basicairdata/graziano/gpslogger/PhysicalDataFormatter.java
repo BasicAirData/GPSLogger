@@ -35,13 +35,6 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
  */
 class PhysicalDataFormatter {
 
-    private static final int UM_METRIC_MS       = 0;
-    private static final int UM_METRIC_KMH      = 1;
-    private static final int UM_IMPERIAL_FPS    = 8;
-    private static final int UM_IMPERIAL_MPH    = 9;
-    private static final int UM_NAUTICAL_KN     = 16;
-    private static final int UM_NAUTICAL_MPH    = 17;
-
     static final byte FORMAT_LATITUDE    = 1;
     static final byte FORMAT_LONGITUDE   = 2;
     static final byte FORMAT_ALTITUDE    = 3;
@@ -78,50 +71,48 @@ class PhysicalDataFormatter {
         
         switch (format) {
             case FORMAT_SPEED:  // Speed
-                switch (gpsApp.getPrefUM()) {
-                    case UM_METRIC_KMH:
+                switch (gpsApp.getPrefUMOfSpeed()) {
+                    case PhysicalData.UM_SPEED_KMH:
                         physicalData.value = String.valueOf(Math.round(number * MS_TO_KMH));
                         physicalData.um = gpsApp.getString(R.string.UM_km_h);
                         return(physicalData);
-                    case UM_METRIC_MS:
+                    case PhysicalData.UM_SPEED_MS:
                         physicalData.value = String.valueOf(Math.round(number));
                         physicalData.um = gpsApp.getString(R.string.UM_m_s);
                         return(physicalData);
-                    case UM_IMPERIAL_MPH:
-                    case UM_NAUTICAL_MPH:
+                    case PhysicalData.UM_SPEED_MPH:
                         physicalData.value = String.valueOf(Math.round(number * MS_TO_MPH));
                         physicalData.um = gpsApp.getString(R.string.UM_mph);
                         return(physicalData);
-                    case UM_IMPERIAL_FPS:
+                    case PhysicalData.UM_SPEED_FPS:
                         physicalData.value = String.valueOf(Math.round(number * M_TO_FT));
                         physicalData.um = gpsApp.getString(R.string.UM_fps);
                         return(physicalData);
-                    case UM_NAUTICAL_KN:
+                    case PhysicalData.UM_SPEED_KN:
                         physicalData.value = String.valueOf(Math.round(number * MS_TO_KN));
                         physicalData.um = gpsApp.getString(R.string.UM_kn);
                         return(physicalData);
                 }
 
             case FORMAT_SPEED_AVG:  // Average Speed, formatted with 1 decimal
-                switch (gpsApp.getPrefUM()) {
-                    case UM_METRIC_KMH:
+                switch (gpsApp.getPrefUMOfSpeed()) {
+                    case PhysicalData.UM_SPEED_KMH:
                         physicalData.value = String.format(Locale.getDefault(), "%.1f", (number * MS_TO_KMH));
                         physicalData.um = gpsApp.getString(R.string.UM_km_h);
                         return(physicalData);
-                    case UM_METRIC_MS:
+                    case PhysicalData.UM_SPEED_MS:
                         physicalData.value = String.format(Locale.getDefault(), "%.1f", (number));
                         physicalData.um = gpsApp.getString(R.string.UM_m_s);
                         return(physicalData);
-                    case UM_IMPERIAL_MPH:
-                    case UM_NAUTICAL_MPH:
+                    case PhysicalData.UM_SPEED_MPH:
                         physicalData.value = String.format(Locale.getDefault(), "%.1f", (number * MS_TO_MPH));
                         physicalData.um = gpsApp.getString(R.string.UM_mph);
                         return(physicalData);
-                    case UM_IMPERIAL_FPS:
+                    case PhysicalData.UM_SPEED_FPS:
                         physicalData.value = String.format(Locale.getDefault(), "%.1f", (number * M_TO_FT));
                         physicalData.um = gpsApp.getString(R.string.UM_fps);
                         return(physicalData);
-                    case UM_NAUTICAL_KN:
+                    case PhysicalData.UM_SPEED_KN:
                         physicalData.value = String.format(Locale.getDefault(), "%.1f", (number * MS_TO_KN));
                         physicalData.um = gpsApp.getString(R.string.UM_kn);
                         return(physicalData);
@@ -129,15 +120,12 @@ class PhysicalDataFormatter {
 
             case FORMAT_ACCURACY:   // Accuracy
                 switch (gpsApp.getPrefUM()) {
-                    case UM_METRIC_KMH:
-                    case UM_METRIC_MS:
+                    case PhysicalData.UM_METRIC:
                         physicalData.value = String.valueOf(Math.round(number));
                         physicalData.um = gpsApp.getString(R.string.UM_m);
                         return(physicalData);
-                    case UM_IMPERIAL_MPH:
-                    case UM_IMPERIAL_FPS:
-                    case UM_NAUTICAL_MPH:
-                    case UM_NAUTICAL_KN:
+                    case PhysicalData.UM_IMPERIAL:
+                    case PhysicalData.UM_NAUTICAL:
                         physicalData.value = String.valueOf(Math.round(number * M_TO_FT));
                         physicalData.um = gpsApp.getString(R.string.UM_ft);
                         return(physicalData);
@@ -173,8 +161,7 @@ class PhysicalDataFormatter {
 
             case FORMAT_DISTANCE:   // Distance
                 switch (gpsApp.getPrefUM()) {
-                    case UM_METRIC_KMH:
-                    case UM_METRIC_MS:
+                    case PhysicalData.UM_METRIC:
                         if (number < 1000) {
                             physicalData.value = String.format(Locale.getDefault(), "%.0f", (Math.floor(number)));
                             physicalData.um = gpsApp.getString(R.string.UM_m);
@@ -185,8 +172,7 @@ class PhysicalDataFormatter {
                             physicalData.um = gpsApp.getString(R.string.UM_km);
                         }
                         return(physicalData);
-                    case UM_IMPERIAL_MPH:
-                    case UM_IMPERIAL_FPS:
+                    case PhysicalData.UM_IMPERIAL:
                         if ((number * M_TO_FT) < 1000) {
                             physicalData.value = String.format(Locale.getDefault(), "%.0f", (Math.floor(number * M_TO_FT)));
                             physicalData.um = gpsApp.getString(R.string.UM_ft);
@@ -197,8 +183,7 @@ class PhysicalDataFormatter {
                             physicalData.um = gpsApp.getString(R.string.UM_mi);
                         }
                         return(physicalData);
-                    case UM_NAUTICAL_KN:
-                    case UM_NAUTICAL_MPH:
+                    case PhysicalData.UM_NAUTICAL:
                         if ((number * M_TO_NM) < 100) physicalData.value = String.format(Locale.getDefault(), "%.2f", ((Math.floor((number * M_TO_NM) * 100.0))) / 100.0);
                         else physicalData.value = String.format(Locale.getDefault(), "%.1f", ((Math.floor((number * M_TO_NM) * 10.0))) / 10.0);
                         physicalData.um = gpsApp.getString(R.string.UM_nm);
@@ -238,15 +223,12 @@ class PhysicalDataFormatter {
                 return(physicalData);
             case FORMAT_ALTITUDE:   // Altitude
                 switch (gpsApp.getPrefUM()) {
-                    case UM_METRIC_KMH:
-                    case UM_METRIC_MS:
+                    case PhysicalData.UM_METRIC:
                         physicalData.value = String.valueOf(Math.round(number));
                         physicalData.um = gpsApp.getString(R.string.UM_m);
                         return(physicalData);
-                    case UM_IMPERIAL_MPH:
-                    case UM_IMPERIAL_FPS:
-                    case UM_NAUTICAL_KN:
-                    case UM_NAUTICAL_MPH:
+                    case PhysicalData.UM_IMPERIAL:
+                    case PhysicalData.UM_NAUTICAL:
                         physicalData.value = String.valueOf(Math.round(number * M_TO_FT));
                         physicalData.um = gpsApp.getString(R.string.UM_ft);
                         return(physicalData);
