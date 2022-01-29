@@ -39,6 +39,8 @@ import android.widget.Toast;
  */
 public class FragmentAboutDialog extends DialogFragment {
 
+    private static final String COPYRIGHT_RANGE_END = "2022";           // The number that appears as end-year of the Copyright range
+
     //@SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -57,25 +59,13 @@ public class FragmentAboutDialog extends DialogFragment {
         tvVersion.setText(getString(R.string.about_version) + " " + versionName);
 
         tvDescription = view.findViewById(R.id.id_about_textView_description);
+        tvDescription.setText(getString(R.string.about_description, COPYRIGHT_RANGE_END));
         switch (gpsApp.getAppOrigin()) {
-            case GPSApplication.APP_ORIGIN_NOT_SPECIFIED:
-                tvDescription.setText(getString(R.string.about_description));
-                break;
             case GPSApplication.APP_ORIGIN_GOOGLE_PLAY_STORE:
-                tvDescription.setText(getString(R.string.about_description) + "\n\n" + getString(R.string.about_description_googleplaystore));
-                break;
-        }
-
-        createAboutAlert.setView(view).setPositiveButton(R.string.about_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {}
-            });
-
-        if (gpsApp.getAppOrigin() != GPSApplication.APP_ORIGIN_NOT_SPECIFIED) {
-            createAboutAlert.setView(view).setNegativeButton(R.string.about_rate_this_app, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    if (gpsApp.getAppOrigin() == GPSApplication.APP_ORIGIN_GOOGLE_PLAY_STORE) {
+                tvDescription.setText(tvDescription.getText() + "\n\n" + getString(R.string.about_description_googleplaystore));
+                createAboutAlert.setView(view).setNegativeButton(R.string.about_rate_this_app, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
                         boolean marketfailed = false;
                         try {
                             getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)));
@@ -92,9 +82,17 @@ public class FragmentAboutDialog extends DialogFragment {
                             }
                         }
                     }
-                }
-            });
+                });
+                break;
+            default:
+                break;
         }
+
+        createAboutAlert.setView(view).setPositiveButton(R.string.about_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {}
+            });
+
         return createAboutAlert.create();
     }
 
