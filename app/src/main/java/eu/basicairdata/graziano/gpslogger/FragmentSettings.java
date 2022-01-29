@@ -78,7 +78,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private SharedPreferences prefs;
-    public double intervalfilter;   // iterval filter
+    public double intervalfilter;    // interval filter
     public double distfilter;        // distance filter
     public double distfilterm;       // distance filter in m
     public double altcor;            // manual offset
@@ -425,28 +425,30 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         if (isUMMetric()) {       // Metric
             // TODO: change the value of the UM for speeds?
-            //pUMSpeed.setEntries(R.array.UMSpeed_Metric);
-            //pGPSDistance.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + Double.valueOf(Math.round(altcor *1000d)/1000d).toString() + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
             pGPSDistance.setSummary(distfilter != 0
                     ? df.format(distfilter) + " " + getString(R.string.UM_m)
                     : getString(R.string.pref_GPS_filter_disabled));
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " m" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pAltitudeCorrection.setSummary(altcor != 0
+                    ? df.format(altcor) + " " + getString(R.string.UM_m)
+                    : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
         if (prefs.getString("prefUM", "0").equals("8")) {       // Imperial
             // TODO: change the value of the UM for speeds?
-            //pUMSpeed.setEntries(R.array.UMSpeed_Imperial);
             pGPSDistance.setSummary(distfilter != 0
                     ? df.format(distfilter) + " " + getString(R.string.UM_ft)
                     : getString(R.string.pref_GPS_filter_disabled));
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pAltitudeCorrection.setSummary(altcor != 0
+                    ? df.format(altcor) + " " + getString(R.string.UM_ft)
+                    : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
         if (prefs.getString("prefUM", "0").equals("16")) {       // Aerial / Nautical
             // TODO: change the value of the UM for speeds?
-            //pUMSpeed.setEntries(R.array.UMSpeed_AerialNautical);
             pGPSDistance.setSummary(distfilter != 0
                     ? df.format(distfilter) + " " + getString(R.string.UM_ft)
                     : getString(R.string.pref_GPS_filter_disabled));
-            pAltitudeCorrection.setSummary(altcor != 0 ? getString(R.string.pref_AltitudeCorrection_summary_offset) + " = " + df.format(altcor) + " ft" : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
+            pAltitudeCorrection.setSummary(altcor != 0
+                    ? df.format(altcor) + " " + getString(R.string.UM_ft)
+                    : getString(R.string.pref_AltitudeCorrection_summary_not_defined));
         }
 
         pGPSInterval.setSummary(intervalfilter != 0

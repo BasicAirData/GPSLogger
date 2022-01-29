@@ -186,7 +186,6 @@
     <string name="pref_EGM96AltitudeCorrection_summary">Automatic altitude correction, based on NGA Earth Geoid Model</string>
     <string name="pref_EGM96AltitudeCorrection_download_progress">Downloading 2028kB file:\nEGM96 Geoid Heights..</string>
     <string name="pref_AltitudeCorrection">Manual Correction</string>
-    <string name="pref_AltitudeCorrection_summary_offset">Offset</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">No offset defined</string>
 
     <string name="pref_category_exporting">EXPORTATION</string>
