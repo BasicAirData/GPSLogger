@@ -92,7 +92,6 @@ public class GPSActivity extends AppCompatActivity {
     private ActionMode actionMode;
     private View bottomSheet;
     private BottomSheetBehavior bottomSheetBehavior;
-    private boolean showToastGrantStoragePermission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,12 +205,6 @@ public class GPSActivity extends AppCompatActivity {
             toast.show();
         }
         gpsApp.setJustStarted(false);
-        if (showToastGrantStoragePermission) {
-            Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.please_grant_storage_permission, Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-            toast.show();
-            showToastGrantStoragePermission = false;
-        }
     }
 
     @Override
@@ -364,16 +357,6 @@ public class GPSActivity extends AppCompatActivity {
                     public void run() {
                         Toast toast = Toast.makeText(gpsApp.getApplicationContext(),
                                 gpsApp.getString(R.string.toast_track_exported, gpsApp.extractFolderNameFromEncodedUri(gpsApp.getPrefExportFolder())), Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                        toast.show();
-                    }
-                });
-                break;
-            case EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.please_grant_storage_permission, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                         toast.show();
                     }

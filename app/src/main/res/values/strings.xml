@@ -139,7 +139,6 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <string name="export_unable_to_write_file">Unable to write the file</string>
-    <string name="please_grant_storage_permission">Please grant the Storage Permission to enable this Feature</string>
 
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">The App has been killed during background recording.</string>
