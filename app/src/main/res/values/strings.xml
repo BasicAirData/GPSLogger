@@ -133,7 +133,6 @@
     <string name="card_menu_edit">Edit details</string>
 
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">Do you also want to delete all exported files of the selected tracks?</string>
     <string name="card_message_delete_confirmation">Do you really want to delete the selected tracks?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
