@@ -1694,14 +1694,31 @@ public class GPSApplication extends Application implements LocationListener {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
 
-        // Conversion from the previous versions of GPS Logger preferences
-        if (preferences.contains("prefShowImperialUnits")) {       // The old boolean setting for imperial units in v.1.1.5
-            Log.w("myApp", "[#] GPSApplication.java - Old setting prefShowImperialUnits present. Converting to new preference PrefUM.");
-            boolean imperialUM = preferences.getBoolean("prefShowImperialUnits", false);
-            editor.putString("prefUM", (imperialUM ? "8" : "0"));
-            editor.remove("prefShowImperialUnits");
+        // -----------------------
+        // TODO: Uncomment it to test the conversion of prefUMSpeed into prefUMOfSpeed (For Test Purpose)
+        //editor.putString("prefUMSpeed", "0").commit();
+        // -----------------------
+
+        prefUM = Integer.valueOf(preferences.getString("prefUM", "0"));
+
+        // Conversion from the previous versions of the unit of measurement of the speeds
+        if (preferences.contains("prefUMSpeed")) {       // The old setting
+            Log.w("myApp", "[#] GPSApplication.java - Old setting prefUMSpeed present (" + preferences.getString("prefUMSpeed", "0") + "). Converting to new preference prefUMOfSpeed.");
+            String UMspd = preferences.getString("prefUMSpeed", "0");
+            switch (prefUM) {
+                case PhysicalData.UM_METRIC:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalData.UM_SPEED_MS) : String.valueOf(PhysicalData.UM_SPEED_KMH)));
+                    break;
+                case PhysicalData.UM_IMPERIAL:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalData.UM_SPEED_FPS) : String.valueOf(PhysicalData.UM_SPEED_MPH)));
+                    break;
+                case PhysicalData.UM_NAUTICAL:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalData.UM_SPEED_KN) : String.valueOf(PhysicalData.UM_SPEED_MPH)));
+                    break;
+            }
+            editor.remove("prefUMSpeed");
             editor.commit();
-        }
+        } else prefUMOfSpeed = Integer.valueOf(preferences.getString("prefUMOfSpeed", "1"));
 
         // Remove the prefIsStoragePermissionChecked in preferences if present
         if (preferences.contains("prefIsStoragePermissionChecked")) {
@@ -1713,9 +1730,7 @@ public class GPSApplication extends Application implements LocationListener {
         prefGPSWeekRolloverCorrected = preferences.getBoolean("prefGPSWeekRolloverCorrected", false);
         prefShowDecimalCoordinates = preferences.getBoolean("prefShowDecimalCoordinates", false);
         prefShowLocalTime = preferences.getBoolean("prefShowLocalTime", true);
-        //prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
-        prefUM = Integer.valueOf(preferences.getString("prefUM", "0"));
-        prefUMOfSpeed = Integer.valueOf(preferences.getString("prefUMOfSpeed", "1"));
+
         try {
             prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
         }
