@@ -26,19 +26,6 @@ package eu.basicairdata.graziano.gpslogger;
  * A physical data includes a number and a unit of measurement.
  */
 class PhysicalData {
-
-    // Units of measurement
-    public static final int UM_METRIC   = 0;
-    public static final int UM_IMPERIAL = 8;
-    public static final int UM_NAUTICAL = 16;
-
-    // Units of measurement for speeds
-    public static final int UM_SPEED_MS  = 0;
-    public static final int UM_SPEED_KMH = 1;
-    public static final int UM_SPEED_FPS = 2;
-    public static final int UM_SPEED_MPH = 3;
-    public static final int UM_SPEED_KN  = 4;
-
     String value;       // The Numerical value of the Physical Quantity
     String um;          // The Unit of Measurement
 }

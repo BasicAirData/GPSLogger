@@ -87,8 +87,6 @@ public class GPSApplication extends Application implements LocationListener {
     //private static final float M_TO_FT = 3.280839895f;
     public static final int NOT_AVAILABLE = -100000;
 
-    private static final float M_TO_FT = 3.280839895f;
-
     private static final int STABILIZER_TIME = 3000;                // The application discards fixes for 3000 ms (minimum)
     private static final int DEFAULT_SWITCHOFF_HANDLER_TIME = 5000; // Default time for turning off GPS on exit
     private static final int GPS_UNAVAILABLE_HANDLER_TIME = 7000;   // The "GPS temporary unavailable" time
@@ -142,8 +140,8 @@ public class GPSApplication extends Application implements LocationListener {
 
     // Preferences Variables
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
-    private int     prefUM                      = PhysicalData.UM_METRIC;     // The units of measurement to use for visualization
-    private int     prefUMOfSpeed               = PhysicalData.UM_SPEED_KMH;  // The units of measurement to use for visualization of the speeds
+    private int     prefUM                      = PhysicalDataFormatter.UM_METRIC;     // The units of measurement to use for visualization
+    private int     prefUMOfSpeed               = PhysicalDataFormatter.UM_SPEED_KMH;  // The units of measurement to use for visualization of the speeds
     private float   prefGPSdistance             = 0f;            // The distance filter value
     private float   prefGPSinterval             = 0f;            // The interval filter value
     private long    prefGPSupdatefrequency      = 1000L;         // The GPS Update frequency in milliseconds
@@ -1706,14 +1704,14 @@ public class GPSApplication extends Application implements LocationListener {
             Log.w("myApp", "[#] GPSApplication.java - Old setting prefUMSpeed present (" + preferences.getString("prefUMSpeed", "0") + "). Converting to new preference prefUMOfSpeed.");
             String UMspd = preferences.getString("prefUMSpeed", "0");
             switch (prefUM) {
-                case PhysicalData.UM_METRIC:
-                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalData.UM_SPEED_MS) : String.valueOf(PhysicalData.UM_SPEED_KMH)));
+                case PhysicalDataFormatter.UM_METRIC:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalDataFormatter.UM_SPEED_MS) : String.valueOf(PhysicalDataFormatter.UM_SPEED_KMH)));
                     break;
-                case PhysicalData.UM_IMPERIAL:
-                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalData.UM_SPEED_FPS) : String.valueOf(PhysicalData.UM_SPEED_MPH)));
+                case PhysicalDataFormatter.UM_IMPERIAL:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalDataFormatter.UM_SPEED_FPS) : String.valueOf(PhysicalDataFormatter.UM_SPEED_MPH)));
                     break;
-                case PhysicalData.UM_NAUTICAL:
-                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalData.UM_SPEED_KN) : String.valueOf(PhysicalData.UM_SPEED_MPH)));
+                case PhysicalDataFormatter.UM_NAUTICAL:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalDataFormatter.UM_SPEED_KN) : String.valueOf(PhysicalDataFormatter.UM_SPEED_MPH)));
                     break;
             }
             editor.remove("prefUMSpeed");
@@ -1758,9 +1756,9 @@ public class GPSApplication extends Application implements LocationListener {
         prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));
 
         double altcorm = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
-        double altcor = preferences.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
+        double altcor = preferences.getString("prefUM", "0").equals("0") ? altcorm : altcorm * PhysicalDataFormatter.M_TO_FT;
         double distfilterm = Double.valueOf(preferences.getString("prefGPSdistance", "0"));
-        double distfilter = preferences.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
+        double distfilter = preferences.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * PhysicalDataFormatter.M_TO_FT;
         editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
         editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
         //editor.remove("prefGPSDistanceRaw");

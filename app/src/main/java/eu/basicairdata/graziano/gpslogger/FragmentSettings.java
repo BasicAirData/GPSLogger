@@ -76,8 +76,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
     private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
 
-    private static final float M_TO_FT = 3.280839895f;
-
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private SharedPreferences prefs;
     public double intervalfilter;   // iterval filter
@@ -127,9 +125,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 Log.w("myApp", "[#] FragmentSettings.java - SharedPreferences.OnSharedPreferenceChangeListener, key = " + key);
                 if (key.equals("prefUM")) {
                     altcorm = Double.valueOf(prefs.getString("prefAltitudeCorrection", "0"));
-                    altcor = isUMMetric() ? altcorm : altcorm * M_TO_FT;
+                    altcor = isUMMetric() ? altcorm : altcorm * PhysicalDataFormatter.M_TO_FT;
                     distfilterm = Double.valueOf(prefs.getString("prefGPSdistance", "0"));
-                    distfilter = isUMMetric() ? distfilterm : distfilterm * M_TO_FT;
+                    distfilter = isUMMetric() ? distfilterm : distfilterm * PhysicalDataFormatter.M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
                     editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
@@ -149,7 +147,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         EditTextPreference etpAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
                         etpAltitudeCorrection.setText("0");
                     }
-                    altcorm = isUMMetric() ? altcor : altcor / M_TO_FT;
+                    altcorm = isUMMetric() ? altcor : altcor / PhysicalDataFormatter.M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefAltitudeCorrection", String.valueOf(altcorm));
                     editor.commit();
@@ -165,7 +163,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                         EditTextPreference etpDistanceFilter = findPreference("prefGPSdistanceRaw");
                         etpDistanceFilter.setText("0");
                     }
-                    distfilterm = isUMMetric() ? distfilter : distfilter / M_TO_FT;
+                    distfilterm = isUMMetric() ? distfilter : distfilter / PhysicalDataFormatter.M_TO_FT;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("prefGPSdistance", String.valueOf(distfilterm));
                     editor.commit();
@@ -401,14 +399,14 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         } catch(NumberFormatException nfe) {
             altcorm = 0;
         }
-        altcor = isUMMetric() ? altcorm : altcorm * M_TO_FT;
+        altcor = isUMMetric() ? altcorm : altcorm * PhysicalDataFormatter.M_TO_FT;
 
         try {
             distfilterm = Math.abs(Double.valueOf(prefs.getString("prefGPSdistance", "0")));
         } catch(NumberFormatException nfe) {
             distfilterm = 0;
         }
-        distfilter = isUMMetric() ? distfilterm : distfilterm * M_TO_FT;
+        distfilter = isUMMetric() ? distfilterm : distfilterm * PhysicalDataFormatter.M_TO_FT;
 
         try {
             intervalfilter = Double.valueOf(prefs.getString("prefGPSinterval", "0"));
