@@ -8,7 +8,7 @@ Offered by [BasicAirData](https://www.basicairdata.eu) - Open and free DIY air d
 
 BasicAirData GPS Logger is a simple app to record your position and your path.<br>
 It's a basic and lightweight GPS tracker focused on accuracy, with an eye to power saving.<br>
-This app is very accurate in determining the geodetic altitude (the altitude from the sea level), if you enable EGM96 automatic altitude correction on settings.<br>
+This app is very accurate in determining the orthometric height (the altitude above sea level), if you enable EGM96 altitude correction on settings.<br>
 You can record all your trips, view them in your preferred viewer (it must be installed) directly from the in-app tracklist, and share them in KML, GPX, and TXT format in many ways.
 
 The app is 100% free and open source.
