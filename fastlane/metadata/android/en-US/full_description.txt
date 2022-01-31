@@ -1,7 +1,7 @@
 BasicAirData GPS Logger is a simple App for recording your position and your path.
 It's a basic and lightweight GPS tracker focused on accuracy, with an eye to power saving.
 It works offline (without internet connection), it has NO integrated maps.
-This app is very accurate in determining the geodetic altitude (the altitude from the sea level), if you enable EGM96 automatic altitude correction on settings.
+This app is very accurate in determining the orthometric height (the altitude above sea level), if you enable EGM96 altitude correction on settings.
 You can record all your trips, view them with any installed external viewer, directly from the in-app tracklist, and share them in KML, GPX, and TXT format in many ways.
 
 The app is 100% Free and Open Source.
