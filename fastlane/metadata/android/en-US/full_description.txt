@@ -1,7 +1,7 @@
 BasicAirData GPS Logger is a simple App for recording your position and your path.
 It's a basic and lightweight GPS tracker focused on accuracy, with an eye to power saving.
 It works offline (without internet connection), it has NO integrated maps.
-This app is very accurate in determining your altitude: enable EGM96 automatic altitude correction on settings!
+This app is very accurate in determining the geodetic altitude (the altitude from the sea level), if you enable EGM96 automatic altitude correction on settings.
 You can record all your trips, view them with any installed external viewer, directly from the in-app tracklist, and share them in KML, GPX, and TXT format in many ways.
 
 The app is 100% Free and Open Source.
@@ -11,19 +11,14 @@ GETTING STARTED GUIDE:
 https://www.basicairdata.eu/projects/android/android-gps-logger/getting-started-guide-for-gps-logger/
 
 
-IMPORTANT NOTES: 
-In GPS Logger the Location is always accessed (started) when the App is in Foreground, and then is kept active also in background. On Android 10+ the app needs the Location permission "only while using the app". It doesn't need the "all the time" permission.
-Depending on your Android Version, if you want to run GPS Logger reliably in background, you have to disable ALL the battery optimisations. For example you could verify in Android Settings, Apps, GPS Logger, Battery that the Background Activity is allowed and the Battery Usage is Not Optimised.
-
-
 IT FEATURES: 
 - A modern UI, with a low consumption dark theme and a tabbed interface
 - Offline recording (the app has no integrated maps)
-- Foreground & Background Recording (On Android 6+ please turn off all battery monitoring and optimizations for this app!!)
+- Foreground & Background Recording (On Android 6+ please turn off all battery monitoring and optimizations for this app)
 - Creation of annotations also meanwhile recording
 - Visualization of GPS information
 - Manual Altitude Correction (adding an overall offset)
-- Automatic Altitude Correction, based on NGA EGM96 Earth Geoid Model (Enable it on Settings!!!). If your device doesn't have Internet access, you can enable this feature manually by following this simple tutorial: https://www.basicairdata.eu/projects/android/android-gps-logger/application-note-gpslogger/manual-setup-of-the-egm-altitude-correction-for-basic-air-data-gps-logger/
+- Automatic Altitude Correction, based on NGA EGM96 Earth Geoid Model (you can enable it on Settings). If your device doesn't have Internet access, you can enable this feature manually by following this simple tutorial: https://www.basicairdata.eu/projects/android/android-gps-logger/application-note-gpslogger/manual-setup-of-the-egm-altitude-correction-for-basic-air-data-gps-logger/
 - Real time track statistics
 - In-app tracklist showing the list of recorded tracks
 - Visualization of your tracks using any installed KML/GPX viewer, directly from the Tracklist
@@ -47,12 +42,17 @@ The translation of this app is based on users contribution. Everyone can freely 
 
 
 F.A.Q: 
-Problems with this app? Read the most frequently asked question! (https://github.com/BasicAirData/GPSLogger/blob/master/readme.md#frequently-asked-questions).
+In case of any issue, you may find it helpful to read the frequently asked questions (https://github.com/BasicAirData/GPSLogger/blob/master/readme.md#frequently-asked-questions).
+
+
+IMPORTANT NOTES: 
+In GPS Logger the Location is always accessed (started) when the App is in Foreground, and then is kept active also in background. On Android 10+ the app needs the Location permission "only while using the app". It doesn't need the "all the time" permission.
+Depending on your Android Version, if you want to run GPS Logger reliably in background, you have to disable ALL the battery optimisations. For example you could verify in Android Settings, Apps, GPS Logger, Battery that the Background Activity is allowed and the Battery Usage is Not Optimised.
 
 
 ADDITIONAL INFORMATION: 
-- Copyright (C) 2016 BasicAirData - https://www.basicairdata.eu
+- Copyright © 2016-2022 BasicAirData - https://www.basicairdata.eu
 - For additional information please see https://www.basicairdata.eu/projects/android/android-gps-logger/
-- This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See the GNU General Public License for more details: http://www.gnu.org/licenses.
+- This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See the GNU General Public License for more details: https://www.gnu.org/licenses.
 - You can view and download the source code of this app on GitHub: https://github.com/BasicAirData/GPSLogger
-- When The EGM96 Automatic Correction is enabled for the first time into the Setting Screen, the geoid Height file is downloaded from the OSGeo.org website. (File size: 2 MB).
+- When The EGM96 Automatic Correction is enabled for the first time into the Setting Screen, the file of the geoid heights is downloaded from the OSGeo.org website. (File size: 2 MB). Once downloaded, no further internet connection is required to use it.
