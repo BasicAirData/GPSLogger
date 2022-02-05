@@ -896,8 +896,9 @@ public class GPSApplication extends Application implements LocationListener {
         singleton = this;
 
         // Workaround for the android.os.FileUriExposedException
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
+        // Commented out because, starting from v3.1.0, the app doesn't expose any "file://" URI anymore.
+        //StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        //StrictMode.setVmPolicy(builder.build());
 
         // Creates the notification channel for Android >= O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
