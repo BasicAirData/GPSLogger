@@ -104,28 +104,17 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             etDescription.setHint(GPSApplication.getInstance().getString(R.string.track_id) + " " + trackToEdit.getId());
         }
 
-//        DescEditText.postDelayed(new Runnable()
-//        {
-//            public void run()
-//            {
-//                if (isAdded()) {
-//                    DescEditText.requestFocus();
-//                    InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    mgr.showSoftInput(DescEditText, InputMethodManager.SHOW_IMPLICIT);
-//                }
-//            }
-//        }, 200);
-
-        tracktypeImageView[Track.TRACK_TYPE_STEADY    ] = view.findViewById(R.id.tracktype_steady);
-        tracktypeImageView[Track.TRACK_TYPE_MOUNTAIN  ] = view.findViewById(R.id.tracktype_mountain);
-        tracktypeImageView[Track.TRACK_TYPE_WALK      ] = view.findViewById(R.id.tracktype_walk);
-        tracktypeImageView[Track.TRACK_TYPE_RUN       ] = view.findViewById(R.id.tracktype_run);
-        tracktypeImageView[Track.TRACK_TYPE_BICYCLE   ] = view.findViewById(R.id.tracktype_bicycle);
-        tracktypeImageView[Track.TRACK_TYPE_CAR       ] = view.findViewById(R.id.tracktype_car);
-        tracktypeImageView[Track.TRACK_TYPE_FLIGHT    ] = view.findViewById(R.id.tracktype_flight);
+        tracktypeImageView[0] = view.findViewById(R.id.tracktype_0);
+        tracktypeImageView[1] = view.findViewById(R.id.tracktype_1);
+        tracktypeImageView[2] = view.findViewById(R.id.tracktype_2);
+        tracktypeImageView[3] = view.findViewById(R.id.tracktype_3);
+        tracktypeImageView[4] = view.findViewById(R.id.tracktype_4);
+        tracktypeImageView[5] = view.findViewById(R.id.tracktype_5);
+        tracktypeImageView[6] = view.findViewById(R.id.tracktype_6);
 
         // Disable all images
-        for (int i = 0; i< tracktypeImageView.length; i++) {
+        for (int i = 0; i < tracktypeImageView.length; i++) {
+            tracktypeImageView[i].setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[i]);
             tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
             tracktypeImageView[i].setOnClickListener(new View.OnClickListener() {
                 @Override
