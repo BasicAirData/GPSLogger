@@ -51,14 +51,14 @@ class Exporter extends Thread {
 
     private final Track track;
     private final ExportingTask exportingTask;
-    private boolean exportKML = true;
-    private boolean exportGPX = true;
-    private boolean exportTXT = true;
-    private String saveIntoFolder = "/";
-    private double altitudeManualCorrection = 0;
-    private boolean egmAltitudeCorrection = false;
-    private int getPrefKMLAltitudeMode = 0;
-    private int getPrefGPXVersion = 0;
+    private final boolean exportKML;
+    private final boolean exportGPX;
+    private final boolean exportTXT;
+    private final String saveIntoFolder;
+    private final double altitudeManualCorrection;
+    private final boolean egmAltitudeCorrection;
+    private final int getPrefKMLAltitudeMode;
+    private final int getPrefGPXVersion;
     private boolean txtFirstTrackpointFlag = true;
 
     private DocumentFile kmlFile;
@@ -368,6 +368,9 @@ class Exporter extends Thread {
                         gpxBW.write("<!--  Avg Speed = " + phdSpeedAvg.value + " | " + phdSpeedAvgMoving.value + " " + phdSpeedAvg.um + " -->" + newLine);
                     if (!phdOverallDirection.value.isEmpty())
                         gpxBW.write("<!--  Direction = " + phdOverallDirection.value + phdOverallDirection.um + " -->" + newLine);
+                    if (track.getEstimatedTrackType() != NOT_AVAILABLE)
+                        gpxBW.write("<!--  Activity = " + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + " -->" + newLine);
+
                     gpxBW.write(newLine);
                 }
 
@@ -379,7 +382,9 @@ class Exporter extends Thread {
                               + "     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine);
                     gpxBW.write("<name>GPS Logger " + track.getName() + "</name>" + newLine);
                     if (!track.getDescription().isEmpty()) gpxBW.write("<desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
-                    gpxBW.write("<time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine + newLine);
+                    gpxBW.write("<time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
+                    if (track.getEstimatedTrackType() != NOT_AVAILABLE) gpxBW.write("<keywords>" + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + "</keywords>" + newLine);
+                    gpxBW.write(newLine);
                 }
                 if (getPrefGPXVersion == GPX1_1) {    // GPX 1.1
                     gpxBW.write("<gpx version=\"1.1\"" + newLine
@@ -394,6 +399,7 @@ class Exporter extends Thread {
                     gpxBW.write(" <name>GPS Logger " + track.getName() + "</name>" + newLine);
                     if (!track.getDescription().isEmpty()) gpxBW.write(" <desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
                     gpxBW.write(" <time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
+                    if (track.getEstimatedTrackType() != NOT_AVAILABLE) gpxBW.write(" <keywords>" + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + "</keywords>" + newLine);
                     gpxBW.write("</metadata>" + newLine + newLine);
                 }
             }
