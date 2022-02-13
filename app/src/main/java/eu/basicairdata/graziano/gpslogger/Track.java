@@ -48,6 +48,26 @@ public class Track {
     public static final int TRACK_TYPE_FLIGHT   = 6;
     public static final int TRACK_TYPE_ND       = NOT_AVAILABLE;
 
+    public static final int[] ACTIVITY_DRAWABLE_RESOURCE = {    // The indexes must match the Track Types previously defined:
+            R.drawable.ic_tracktype_place_24dp,                 // Track.TRACK_TYPE_STEADY   = 0;
+            R.drawable.ic_tracktype_walk_24dp,                  // Track.TRACK_TYPE_WALK     = 1;
+            R.drawable.ic_tracktype_mountain_24dp,              // Track.TRACK_TYPE_MOUNTAIN = 2;
+            R.drawable.ic_tracktype_run_24dp,                   // Track.TRACK_TYPE_RUN      = 3;
+            R.drawable.ic_tracktype_bike_24dp,                  // Track.TRACK_TYPE_BICYCLE  = 4;
+            R.drawable.ic_tracktype_car_24dp,                   // Track.TRACK_TYPE_CAR      = 5;
+            R.drawable.ic_tracktype_flight_24dp                 // Track.TRACK_TYPE_FLIGHT   = 6;
+    };
+
+    public static final String[] ACTIVITY_DESCRIPTION = {       // The indexes must match the Track Types previously defined:
+            "other",                                            // Track.TRACK_TYPE_STEADY   = 0;
+            "walking",                                          // Track.TRACK_TYPE_WALK     = 1;
+            "mountaineering",                                   // Track.TRACK_TYPE_MOUNTAIN = 2;
+            "running",                                          // Track.TRACK_TYPE_RUN      = 3;
+            "cycling",                                          // Track.TRACK_TYPE_BICYCLE  = 4;
+            "driving_general",                                  // Track.TRACK_TYPE_CAR      = 5;
+            "flying"                                            // Track.TRACK_TYPE_FLIGHT   = 6;
+    };
+
     // Variables
     private long    id;                                             // Saved in DB
     private String  name                        = "";               // Saved in DB
