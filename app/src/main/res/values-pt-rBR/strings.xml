@@ -112,13 +112,11 @@
     <string name="card_menu_share">Compartilhe com ...</string>
     <string name="card_menu_edit">Editar detalhes</string>
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">Você também deseja excluir todos os arquivos exportados dos trajetos selecionados?</string>
     <string name="card_message_delete_confirmation">Você realmente deseja excluir os trajetos selecionados?</string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
     <string name="cancel">Cancelar</string>
     <string name="export_unable_to_write_file">Não é possível gravar o arquivo</string>
-    <string name="please_grant_storage_permission">Por favor, conceda permissão de armazenamento para ativar este recurso</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">O aplicativo foi finalizado durante uma gravação em segundo plano.</string>
     <string name="dlg_app_killed_description">Por favor, verifique nas configurações do Android que o app não está otimizado para bateria e não tenha restrição em segundo plano.</string>
@@ -161,7 +159,6 @@
     <string name="pref_EGM96AltitudeCorrection_summary">Correção automática de altitude, com base no modelo de geoide de terra NGA</string>
     <string name="pref_EGM96AltitudeCorrection_download_progress">Baixando 2028kB file:\nEGM96 Geoid Heights..</string>
     <string name="pref_AltitudeCorrection">Correção Manual</string>
-    <string name="pref_AltitudeCorrection_summary_offset">Deslocamento</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">Sem deslocamento definido</string>
     <string name="pref_category_exporting">EXPORTAÇÃO</string>
     <string name="pref_export_TXT">Exportar trajetos em TXT</string>
@@ -187,7 +184,7 @@
     <string name="toast_no_browser_installed">Nenhum navegador de internet instalado</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger grava seus percursos utilizando o GPS. Você pode visualizar eles no seu visualizador preferido, compartilhar e exportar eles na pasta GPSLogger do seu dispositivo nos formatos KML, GPX e TXT.\n\nEste programa é um software livre, publicado sob os termos da GNU General Public License.\nPara mais detalhes ver: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger grava seus percursos utilizando o GPS. Você pode visualizar eles no seu visualizador preferido, compartilhar e exportar eles para o seu dispositivo nos formatos KML, GPX e TXT.\n\nEste programa é um software livre, publicado sob os termos da GNU General Public License.\nPara mais detalhes ver: https://www.gnu.org/licenses/gpl.txt</string>
     <string name="about_description_googleplaystore">Se gostar de usar este app, por favor, dedique um momento para avaliar o GPS Logger na Google Store.</string>
     <string name="about_ok">Fechar</string>
     <string name="about_rate_this_app">Avalia este App</string>

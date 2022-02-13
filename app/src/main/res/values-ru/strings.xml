@@ -112,13 +112,11 @@
     <string name="card_menu_share">Поделиться с ...</string>
     <string name="card_menu_edit">Редактировать детали</string>
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">Хотите также удалить все экспортированные файлы выбранных треков?</string>
     <string name="card_message_delete_confirmation">Вы действительно хотите удалить выбранные треки?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="cancel">Отмена</string>
     <string name="export_unable_to_write_file">Невозможно записать файл</string>
-    <string name="please_grant_storage_permission">Чтобы включить эту функцию, пожалуйста, разрешите доступ к хранилищу</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">Приложение было закрыто во время фоновой записи.</string>
     <string name="dlg_app_killed_description">Пожалуйста, проверьте в настройках Android, что приложение не ограничено для использования батареи и для работы в фоне.</string>
@@ -161,7 +159,6 @@
     <string name="pref_EGM96AltitudeCorrection_summary">Автоматическая коррекция высоты на основе модели геоида NGA</string>
     <string name="pref_EGM96AltitudeCorrection_download_progress">Загрузка файла 2028kB:\nЗначения высот для Геоида EGM96..</string>
     <string name="pref_AltitudeCorrection">Ручная коррекция</string>
-    <string name="pref_AltitudeCorrection_summary_offset">Смещение</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">Смещение не задано</string>
     <string name="pref_category_exporting">ЭКСПОРТ</string>
     <string name="pref_export_TXT">Экспорт треков в TXT</string>
@@ -187,7 +184,7 @@
     <string name="toast_no_browser_installed">Интернет-браузер не установлен</string>
     <!-- About Dialog -->
     <string name="about_version">вер.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger записывает ваши треки с помощью GPS. Вы можете просматривать их в выбранном приложении, делиться ими, и экспортировать их в папку GPSLogger вашего устройства в форматах KML, GPX и TXT.\n\nЭта программа является свободным программным обеспечением и опубликована на условиях Универсальной Общественной Лицензии GNU.\nПодробнее см.: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger записывает ваши треки с помощью GPS. Вы можете просматривать их в выбранном приложении, делиться ими, и экспортировать на свое устройство в форматах KML, GPX и TXT.\n\nЭта программа является свободным программным обеспечением и опубликована на условиях Универсальной Общественной Лицензии GNU.\nПодробнее см.: https://www.gnu.org/licenses/gpl.txt</string>
     <string name="about_description_googleplaystore">Если вам понравилось это приложение, пожалуйста,  уделите минутку, чтобы оценить GPS Logger в Google Play Store.</string>
     <string name="about_ok">Закрыть</string>
     <string name="about_rate_this_app">Поставить оценку</string>
