@@ -384,8 +384,18 @@ class Exporter extends Thread {
                     if (!track.getDescription().isEmpty()) gpxBW.write("<desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
                     gpxBW.write("<time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
                     if (track.getEstimatedTrackType() != NOT_AVAILABLE) gpxBW.write("<keywords>" + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + "</keywords>" + newLine);
+                    if ((track.getValidMap() != 0)
+                            && (track.getLatitudeMin() != NOT_AVAILABLE) && (track.getLongitudeMin() != NOT_AVAILABLE)
+                            && (track.getLatitudeMax() != NOT_AVAILABLE) && (track.getLongitudeMax() != NOT_AVAILABLE)) {
+                        gpxBW.write("<bounds minlat=\"" + String.format(Locale.US, "%.8f", track.getLatitudeMin())
+                                + "\" minlon=\"" + String.format(Locale.US, "%.8f", track.getLongitudeMin())
+                                + "\" maxlat=\"" + String.format(Locale.US, "%.8f", track.getLatitudeMax())
+                                + "\" maxlon=\"" + String.format(Locale.US, "%.8f", track.getLongitudeMax())
+                                + "\" />" + newLine);
+                    }
                     gpxBW.write(newLine);
                 }
+
                 if (getPrefGPXVersion == GPX1_1) {    // GPX 1.1
                     gpxBW.write("<gpx version=\"1.1\"" + newLine
                               + "     creator=\"BasicAirData GPS Logger " + versionName + "\"" + newLine
@@ -400,6 +410,15 @@ class Exporter extends Thread {
                     if (!track.getDescription().isEmpty()) gpxBW.write(" <desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
                     gpxBW.write(" <time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
                     if (track.getEstimatedTrackType() != NOT_AVAILABLE) gpxBW.write(" <keywords>" + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + "</keywords>" + newLine);
+                    if ((track.getValidMap() != 0)
+                            && (track.getLatitudeMin() != NOT_AVAILABLE) && (track.getLongitudeMin() != NOT_AVAILABLE)
+                            && (track.getLatitudeMax() != NOT_AVAILABLE) && (track.getLongitudeMax() != NOT_AVAILABLE)) {
+                        gpxBW.write(" <bounds minlat=\"" + String.format(Locale.US, "%.8f", track.getLatitudeMin())
+                                + "\" minlon=\"" + String.format(Locale.US, "%.8f", track.getLongitudeMin())
+                                + "\" maxlat=\"" + String.format(Locale.US, "%.8f", track.getLatitudeMax())
+                                + "\" maxlon=\"" + String.format(Locale.US, "%.8f", track.getLongitudeMax())
+                                + "\" />" + newLine);
+                    }
                     gpxBW.write("</metadata>" + newLine + newLine);
                 }
             }
