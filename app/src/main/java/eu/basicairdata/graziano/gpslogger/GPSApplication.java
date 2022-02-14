@@ -263,6 +263,7 @@ public class GPSApplication extends Application implements LocationListener {
         public void run() {
             if ((gpsStatus == GPS_OK) || (gpsStatus == GPS_STABILIZING)) {
                 gpsStatus = GPS_TEMPORARYUNAVAILABLE;
+                stabilizer = numberOfStabilizationSamples;
                 EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
             }
         }
@@ -999,8 +1000,8 @@ public class GPSApplication extends Application implements LocationListener {
         //if ((loc != null) && (loc.getProvider().equals(LocationManager.GPS_PROVIDER)) {
         if (loc != null) {      // Location data is valid
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {          // For API >= 18
-                if ((prevFix == null) || (loc.isFromMockProvider()!=isMockProvider)) {  // Reset the number of satellites when the provider changes between GPS and MOCK
-                    if (loc.isFromMockProvider()!=isMockProvider) {
+                if ((prevFix == null) || (loc.isFromMockProvider() != isMockProvider)) {  // Reset the number of satellites when the provider changes between GPS and MOCK
+                    if (loc.isFromMockProvider() != isMockProvider) {
                         numberOfSatellitesTotal = NOT_AVAILABLE;
                         numberOfSatellitesUsedInFix = NOT_AVAILABLE;
                     }
@@ -1032,7 +1033,7 @@ public class GPSApplication extends Application implements LocationListener {
                     EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 }
                 else stabilizer--;
-                if (stabilizer == 0) gpsStatus = GPS_OK;
+                if (stabilizer <= 0) gpsStatus = GPS_OK;
                 prevFix = eloc;
                 prevRecordedFix = eloc;
                 isPrevFixRecorded = true;
@@ -1065,18 +1066,19 @@ public class GPSApplication extends Application implements LocationListener {
                 // Distance Filter and Interval Filter in OR
                 // The Trackpoint is recorded when at less one filter is True.
                 if ((isRecording) && ((prevRecordedFix == null)
-                        || (forceRecord)
-                        || ((prefGPSinterval == 0) && (prefGPSdistance == 0))
+                        || (forceRecord)                                                                        // Forced to record the point
+                        || ((prefGPSinterval == 0) && (prefGPSdistance == 0))                                   // No filters enabled --> it records all the points
                         || ((prefGPSinterval > 0)
-                            && (prefGPSdistance > 0)
+                            && (prefGPSdistance > 0)                                                            // Both filters enabled, check conditions in OR
                             && (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
                                 || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
                         || ((prefGPSinterval > 0)
-                            && (prefGPSdistance == 0)
+                            && (prefGPSdistance == 0)                                                           // Only interval filter enabled
                             && ((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f)))
                         || ((prefGPSinterval == 0)
-                            && (prefGPSdistance > 0)
-                            && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance))))){
+                            && (prefGPSdistance > 0)                                                            // Only distance filter enabled
+                            && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
+                        || (currentTrack.getNumberOfLocations() == 0))){                                        // It is the first point of a track
 
                     prevRecordedFix = eloc;
                     ast.taskType = TASK_ADDLOCATION;
