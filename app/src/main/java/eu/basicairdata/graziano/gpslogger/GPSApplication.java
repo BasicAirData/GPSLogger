@@ -238,8 +238,8 @@ public class GPSApplication extends Application implements LocationListener {
 
     // The Handler that prevents a double click of the Stop button of the bottom bar
     private boolean isStopButtonFlag;                         // True if the Stop button has been clicked
-    final Handler stopButtonHandler = new Handler();
-    Runnable stopButtonRunnable = new Runnable() {
+    private final Handler stopButtonHandler = new Handler();
+    private final Runnable stopButtonRunnable = new Runnable() {
         @Override
         public void run() {
             isStopButtonFlag = false;
@@ -248,17 +248,28 @@ public class GPSApplication extends Application implements LocationListener {
     };
 
     // The Handler that switches off the location updates after a time delay:
-    final Handler disableLocationUpdatesHandler = new Handler();
-    Runnable disableLocationUpdatesRunnable = new Runnable() {
+    private final Handler disableLocationUpdatesHandler = new Handler();
+    private final Runnable disableLocationUpdatesRunnable = new Runnable() {
         @Override
         public void run() {
             setGPSLocationUpdates(false);
         }
     };
 
+    // The Handler that switches on the location updates after a time delay:
+    private final Handler enableLocationUpdatesHandler = new Handler();
+    private final Runnable enableLocationUpdatesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setGPSLocationUpdates(false);
+            setGPSLocationUpdates(true);
+            updateGPSLocationFrequency();
+        }
+    };
+
     // The Handler that sets the GPS Status to GPS_TEMPORARYUNAVAILABLE
-    final Handler gpsUnavailableHandler = new Handler();
-    Runnable gpsUnavailableRunnable = new Runnable() {
+    private final Handler gpsUnavailableHandler = new Handler();
+    private final Runnable gpsUnavailableRunnable = new Runnable() {
         @Override
         public void run() {
             if ((gpsStatus == GPS_OK) || (gpsStatus == GPS_STABILIZING)) {
@@ -270,8 +281,8 @@ public class GPSApplication extends Application implements LocationListener {
     };
 
     // The Handler that checks the progress of an exportation
-    final Handler exportingStatusCheckHandler = new Handler();
-    Runnable exportingStatusCheckRunnable = new Runnable() {
+    private final Handler exportingStatusCheckHandler = new Handler();
+    private final Runnable exportingStatusCheckRunnable = new Runnable() {
         @Override
         public void run() {
             long total = 0;
@@ -1254,6 +1265,16 @@ public class GPSApplication extends Application implements LocationListener {
         isScreenOn = true;
         EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
         EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+    }
+
+    /**
+     * Enables the GPS Location Updates after a 500ms delay from Permission Result.
+     * It tries to fix a java.lang.RuntimeException bug that affects
+     * "Tecno" branded devices with Android 8.1 (SDK 27): https://github.com/BasicAirData/GPSLogger/issues/162
+     */
+    public void delayedActivationOfGPSUpdates() {
+        enableLocationUpdatesHandler.removeCallbacks(enableLocationUpdatesRunnable);
+        enableLocationUpdatesHandler.postDelayed(enableLocationUpdatesRunnable, 500);
     }
 
     /**
