@@ -47,14 +47,20 @@ Please go on location section of your Android settings: the phone could be set t
 <b>How can I view my recorded tracks?</b><br>
 You can view a recorded track by going on tracklist tab and clicking on it. An actionbar appears, that should contain an eye icon, or the icon of a KML/GPX viewer. At least one KML/GPX viewer must be installed on your device; if not (in this case the icon will not be visible), please install it. If you installed more than one viewer, you can choose which one to use in GPS Logger settings. Good viewers for Android are GPX Viewer, Earth, or WRPElevationChart, but there are lots of good alternatives around.
 
-<b>How can I select a range of tracks on Tracklist?</b><br>
-Select the first track of the range with a click, then long-click on the last one to select all the range. If with the first click you select a track, all the range will be selected; if with the first click you deselect a track, all the range will be deselected.
-
 <b>The "View" icon is not visible on actionbar.</b><br>
 The "View" icon is visible, by selecting one single track of the tracklist, if you have at least one external viewer installed on your device. If you installed more than one viewer, into GPS Logger's settings you can choose which one to use. Good viewers for Android are GPX Viewer, Earth, or WRPElevationChart, but there are lots of good alternatives around.
 
 <b>The "Share" icon is not visible on actionbar.</b><br>
 The "Share" icon is visible, by selecting some tracks of the tracklist, if you have at least one application installed on your device with which to share the files. The formats you will share are set on "exportation" section of GPS Logger settings.
+
+<b>Where the "Export" feature saves the files?</b><br>
+The "Export" feature saves the files to a folder of your device. The exportation folder is selectable (on Android 5+): when you export a track for the first time, a dialog asks you to select the the local exportation folder. It is possible to select (and to change) the folder also in the app Settings, Interface section, by clicking the "Local Exportation Folder" preference.<br>
+The selection of the folder is now mandatory because of a change on Google specifications, that restricted the permission to access the whole storage only in exceptional cases for privacy reasons. In fact, starting from v3.1.0, GPS Logger no longer needs the Storage permission because the permission to access the storage is limited to the folder selected.<br>
+As a note, some special folders (like the root folders, or the Downloads) could be not suitable for the exportation, depending on the Android version. In this case please select another (sub)folder, or create a new one.<br>
+On Android 4 the folder is not selectable, the files are saved to /GPSLogger.<br>
+
+<b>How can I select a range of tracks on Tracklist?</b><br>
+Select the first track of the range with a click, then long-click on the last one to select all the range. If with the first click you select a track, all the range will be selected; if with the first click you deselect a track, all the range will be deselected.
 
 <b>My track is not shown (or partially shown) in Google Earth.</b><br>
 GPS Logger might be set to show the track in 3D, and the track may be hidden under the terrain. Please go in the "Exportation" settings, switch the altitude mode to "Projected to ground" and try again.
