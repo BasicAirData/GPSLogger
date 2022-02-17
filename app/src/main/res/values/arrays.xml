@@ -49,21 +49,19 @@
     </string-array>
 
     <!-- Show Speeds in -->
-    <string-array name="UMSpeed_Metric">
+    <string-array name="UMOfSpeed">
         <item>@string/UM_m_s</item>
         <item>@string/UM_km_h</item>
-    </string-array>
-    <string-array name="UMSpeed_Imperial">
         <item>@string/UM_fps</item>
         <item>@string/UM_mph</item>
-    </string-array>
-    <string-array name="UMSpeed_AerialNautical">
         <item>@string/UM_kn</item>
-        <item>@string/UM_mph</item>
     </string-array>
-    <string-array name="UMSpeedValues">
+    <string-array name="UMOfSpeedValues">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
     </string-array>
 
     <!-- Version of GPX Standard -->

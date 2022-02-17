@@ -112,13 +112,11 @@
     <string name="card_menu_share">Megosztás...</string>
     <string name="card_menu_edit">Részletek szerkesztése</string>
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">Kiválasztott útvonal összes exportált fájlját törölni szeretné?</string>
     <string name="card_message_delete_confirmation">Valóban szeretné törölni a kiválasztott útvonalakat?</string>
     <string name="yes">Igen</string>
     <string name="no">Nem</string>
     <string name="cancel">Mégse</string>
     <string name="export_unable_to_write_file">Fájl nem írható</string>
-    <string name="please_grant_storage_permission">Funkció eléréséhez kérjük engedélyezd a tárolóhelyhez való hozzáférést</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">Az alkalmazás leállt miközben a háttérben rögzített</string>
     <string name="dlg_app_killed_description">Kérjük, ellenőrizze az Android beállításokat, hogy az alkalmazás nincs-e optimalizálva az akkumulátorhoz és nem korlátozott-e a háttérben futás.</string>
@@ -161,7 +159,6 @@
     <string name="pref_EGM96AltitudeCorrection_summary">Automatikus magasságkorrekció, az NGA Earth Geoid Model alapján</string>
     <string name="pref_EGM96AltitudeCorrection_download_progress">2028kB-os fájl letöltése:\nEGM96 Geoid magasság...</string>
     <string name="pref_AltitudeCorrection">Manuális korrekció</string>
-    <string name="pref_AltitudeCorrection_summary_offset">Eltolás</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">Nincs eltolás definiálva</string>
     <string name="pref_category_exporting">EXPORTÁLÁS</string>
     <string name="pref_export_TXT">Útvonal exportálás TXT-be</string>
@@ -187,7 +184,7 @@
     <string name="toast_no_browser_installed">Nincs Internet böngésző telepítve</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger GPS segítségével rögzíti az útvonalakat. Megtekintheti őket az Ön által preferált megjelenítő programban, megoszthatja vagy exportálhatja készüléke GPSLogger mappájába KML, GPX és TXT formátumban.\n\nEz a program ingyenes szoftver, amelyet a GNU General Public License feltételei szerint adtak ki.\nTovábbi információ: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger GPS segítségével rögzíti az útvonalakat. Megtekintheti őket az Ön által preferált megjelenítő programban, megoszthatja vagy exportálhatja őket KML, GPX és TXT formátumban.\n\nEz a program ingyenes szoftver, amelyet a GNU General Public License feltételei szerint adtak ki.\nTovábbi információ: https://www.gnu.org/licenses/gpl.txt</string>
     <string name="about_description_googleplaystore">Ha szereti ezt az alkalmazást, kérjük, szánjon egy pillanatot arra, hogy értékelje a GPS Loggert a Google Play Áruházban.</string>
     <string name="about_ok">Bezárás</string>
     <string name="about_rate_this_app">Értékelés</string>

@@ -58,7 +58,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.StrictMode;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -87,13 +88,6 @@ public class GPSApplication extends Application implements LocationListener {
     //private static final float M_TO_FT = 3.280839895f;
     public static final int NOT_AVAILABLE = -100000;
 
-    //private static final int UM_METRIC_MS = 0;
-    private static final int UM_METRIC_KMH = 1;
-    //private static final int UM_IMPERIAL_FPS = 8;
-    //private static final int UM_IMPERIAL_MPH = 9;
-
-    private static final float M_TO_FT = 3.280839895f;
-
     private static final int STABILIZER_TIME = 3000;                // The application discards fixes for 3000 ms (minimum)
     private static final int DEFAULT_SWITCHOFF_HANDLER_TIME = 5000; // Default time for turning off GPS on exit
     private static final int GPS_UNAVAILABLE_HANDLER_TIME = 7000;   // The "GPS temporary unavailable" time
@@ -107,9 +101,6 @@ public class GPSApplication extends Application implements LocationListener {
     public static final int GPS_SEARCHING               = 3;
     public static final int GPS_STABILIZING             = 4;
     public static final int GPS_OK                      = 5;
-
-    public static final int APP_ORIGIN_NOT_SPECIFIED     = 0;
-    public static final int APP_ORIGIN_GOOGLE_PLAY_STORE = 1;       // The app is installed via the Google Play Store
 
     public static final int JOB_TYPE_NONE       = 0;                // No operation
     public static final int JOB_TYPE_EXPORT     = 1;                // Bulk Exportation
@@ -147,7 +138,8 @@ public class GPSApplication extends Application implements LocationListener {
 
     // Preferences Variables
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
-    private int     prefUM                      = UM_METRIC_KMH; // The units of measurement to use for visualization
+    private int     prefUM                      = PhysicalDataFormatter.UM_METRIC;     // The units of measurement to use for visualization
+    private int     prefUMOfSpeed               = PhysicalDataFormatter.UM_SPEED_KMH;  // The units of measurement to use for visualization of the speeds
     private float   prefGPSdistance             = 0f;            // The distance filter value
     private float   prefGPSinterval             = 0f;            // The interval filter value
     private long    prefGPSupdatefrequency      = 1000L;         // The GPS Update frequency in milliseconds
@@ -203,8 +195,6 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean isGPSLocationUpdatesActive;                  // True if the Location Manager is active (is requesting FIXes)
     private int gpsStatus = GPS_SEARCHING;                       // The status of the GPS: GPS_DISABLED, GPS_OUTOFSERVICE,
                                                                  // GPS_TEMPORARYUNAVAILABLE, GPS_SEARCHING, GPS_STABILIZING;
-    private int appOrigin = APP_ORIGIN_NOT_SPECIFIED;            // Which package manager is used to install this app (for Rate button visualization):
-                                                                 // APP_ORIGIN_NOT_SPECIFIED, APP_ORIGIN_GOOGLE_PLAY_STORE
     private LocationManager locationManager = null;              // GPS LocationManager
     private int numberOfSatellitesTotal = 0;                     // The total Number of Satellites
     private int numberOfSatellitesUsedInFix = 0;                 // The Number of Satellites used in Fix
@@ -248,8 +238,8 @@ public class GPSApplication extends Application implements LocationListener {
 
     // The Handler that prevents a double click of the Stop button of the bottom bar
     private boolean isStopButtonFlag;                         // True if the Stop button has been clicked
-    final Handler stopButtonHandler = new Handler();
-    Runnable stopButtonRunnable = new Runnable() {
+    private final Handler stopButtonHandler = new Handler();
+    private final Runnable stopButtonRunnable = new Runnable() {
         @Override
         public void run() {
             isStopButtonFlag = false;
@@ -258,29 +248,41 @@ public class GPSApplication extends Application implements LocationListener {
     };
 
     // The Handler that switches off the location updates after a time delay:
-    final Handler disableLocationUpdatesHandler = new Handler();
-    Runnable disableLocationUpdatesRunnable = new Runnable() {
+    private final Handler disableLocationUpdatesHandler = new Handler();
+    private final Runnable disableLocationUpdatesRunnable = new Runnable() {
         @Override
         public void run() {
             setGPSLocationUpdates(false);
         }
     };
 
+    // The Handler that switches on the location updates after a time delay:
+    private final Handler enableLocationUpdatesHandler = new Handler();
+    private final Runnable enableLocationUpdatesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setGPSLocationUpdates(false);
+            setGPSLocationUpdates(true);
+            updateGPSLocationFrequency();
+        }
+    };
+
     // The Handler that sets the GPS Status to GPS_TEMPORARYUNAVAILABLE
-    final Handler gpsUnavailableHandler = new Handler();
-    Runnable gpsUnavailableRunnable = new Runnable() {
+    private final Handler gpsUnavailableHandler = new Handler();
+    private final Runnable gpsUnavailableRunnable = new Runnable() {
         @Override
         public void run() {
             if ((gpsStatus == GPS_OK) || (gpsStatus == GPS_STABILIZING)) {
                 gpsStatus = GPS_TEMPORARYUNAVAILABLE;
+                stabilizer = numberOfStabilizationSamples;
                 EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
             }
         }
     };
 
     // The Handler that checks the progress of an exportation
-    final Handler exportingStatusCheckHandler = new Handler();
-    Runnable exportingStatusCheckRunnable = new Runnable() {
+    private final Handler exportingStatusCheckHandler = new Handler();
+    private final Runnable exportingStatusCheckRunnable = new Runnable() {
         @Override
         public void run() {
             long total = 0;
@@ -378,7 +380,7 @@ public class GPSApplication extends Application implements LocationListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 mGnssStatusListener = new GnssStatus.Callback() {
                     @Override
-                    public void onSatelliteStatusChanged(GnssStatus status) {
+                    public void onSatelliteStatusChanged(@NonNull GnssStatus status) {
                         super.onSatelliteStatusChanged (status);
                         updateGNSSStatus(status);
                     }
@@ -449,21 +451,9 @@ public class GPSApplication extends Application implements LocationListener {
         //Start the service
         startService(gpsServiceIntent);
         //Bind to the service
-        if (Build.VERSION.SDK_INT >= 14)
-            bindService(gpsServiceIntent, gpsServiceConnection, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
-        else
-            bindService(gpsServiceIntent, gpsServiceConnection, Context.BIND_AUTO_CREATE);
+        bindService(gpsServiceIntent, gpsServiceConnection, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
         Log.w("myApp", "[#] GPSApplication.java - StartAndBindGPSService");
     }
-
-    /* private void UnbindGPSService() {                                                //UNUSED
-        try {
-            unbindService(GPSServiceConnection);                                        //Unbind to the service
-            Log.w("myApp", "[#] GPSApplication.java - Service unbound");
-        } catch (Exception e) {
-            Log.w("myApp", "[#] GPSApplication.java - Unable to unbind the GPSService");
-        }
-    } */
 
     /**
      * Stops and Unbinds to the Foreground Service GPSService
@@ -588,6 +578,10 @@ public class GPSApplication extends Application implements LocationListener {
         return prefUM;
     }
 
+    public int getPrefUMOfSpeed() {
+        return prefUMOfSpeed;
+    }
+
     public int getPrefShowTrackStatsType() {
         return prefShowTrackStatsType;
     }
@@ -673,20 +667,12 @@ public class GPSApplication extends Application implements LocationListener {
         return isBackgroundActivityRestricted;
     }
 
-    public int getAppOrigin() {
-        return appOrigin;
-    }
-
     public int getJobProgress() {
         return jobProgress;
     }
 
     public int getJobsPending() {
         return jobsPending;
-    }
-
-    public void setJobsPending(int jobsPending) {
-        this.jobsPending = jobsPending;
     }
 
     public int getGPSActivityActiveTab() {
@@ -738,26 +724,6 @@ public class GPSApplication extends Application implements LocationListener {
     }
 
     // ----------------------------------------------------------------------  Utilities
-
-//    /**
-//     * Converts dp unit to equivalent pixels, depending on device density.
-//     *
-//     * @param dp A value in dp (density independent pixels) unit. Which we need to convert into pixels
-//     * @return A float value to represent px equivalent to dp depending on device density
-//     */
-//    public float convertDpToPx(float dp) {
-//        return dp * getResources().getDisplayMetrics().density;
-//    }
-//
-//    /**
-//     * Converts device specific pixels to density independent pixels.
-//     *
-//     * @param px A value in px (pixels) unit. Which we need to convert into dp
-//     * @return A float value to represent dp equivalent to px value
-//     */
-//    public float convertPxToDp(Context context, float px) {
-//        return px / getResources().getDisplayMetrics().density;
-//    }
 
     /**
      * Creates the private application folders. No permission are needed to create them.
@@ -922,7 +888,7 @@ public class GPSApplication extends Application implements LocationListener {
     @Override
     public void onCreate() {
         // Sets the night mode, basing on App Preference
-        AppCompatDelegate.setDefaultNightMode(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")));
+        AppCompatDelegate.setDefaultNightMode(Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("prefColorTheme", "2")));
         // Enables the Vector Drawable from Resource support
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
@@ -931,8 +897,9 @@ public class GPSApplication extends Application implements LocationListener {
         singleton = this;
 
         // Workaround for the android.os.FileUriExposedException
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
+        // Commented out because, starting from v3.1.0, the app doesn't expose any "file://" URI anymore.
+        //StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        //StrictMode.setVmPolicy(builder.build());
 
         // Creates the notification channel for Android >= O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -1001,18 +968,6 @@ public class GPSApplication extends Application implements LocationListener {
             }
         }
 
-        // Determine the app installation source
-        try {
-            String installer;
-            installer = getApplicationContext().getPackageManager().getInstallerPackageName(getApplicationContext().getPackageName());
-            if (installer.equals("com.android.vending") || installer.equals("com.google.android.feedback"))
-                appOrigin = APP_ORIGIN_GOOGLE_PLAY_STORE;                               // App installed from Google Play Store
-            else appOrigin = APP_ORIGIN_NOT_SPECIFIED;                                  // Otherwise
-        } catch (Exception e) {
-            Log.w("myApp", "[#] GPSApplication.java - Exception trying to determine the package installer");
-            appOrigin = APP_ORIGIN_NOT_SPECIFIED;
-        }
-
         // Initialize the connection with the Database
         gpsDataBase = new DatabaseHandler(this);
 
@@ -1052,12 +1007,12 @@ public class GPSApplication extends Application implements LocationListener {
     // --------------------------------------------------------------------------- LocationListener
 
     @Override
-    public void onLocationChanged(Location loc) {
+    public void onLocationChanged(@NonNull Location loc) {
         //if ((loc != null) && (loc.getProvider().equals(LocationManager.GPS_PROVIDER)) {
         if (loc != null) {      // Location data is valid
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {          // For API >= 18
-                if ((prevFix == null) || (loc.isFromMockProvider()!=isMockProvider)) {  // Reset the number of satellites when the provider changes between GPS and MOCK
-                    if (loc.isFromMockProvider()!=isMockProvider) {
+                if ((prevFix == null) || (loc.isFromMockProvider() != isMockProvider)) {  // Reset the number of satellites when the provider changes between GPS and MOCK
+                    if (loc.isFromMockProvider() != isMockProvider) {
                         numberOfSatellitesTotal = NOT_AVAILABLE;
                         numberOfSatellitesUsedInFix = NOT_AVAILABLE;
                     }
@@ -1089,7 +1044,7 @@ public class GPSApplication extends Application implements LocationListener {
                     EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                 }
                 else stabilizer--;
-                if (stabilizer == 0) gpsStatus = GPS_OK;
+                if (stabilizer <= 0) gpsStatus = GPS_OK;
                 prevFix = eloc;
                 prevRecordedFix = eloc;
                 isPrevFixRecorded = true;
@@ -1122,18 +1077,19 @@ public class GPSApplication extends Application implements LocationListener {
                 // Distance Filter and Interval Filter in OR
                 // The Trackpoint is recorded when at less one filter is True.
                 if ((isRecording) && ((prevRecordedFix == null)
-                        || (forceRecord)
-                        || ((prefGPSinterval == 0) && (prefGPSdistance == 0))
+                        || (forceRecord)                                                                        // Forced to record the point
+                        || ((prefGPSinterval == 0) && (prefGPSdistance == 0))                                   // No filters enabled --> it records all the points
                         || ((prefGPSinterval > 0)
-                            && (prefGPSdistance > 0)
+                            && (prefGPSdistance > 0)                                                            // Both filters enabled, check conditions in OR
                             && (((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f))
                                 || (loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
                         || ((prefGPSinterval > 0)
-                            && (prefGPSdistance == 0)
+                            && (prefGPSdistance == 0)                                                           // Only interval filter enabled
                             && ((loc.getTime() - prevRecordedFix.getTime()) >= (prefGPSinterval * 1000.0f)))
                         || ((prefGPSinterval == 0)
-                            && (prefGPSdistance > 0)
-                            && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance))))){
+                            && (prefGPSdistance > 0)                                                            // Only distance filter enabled
+                            && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
+                        || (currentTrack.getNumberOfLocations() == 0))){                                        // It is the first point of a track
 
                     prevRecordedFix = eloc;
                     ast.taskType = TASK_ADDLOCATION;
@@ -1161,13 +1117,13 @@ public class GPSApplication extends Application implements LocationListener {
     }
 
     @Override
-    public void onProviderDisabled(String provider) {
+    public void onProviderDisabled(@NonNull String provider) {
         gpsStatus = GPS_DISABLED;
         EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
     }
 
     @Override
-    public void onProviderEnabled(String provider) {
+    public void onProviderEnabled(@NonNull String provider) {
         gpsStatus = GPS_SEARCHING;
         EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
     }
@@ -1309,6 +1265,16 @@ public class GPSApplication extends Application implements LocationListener {
         isScreenOn = true;
         EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
         EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+    }
+
+    /**
+     * Enables the GPS Location Updates after a 500ms delay from Permission Result.
+     * It tries to fix a java.lang.RuntimeException bug that affects
+     * "Tecno" branded devices with Android 8.1 (SDK 27): https://github.com/BasicAirData/GPSLogger/issues/162
+     */
+    public void delayedActivationOfGPSUpdates() {
+        enableLocationUpdatesHandler.removeCallbacks(enableLocationUpdatesRunnable);
+        enableLocationUpdatesHandler.postDelayed(enableLocationUpdatesRunnable, 500);
     }
 
     /**
@@ -1727,14 +1693,31 @@ public class GPSApplication extends Application implements LocationListener {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
 
-        // Conversion from the previous versions of GPS Logger preferences
-        if (preferences.contains("prefShowImperialUnits")) {       // The old boolean setting for imperial units in v.1.1.5
-            Log.w("myApp", "[#] GPSApplication.java - Old setting prefShowImperialUnits present. Converting to new preference PrefUM.");
-            boolean imperialUM = preferences.getBoolean("prefShowImperialUnits", false);
-            editor.putString("prefUM", (imperialUM ? "8" : "0"));
-            editor.remove("prefShowImperialUnits");
+        // -----------------------
+        // TODO: Uncomment it to test the conversion of prefUMSpeed into prefUMOfSpeed (For Test Purpose)
+        //editor.putString("prefUMSpeed", "0").commit();
+        // -----------------------
+
+        prefUM = Integer.parseInt(preferences.getString("prefUM", "0"));
+
+        // Conversion from the previous versions of the unit of measurement of the speeds
+        if (preferences.contains("prefUMSpeed")) {       // The old setting
+            Log.w("myApp", "[#] GPSApplication.java - Old setting prefUMSpeed present (" + preferences.getString("prefUMSpeed", "0") + "). Converting to new preference prefUMOfSpeed.");
+            String UMspd = preferences.getString("prefUMSpeed", "0");
+            switch (prefUM) {
+                case PhysicalDataFormatter.UM_METRIC:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalDataFormatter.UM_SPEED_MS) : String.valueOf(PhysicalDataFormatter.UM_SPEED_KMH)));
+                    break;
+                case PhysicalDataFormatter.UM_IMPERIAL:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalDataFormatter.UM_SPEED_FPS) : String.valueOf(PhysicalDataFormatter.UM_SPEED_MPH)));
+                    break;
+                case PhysicalDataFormatter.UM_NAUTICAL:
+                    editor.putString("prefUMOfSpeed", (UMspd.equals("0") ? String.valueOf(PhysicalDataFormatter.UM_SPEED_KN) : String.valueOf(PhysicalDataFormatter.UM_SPEED_MPH)));
+                    break;
+            }
+            editor.remove("prefUMSpeed");
             editor.commit();
-        }
+        } else prefUMOfSpeed = Integer.parseInt(preferences.getString("prefUMOfSpeed", "1"));
 
         // Remove the prefIsStoragePermissionChecked in preferences if present
         if (preferences.contains("prefIsStoragePermissionChecked")) {
@@ -1746,16 +1729,15 @@ public class GPSApplication extends Application implements LocationListener {
         prefGPSWeekRolloverCorrected = preferences.getBoolean("prefGPSWeekRolloverCorrected", false);
         prefShowDecimalCoordinates = preferences.getBoolean("prefShowDecimalCoordinates", false);
         prefShowLocalTime = preferences.getBoolean("prefShowLocalTime", true);
-        //prefViewTracksWith = Integer.valueOf(preferences.getString("prefViewTracksWith", "0"));
-        prefUM = Integer.valueOf(preferences.getString("prefUM", "0")) + Integer.valueOf(preferences.getString("prefUMSpeed", "1"));
+
         try {
-            prefGPSdistance = Float.valueOf(preferences.getString("prefGPSdistance", "0"));
+            prefGPSdistance = Float.parseFloat(preferences.getString("prefGPSdistance", "0"));
         }
         catch(NumberFormatException nfe) {
             prefGPSdistance = 0;
         }
         try {
-            prefGPSinterval = Float.valueOf(preferences.getString("prefGPSinterval", "0"));
+            prefGPSinterval = Float.parseFloat(preferences.getString("prefGPSinterval", "0"));
             }
         catch(NumberFormatException nfe) {
             prefGPSinterval = 0;
@@ -1764,20 +1746,20 @@ public class GPSApplication extends Application implements LocationListener {
         Log.w("myApp", "[#] GPSApplication.java - prefGPSdistance = " + prefGPSdistance + " m");
 
         prefEGM96AltitudeCorrection = preferences.getBoolean("prefEGM96AltitudeCorrection", false);
-        prefAltitudeCorrection = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
+        prefAltitudeCorrection = Double.parseDouble(preferences.getString("prefAltitudeCorrection", "0"));
         Log.w("myApp", "[#] GPSApplication.java - Manual Correction set to " + prefAltitudeCorrection + " m");
         prefExportKML = preferences.getBoolean("prefExportKML", true);
         prefExportGPX = preferences.getBoolean("prefExportGPX", true);
         prefExportTXT = preferences.getBoolean("prefExportTXT", false);
-        prefKMLAltitudeMode = Integer.valueOf(preferences.getString("prefKMLAltitudeMode", "1"));
-        prefGPXVersion = Integer.valueOf(preferences.getString("prefGPXVersion", "100"));               // Default value = v.1.0
-        prefShowTrackStatsType = Integer.valueOf(preferences.getString("prefShowTrackStatsType", "0"));
-        prefShowDirections = Integer.valueOf(preferences.getString("prefShowDirections", "0"));
+        prefKMLAltitudeMode = Integer.parseInt(preferences.getString("prefKMLAltitudeMode", "1"));
+        prefGPXVersion = Integer.parseInt(preferences.getString("prefGPXVersion", "100"));               // Default value = v.1.0
+        prefShowTrackStatsType = Integer.parseInt(preferences.getString("prefShowTrackStatsType", "0"));
+        prefShowDirections = Integer.parseInt(preferences.getString("prefShowDirections", "0"));
 
-        double altcorm = Double.valueOf(preferences.getString("prefAltitudeCorrection", "0"));
-        double altcor = preferences.getString("prefUM", "0").equals("0") ? altcorm : altcorm * M_TO_FT;
-        double distfilterm = Double.valueOf(preferences.getString("prefGPSdistance", "0"));
-        double distfilter = preferences.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * M_TO_FT;
+        double altcorm = Double.parseDouble(preferences.getString("prefAltitudeCorrection", "0"));
+        double altcor = preferences.getString("prefUM", "0").equals("0") ? altcorm : altcorm * PhysicalDataFormatter.M_TO_FT;
+        double distfilterm = Double.parseDouble(preferences.getString("prefGPSdistance", "0"));
+        double distfilter = preferences.getString("prefUM", "0").equals("0") ? distfilterm : distfilterm * PhysicalDataFormatter.M_TO_FT;
         editor.putString("prefAltitudeCorrectionRaw", String.valueOf(altcor));
         editor.putString("prefGPSdistanceRaw", String.valueOf(distfilter));
         //editor.remove("prefGPSDistanceRaw");
@@ -1787,7 +1769,7 @@ public class GPSApplication extends Application implements LocationListener {
         else setPrefExportFolder(Environment.getExternalStorageDirectory() + "/GPSLogger");
 
         long oldGPSupdatefrequency = prefGPSupdatefrequency;
-        prefGPSupdatefrequency = Long.valueOf(preferences.getString("prefGPSupdatefrequency", "1000"));
+        prefGPSupdatefrequency = Long.parseLong(preferences.getString("prefGPSupdatefrequency", "1000"));
 
         // Update the GPS Update Frequency if needed
         if (oldGPSupdatefrequency != prefGPSupdatefrequency) updateGPSLocationFrequency();

@@ -47,16 +47,6 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
  */
 class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
 
-    private static final int[] TRACK_TYPE = {           // The indexes must match the Track Types:
-            R.drawable.ic_tracktype_place_24dp,         // Track.TRACK_TYPE_STEADY   = 0;
-            R.drawable.ic_tracktype_walk_24dp,          // Track.TRACK_TYPE_WALK     = 1;
-            R.drawable.ic_tracktype_mountain_24dp,      // Track.TRACK_TYPE_MOUNTAIN = 2;
-            R.drawable.ic_tracktype_run_24dp,           // Track.TRACK_TYPE_RUN      = 3;
-            R.drawable.ic_tracktype_bike_24dp,          // Track.TRACK_TYPE_BICYCLE  = 4;
-            R.drawable.ic_tracktype_car_24dp,           // Track.TRACK_TYPE_CAR      = 5;
-            R.drawable.ic_tracktype_flight_24dp         // Track.TRACK_TYPE_FLIGHT   = 6;
-    };
-
     private static final Bitmap BMP_CURRENT_TRACK_RECORDING = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_recording_48dp);
     private static final Bitmap BMP_CURRENT_TRACK_PAUSED = BitmapFactory.decodeResource(GPSApplication.getInstance().getResources(), R.mipmap.ic_paused_white_48dp);
 
@@ -169,7 +159,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(trk.getNumberOfPlacemarks()));
 
             tt = trk.getEstimatedTrackType();
-            if (tt != NOT_AVAILABLE) imageViewIcon.setImageResource(TRACK_TYPE[tt]);
+            if (tt != NOT_AVAILABLE) imageViewIcon.setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[tt]);
             else imageViewIcon.setImageBitmap(null);
 
             if (GPSApplication.getInstance().isRecording()) {
@@ -222,7 +212,7 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
 
             tt = trk.getEstimatedTrackType();
-            if (tt != NOT_AVAILABLE) imageViewIcon.setImageResource(TRACK_TYPE[tt]);
+            if (tt != NOT_AVAILABLE) imageViewIcon.setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[tt]);
             else imageViewIcon.setImageBitmap(null);
 
             if (GPSApplication.getInstance().getCurrentTrack().getId() == track.getId()) {

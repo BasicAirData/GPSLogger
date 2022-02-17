@@ -51,14 +51,14 @@ class Exporter extends Thread {
 
     private final Track track;
     private final ExportingTask exportingTask;
-    private boolean exportKML = true;
-    private boolean exportGPX = true;
-    private boolean exportTXT = true;
-    private String saveIntoFolder = "/";
-    private double altitudeManualCorrection = 0;
-    private boolean egmAltitudeCorrection = false;
-    private int getPrefKMLAltitudeMode = 0;
-    private int getPrefGPXVersion = 0;
+    private final boolean exportKML;
+    private final boolean exportGPX;
+    private final boolean exportTXT;
+    private final String saveIntoFolder;
+    private final double altitudeManualCorrection;
+    private final boolean egmAltitudeCorrection;
+    private final int getPrefKMLAltitudeMode;
+    private final int getPrefGPXVersion;
     private boolean txtFirstTrackpointFlag = true;
 
     private DocumentFile kmlFile;
@@ -152,20 +152,6 @@ class Exporter extends Thread {
             exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
             return false;
         }
-
-        // Check if all the files are writable:
-//        try {
-//            if ((exportGPX && !(gpxFile.createNewFile())) || (exportKML && !(kmlFile.createNewFile())) || (exportTXT && !(txtFile.createNewFile()))) {
-//                Log.w("myApp", "[#] Exporter.java - Unable to write the file " + fName);
-//                return false;
-//            }
-//        } catch (SecurityException e) {
-//            Log.w("myApp", "[#] Exporter.java - Unable to write the file: SecurityException");
-//            return false;
-//        } catch (IOException e) {
-//            Log.w("myApp", "[#] Exporter.java - Unable to write the file: IOException");
-//            return false;
-//        }
         return true;
     }
 
@@ -228,15 +214,6 @@ class Exporter extends Thread {
         elements_total = track.getNumberOfLocations() + track.getNumberOfPlacemarks();
         long startTime = System.currentTimeMillis();
 
-        // ------------------------------------------------- Create the Directory tree if not exist
-
-//        if (!sd.exists()) {
-//            if (!sd.mkdir()) {
-//                Log.w("myApp", "[#] Exporter.java - UNABLE TO CREATE THE FOLDER");
-//                exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
-//                return;
-//            }
-//        }
         // ----------------------------------------------------------------------------------------
 
         if (track == null) {
@@ -275,19 +252,6 @@ class Exporter extends Thread {
 
         //final String newLine = System.getProperty("line.separator"); //\n\r
         final String newLine = "\r\n";
-
-        // Verify if Folder exists
-//        sd = new File(saveIntoFolder);
-//        boolean success = true;
-//        if (!sd.exists()) {
-//            success = sd.mkdir();
-//        }
-//        if (!success) {
-//            Log.w("myApp", "[#] Exporter.java - Unable to sd.mkdir");
-//            exportingTask.setStatus(ExportingTask.STATUS_ENDED_FAILED);
-//            //EventBus.getDefault().post(new EventBusMSGNormal(EventBusMSG.TOAST_UNABLE_TO_WRITE_THE_FILE, track.getId()));
-//            return;
-//        }
 
         // If the file is not writable abort exportation:
         boolean fileWritable = tryToInitFiles(gpsApp.getFileName(track));               // Try to use the name with the description
@@ -404,6 +368,9 @@ class Exporter extends Thread {
                         gpxBW.write("<!--  Avg Speed = " + phdSpeedAvg.value + " | " + phdSpeedAvgMoving.value + " " + phdSpeedAvg.um + " -->" + newLine);
                     if (!phdOverallDirection.value.isEmpty())
                         gpxBW.write("<!--  Direction = " + phdOverallDirection.value + phdOverallDirection.um + " -->" + newLine);
+                    if (track.getEstimatedTrackType() != NOT_AVAILABLE)
+                        gpxBW.write("<!--  Activity = " + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + " -->" + newLine);
+
                     gpxBW.write(newLine);
                 }
 
@@ -415,8 +382,20 @@ class Exporter extends Thread {
                               + "     xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">" + newLine);
                     gpxBW.write("<name>GPS Logger " + track.getName() + "</name>" + newLine);
                     if (!track.getDescription().isEmpty()) gpxBW.write("<desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
-                    gpxBW.write("<time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine + newLine);
+                    gpxBW.write("<time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
+                    if (track.getEstimatedTrackType() != NOT_AVAILABLE) gpxBW.write("<keywords>" + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + "</keywords>" + newLine);
+                    if ((track.getValidMap() != 0)
+                            && (track.getLatitudeMin() != NOT_AVAILABLE) && (track.getLongitudeMin() != NOT_AVAILABLE)
+                            && (track.getLatitudeMax() != NOT_AVAILABLE) && (track.getLongitudeMax() != NOT_AVAILABLE)) {
+                        gpxBW.write("<bounds minlat=\"" + String.format(Locale.US, "%.8f", track.getLatitudeMin())
+                                + "\" minlon=\"" + String.format(Locale.US, "%.8f", track.getLongitudeMin())
+                                + "\" maxlat=\"" + String.format(Locale.US, "%.8f", track.getLatitudeMax())
+                                + "\" maxlon=\"" + String.format(Locale.US, "%.8f", track.getLongitudeMax())
+                                + "\" />" + newLine);
+                    }
+                    gpxBW.write(newLine);
                 }
+
                 if (getPrefGPXVersion == GPX1_1) {    // GPX 1.1
                     gpxBW.write("<gpx version=\"1.1\"" + newLine
                               + "     creator=\"BasicAirData GPS Logger " + versionName + "\"" + newLine
@@ -430,6 +409,16 @@ class Exporter extends Thread {
                     gpxBW.write(" <name>GPS Logger " + track.getName() + "</name>" + newLine);
                     if (!track.getDescription().isEmpty()) gpxBW.write(" <desc>" + stringToXML(track.getDescription()) + "</desc>" + newLine);
                     gpxBW.write(" <time>" + dfdtGPX_NoMillis.format(creationTime) + "</time>" + newLine);
+                    if (track.getEstimatedTrackType() != NOT_AVAILABLE) gpxBW.write(" <keywords>" + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + "</keywords>" + newLine);
+                    if ((track.getValidMap() != 0)
+                            && (track.getLatitudeMin() != NOT_AVAILABLE) && (track.getLongitudeMin() != NOT_AVAILABLE)
+                            && (track.getLatitudeMax() != NOT_AVAILABLE) && (track.getLongitudeMax() != NOT_AVAILABLE)) {
+                        gpxBW.write(" <bounds minlat=\"" + String.format(Locale.US, "%.8f", track.getLatitudeMin())
+                                + "\" minlon=\"" + String.format(Locale.US, "%.8f", track.getLongitudeMin())
+                                + "\" maxlat=\"" + String.format(Locale.US, "%.8f", track.getLatitudeMax())
+                                + "\" maxlon=\"" + String.format(Locale.US, "%.8f", track.getLongitudeMax())
+                                + "\" />" + newLine);
+                    }
                     gpxBW.write("</metadata>" + newLine + newLine);
                 }
             }

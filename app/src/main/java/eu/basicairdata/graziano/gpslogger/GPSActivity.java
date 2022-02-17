@@ -92,7 +92,6 @@ public class GPSActivity extends AppCompatActivity {
     private ActionMode actionMode;
     private View bottomSheet;
     private BottomSheetBehavior bottomSheetBehavior;
-    private boolean showToastGrantStoragePermission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,12 +205,6 @@ public class GPSActivity extends AppCompatActivity {
             toast.show();
         }
         gpsApp.setJustStarted(false);
-        if (showToastGrantStoragePermission) {
-            Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.please_grant_storage_permission, Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-            toast.show();
-            showToastGrantStoragePermission = false;
-        }
     }
 
     @Override
@@ -289,9 +282,14 @@ public class GPSActivity extends AppCompatActivity {
                     if (perms.containsKey(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                             Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_GRANTED; setGPSLocationUpdates!");
-                            gpsApp.setGPSLocationUpdates(false);
-                            gpsApp.setGPSLocationUpdates(true);
-                            gpsApp.updateGPSLocationFrequency();
+//                            gpsApp.setGPSLocationUpdates(false);
+//                            gpsApp.setGPSLocationUpdates(true);
+//                            gpsApp.updateGPSLocationFrequency();
+
+                            // Enables the GPS Location Updates after a 500ms delay from Permission Result.
+                            // It tries to fix a java.lang.RuntimeException bug that affects
+                            // "Tecno" branded devices with Android 8.1 (SDK 27): https://github.com/BasicAirData/GPSLogger/issues/162
+                            gpsApp.delayedActivationOfGPSUpdates();
                         } else {
                             Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_DENIED");
                         }
@@ -364,16 +362,6 @@ public class GPSActivity extends AppCompatActivity {
                     public void run() {
                         Toast toast = Toast.makeText(gpsApp.getApplicationContext(),
                                 gpsApp.getString(R.string.toast_track_exported, gpsApp.extractFolderNameFromEncodedUri(gpsApp.getPrefExportFolder())), Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                        toast.show();
-                    }
-                });
-                break;
-            case EventBusMSG.TOAST_STORAGE_PERMISSION_REQUIRED:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.please_grant_storage_permission, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                         toast.show();
                     }

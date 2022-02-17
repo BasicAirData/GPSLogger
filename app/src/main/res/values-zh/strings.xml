@@ -112,13 +112,11 @@
     <string name="card_menu_share">分享</string>
     <string name="card_menu_edit">编辑详细信息</string>
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">您是否还想删除所选轨道的所有导出文件？</string>
     <string name="card_message_delete_confirmation">您确定要删除已选择的轨迹？</string>
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="cancel">取消</string>
     <string name="export_unable_to_write_file">无法写入到文件</string>
-    <string name="please_grant_storage_permission">请授予存储权限以启用此功能</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">本应用在后台记录过程中被终止。</string>
     <string name="dlg_app_killed_description">请检查安卓设置，确保本应用不被电量优化或后台限制。</string>
@@ -161,7 +159,6 @@
     <string name="pref_EGM96AltitudeCorrection_summary">基于NGA地球大地水准面模型的自动高度校正</string>
     <string name="pref_EGM96AltitudeCorrection_download_progress">下载2028kb文件:\nEGM96大地水准面高度表。</string>
     <string name="pref_AltitudeCorrection">手动校正</string>
-    <string name="pref_AltitudeCorrection_summary_offset">偏移：</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">未定义偏移量</string>
     <string name="pref_category_exporting">导出设置</string>
     <string name="pref_export_TXT">以TXT格式导出轨迹</string>
@@ -187,7 +184,7 @@
     <string name="toast_no_browser_installed">未安装互联网浏览器</string>
     <!-- About Dialog -->
     <string name="about_version">版本</string>
-    <string name="about_description">版权所有(C)2016 BasicAirData \nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger使用GPS记录您的轨迹。您可以在喜欢的查看器中查看它们，并以KML，GPX和TXT格式将它们分享，导出到设备的GPSLogger文件夹中。\n\n此程序是免费软件，根据GNU通用公共许可证条款发布。\n有关详细信息，请参阅：http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description">版权所有 © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger使用GPS记录您的轨迹。您可以在喜欢的查看器中查看它们，并以KML，GPX和TXT格式将它们分享，导出到设备的GPSLogger文件夹中。\n\n此程序是免费软件，根据GNU通用公共许可证条款发布。\n有关详细信息，请参阅：https://www.gnu.org/licenses/gpl.txt</string>
     <string name="about_description_googleplaystore">如果您喜欢使用此应用程序，请花点时间在Google Store中为GPS Logger评分。</string>
     <string name="about_ok">关闭</string>
     <string name="about_rate_this_app">评价此应用</string>

@@ -133,13 +133,11 @@
     <string name="card_menu_edit">Edit details</string>
 
     <!-- Tracklist toasts and messagebox -->
-    <string name="card_message_delete_also_exported">Do you also want to delete all exported files of the selected tracks?</string>
     <string name="card_message_delete_confirmation">Do you really want to delete the selected tracks?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <string name="export_unable_to_write_file">Unable to write the file</string>
-    <string name="please_grant_storage_permission">Please grant the Storage Permission to enable this Feature</string>
 
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">The App has been killed during background recording.</string>
@@ -188,7 +186,6 @@
     <string name="pref_EGM96AltitudeCorrection_summary">Automatic altitude correction, based on NGA Earth Geoid Model</string>
     <string name="pref_EGM96AltitudeCorrection_download_progress">Downloading 2028kB file:\nEGM96 Geoid Heights..</string>
     <string name="pref_AltitudeCorrection">Manual Correction</string>
-    <string name="pref_AltitudeCorrection_summary_offset">Offset</string>
     <string name="pref_AltitudeCorrection_summary_not_defined">No offset defined</string>
 
     <string name="pref_category_exporting">EXPORTATION</string>
@@ -217,7 +214,7 @@
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
-    <string name="about_description">Copyright (C) 2016 BasicAirData\nhttp://www.basicairdata.eu\n\nBasicAirData GPS Logger records your tracks using GPS. You can view them in your preferred viewer, share, and export them in GPSLogger folder of your device in KML, GPX, and TXT format.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: http://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger records your tracks using GPS. You can view them in your preferred viewer, share, and export them to your device in KML, GPX, and TXT format.\n\nThis program is free software, released under the terms of the GNU General Public License.\nFor more details see: https://www.gnu.org/licenses/gpl.txt</string>
     <string name="about_description_googleplaystore">If You enjoy using this app, please take a moment to rate GPS Logger in the Google Play Store.</string>
     <string name="about_ok">Close</string>
     <string name="about_rate_this_app">Rate this App</string>

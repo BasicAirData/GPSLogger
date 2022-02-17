@@ -21,7 +21,6 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,9 +30,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
@@ -288,15 +285,6 @@ public class FragmentTracklist extends Fragment {
             }
             return;
         }
-        // TODO: Manage Android 4 storage permission
-//        if (msg == EventBusMSG.ACTION_BULK_EXPORT_TRACKS) {
-//            GPSApplication.getInstance().loadJob(GPSApplication.JOB_TYPE_EXPORT);
-//            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                checkStoragePermission();   // Ask for storage permission
-//            } else GPSApplication.getInstance().executeJob();
-//            GPSApplication.getInstance().deselectAllTracks();
-//            return;
-//        }
         if (msg == EventBusMSG.ACTION_BULK_DELETE_TRACKS) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(getResources().getString(R.string.card_message_delete_confirmation));
@@ -426,31 +414,6 @@ public class FragmentTracklist extends Fragment {
                 //Log.w("myApp", "[#] FragmentTracklist.java - Unable to start the Activity");
             }
         }
-    }
-
-    /**
-     * Checks the permission to access the External Storage.
-     */
-    public boolean checkStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission GRANTED");
-            return true;    // Permission Granted
-        } else {
-            Log.w("myApp", "[#] FragmentTracklist.java - WRITE_EXTERNAL_STORAGE = Permission DENIED");
-            List<String> listPermissionsNeeded = new ArrayList<>();
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-    }
-
-    /**
-     * @return true if a specified file exists
-     */
-    private boolean fileExists(String filename) {
-        File file = new File(filename);
-        return file.exists ();
     }
 
     /**
