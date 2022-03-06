@@ -282,14 +282,9 @@ public class GPSActivity extends AppCompatActivity {
                     if (perms.containsKey(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                             Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_GRANTED; setGPSLocationUpdates!");
-//                            gpsApp.setGPSLocationUpdates(false);
-//                            gpsApp.setGPSLocationUpdates(true);
-//                            gpsApp.updateGPSLocationFrequency();
-
-                            // Enables the GPS Location Updates after a 500ms delay from Permission Result.
-                            // It tries to fix a java.lang.RuntimeException bug that affects
-                            // "Tecno" branded devices with Android 8.1 (SDK 27): https://github.com/BasicAirData/GPSLogger/issues/162
-                            gpsApp.delayedActivationOfGPSUpdates();
+                            gpsApp.setGPSLocationUpdates(false);
+                            gpsApp.setGPSLocationUpdates(true);
+                            gpsApp.updateGPSLocationFrequency();
                         } else {
                             Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_DENIED");
                         }
@@ -564,14 +559,16 @@ public class GPSActivity extends AppCompatActivity {
     public void checkLocationPermission() {
         Log.w("myApp", "[#] GPSActivity.java - Check Location Permission...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Log.w("myApp", "[#] GPSActivity.java - Location Permission granted");
+            Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission granted");
             // Permission Granted
         } else {
-            Log.w("myApp", "[#] GPSActivity.java - Location Permission denied");
+            Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission denied");
             boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
-            if (showRationale || !gpsApp.isLocationPermissionChecked()) {
-                Log.w("myApp", "[#] GPSActivity.java - Location Permission denied, need new check");
+            if (showRationale || !gpsApp.isLocationPermissionChecked()
+                    || (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+                Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission denied, need new check");
                 List<String> listPermissionsNeeded = new ArrayList<>();
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
                 listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
             }

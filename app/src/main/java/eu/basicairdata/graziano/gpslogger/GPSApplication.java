@@ -256,17 +256,6 @@ public class GPSApplication extends Application implements LocationListener {
         }
     };
 
-    // The Handler that switches on the location updates after a time delay:
-    private final Handler enableLocationUpdatesHandler = new Handler();
-    private final Runnable enableLocationUpdatesRunnable = new Runnable() {
-        @Override
-        public void run() {
-            setGPSLocationUpdates(false);
-            setGPSLocationUpdates(true);
-            updateGPSLocationFrequency();
-        }
-    };
-
     // The Handler that sets the GPS Status to GPS_TEMPORARYUNAVAILABLE
     private final Handler gpsUnavailableHandler = new Handler();
     private final Runnable gpsUnavailableRunnable = new Runnable() {
@@ -1265,16 +1254,6 @@ public class GPSApplication extends Application implements LocationListener {
         isScreenOn = true;
         EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
         EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-    }
-
-    /**
-     * Enables the GPS Location Updates after a 500ms delay from Permission Result.
-     * It tries to fix a java.lang.RuntimeException bug that affects
-     * "Tecno" branded devices with Android 8.1 (SDK 27): https://github.com/BasicAirData/GPSLogger/issues/162
-     */
-    public void delayedActivationOfGPSUpdates() {
-        enableLocationUpdatesHandler.removeCallbacks(enableLocationUpdatesRunnable);
-        enableLocationUpdatesHandler.postDelayed(enableLocationUpdatesRunnable, 500);
     }
 
     /**
