@@ -568,6 +568,7 @@ public class GPSActivity extends AppCompatActivity {
                     || (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
                 Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission denied, need new check");
                 List<String> listPermissionsNeeded = new ArrayList<>();
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
                 listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
