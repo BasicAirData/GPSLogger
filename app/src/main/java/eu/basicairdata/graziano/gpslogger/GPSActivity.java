@@ -106,12 +106,14 @@ public class GPSActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         viewPager = findViewById(R.id.id_viewpager);
         viewPager.setOffscreenPageLimit(3);
+        viewPager.setFocusable(false);
 
         setupViewPager(viewPager);
 
         tabLayout = findViewById(R.id.id_tablayout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setFocusable(false);
 
         tabLayout.addOnTabSelectedListener(
                 new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
@@ -127,6 +129,7 @@ public class GPSActivity extends AppCompatActivity {
         bottomSheet = findViewById(R.id.id_bottomsheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(false);
+        bottomSheet.setFocusable(false);
     }
 
     @Override

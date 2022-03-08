@@ -630,7 +630,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public boolean isPlacemarkRequested() { return isPlacemarkRequested; }
 
-    public void setPlacemarkRequested(boolean placemarkRequested) { this.isPlacemarkRequested = placemarkRequested; }
+    public void setPlacemarkRequested(boolean placemarkRequested) {
+        this.isPlacemarkRequested = placemarkRequested;
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+    }
 
     public boolean isBottomBarLocked() {
         return isBottomBarLocked;
@@ -638,6 +641,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setBottomBarLocked(boolean locked) {
         isBottomBarLocked = locked;
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
     }
 
     public List<Track> getTrackList() {
