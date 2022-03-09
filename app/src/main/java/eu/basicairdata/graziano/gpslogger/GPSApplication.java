@@ -190,6 +190,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     private String placemarkDescription = "";                    // The description of the Placemark (annotation) set by PlacemarkDialog
     private boolean isPlacemarkRequested;                        // True if the user requested to add a placemark (Annotation)
+    private boolean isQuickPlacemarkRequest;                     // True if the user requested to add a placemark in a quick way (no annotation dialog)
     private boolean isRecording;                                 // True if the recording is active
     private boolean isBottomBarLocked;                           // True if the bottom bar is locked
     private boolean isGPSLocationUpdatesActive;                  // True if the Location Manager is active (is requesting FIXes)
@@ -633,6 +634,10 @@ public class GPSApplication extends Application implements LocationListener {
     public void setPlacemarkRequested(boolean placemarkRequested) {
         this.isPlacemarkRequested = placemarkRequested;
         EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+    }
+
+    public void setQuickPlacemarkRequest(boolean quickPlacemarkRequest) {
+        isQuickPlacemarkRequest = quickPlacemarkRequest;
     }
 
     public boolean isBottomBarLocked() {
@@ -1101,7 +1106,14 @@ public class GPSApplication extends Application implements LocationListener {
                     currentPlacemark.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
                     isPlacemarkRequested = false;
                     EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-                    EventBus.getDefault().post(EventBusMSG.REQUEST_ADD_PLACEMARK);
+                    if (!isQuickPlacemarkRequest) {
+                        // Shows the dialog for placemark creation
+                        EventBus.getDefault().post(EventBusMSG.REQUEST_ADD_PLACEMARK);
+                    } else {
+                        // Create a placemark, with an empty description, without showing the dialog
+                        setPlacemarkDescription("");
+                        EventBus.getDefault().post(EventBusMSG.ADD_PLACEMARK);
+                    }
                 }
                 prevFix = eloc;
                 isFirstFixFound = true;

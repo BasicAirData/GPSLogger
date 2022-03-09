@@ -92,7 +92,16 @@ public class FragmentRecordingControls extends Fragment {
         tvAnnotateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                gpsApp.setQuickPlacemarkRequest(false);
                 onRequestAnnotation();
+            }
+        });
+        tvAnnotateButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                gpsApp.setQuickPlacemarkRequest(true);
+                onRequestAnnotation();
+                return true;
             }
         });
         tvRecordButton = view.findViewById(R.id.id_record);
