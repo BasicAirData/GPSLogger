@@ -21,7 +21,9 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import static android.view.KeyEvent.KEYCODE_P;
 import static android.view.KeyEvent.KEYCODE_R;
+import static android.view.KeyEvent.KEYCODE_T;
 
 import android.Manifest;
 import android.app.Activity;
@@ -233,27 +235,33 @@ public class GPSActivity extends AppCompatActivity {
         Log.w("myApp", "[#] onKeyShortcut");
         switch (keyCode) {
             case KEYCODE_R:
+                // Start Recording
+                if (!gpsApp.isStopButtonFlag() && !gpsApp.isRecording())
+                    gpsApp.setRecording(true);
+                return true;
+            case KEYCODE_P:
+                // Pause Recording
+                if (!gpsApp.isStopButtonFlag() && gpsApp.isRecording())
+                    gpsApp.setRecording(false);
+                return true;
+            case KEYCODE_T:
                 // Toggle Recording
                 if (!gpsApp.isStopButtonFlag())
                     gpsApp.setRecording(!gpsApp.isRecording());
                 return true;
+
             case KeyEvent.KEYCODE_A:
                 // Request an Annotation, with dialog
                 if (!gpsApp.isStopButtonFlag()) {
                     gpsApp.setQuickPlacemarkRequest(false);
-                    gpsApp.setPlacemarkRequested(!gpsApp.isPlacemarkRequested());
+                    gpsApp.setPlacemarkRequested(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_Q:
                 // Request a quick Annotation, without dialog
                 if (!gpsApp.isStopButtonFlag()) {
-                    if (!gpsApp.isPlacemarkRequested()) {
-                        gpsApp.setQuickPlacemarkRequest(true);
-                        gpsApp.setPlacemarkRequested(true);
-                    } else {
-                        gpsApp.setQuickPlacemarkRequest(false);
-                        gpsApp.setPlacemarkRequested(false);
-                    }
+                    gpsApp.setQuickPlacemarkRequest(true);
+                    gpsApp.setPlacemarkRequested(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_S:
