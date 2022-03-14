@@ -22,6 +22,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -32,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.os.Vibrator;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +60,8 @@ public class FragmentRecordingControls extends Fragment {
     private TextView tvRecordButton;
     final GPSApplication gpsApp = GPSApplication.getInstance();
 
+    Vibrator vibrator;
+
     public FragmentRecordingControls() {
         // Required empty public constructor
     }
@@ -71,6 +75,8 @@ public class FragmentRecordingControls extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recording_controls, container, false);
+
+        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
 
         tvLockButton = view.findViewById(R.id.id_lock);
         tvLockButton.setOnClickListener(new View.OnClickListener() {
@@ -100,9 +106,11 @@ public class FragmentRecordingControls extends Fragment {
         tvAnnotateButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                gpsApp.setQuickPlacemarkRequest(true);
-                if (isAdded())
+                if (isAdded()) {
+                    vibrator.vibrate(150);
+                    gpsApp.setQuickPlacemarkRequest(true);
                     ((GPSActivity) getActivity()).onRequestAnnotation();
+                }
                 return true;
             }
         });
