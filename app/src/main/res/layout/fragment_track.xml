@@ -172,7 +172,7 @@
                     android:id="@+id/id_textView_Duration"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearanceLargeNumbers" />
 
