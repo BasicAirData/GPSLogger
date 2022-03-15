@@ -102,7 +102,7 @@ public class FragmentRecordingControls extends Fragment {
             @Override
             public boolean onLongClick(View v) {
                 if (isAdded()) {
-                    vibrator.vibrate(150);
+                    if (!gpsApp.isBottomBarLocked()) vibrator.vibrate(150);
                     gpsApp.setQuickPlacemarkRequest(true);
                     ((GPSActivity) getActivity()).onRequestAnnotation();
                 }
