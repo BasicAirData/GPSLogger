@@ -92,7 +92,7 @@
         </provider>
 
         <receiver android:name=".ActionsBroadcastReceiver"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
             </intent-filter>
