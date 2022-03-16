@@ -104,7 +104,8 @@ public class FragmentRecordingControls extends Fragment {
                 if (isAdded()) {
                     if (!gpsApp.isBottomBarLocked()) vibrator.vibrate(150);
                     gpsApp.setQuickPlacemarkRequest(true);
-                    ((GPSActivity) getActivity()).onRequestAnnotation();
+                    if (!gpsApp.isPlacemarkRequested())
+                        ((GPSActivity) getActivity()).onRequestAnnotation();
                 }
                 return true;
             }
