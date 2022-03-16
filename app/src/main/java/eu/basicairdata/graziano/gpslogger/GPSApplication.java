@@ -257,6 +257,18 @@ public class GPSApplication extends Application implements LocationListener {
         }
     };
 
+    // The Handler that try to enable location updates after a time delay.
+    // It is used when the GPS provider is not available, to periodically check
+    // if there is a new one available (for example when a Bluetooth GPS antenna is connected)
+    private final Handler enableLocationUpdatesHandler = new Handler();
+    private final Runnable enableLocationUpdatesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setGPSLocationUpdates(false);
+            setGPSLocationUpdates(true);
+        }
+    };
+
     // The Handler that sets the GPS Status to GPS_TEMPORARYUNAVAILABLE
     private final Handler gpsUnavailableHandler = new Handler();
     private final Runnable gpsUnavailableRunnable = new Runnable() {
@@ -1278,7 +1290,8 @@ public class GPSApplication extends Application implements LocationListener {
      * @param state Tne state of GPS Location Updates: true = enabled; false = disabled.
      */
     public void setGPSLocationUpdates (boolean state) {
-        // Request permissions = https://developer.android.com/training/permissions/requesting.html
+        enableLocationUpdatesHandler.removeCallbacks(enableLocationUpdatesRunnable);
+
         if (!state && !isRecording() && isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             gpsStatus = GPS_SEARCHING;
@@ -1289,12 +1302,25 @@ public class GPSApplication extends Application implements LocationListener {
         }
         if (state && !isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            gpsStatusListener.enable();
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this); // Requires Location update
-            isGPSLocationUpdatesActive = true;
-            //Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
-            if (prefGPSupdatefrequency >= 1000) numberOfStabilizationSamples = (int) Math.ceil(STABILIZER_TIME / prefGPSupdatefrequency);
-            else numberOfStabilizationSamples = (int) Math.ceil(STABILIZER_TIME / 1000);
+            boolean enabled = false;
+            try {
+                //throw new IllegalArgumentException();
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this); // Requires Location update
+                enabled = true;
+            } catch (IllegalArgumentException e) {
+                gpsStatus = GPS_OUTOFSERVICE;
+                enableLocationUpdatesHandler.postDelayed(enableLocationUpdatesRunnable, 1000);  // Starts the switch-off handler (delayed by HandlerTimer)
+                Log.w("myApp", "[#] GPSApplication.java - unable to set GPSLocationUpdates: GPS_PROVIDER not available");
+            }
+            if (enabled) {
+                // The location updates are active!
+                gpsStatusListener.enable();
+                isGPSLocationUpdatesActive = true;
+                Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
+                if (prefGPSupdatefrequency >= 1000)
+                    numberOfStabilizationSamples = (int) Math.ceil(STABILIZER_TIME / prefGPSupdatefrequency);
+                else numberOfStabilizationSamples = (int) Math.ceil(STABILIZER_TIME / 1000);
+            }
         }
     }
 
