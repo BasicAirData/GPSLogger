@@ -21,10 +21,6 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-import static android.view.KeyEvent.KEYCODE_P;
-import static android.view.KeyEvent.KEYCODE_R;
-import static android.view.KeyEvent.KEYCODE_T;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -234,17 +230,17 @@ public class GPSActivity extends AppCompatActivity {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         Log.w("myApp", "[#] onKeyShortcut");
         switch (keyCode) {
-            case KEYCODE_R:
+            case KeyEvent.KEYCODE_R:
                 // Start Recording
                 if (!gpsApp.isStopButtonFlag() && !gpsApp.isRecording())
                     gpsApp.setRecording(true);
                 return true;
-            case KEYCODE_P:
+            case KeyEvent.KEYCODE_P:
                 // Pause Recording
                 if (!gpsApp.isStopButtonFlag() && gpsApp.isRecording())
                     gpsApp.setRecording(false);
                 return true;
-            case KEYCODE_T:
+            case KeyEvent.KEYCODE_T:
                 // Toggle Recording
                 if (!gpsApp.isStopButtonFlag())
                     gpsApp.setRecording(!gpsApp.isRecording());
@@ -277,6 +273,13 @@ public class GPSActivity extends AppCompatActivity {
                         || gpsApp.isPlacemarkRequested()
                         || (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0))
                     onRequestStop(false, true);
+                return true;
+
+            case KeyEvent.KEYCODE_E:
+                // Open Settings Screen
+                gpsApp.setHandlerTime(60000);
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
 
             case KeyEvent.KEYCODE_L:
