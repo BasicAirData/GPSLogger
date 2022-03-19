@@ -42,6 +42,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -99,6 +101,7 @@ public class FragmentGPSFix extends Fragment {
     private CardView cvWarningBackgroundRestricted;
     private CardView cvWarningBatteryOptimised;
     private LinearLayout llTimeSatellites;
+    private ImageView iwWarningBatteryOptimisedClose;
 
     private PhysicalData phdLatitude;
     private PhysicalData phdLongitude;
@@ -202,6 +205,10 @@ public class FragmentGPSFix extends Fragment {
         tlTime = view.findViewById(R.id.id_TableLayout_Time);
         tlSatellites = view.findViewById(R.id.id_TableLayout_Satellites);
 
+        // ImageViews
+
+        iwWarningBatteryOptimisedClose = view.findViewById(R.id.id_warning_battery_optimised_close);
+
         // LinearLayouts
         llTimeSatellites = view.findViewById(R.id.id_linearLayout_Time_Satellites);
 
@@ -221,6 +228,14 @@ public class FragmentGPSFix extends Fragment {
                         // Unable to open Intent
                     }
                 }
+            }
+        });
+
+        iwWarningBatteryOptimisedClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gpsApp.setBatteryOptimisedWarningVisible(false);
+                update();
             }
         });
 
@@ -423,7 +438,9 @@ public class FragmentGPSFix extends Fragment {
                     cvWarningBackgroundRestricted.setVisibility(View.GONE);
                 }
 
-                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && !powerManager.isIgnoringBatteryOptimizations(gpsApp.getPackageName())) {
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        && !powerManager.isIgnoringBatteryOptimizations(gpsApp.getPackageName())
+                        && gpsApp.isBatteryOptimisedWarningVisible()) {
                     cvWarningBatteryOptimised.setVisibility(View.VISIBLE);
                 } else {
                     cvWarningBatteryOptimised.setVisibility(View.GONE);

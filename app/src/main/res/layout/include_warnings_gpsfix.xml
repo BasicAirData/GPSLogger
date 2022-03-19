@@ -153,6 +153,21 @@
             android:gravity="center_vertical"
             android:layout_gravity="bottom"/>
 
+        <ImageView
+            android:id="@+id/id_warning_battery_optimised_close"
+            android:layout_margin="4dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginRight="25dp"
+            android:src="@drawable/ic_close_24"
+            android:alpha="0.4"
+            android:maxWidth="14dp"
+            android:maxHeight="14dp"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:layout_gravity="top|end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>

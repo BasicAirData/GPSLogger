@@ -164,6 +164,7 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean isMockProvider;                              // True if the location is from mock provider
     private boolean isScreenOn                  = true;          // True if the screen of the device is ON
     private boolean isBackgroundActivityRestricted;              // True if the App is Background Restricted
+    private boolean isBatteryOptimisedWarningVisible = true;     // True if the App shows the warning when the battery optimisation is active
 
     private LocationExtended prevFix            = null;          // The previous fix
     private LocationExtended prevRecordedFix    = null;          // The previous recorded fix
@@ -675,6 +676,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public boolean isBackgroundActivityRestricted() {
         return isBackgroundActivityRestricted;
+    }
+
+    public boolean isBatteryOptimisedWarningVisible() {
+        return isBatteryOptimisedWarningVisible;
+    }
+
+    public void setBatteryOptimisedWarningVisible(boolean batteryOptimisedWarningVisible) {
+        isBatteryOptimisedWarningVisible = batteryOptimisedWarningVisible;
     }
 
     public int getJobProgress() {
