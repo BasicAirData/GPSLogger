@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ strings.xml
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <!-- Tabs -->
+    <string name="tab_gpsfix">GPS Fix</string>
+    <string name="tab_track">Ίχνος</string>
+    <string name="tab_tracklist">Ίχνη</string>
+    <!-- GPS Fix -->
+    <string name="latitude">Γεωγρ. Πλάτος</string>
+    <string name="longitude">Γεωγρ. Μήκος</string>
+    <string name="altitude">Υψόμετρο</string>
+    <string name="speed">Ταχύτητα</string>
+    <string name="direction">Κατεύθυνση</string>
+    <string name="accuracy">Ακρίβεια</string>
+    <string name="time">Χρόνος</string>
+    <string name="satellites">Δορυφόροι</string>
+    <string name="north">Β</string>
+    <string name="north_northeast">ΒΒΑ</string>
+    <string name="northeast">ΒΑ</string>
+    <string name="east_northeast">ΑΒΑ</string>
+    <string name="east">Α</string>
+    <string name="east_southeast">ΑΝΑ</string>
+    <string name="southeast">ΝΑ</string>
+    <string name="south_southeast">ΝΝΑ</string>
+    <string name="south">Ν</string>
+    <string name="south_southwest">ΝΝΔ</string>
+    <string name="southwest">ΝΔ</string>
+    <string name="west_southwest">ΔΝΔ</string>
+    <string name="west">Δ</string>
+    <string name="west_northwest">ΔΒΔ</string>
+    <string name="northwest">ΒΔ</string>
+    <string name="north_northwest">ΒΒΔ</string>
+    <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPS μη προσβάσιμο</string>
+    <string name="gps_disabled">GPS  απενεργοποιημένο</string>
+    <string name="gps_out_of_service">GPS εκτός λειτουργίας</string>
+    <string name="gps_searching">Αναζήτηση για GPS</string>
+    <string name="gps_stabilizing">Σταθεροποίηση σήματος</string>
+    <string name="warning_location_denied">Η εφαρμογή δεν μπορεί να έχει πρόσβαση στην τοποθεσία</string>
+    <string name="warning_background_restricted">Η εφαρμογή δεν μπορεί να λειτουργήσει στο παρασκήνιο.\nΚάντε κλικ εδώ για να μεταβείτε στις ρυθμίσεις συστήματος όπου, στην ενότητα μπαταρίας, μπορείτε να επιτρέψετε τη δραστηριότητα στο παρασκήνιο</string>
+    <string name="warning_enable_location_service">Ο αισθητήρας GPS είναι απενεργοποιημένος.\nΚάντε κλικ εδώ για να μεταβείτε στις Ρυθμίσεις Συστήματος, όπου μπορείτε να ενεργοποιήσετε την Υπηρεσία Τοποθεσίας και να ορίσετε μια μέθοδο εντοπισμού που χρησιμοποιεί τον αισθητήρα GPS</string>
+    <!-- Track -->
+    <string name="track_id">Ίχνος</string>
+    <string name="duration">Διάρκεια</string>
+    <string name="max_speed">Μέγ. Ταχύτητα</string>
+    <string name="average_speed">Μέση Ταχύτητα</string>
+    <string name="distance">Απόσταση</string>
+    <string name="overall_direction">Γεν. Κατ/νση</string>
+    <string name="altitude_gap">Κενά Ύψους</string>
+    <!-- Track Status message -->
+    <string name="track_empty">Νέο ίχνος</string>
+    <string name="track_start_with_button_below">Ξεκινήστε την εγγραφή σημείων παρακολούθησης\nή προσθέστε μια ένδειξη\nχρησιμοποιώντας ένα από τα παρακάτω κουμπιά</string>
+    <!-- Recording buttons (bottom side) -->
+    <string name="record">Καταγραφή</string>
+    <string name="pause">Παύση</string>
+    <string name="annotate">Σημείωση</string>
+    <string name="stop">Διακοπή</string>
+    <string name="lock">Κλείδωμα</string>
+    <string name="unlock">Ξεκλείδωμα</string>
+    <string name="finalize_track">Τερματισμός Ίχνους</string>
+    <string name="toast_bottom_bar_locked">Η κάτω μπάρα κλείδωσε</string>
+    <string name="toast_nothing_to_save">Τίποτα για αποθήκευση</string>
+    <string name="toast_recording_when_gps_found">Η εγγραφή θα ξεκινήσει όταν βρεθεί το σήμα GPS</string>
+    <string name="toast_annotate_when_gps_found">Η εγγραφή θα ξεκινήσει όταν βρεθεί το σήμα GPS</string>
+    <string name="ok">ΟΚ</string>
+    <string name="annotations">Σημειώσεις</string>
+    <string name="trackpoints">Ιχνοσημεία</string>
+    <!-- Main menu -->
+    <string name="menu_settings">Ρυθμίσεις</string>
+    <string name="toast_track_saved_into_tracklist">ϊχνος αποθηκευμένο στη Λίστα</string>
+    <string name="toast_track_exported">Τα Ίχνη εξήχθησαν στο φάκελο \"%1$s\"</string>
+    <string name="menu_about">Σχετικά με</string>
+    <string name="menu_online_help">Online βοήθεια</string>
+    <string name="menu_shutdown">Τερματισμός</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Προσθήκη σημείωσης</string>
+    <string name="dlg_enter_the_description">Εισάγετε την περιγραφή</string>
+    <string name="dlg_button_add">Προσθήκη</string>
+    <!-- Tracklist -->
+    <string name="tracklist_empty">Άδεια Λίστα</string>
+    <string name="card_trackinfo_length">Μήκος</string>
+    <string name="card_trackinfo_duration">Διάρκεια</string>
+    <string name="card_trackinfo_altitude_gap">Alt gap</string>
+    <string name="card_trackinfo_max_speed">Μεγ. ταχ.</string>
+    <string name="card_trackinfo_average_speed">Μεσ. ταχ.</string>
+    <string name="card_trackinfo_geopoints">Σημεία</string>
+    <string name="card_trackinfo_annotations">Σημ.</string>
+    <!-- Context menu of Tracklist -->
+    <string name="card_menu_export">Εξαγωγή</string>
+    <string name="card_menu_view_selector">Προβολή σε ...</string>
+    <string name="card_menu_view">Προβολή σε %1$s</string>
+    <string name="card_menu_delete">Διαγραφή</string>
+    <string name="card_menu_share">Κοινή χρήση με ...</string>
+    <string name="card_menu_edit">Επεξεργασία λεπτομερειών</string>
+    <!-- Tracklist toasts and messagebox -->
+    <string name="card_message_delete_confirmation">Θέλετε πραγματικά να διαγράψετε τα επιλεγμένα ίχνη;</string>
+    <string name="yes">Ναι</string>
+    <string name="no">Όχι</string>
+    <string name="cancel">Ακύρωση</string>
+    <string name="export_unable_to_write_file">Δεν είναι δυνατή η εγγραφή του αρχείου</string>
+    <!-- Notification App killed messagebox -->
+    <string name="dlg_app_killed">Η εφαρμογή έχει τερματιστεί κατά την εγγραφή στο παρασκήνιο.</string>
+    <string name="dlg_app_killed_description">Παρακαλώ ελέγξτε στις Ρυθμίσεις Android οτι δεν eίναι ενεργή η βελτιστοποίηση Μπαταρίας ούτε ο περιορισμός λειτουργίας στο Παρασκήνιο</string>
+    <string name="open_android_app_settings">Άνοιγμα Ρυθμίσεων</string>
+    <!-- Preferences -->
+    <string name="pref_category_interface">ΔΙΕΠΑΦΗ</string>
+    <string name="pref_keep_screen_on">Διατήρηση Οθόνης Ενεργής</string>
+    <string name="pref_keep_screen_on_summary">Η μπαταρία εξαντλείται γρηγορότερα</string>
+    <string name="pref_color_theme">Χρώμα Θέματος</string>
+    <string name="pref_color_theme_dark">Σκοτεινό</string>
+    <string name="pref_color_theme_light">Φωτεινό</string>
+    <string name="pref_show_decimal_coordinates">Εμφάνιση Δεκαδικών Συντεταγμένων</string>
+    <string name="pref_show_decimal_coordinates_summary">Κλασματικό μέρος με δεκαδική σημειογραφία</string>
+    <string name="pref_show_gps_time_local">Εμφάνιση ώρας GPS στην τοπική ζώνη ώρας</string>
+    <string name="pref_show_gps_time_local_summary">αντί για καθολική ώρα GPS</string>
+    <string name="pref_show_directions">Εμφάνιση κατεύθυνσης χρησιμοποιώντας</string>
+    <string name="pref_show_directions_angle">Βαθμοί Ανατολικά του Βορρά</string>
+    <string name="pref_show_directions_cardinal">Τεταρτημοριακοί Πόντοι</string>
+    <string name="pref_unit_of_measurement">Σύστημα Μέτρησης</string>
+    <string name="pref_unit_of_measurement_metric">Μετρικό</string>
+    <string name="pref_unit_of_measurement_imperial">Αγγλοσαξωνικό</string>
+    <string name="pref_unit_of_measurement_aerial_nautical">Αεροναυτικό / Ναυτικό</string>
+    <string name="pref_unit_of_measurement_speed">Προβολή Ταχυτήτων σε</string>
+    <string name="pref_exportation_folder">Φάκελος Τοπικής Εξαγωγής</string>
+    <string name="pref_not_set">Μη ορισμένο</string>
+    <string name="pref_track_viewer">Προβολέας Ίχνους</string>
+    <string name="pref_track_viewer_not_installed">Δεν υπάρχει εγκατεστημένος προβολέας GPX/KML</string>
+    <string name="pref_track_viewer_select_every_time">Ερώτηση κάθε φορά</string>
+    <string name="pref_category_tracking">ΚΑΤΑΓΡΑΦΗ</string>
+    <string name="pref_GPS_distance_filter">Φίλτρο Απόστασης</string>
+    <string name="pref_GPS_interval_filter">Φίλτρο Διαστήματος</string>
+    <string name="pref_GPS_filter_disabled">Απενεργοποιημένο</string>
+    <string name="pref_GPS_update_frequency">Ρυθμός Ανανέωσης GPS</string>
+    <string name="pref_GPS_update_frequency_max">Το συντομότερο δυνατό</string>
+    <string name="pref_GPS_update_frequency_1s">1 δευτερόλεπτο (καλύτερη ακρίβεια)</string>
+    <string name="pref_GPS_update_frequency_2s">2 δευτερόλεπτα</string>
+    <string name="pref_GPS_update_frequency_3s">3 δευτερόλεπτα (λιγότερο ακριβές)</string>
+    <string name="pref_category_altitude_corrections">ΔΙΟΡΘΩΣΕΙΣ ΥΨΟΜΕΤΡΟΥ</string>
+    <string name="pref_EGM96AltitudeCorrection">Διόρθωση EGM96</string>
+    <string name="pref_EGM96AltitudeCorrection_summary">Αυτόματη διόρθωση υψομέτρου, βασισμένη στο NGA Earth Geoid Model</string>
+    <string name="pref_EGM96AltitudeCorrection_download_progress">Λήψη 2028kB file:\nEGM96 Geoid Heights..</string>
+    <string name="pref_AltitudeCorrection">Χειροκίνητη Διόρθωση</string>
+    <string name="pref_AltitudeCorrection_summary_not_defined">Δεν έχει οριστεί μετατόπιση</string>
+    <string name="pref_category_exporting">ΕΞΑΓΩΓΗ</string>
+    <string name="pref_export_TXT">Εξαγωγή Ιχνών σε TXT</string>
+    <string name="pref_export_TXT_summary">Απλό κείμενο, τιμές διαχωρισμένες με κόμμα</string>
+    <string name="pref_export_KML">Εξαγωγή Ιχνών σε KML</string>
+    <string name="pref_export_KML_summary">Keyhole Markup Language (v.2.2)</string>
+    <string name="pref_export_GPX">Εξαγωγή Ιχνών σε GPX</string>
+    <string name="pref_export_GPX_summary">Πρότυπο Μορφής GPS eXchange</string>
+    <string name="pref_GPX_version">Έκδοση Προτύπου του GPX</string>
+    <string name="pref_GPX_version_1_0">GPX 1.0</string>
+    <string name="pref_GPX_version_1_1">GPX 1.1</string>
+    <string name="pref_KML_altitude_mode">Λειτουργία υψομέτρου KML</string>
+    <string name="pref_KML_altitude_mode_absolute">Απόλυτο</string>
+    <string name="pref_KML_altitude_mode_projected">Προβεβλημένο στο Έδαφος</string>
+    <string name="pref_track_stats">Παρακολούθηση Στατιστικών με βάση</string>
+    <string name="pref_track_stats_totaltime">Συνολικός χρόνος</string>
+    <string name="pref_track_stats_movingtime">Χρόνος σε Κίνηση</string>
+    <!-- Preferences toasts -->
+    <string name="toast_download_error">Σφάλμα λήψης</string>
+    <string name="toast_download_completed">Λήψη ολοκληρώθηκε</string>
+    <string name="toast_download_failed">Λήψη απέτυχε. Δοκιμάστε ξανά αργότερα</string>
+    <string name="toast_active_track_not_empty">Το ενεργό ίχνος δεν είναι κενό</string>
+    <string name="toast_no_browser_installed">Δεν έχει εγκατασταθεί πρόγραμμα περιήγησης στο Internet</string>
+    <!-- About Dialog -->
+    <string name="about_version">έκδ.</string>
+    <string name="about_description">Πνευματικά δικαιώματα © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger καταγράφει τα ίχνη σας χρησιμοποιώντας GPS. Μπορείτε να τα δείτε στον προβολέα που προτιμάτε, να τα μοιραστείτε και να τα εξάγετε στη συσκευή σας σε μορφή KML, GPX και TXT.\n\nΑυτό το πρόγραμμα είναι ελεύθερο λογισμικό, που διατίθεται σύμφωνα με τους όρους της Γενικής Άδειας Δημόσιας Χρήσης GNU.\nΓια περισσότερες λεπτομέρειες δείτε εδώ: https://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Αν σας αρέσει να χρησιμοποιείτε αυτήν την εφαρμογή, παρακαλώ αφιερώστε λίγο χρόνο για να αξιολογήσετε το GPS Logger στο Google Play Store.</string>
+    <string name="about_ok">Κλείσιμο</string>
+    <string name="about_rate_this_app">Αξιολόγηση Εφαρμ.</string>
+    <string name="about_unable_to_rate">Δεν είναι δυνατή η πρόσβαση στο Κατάστημα</string>
+    <!-- Notification icon -->
+    <string name="notification_contenttext">είναι ενεργό</string>
+    <!-- Exit confirmation -->
+    <string name="message_exit_finalizing">Κλείνετε την εφαρμογή.\nΘέλετε να οριστικοποιήσετε το τρέχον κομμάτι τώρα?</string>
+    <!-- Units of Measurement -->
+    <string name="UM_m">m</string>
+    <string name="UM_km">km</string>
+    <string name="UM_m_s">m/s</string>
+    <string name="UM_km_h">km/h</string>
+    <string name="UM_ft">ft</string>
+    <string name="UM_mi">mi</string>
+    <string name="UM_fps">fps</string>
+    <string name="UM_mph">mph</string>
+    <string name="UM_nm">NM</string>
+    <string name="UM_kn">kn</string>
+    <string name="UM_s">s</string>
+</resources>
