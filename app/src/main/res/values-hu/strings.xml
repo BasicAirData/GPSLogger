@@ -154,6 +154,7 @@
     <string name="pref_GPS_update_frequency_1s">1 másodperc (legnagyobb pontosság)</string>
     <string name="pref_GPS_update_frequency_2s">2 másodperc</string>
     <string name="pref_GPS_update_frequency_3s">3 másodperc (kevésbé pontos)</string>
+    <string name="pref_GPS_update_frequency_60s">60 másodperc (az akkumulátort kíméli)</string>
     <string name="pref_category_altitude_corrections">MAGASSÁG KORREKCIÓ</string>
     <string name="pref_EGM96AltitudeCorrection">EGM96 korrekció</string>
     <string name="pref_EGM96AltitudeCorrection_summary">Automatikus magasságkorrekció, az NGA Earth Geoid Model alapján</string>

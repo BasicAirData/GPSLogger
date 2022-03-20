@@ -28,12 +28,14 @@
         <item>@string/pref_GPS_update_frequency_1s</item>
         <item>@string/pref_GPS_update_frequency_2s</item>
         <item>@string/pref_GPS_update_frequency_3s</item>
+        <item>@string/pref_GPS_update_frequency_60s</item>
     </string-array>
     <string-array name="GPSupdatefrequencyValues">
         <item>50</item>
         <item>1000</item>
         <item>2000</item>
         <item>3000</item>
+        <item>60000</item>
     </string-array>
 
     <!-- Units of Measurement -->

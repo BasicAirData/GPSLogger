@@ -154,6 +154,7 @@
     <string name="pref_GPS_update_frequency_1s">1秒 (最佳精度)</string>
     <string name="pref_GPS_update_frequency_2s">2秒</string>
     <string name="pref_GPS_update_frequency_3s">3秒 (不太准确)</string>
+    <string name="pref_GPS_update_frequency_60s">60秒（节省电池）</string>
     <string name="pref_category_altitude_corrections">高度修正</string>
     <string name="pref_EGM96AltitudeCorrection">EGM96修正</string>
     <string name="pref_EGM96AltitudeCorrection_summary">基于NGA地球大地水准面模型的自动高度校正</string>

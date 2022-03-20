@@ -154,6 +154,7 @@
     <string name="pref_GPS_update_frequency_1s">1 seconde (meilleure précision)</string>
     <string name="pref_GPS_update_frequency_2s">2 secondes</string>
     <string name="pref_GPS_update_frequency_3s">3 secondes (précision moindre)</string>
+    <string name="pref_GPS_update_frequency_60s">60 secondes (économise la batterie)</string>
     <string name="pref_category_altitude_corrections">CORRECTIONS D’ALTITUDE</string>
     <string name="pref_EGM96AltitudeCorrection">Correction EGM96</string>
     <string name="pref_EGM96AltitudeCorrection_summary">Correction d’altitude automatique, basée sur le modèle NGA Earth Geoid</string>
