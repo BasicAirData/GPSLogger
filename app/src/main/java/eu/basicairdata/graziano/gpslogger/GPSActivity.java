@@ -36,6 +36,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -98,6 +99,7 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Log.w("myApp", "[#] " + this + " - onCreate()");
         setTheme(R.style.MyMaterialTheme);
 

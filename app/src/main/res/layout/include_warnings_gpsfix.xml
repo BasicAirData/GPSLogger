@@ -29,7 +29,8 @@
     android:animateLayoutChanges="true"
     android:orientation="vertical"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view_warning_location_denied"
@@ -145,6 +146,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/dlg_app_killed_description"
             card_view:drawableStartCompat="@drawable/ic_warning_24dp"
@@ -158,7 +161,7 @@
             android:layout_margin="4dp"
             android:layout_marginEnd="25dp"
             android:layout_marginRight="25dp"
-            android:src="@drawable/ic_close_24"
+            app:srcCompat="@drawable/ic_close_24"
             android:alpha="0.4"
             android:maxWidth="14dp"
             android:maxHeight="14dp"
