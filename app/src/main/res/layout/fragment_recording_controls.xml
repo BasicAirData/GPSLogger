@@ -29,6 +29,8 @@
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:orientation="vertical"
+    android:focusable="false"
+    android:descendantFocusability="blocksDescendants"
     tools:context="eu.basicairdata.graziano.gpslogger.FragmentRecordingControls">
 
     <LinearLayout

@@ -24,6 +24,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.basicairdata.graziano.gpslogger">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -59,7 +61,6 @@
         android:supportsRtl="true">
 
         <activity android:name=".GPSActivity"
-            android:label="@string/app_name"
             android:exported="true"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan" >
@@ -90,7 +91,8 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <receiver android:name=".ActionsBroadcastReceiver">
+        <receiver android:name=".ActionsBroadcastReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
             </intent-filter>

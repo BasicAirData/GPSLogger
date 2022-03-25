@@ -164,6 +164,7 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean isMockProvider;                              // True if the location is from mock provider
     private boolean isScreenOn                  = true;          // True if the screen of the device is ON
     private boolean isBackgroundActivityRestricted;              // True if the App is Background Restricted
+    private boolean isBatteryOptimisedWarningVisible = true;     // True if the App shows the warning when the battery optimisation is active
 
     private LocationExtended prevFix            = null;          // The previous fix
     private LocationExtended prevRecordedFix    = null;          // The previous recorded fix
@@ -190,6 +191,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     private String placemarkDescription = "";                    // The description of the Placemark (annotation) set by PlacemarkDialog
     private boolean isPlacemarkRequested;                        // True if the user requested to add a placemark (Annotation)
+    private boolean isQuickPlacemarkRequest;                     // True if the user requested to add a placemark in a quick way (no annotation dialog)
     private boolean isRecording;                                 // True if the recording is active
     private boolean isBottomBarLocked;                           // True if the bottom bar is locked
     private boolean isGPSLocationUpdatesActive;                  // True if the Location Manager is active (is requesting FIXes)
@@ -256,14 +258,15 @@ public class GPSApplication extends Application implements LocationListener {
         }
     };
 
-    // The Handler that switches on the location updates after a time delay:
+    // The Handler that try to enable location updates after a time delay.
+    // It is used when the GPS provider is not available, to periodically check
+    // if there is a new one available (for example when a Bluetooth GPS antenna is connected)
     private final Handler enableLocationUpdatesHandler = new Handler();
     private final Runnable enableLocationUpdatesRunnable = new Runnable() {
         @Override
         public void run() {
             setGPSLocationUpdates(false);
             setGPSLocationUpdates(true);
-            updateGPSLocationFrequency();
         }
     };
 
@@ -641,7 +644,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public boolean isPlacemarkRequested() { return isPlacemarkRequested; }
 
-    public void setPlacemarkRequested(boolean placemarkRequested) { this.isPlacemarkRequested = placemarkRequested; }
+    public void setPlacemarkRequested(boolean placemarkRequested) {
+        this.isPlacemarkRequested = placemarkRequested;
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+    }
+
+    public void setQuickPlacemarkRequest(boolean quickPlacemarkRequest) {
+        isQuickPlacemarkRequest = quickPlacemarkRequest;
+    }
 
     public boolean isBottomBarLocked() {
         return isBottomBarLocked;
@@ -649,6 +659,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setBottomBarLocked(boolean locked) {
         isBottomBarLocked = locked;
+        EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
     }
 
     public List<Track> getTrackList() {
@@ -665,6 +676,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public boolean isBackgroundActivityRestricted() {
         return isBackgroundActivityRestricted;
+    }
+
+    public boolean isBatteryOptimisedWarningVisible() {
+        return isBatteryOptimisedWarningVisible;
+    }
+
+    public void setBatteryOptimisedWarningVisible(boolean batteryOptimisedWarningVisible) {
+        isBatteryOptimisedWarningVisible = batteryOptimisedWarningVisible;
     }
 
     public int getJobProgress() {
@@ -1108,7 +1127,14 @@ public class GPSApplication extends Application implements LocationListener {
                     currentPlacemark.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
                     isPlacemarkRequested = false;
                     EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
-                    EventBus.getDefault().post(EventBusMSG.REQUEST_ADD_PLACEMARK);
+                    if (!isQuickPlacemarkRequest) {
+                        // Shows the dialog for placemark creation
+                        EventBus.getDefault().post(EventBusMSG.REQUEST_ADD_PLACEMARK);
+                    } else {
+                        // Create a placemark, with an empty description, without showing the dialog
+                        setPlacemarkDescription("");
+                        EventBus.getDefault().post(EventBusMSG.ADD_PLACEMARK);
+                    }
                 }
                 prevFix = eloc;
                 isFirstFixFound = true;
@@ -1268,22 +1294,13 @@ public class GPSApplication extends Application implements LocationListener {
     }
 
     /**
-     * Enables the GPS Location Updates after a 500ms delay from Permission Result.
-     * It tries to fix a java.lang.RuntimeException bug that affects
-     * "Tecno" branded devices with Android 8.1 (SDK 27): https://github.com/BasicAirData/GPSLogger/issues/162
-     */
-    public void delayedActivationOfGPSUpdates() {
-        enableLocationUpdatesHandler.removeCallbacks(enableLocationUpdatesRunnable);
-        enableLocationUpdatesHandler.postDelayed(enableLocationUpdatesRunnable, 500);
-    }
-
-    /**
      * Enables / Disables the GPS Location Updates
      *
      * @param state Tne state of GPS Location Updates: true = enabled; false = disabled.
      */
     public void setGPSLocationUpdates (boolean state) {
-        // Request permissions = https://developer.android.com/training/permissions/requesting.html
+        enableLocationUpdatesHandler.removeCallbacks(enableLocationUpdatesRunnable);
+
         if (!state && !isRecording() && isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             gpsStatus = GPS_SEARCHING;
@@ -1294,12 +1311,25 @@ public class GPSApplication extends Application implements LocationListener {
         }
         if (state && !isGPSLocationUpdatesActive
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            gpsStatusListener.enable();
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this); // Requires Location update
-            isGPSLocationUpdatesActive = true;
-            //Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
-            if (prefGPSupdatefrequency >= 1000) numberOfStabilizationSamples = (int) Math.ceil(STABILIZER_TIME / prefGPSupdatefrequency);
-            else numberOfStabilizationSamples = (int) Math.ceil(STABILIZER_TIME / 1000);
+            boolean enabled = false;
+            try {
+                //throw new IllegalArgumentException();
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, prefGPSupdatefrequency, 0, this); // Requires Location update
+                enabled = true;
+            } catch (IllegalArgumentException e) {
+                gpsStatus = GPS_OUTOFSERVICE;
+                enableLocationUpdatesHandler.postDelayed(enableLocationUpdatesRunnable, 1000);  // Starts the switch-off handler (delayed by HandlerTimer)
+                Log.w("myApp", "[#] GPSApplication.java - unable to set GPSLocationUpdates: GPS_PROVIDER not available");
+            }
+            if (enabled) {
+                // The location updates are active!
+                gpsStatusListener.enable();
+                isGPSLocationUpdatesActive = true;
+                Log.w("myApp", "[#] GPSApplication.java - setGPSLocationUpdates = true");
+                if (prefGPSupdatefrequency >= 1000)
+                    numberOfStabilizationSamples = (int) Math.ceil(STABILIZER_TIME / prefGPSupdatefrequency);
+                else numberOfStabilizationSamples = (int) Math.ceil(STABILIZER_TIME / 1000);
+            }
         }
     }
 

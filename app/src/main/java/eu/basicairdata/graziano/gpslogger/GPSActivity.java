@@ -36,6 +36,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -49,6 +50,7 @@ import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -93,8 +95,11 @@ public class GPSActivity extends AppCompatActivity {
     private View bottomSheet;
     private BottomSheetBehavior bottomSheetBehavior;
 
+    Toast toast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Log.w("myApp", "[#] " + this + " - onCreate()");
         setTheme(R.style.MyMaterialTheme);
 
@@ -106,12 +111,14 @@ public class GPSActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         viewPager = findViewById(R.id.id_viewpager);
         viewPager.setOffscreenPageLimit(3);
+        viewPager.setFocusable(false);
 
         setupViewPager(viewPager);
 
         tabLayout = findViewById(R.id.id_tablayout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setFocusable(false);
 
         tabLayout.addOnTabSelectedListener(
                 new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
@@ -127,6 +134,7 @@ public class GPSActivity extends AppCompatActivity {
         bottomSheet = findViewById(R.id.id_bottomsheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(false);
+        bottomSheet.setFocusable(false);
     }
 
     @Override
@@ -221,6 +229,89 @@ public class GPSActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        Log.w("myApp", "[#] onKeyShortcut");
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_R:
+                // Start Recording
+                if (!gpsApp.isStopButtonFlag() && !gpsApp.isRecording())
+                    gpsApp.setRecording(true);
+                return true;
+            case KeyEvent.KEYCODE_P:
+                // Pause Recording
+                if (!gpsApp.isStopButtonFlag() && gpsApp.isRecording())
+                    gpsApp.setRecording(false);
+                return true;
+            case KeyEvent.KEYCODE_T:
+                // Toggle Recording
+                if (!gpsApp.isStopButtonFlag())
+                    gpsApp.setRecording(!gpsApp.isRecording());
+                return true;
+
+            case KeyEvent.KEYCODE_A:
+                // Request an Annotation, with dialog
+                if (!gpsApp.isStopButtonFlag()) {
+                    gpsApp.setQuickPlacemarkRequest(false);
+                    gpsApp.setPlacemarkRequested(true);
+                }
+                return true;
+            case KeyEvent.KEYCODE_Q:
+                // Request a quick Annotation, without dialog
+                if (!gpsApp.isStopButtonFlag()) {
+                    gpsApp.setQuickPlacemarkRequest(true);
+                    gpsApp.setPlacemarkRequested(true);
+                }
+                return true;
+            case KeyEvent.KEYCODE_S:
+                // Stop button, with dialog
+                if (gpsApp.isRecording()
+                        || gpsApp.isPlacemarkRequested()
+                        || (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0))
+                    onRequestStop(true, true);
+                return true;
+            case KeyEvent.KEYCODE_X:
+                // Stop and finalize the current track, without dialog
+                if (gpsApp.isRecording()
+                        || gpsApp.isPlacemarkRequested()
+                        || (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0))
+                    onRequestStop(false, true);
+                return true;
+
+            case KeyEvent.KEYCODE_E:
+                // Open Settings Screen
+                gpsApp.setHandlerTime(60000);
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+
+            case KeyEvent.KEYCODE_L:
+                // Toggle bottom bar Locking
+                gpsApp.setBottomBarLocked(!gpsApp.isBottomBarLocked());
+                return true;
+
+            case KeyEvent.KEYCODE_1:
+                // Shows the GPS FIX Tab
+                TabLayout.Tab tab1 = tabLayout.getTabAt(0);
+                tab1.select();
+                gpsApp.setGPSActivityActiveTab(tabLayout.getSelectedTabPosition());
+                return true;
+            case KeyEvent.KEYCODE_2:
+                // Shows the TRACK Tab
+                TabLayout.Tab tab2 = tabLayout.getTabAt(1);
+                tab2.select();
+                gpsApp.setGPSActivityActiveTab(tabLayout.getSelectedTabPosition());
+                return true;
+            case KeyEvent.KEYCODE_3:
+                // Shows the TRACKLIST Tab
+                TabLayout.Tab tab3 = tabLayout.getTabAt(2);
+                tab3.select();
+                gpsApp.setGPSActivityActiveTab(tabLayout.getSelectedTabPosition());
+                return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         updateBottomSheetPosition();
@@ -282,14 +373,9 @@ public class GPSActivity extends AppCompatActivity {
                     if (perms.containsKey(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                             Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_GRANTED; setGPSLocationUpdates!");
-//                            gpsApp.setGPSLocationUpdates(false);
-//                            gpsApp.setGPSLocationUpdates(true);
-//                            gpsApp.updateGPSLocationFrequency();
-
-                            // Enables the GPS Location Updates after a 500ms delay from Permission Result.
-                            // It tries to fix a java.lang.RuntimeException bug that affects
-                            // "Tecno" branded devices with Android 8.1 (SDK 27): https://github.com/BasicAirData/GPSLogger/issues/162
-                            gpsApp.delayedActivationOfGPSUpdates();
+                            gpsApp.setGPSLocationUpdates(false);
+                            gpsApp.setGPSLocationUpdates(true);
+                            gpsApp.updateGPSLocationFrequency();
                         } else {
                             Log.w("myApp", "[#] GPSActivity.java - ACCESS_FINE_LOCATION = PERMISSION_DENIED");
                         }
@@ -564,14 +650,16 @@ public class GPSActivity extends AppCompatActivity {
     public void checkLocationPermission() {
         Log.w("myApp", "[#] GPSActivity.java - Check Location Permission...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Log.w("myApp", "[#] GPSActivity.java - Location Permission granted");
+            Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission granted");
             // Permission Granted
         } else {
-            Log.w("myApp", "[#] GPSActivity.java - Location Permission denied");
+            Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission denied");
             boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
-            if (showRationale || !gpsApp.isLocationPermissionChecked()) {
-                Log.w("myApp", "[#] GPSActivity.java - Location Permission denied, need new check");
+            if (showRationale || !gpsApp.isLocationPermissionChecked()
+                    || (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+                Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission denied, need new check");
                 List<String> listPermissionsNeeded = new ArrayList<>();
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
                 listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
@@ -625,5 +713,109 @@ public class GPSActivity extends AppCompatActivity {
                     | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             startActivityForResult(intent, REQUEST_ACTION_OPEN_DOCUMENT_TREE);
         }
+    }
+
+    /**
+     * Toggles the status of the recording, by managing the button behaviour and
+     * the status of the recording process.
+     * It also displays some toasts to inform the user about some conditions.
+     */
+    public void onToggleRecord() {
+        if (!gpsApp.isBottomBarLocked()) {
+            if (!gpsApp.isStopButtonFlag()) {
+                gpsApp.setRecording(!gpsApp.isRecording());
+                if (!gpsApp.isFirstFixFound() && (gpsApp.isRecording())) {
+                    if (toast != null) toast.cancel();
+                    toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_recording_when_gps_found, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                    toast.show();
+                }
+                //Update();
+            }
+        } else {
+            if (toast != null) toast.cancel();
+            toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+            toast.show();
+        }
+    }
+
+    /**
+     * Manages the Stop button behaviour.
+     * It also displays some toasts to inform the user about some conditions.
+     */
+    public void onRequestStop(boolean showDialog, boolean forceWhenBottomBarIsLocked) {
+        if ((!gpsApp.isBottomBarLocked()) || forceWhenBottomBarIsLocked) {
+            if (!gpsApp.isStopButtonFlag()) {
+                gpsApp.setStopButtonFlag(true, gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0 ? 1000 : 300);
+                gpsApp.setRecording(false);
+                gpsApp.setPlacemarkRequested(false);
+                //Update();
+                if (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0) {
+                    if (showDialog) {
+                        FragmentManager fm = getSupportFragmentManager();
+                        FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
+                        gpsApp.setTrackToEdit(gpsApp.getCurrentTrack());
+                        tpDialog.setTitleResource(R.string.finalize_track);
+                        tpDialog.setFinalizeTrackWithOk(true);
+                        tpDialog.show(fm, "");
+                    } else {
+                        EventBus.getDefault().post(EventBusMSG.NEW_TRACK);
+                        toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_track_saved_into_tracklist, Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                        toast.show();
+                    }
+                } else {
+                    if (toast != null) toast.cancel();
+                    toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_nothing_to_save, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                    toast.show();
+                }
+            }
+        } else {
+            if (toast != null) toast.cancel();
+            toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+            toast.show();
+        }
+    }
+
+    /**
+     * Toggles the status of the Annotation request, by managing the button behaviour and
+     * the status of the request.
+     * It also displays some toasts to inform the user about some conditions.
+     */
+    public void onRequestAnnotation() {
+        if (!gpsApp.isBottomBarLocked()) {
+            if (!gpsApp.isStopButtonFlag()) {
+                gpsApp.setPlacemarkRequested(!gpsApp.isPlacemarkRequested());
+                if (!gpsApp.isFirstFixFound() && (gpsApp.isPlacemarkRequested())) {
+                    if (toast != null) toast.cancel();
+                    toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_annotate_when_gps_found, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                    toast.show();
+                }
+                //Update();
+            }
+        } else {
+            if (toast != null) toast.cancel();
+            toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+            toast.show();
+        }
+    }
+
+    /**
+     * Manages the Lock button behaviour.
+     */
+    public void onToggleLock() {
+        gpsApp.setBottomBarLocked(!gpsApp.isBottomBarLocked());
+        if (gpsApp.isBottomBarLocked()) {
+            if (toast != null) toast.cancel();
+            toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+            toast.show();
+        }
+        //Update();
     }
 }

@@ -22,6 +22,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -30,27 +31,21 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import android.view.Gravity;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
-
 /**
  * The Fragment that displays and manages the bottom bar.
  */
 public class FragmentRecordingControls extends Fragment {
-
-    Toast toast;
 
     private TextView tvGeoPointsNumber;
     private TextView tvPlacemarksNumber;
@@ -59,6 +54,8 @@ public class FragmentRecordingControls extends Fragment {
     private TextView tvAnnotateButton;
     private TextView tvRecordButton;
     final GPSApplication gpsApp = GPSApplication.getInstance();
+
+    Vibrator vibrator;
 
     public FragmentRecordingControls() {
         // Required empty public constructor
@@ -74,32 +71,51 @@ public class FragmentRecordingControls extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recording_controls, container, false);
 
+        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
         tvLockButton = view.findViewById(R.id.id_lock);
         tvLockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onToggleLock();
+                if (isAdded())
+                    ((GPSActivity) getActivity()).onToggleLock();
             }
         });
         tvStopButton = view.findViewById(R.id.id_stop);
         tvStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onRequestStop();
+                if (isAdded())
+                    ((GPSActivity) getActivity()).onRequestStop(true, false);
             }
         });
         tvAnnotateButton = view.findViewById(R.id.id_annotate);
         tvAnnotateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onRequestAnnotation();
+                gpsApp.setQuickPlacemarkRequest(false);
+                if (isAdded())
+                    ((GPSActivity) getActivity()).onRequestAnnotation();
+            }
+        });
+        tvAnnotateButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (isAdded()) {
+                    if (!gpsApp.isBottomBarLocked()) vibrator.vibrate(150);
+                    gpsApp.setQuickPlacemarkRequest(true);
+                    if (!gpsApp.isPlacemarkRequested())
+                        ((GPSActivity) getActivity()).onRequestAnnotation();
+                }
+                return true;
             }
         });
         tvRecordButton = view.findViewById(R.id.id_record);
         tvRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onToggleRecord();
+                if (isAdded())
+                    ((GPSActivity) getActivity()).onToggleRecord();
             }
         });
         tvGeoPointsNumber = view.findViewById(R.id.id_textView_GeoPoints);
@@ -133,111 +149,6 @@ public class FragmentRecordingControls extends Fragment {
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
         if (msg == EventBusMSG.UPDATE_TRACK) {
-            Update();
-        }
-    }
-
-    /**
-     * Toggles the status of the recording, by managing the button behaviour and
-     * the status of the recording process.
-     * It also displays some toasts to inform the user about some conditions.
-     */
-    public void onToggleRecord() {
-        if (isAdded()) {
-            if (!gpsApp.isBottomBarLocked()) {
-                if (!gpsApp.isStopButtonFlag()) {
-                    gpsApp.setRecording(!gpsApp.isRecording());
-                    if (!gpsApp.isFirstFixFound() && (gpsApp.isRecording())) {
-                        if (toast != null) toast.cancel();
-                        toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_recording_when_gps_found, Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                        toast.show();
-                    }
-                    Update();
-                }
-            } else {
-                if (toast != null) toast.cancel();
-                toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                toast.show();
-            }
-        }
-    }
-
-    /**
-     * Toggles the status of the placemark request, by managing the button behaviour and
-     * the status of the request.
-     * It also displays some toasts to inform the user about some conditions.
-     */
-    public void onRequestAnnotation() {
-        if (isAdded()) {
-            if (!gpsApp.isBottomBarLocked()) {
-                if (!gpsApp.isStopButtonFlag()) {
-                    gpsApp.setPlacemarkRequested(!gpsApp.isPlacemarkRequested());
-                    if (!gpsApp.isFirstFixFound() && (gpsApp.isPlacemarkRequested())) {
-                        if (toast != null) toast.cancel();
-                        toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_annotate_when_gps_found, Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                        toast.show();
-                    }
-                    Update();
-                }
-            } else {
-                if (toast != null) toast.cancel();
-                toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                toast.show();
-            }
-        }
-    }
-
-    /**
-     * Manages the Stop button behaviour.
-     * It also displays some toasts to inform the user about some conditions.
-     */
-    public void onRequestStop() {
-        if (isAdded()) {
-            if (!gpsApp.isBottomBarLocked()) {
-                if (!gpsApp.isStopButtonFlag()) {
-                    gpsApp.setStopButtonFlag(true, gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0 ? 1000 : 300);
-                    gpsApp.setRecording(false);
-                    gpsApp.setPlacemarkRequested(false);
-                    Update();
-                    if (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0) {
-                        FragmentManager fm = getActivity().getSupportFragmentManager();
-                        FragmentTrackPropertiesDialog tpDialog = new FragmentTrackPropertiesDialog();
-                        gpsApp.setTrackToEdit(gpsApp.getCurrentTrack());
-                        tpDialog.setTitleResource(R.string.finalize_track);
-                        tpDialog.setFinalizeTrackWithOk(true);
-                        tpDialog.show(fm, "");
-                    } else {
-                        if (toast != null) toast.cancel();
-                        toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_nothing_to_save, Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                        toast.show();
-                    }
-                }
-            } else {
-                if (toast != null) toast.cancel();
-                toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                toast.show();
-            }
-        }
-    }
-
-    /**
-     * Manages the Lock button behaviour.
-     */
-    public void onToggleLock() {
-        if (isAdded()) {
-            gpsApp.setBottomBarLocked(!gpsApp.isBottomBarLocked());
-            if (gpsApp.isBottomBarLocked()) {
-                if (toast != null) toast.cancel();
-                toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
-                toast.show();
-            }
             Update();
         }
     }

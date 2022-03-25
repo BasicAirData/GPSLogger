@@ -22,6 +22,8 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import static android.content.Context.POWER_SERVICE;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,12 +34,16 @@ import android.os.Bundle;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -93,7 +99,9 @@ public class FragmentGPSFix extends Fragment {
     private CardView cvWarningLocationDenied;
     private CardView cvWarningGPSDisabled;
     private CardView cvWarningBackgroundRestricted;
+    private CardView cvWarningBatteryOptimised;
     private LinearLayout llTimeSatellites;
+    private ImageView iwWarningBatteryOptimisedClose;
 
     private PhysicalData phdLatitude;
     private PhysicalData phdLongitude;
@@ -110,6 +118,7 @@ public class FragmentGPSFix extends Fragment {
     private boolean EGMAltitudeCorrection;
     private boolean isValidAltitude;
     private boolean isBackgroundActivityRestricted;
+    private PowerManager powerManager;
 
     /**
      * The Observer that calculate the new available height when the layout is changed.
@@ -185,6 +194,7 @@ public class FragmentGPSFix extends Fragment {
         cvWarningLocationDenied = view.findViewById(R.id.card_view_warning_location_denied);
         cvWarningGPSDisabled = view.findViewById(R.id.card_view_warning_enable_location_service);
         cvWarningBackgroundRestricted = view.findViewById(R.id.card_view_warning_background_restricted);
+        cvWarningBatteryOptimised = view.findViewById(R.id.card_view_warning_battery_optimised);
 
         // TableLayouts
         tlCoordinates = view.findViewById(R.id.id_TableLayout_Coordinates) ;
@@ -195,8 +205,14 @@ public class FragmentGPSFix extends Fragment {
         tlTime = view.findViewById(R.id.id_TableLayout_Time);
         tlSatellites = view.findViewById(R.id.id_TableLayout_Satellites);
 
+        // ImageViews
+
+        iwWarningBatteryOptimisedClose = view.findViewById(R.id.id_warning_battery_optimised_close);
+
         // LinearLayouts
         llTimeSatellites = view.findViewById(R.id.id_linearLayout_Time_Satellites);
+
+        powerManager = (PowerManager) gpsApp.getSystemService(POWER_SERVICE);
 
         cvWarningGPSDisabled.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,6 +231,14 @@ public class FragmentGPSFix extends Fragment {
             }
         });
 
+        iwWarningBatteryOptimisedClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gpsApp.setBatteryOptimisedWarningVisible(false);
+                update();
+            }
+        });
+
         cvWarningBackgroundRestricted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,6 +251,25 @@ public class FragmentGPSFix extends Fragment {
 
                     try {
                         startActivityForResult(callAppSettingIntent, 0);
+                    } catch (Exception e) {
+                        isAWarningClicked = false;
+                        // Unable to open Intent
+                    }
+                }
+            }
+        });
+
+        cvWarningBatteryOptimised.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isAWarningClicked && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
+                    isAWarningClicked = true;
+                    // Go to Settings screen
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+
+                    try {
+                        getContext().startActivity(intent);
                     } catch (Exception e) {
                         isAWarningClicked = false;
                         // Unable to open Intent
@@ -351,6 +394,7 @@ public class FragmentGPSFix extends Fragment {
 
                 tvGPSFixStatus.setVisibility(View.INVISIBLE);
                 cvWarningBackgroundRestricted.setVisibility(View.GONE);
+                cvWarningBatteryOptimised.setVisibility(View.GONE);
                 cvWarningGPSDisabled.setVisibility(View.GONE);
                 cvWarningLocationDenied.setVisibility(View.GONE);
             } else {
@@ -392,6 +436,14 @@ public class FragmentGPSFix extends Fragment {
                     cvWarningBackgroundRestricted.setVisibility(View.VISIBLE);
                 } else {
                     cvWarningBackgroundRestricted.setVisibility(View.GONE);
+                }
+
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        && !powerManager.isIgnoringBatteryOptimizations(gpsApp.getPackageName())
+                        && gpsApp.isBatteryOptimisedWarningVisible()) {
+                    cvWarningBatteryOptimised.setVisibility(View.VISIBLE);
+                } else {
+                    cvWarningBatteryOptimised.setVisibility(View.GONE);
                 }
 
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
