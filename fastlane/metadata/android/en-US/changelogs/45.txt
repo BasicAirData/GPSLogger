@@ -1,0 +1,8 @@
+- Add a quick annotation with a long click of the Annotation button
+- The App is drivable with keyboard shortcuts for task automation
+- Added greek language
+- Added a warning when the app is battery optimised
+- Some improvements for Light Theme
+- Fixes the alignment of Time fields on Android 4.0
+- Fixes crash on devices without onboard GPS chipset
+- Some minor bugs fixed
