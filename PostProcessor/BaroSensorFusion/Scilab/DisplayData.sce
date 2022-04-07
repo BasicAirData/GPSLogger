@@ -9,7 +9,6 @@
 //BAROA Array with calibrated barometric altitude
 //BAROP Array with meaured pressures
 //GPSA GPS recorded values
-clear
 function F=isaaltitude(x)
  F=pressure_reading-p0isa*(1-0.0065*x/T0)^(g/Rair/0.0065);
 endfunction
@@ -24,7 +23,8 @@ R=8.314462175//J/K/mol
 Mwa=28.9644;//kg/1000/mol
 Rair=R*1000/Mwa;
 tsample=1/3600; //Sample time in hours
-ncampionecalibrazionebaro=2159;  //  <----- Value to update with ibest attained with FindBestBaroCalibration.sce
+ncampionecalibrazionebaro=ibest ;//value from calibration script
+
 m=20; //Windows for correction, the same for GPS and Barosensor (same data rate)
 D=1;//Coverage factor D*sigma for corrected altitude 
 ph=40000;//Maximum pressure drift in one hour
