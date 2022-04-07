@@ -46,6 +46,10 @@ import android.graphics.Path;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.GnssStatus;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -228,6 +232,23 @@ public class GPSApplication extends Application implements LocationListener {
     Thumbnailer thumbnailer;                                     // It creates the Thumbnails of the Tracks asynchronously
     Exporter exporter;                                           // It exports the Tracks
     private final AsyncUpdateThreadClass asyncUpdateThread = new AsyncUpdateThreadClass();
+
+    private float barometricPressure = NOT_AVAILABLE;
+    private SensorManager sensorManager;
+    private Sensor pressureSensor;
+    private final SensorEventListener sensorEventListener = new SensorEventListener() {
+
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            barometricPressure = sensorEvent.values[0];
+            Log.w("myApp", "[#] GPSApplication.java - Pressure = " + barometricPressure + " hPa");
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+        }
+    };
+
 
     // ---------------------------------------------------------------------- Singleton instance
 
@@ -1004,6 +1025,13 @@ public class GPSApplication extends Application implements LocationListener {
         // Load Settings
         LoadPreferences();
 
+        // Setup the pressure sensor
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        pressureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        if (pressureSensor != null) {
+            sensorManager.registerListener(sensorEventListener, pressureSensor, SensorManager.SENSOR_DELAY_UI);
+        }
+
         // Starts the Thread that manages the queue of the operation on the Database
         asyncUpdateThread.start();
 
@@ -1020,6 +1048,9 @@ public class GPSApplication extends Application implements LocationListener {
         EventBus.getDefault().unregister(this);
         stopAndUnbindGPSService();
         unregisterReceiver(broadcastReceiver);
+        if (pressureSensor != null) {
+            sensorManager.unregisterListener(sensorEventListener);
+        }
         super.onTerminate();
     }
 
@@ -1051,6 +1082,7 @@ public class GPSApplication extends Application implements LocationListener {
             LocationExtended eloc = new LocationExtended(loc);
             eloc.setNumberOfSatellites(getNumberOfSatellitesTotal());
             eloc.setNumberOfSatellitesUsedInFix(getNumberOfSatellitesUsedInFix());
+            eloc.setBarometricPressure(barometricPressure);
             boolean forceRecord = false;
 
             gpsUnavailableHandler.removeCallbacks(gpsUnavailableRunnable);                            // Cancel the previous unavail countdown handler
@@ -1972,6 +2004,7 @@ public class GPSApplication extends Application implements LocationListener {
                     locationExtended = new LocationExtended(asyncTODO.location.getLocation());
                     locationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
                     locationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
+                    locationExtended.setBarometricPressure(asyncTODO.location.getBarometricPressure());
                     currentLocationExtended = locationExtended;
                     if (isScreenOn) EventBus.getDefault().post(EventBusMSG.UPDATE_FIX);
                     track.add(locationExtended);
@@ -1988,6 +2021,7 @@ public class GPSApplication extends Application implements LocationListener {
                     locationExtended.setDescription(asyncTODO.location.getDescription());
                     locationExtended.setNumberOfSatellites(asyncTODO.location.getNumberOfSatellites());
                     locationExtended.setNumberOfSatellitesUsedInFix(asyncTODO.location.getNumberOfSatellitesUsedInFix());
+                    locationExtended.setBarometricPressure(asyncTODO.location.getBarometricPressure());
                     track.addPlacemark(locationExtended);
                     gpsDataBase.addPlacemarkToTrack(locationExtended, track);
                     currentTrack = track;
