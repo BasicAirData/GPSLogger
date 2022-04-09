@@ -18,7 +18,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
+task wrapper(type: Wrapper){
+    gradleVersion = '7.2'
+}
 apply plugin: 'com.android.application'
 
 android {
@@ -72,6 +74,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13.2'
+    implementation 'org.ejml:ejml-simple:0.41'   //Test for matrix
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.cardview:cardview:1.0.0'

@@ -88,6 +88,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class GPSApplication extends Application implements LocationListener {
+    //Post Processor TEST
+    PostProcessor PrimoPP=new PostProcessor();
+    int ibestia=PrimoPP.FindBestBaroCalibrationLight(new float[]{52.256f, 52.256f, 51.257f, 50.257f, 49.257f, 49.257f, 50.258f, 50.258f, 49.258f, 49.258f}, new float[]{98479.64f, 98481.010f, 98482.32f, 98482.28f,98483.2f,98481.98f,98481.67f,98479.64f,98480.47f,98480.320f});
 
     //private static final float M_TO_FT = 3.280839895f;
     public static final int NOT_AVAILABLE = -100000;
@@ -762,6 +765,8 @@ public class GPSApplication extends Application implements LocationListener {
     public void setSpaceForExtraTilesAvailable(boolean spaceForExtraTilesAvailable) {
         isSpaceForExtraTilesAvailable = spaceForExtraTilesAvailable;
     }
+
+   //
 
     // ----------------------------------------------------------------------  Utilities
 
