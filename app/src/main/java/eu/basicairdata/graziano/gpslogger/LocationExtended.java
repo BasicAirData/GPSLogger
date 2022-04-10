@@ -35,7 +35,6 @@ public class LocationExtended {
     private double altitudeEGM96Correction  = NOT_AVAILABLE;
     private int numberOfSatellites          = NOT_AVAILABLE;
     private int numberOfSatellitesUsedInFix = NOT_AVAILABLE;
-    private float barometricPressure        = NOT_AVAILABLE;
 
     /**
      * The constructor.
@@ -76,14 +75,6 @@ public class LocationExtended {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public float getBarometricPressure() {
-        return barometricPressure;
-    }
-
-    public void setBarometricPressure(float barometricPressure) {
-        this.barometricPressure = barometricPressure;
     }
 
     public void setNumberOfSatellites(int numberOfSatellites) {
