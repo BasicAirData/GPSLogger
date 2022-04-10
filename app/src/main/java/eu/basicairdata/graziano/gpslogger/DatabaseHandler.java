@@ -57,7 +57,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
     // Database Version
     // Updated to 2 in v2.1.3 (version code 14)
     // Updated to 3 in v3.0.0 (version code 38)
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 3;
 
     private static final int LOCATION_TYPE_LOCATION = 1;
     private static final int LOCATION_TYPE_PLACEMARK = 2;
@@ -86,7 +86,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LOCATION_NUMBEROFSATELLITES = "number_of_satellites";
     private static final String KEY_LOCATION_TYPE = "type";
     private static final String KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX = "number_of_satellites_used_in_fix";
-    private static final String KEY_LOCATION_BAROMETRICPRESSURE = "barometric_pressure";
 
     // ---------------------------------------------------------------------------- Placemarks adds
     private static final String KEY_LOCATION_NAME = "name";
@@ -215,8 +214,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_LOCATION_TIME + " REAL,"                                  // 9
                 + KEY_LOCATION_NUMBEROFSATELLITES + " INTEGER,"                 // 10
                 + KEY_LOCATION_TYPE + " INTEGER,"                               // 11
-                + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER,"        // 12
-                + KEY_LOCATION_BAROMETRICPRESSURE + " REAL" + ")";              // 13
+                + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER" + ")";  // 12
         db.execSQL(CREATE_LOCATIONS_TABLE);
 
         String CREATE_PLACEMARKS_TABLE = "CREATE TABLE " + TABLE_PLACEMARKS + "("
@@ -233,8 +231,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_LOCATION_NUMBEROFSATELLITES + " INTEGER,"                 // 10
                 + KEY_LOCATION_TYPE + " INTEGER,"                               // 11
                 + KEY_LOCATION_NAME + " TEXT,"                                  // 12
-                + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER,"        // 13
-                + KEY_LOCATION_BAROMETRICPRESSURE + " REAL" + ")";              // 14
+                + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER" + ")";  // 13
         db.execSQL(CREATE_PLACEMARKS_TABLE);
     }
 
@@ -244,10 +241,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
             + TABLE_PLACEMARKS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";
     private static final String DATABASE_ALTER_TABLE_TRACKS_TO_V3 = "ALTER TABLE "
             + TABLE_TRACKS + " ADD COLUMN " + KEY_TRACK_DESCRIPTION + " TEXT DEFAULT \"\";";
-    private static final String DATABASE_ALTER_TABLE_LOCATIONS_TO_V4 = "ALTER TABLE "
-            + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_BAROMETRICPRESSURE + " REAL DEFAULT " +  NOT_AVAILABLE + ";";
-    private static final String DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4 = "ALTER TABLE "
-            + TABLE_PLACEMARKS + " ADD COLUMN " + KEY_LOCATION_BAROMETRICPRESSURE + " REAL DEFAULT " +  NOT_AVAILABLE + ";";
 
     /**
      * Upgrade the database version, altering the corresponding tables.
@@ -276,11 +269,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 //upgrade from version 2 to 3
                 //Log.w("myApp", "[#] DatabaseHandler.java - onUpgrade: from version 2 to 3 ...");
                 db.execSQL(DATABASE_ALTER_TABLE_TRACKS_TO_V3);
-            case 3:
-                //upgrade from version 3 to 4
-                //Log.w("myApp", "[#] DatabaseHandler.java - onUpgrade: from version 3 to 4 ...");
-                db.execSQL(DATABASE_ALTER_TABLE_LOCATIONS_TO_V4);
-                db.execSQL(DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4);
 
                 //and so on.. do not add breaks so that switch will
                 //start at oldVersion, and run straight through to the latest
@@ -391,7 +379,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
         locvalues.put(KEY_LOCATION_NUMBEROFSATELLITES, location.getNumberOfSatellites());
         locvalues.put(KEY_LOCATION_TYPE, LOCATION_TYPE_LOCATION);
         locvalues.put(KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX, location.getNumberOfSatellitesUsedInFix());
-        locvalues.put(KEY_LOCATION_BAROMETRICPRESSURE, location.getBarometricPressure());
 
         ContentValues trkvalues = new ContentValues();
         trkvalues.put(KEY_TRACK_NAME, track.getName());
@@ -488,7 +475,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
         locvalues.put(KEY_LOCATION_TYPE, LOCATION_TYPE_PLACEMARK);
         locvalues.put(KEY_LOCATION_NAME, placemark.getDescription());
         locvalues.put(KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX, placemark.getNumberOfSatellitesUsedInFix());
-        locvalues.put(KEY_LOCATION_BAROMETRICPRESSURE, placemark.getBarometricPressure());
 
         ContentValues trkvalues = new ContentValues();
         trkvalues.put(KEY_TRACK_NAME, track.getName());
@@ -671,9 +657,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
                     extdloc.setNumberOfSatellites(cursor.getInt(10));
                     extdloc.setNumberOfSatellitesUsedInFix(cursor.getInt(12));
 
-                    lcdata_float = cursor.getFloat(13);
-                    if (lcdata_float != NOT_AVAILABLE) extdloc.setBarometricPressure(lcdata_float);
-
                     locationList.add(extdloc); // Add Location to list
                 } while (cursor.moveToNext());
             }
@@ -739,9 +722,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
                     extdloc.setNumberOfSatellites(cursor.getInt(10));
                     extdloc.setNumberOfSatellitesUsedInFix(cursor.getInt(13));
                     extdloc.setDescription(cursor.getString(12));
-
-                    lcdata_float = cursor.getFloat(14);
-                    if (lcdata_float != NOT_AVAILABLE) extdloc.setBarometricPressure(lcdata_float);
 
                     placemarkList.add(extdloc); // Add Location to list
                 } while (cursor.moveToNext());

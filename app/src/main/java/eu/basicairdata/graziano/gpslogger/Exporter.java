@@ -425,7 +425,7 @@ class Exporter extends Thread {
 
             if (exportTXT) {
                 // Writing head of TXT file
-                txtBW.write("type,date time,latitude,longitude,accuracy(m),altitude(m),geoid_height(m),speed(m/s),bearing(deg),sat_used,sat_inview,barometric_pressure(hPa),name,desc" + newLine);
+                txtBW.write("type,date time,latitude,longitude,accuracy(m),altitude(m),geoid_height(m),speed(m/s),bearing(deg),sat_used,sat_inview,name,desc" + newLine);
             }
 
             String formattedLatitude = "";
@@ -505,6 +505,7 @@ class Exporter extends Thread {
 
                             // TXT
                             if (exportTXT) {
+                                //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
                                 //txtBW.write("W," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
                                 txtBW.write("W," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
                                           dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
@@ -530,9 +531,6 @@ class Exporter extends Thread {
                                 txtBW.write(",");
                                 if (loc.getNumberOfSatellites() > 0)
                                     txtBW.write(String.valueOf(loc.getNumberOfSatellites()));
-                                txtBW.write(",");
-                                if (loc.getBarometricPressure() != NOT_AVAILABLE)
-                                    txtBW.write(String.format(Locale.US, "%.4f",loc.getBarometricPressure()));
                                 txtBW.write(",");
                                 // Name is an empty field
                                 txtBW.write(",");
@@ -691,9 +689,6 @@ class Exporter extends Thread {
                         txtBW.write(",");
                         if (loc.getNumberOfSatellites() > 0)
                             txtBW.write(String.valueOf(loc.getNumberOfSatellites()));
-                        txtBW.write(",");
-                        if (loc.getBarometricPressure() != NOT_AVAILABLE)
-                            txtBW.write(String.format(Locale.US, "%.4f",loc.getBarometricPressure()));
                         txtBW.write(",");
                         if (txtFirstTrackpointFlag) {           // First trackpoint of the track: add the description
                             if (track.getDescription().isEmpty()) txtBW.write(track.getName() + ",GPS Logger: " + track.getName());
