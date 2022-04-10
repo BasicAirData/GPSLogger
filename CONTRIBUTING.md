@@ -4,23 +4,24 @@
 [General contribution and contact info](http://www.basicairdata.eu/about/)
 
 ## How a user can contribute
-- In case of problems with the app, opening an issue including a complete and detailed description, the version of the app, the Android version and the device brand/model
+- In case of problems with the app, opening an issue including a complete and detailed description, the version of the app, the Android version, and the device brand/model
 - Opening an issue to request a new feature or to suggest an improvement
 - Answering other users about their specific problems when he already found a solution
-- Post ideas, graphical mockups, suggestion for the implementation of any listed issue
-- Help to translate the app and keep the translation updated. The users can be notified when the app strings are updated by Subscribing the *Translation & Proofreading* channel (![issue #16](https://github.com/BasicAirData/GPSLogger/issues/16)). We use the [Crowdin](https://crowdin.com/project/gpslogger) platform to make, manage and maintain the localizations.
+- Posting ideas, graphical mockups, suggestion for the implementation of any listed issue
+- Helping to translate the app and keep the translation updated. The users can be notified when the strings of the app are updated by subscribing the *Translation & Proofreading* channel (![issue #16](https://github.com/BasicAirData/GPSLogger/issues/16)). We use the [Crowdin](https://crowdin.com/project/gpslogger) platform to make, manage, and maintain the localizations.
 
 ## How a developer can contribute
-- Offering to take care of an existing issue, discussing its details and implementing (or fixing) it
+- Offering to take care of an existing issue, discussing its details, and implementing (or fixing) it
 - Proposing a new feature or improvement
 - Fixing a bug
 - Adjusting, formatting, commenting the code
 
-We suggest to ask before start coding: better to discuss in details the new feature with the maintainers before to start the implementation.
+We suggest to ask before to start coding: better to discuss all the details of the a feature with the maintainers before to start the implementation.
+As a note, BasicAirData is entirely made by volunteers that develop in their spare time. Sometimes we have the time to access, answer, and push commits every day, sometimes we could be busy for some weeks; please be patient if we are not so fast to answer and to fix bugs.
 
 ## Repository Branching Model
 
-We are trying to follow some guidelines to keep clean and ordered this git repository tree.
+We are trying to follow some simple guidelines to keep clean and ordered this Git repository tree.
 
 Basing on https://nvie.com/posts/a-successful-git-branching-model/ (you can see a schema of it here below), we chosen to work with the following branches:
     
@@ -30,6 +31,6 @@ Basing on https://nvie.com/posts/a-successful-git-branching-model/ (you can see 
 
 We are used to include the number of the issue (#number) into the description of the commit (when applicable), in order to put a note of the new progress automatically into the issue.
 
-Here a schema of the Git model we are basing on, showing master, develop, and feature branches:
+Here a schema of the Git model we are basing on, that shows master, develop, and feature branches:
 
 <img src="https://nvie.com/img/git-model@2x.png" data-canonical-src="https://nvie.com/img/git-model@2x.png" width="720" />
