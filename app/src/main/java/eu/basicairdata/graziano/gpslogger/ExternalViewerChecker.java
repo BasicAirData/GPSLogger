@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
@@ -173,7 +174,7 @@ public class ExternalViewerChecker {
                         aInfo.fileType = ft.fileType;
                         aInfo.icon = tmpRI.activityInfo.applicationInfo.loadIcon(pm);
                         externalViewerList.add(aInfo);
-                        //Log.w("myApp", "[#] ExternalViewerChecker.java - + " + tmpRI.activityInfo.applicationInfo.packageName);
+                        Log.w("myApp", "[#] ExternalViewerChecker.java - + " + tmpRI.activityInfo.applicationInfo.packageName);
                     }
                 }
             }
@@ -186,6 +187,12 @@ public class ExternalViewerChecker {
         for (ExternalViewer a : externalViewerList) {
             if (a.packageName.equals("at.xylem.mapin")) {
                 // MAPinr is not opening GPX correctly!
+                a.fileType = FILETYPE_KML;
+                a.mimeType = "application/vnd.google-earth.kml+xml";
+            }
+
+            if (a.packageName.equals("com.mapswithme.maps.pro")) {
+                // MAPS.ME v.14 is not opening GPX anymore!
                 a.fileType = FILETYPE_KML;
                 a.mimeType = "application/vnd.google-earth.kml+xml";
             }
