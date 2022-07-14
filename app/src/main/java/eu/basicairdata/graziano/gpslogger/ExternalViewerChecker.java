@@ -190,6 +190,12 @@ public class ExternalViewerChecker {
                 a.mimeType = "application/vnd.google-earth.kml+xml";
             }
 
+            if (a.packageName.equals("com.mapswithme.maps.pro")) {
+                // MAPS.ME v.14 is not opening GPX anymore!
+                a.fileType = FILETYPE_KML;
+                a.mimeType = "application/vnd.google-earth.kml+xml";
+            }
+
 //            if (a.packageName.equals("com.vecturagames.android.app.gpxviewer")) {
 //                // GPX Viewer saves a copy of the file if passed via FileProvider
 //                a.requiresFileProvider = false;
