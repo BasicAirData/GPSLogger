@@ -72,7 +72,7 @@ In GPS Logger the location is always accessed (started) when the app is in foreg
 <b>The app stops recording when running in background.</b><br>
 The app may have been closed by the system during the background recording. To avoid it, as first step, go to the Android settings and turn off all battery monitoring and optimizations for GPS Logger. On Android 9+ check also that the application is NOT background restricted and verify that the background activity is allowed. Unfortunately any device brand implemented in a different way the settings to keep safe the background apps (yes, it's a big mess), so a small research must be done. On some brands you have to whitelist the background apps, whilst for some others you have to set the "high performances" power saving mode.<br>
 To give a concrete example, on Android 11 Samsung will prevent apps work in background by default unless you exclude apps from battery optimizations. To keep your apps working properly go on Android Settings > Apps > GPS Logger > Battery > Battery optimization > All apps > GPS Logger > Don’t optimize.<br>
-Moreover, other battery optimizers (like for example AccuBattery by Digibites) could restrict the background use, and also some anti-viruses are very aggressive with long running apps, and must be correctly set.<br>
+Moreover, other battery optimizers (like for example Duraspeed, or AccuBattery by Digibites) could restrict the background use, and also some anti-viruses are very aggressive with long running apps, and must be correctly set.<br>
 As a last note, some people that had problems with background recording resolved with a re-installation of the app.<br>
 <i>Android 10+ users should read also the previous answer about location permission.</i>
 
