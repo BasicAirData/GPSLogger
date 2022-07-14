@@ -1,0 +1,2 @@
+- Workaround for the issue of MAPS.ME v14 opening GPX files
+- Update Android dependencies
