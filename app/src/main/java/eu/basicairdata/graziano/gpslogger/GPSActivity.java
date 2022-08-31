@@ -340,14 +340,14 @@ public class GPSActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.action_online_help) {
-            if (isBrowserInstalled()) {
+            try {
                 // Opens the default browser and shows the Getting Started Guide page
                 String url = "https://www.basicairdata.eu/projects/android/android-gps-logger/getting-started-guide-for-gps-logger/";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.setData(Uri.parse(url));
                 startActivity(i);
-            } else {
+            } catch (Exception e){
                 Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_no_browser_installed, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                 toast.show();
@@ -485,17 +485,6 @@ public class GPSActivity extends AppCompatActivity {
                     }
                 }
         }
-    }
-
-    /**
-     * @return true if a browser is installed on the device.
-     */
-    private Boolean isBrowserInstalled() {
-        String url = "https://www.basicairdata.eu/projects/android/android-gps-logger/getting-started-guide-for-gps-logger/";
-        Uri webAddress = Uri.parse(url);
-        Intent intentWeb = new Intent(Intent.ACTION_VIEW, webAddress);
-        intentWeb.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return (intentWeb.resolveActivity(getPackageManager()) != null);
     }
 
     /**
