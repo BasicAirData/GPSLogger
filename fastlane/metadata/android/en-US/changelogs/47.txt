@@ -1,0 +1,1 @@
+- Fixes the browser check for the Online Help on Android 11+
