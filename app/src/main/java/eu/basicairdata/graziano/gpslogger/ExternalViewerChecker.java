@@ -196,6 +196,12 @@ public class ExternalViewerChecker {
                 a.mimeType = "application/vnd.google-earth.kml+xml";
             }
 
+            if (a.packageName.equals("app.organicmaps")) {
+                // Organic Maps does not support GPX, only KML
+                a.fileType = FILETYPE_KML;
+                a.mimeType = "application/vnd.google-earth.kml+xml";
+            }
+
 //            if (a.packageName.equals("com.vecturagames.android.app.gpxviewer")) {
 //                // GPX Viewer saves a copy of the file if passed via FileProvider
 //                a.requiresFileProvider = false;
