@@ -1,0 +1,1 @@
+- Workaround for the issue with Organic Maps
