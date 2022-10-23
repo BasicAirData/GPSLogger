@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
 
     private EditText etDescription;
     private final ImageView[] tracktypeImageView = new ImageView[7];
+    private ImageView tracktypeMore;
 
     private int selectedTrackType = NOT_AVAILABLE;                 // The track type selected by the user
     private Track trackToEdit = null;                              // The track to edit
@@ -111,6 +113,17 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         tracktypeImageView[4] = view.findViewById(R.id.tracktype_4);
         tracktypeImageView[5] = view.findViewById(R.id.tracktype_5);
         tracktypeImageView[6] = view.findViewById(R.id.tracktype_6);
+
+        tracktypeMore = view.findViewById(R.id.tracktype_more);
+        tracktypeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Shows the Tracktype Dialog
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentActivityTypeDialog fragmentActivityTypeDialog = new FragmentActivityTypeDialog();
+                fragmentActivityTypeDialog.show(fm, "");
+            }
+        });
 
         // Disable all images
         for (int i = 0; i < tracktypeImageView.length; i++) {

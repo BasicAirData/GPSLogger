@@ -139,6 +139,13 @@
     <string name="cancel">Cancel</string>
     <string name="export_unable_to_write_file">Unable to write the file</string>
 
+    <!-- Activity categories -->
+    <string name="category_fitness">Fitness</string>
+    <string name="category_water_snow">Water &amp; Snow</string>
+    <string name="category_air">Air</string>
+    <string name="category_wheel">Wheels</string>
+    <string name="category_other">Other</string>
+
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">The App has been killed during background recording.</string>
     <string name="dlg_app_killed_description">Please check in Android Settings that the app is not Battery optimized and not even Background restricted.</string>
