@@ -22,13 +22,16 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.app.Dialog;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -161,13 +164,21 @@ public class FragmentActivityTypeDialog extends DialogFragment {
         acOtherSports.activityTypeList.add(new ActivityType(0, R.drawable.ic_tracktype_map_24));
         activityCategories.add(acOtherSports);
 
+        // Method that works with Android 4.X
+        // https://stackoverflow.com/questions/35915974/23-2-0-set-vector-drawable-as-background-in-4-x/35918375#35918375
+        Resources resources = getContext().getResources();
+        Resources.Theme theme = getContext().getTheme();
 
         for (ActivityCategory ac : activityCategories) {
             for (ActivityType aType : ac.activityTypeList) {
                 ImageView iv = new ImageView(getActivity().getApplicationContext());
 
                 // set and colorize Icon
-                iv.setImageResource(aType.drawableId);
+                Drawable drawable = VectorDrawableCompat.create(resources, aType.drawableId, theme);
+                // Method that works with Android 4.X
+                iv.setImageDrawable(drawable);
+                // For Android 5+
+                //iv.setImageResource(aType.drawableId);
                 iv.setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
 
                 // set Layout Params
