@@ -212,7 +212,12 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
             textViewTrackPlacemarks.setText(String.valueOf(track.getNumberOfPlacemarks()));
 
             tt = trk.getEstimatedTrackType();
-            if (tt != NOT_AVAILABLE) imageViewIcon.setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[tt]);
+            if (tt != NOT_AVAILABLE)
+                try {
+                    imageViewIcon.setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[tt]);
+                } catch (IndexOutOfBoundsException e) {
+                    imageViewIcon.setImageBitmap(null);
+                }
             else imageViewIcon.setImageBitmap(null);
 
             if (GPSApplication.getInstance().getCurrentTrack().getId() == track.getId()) {

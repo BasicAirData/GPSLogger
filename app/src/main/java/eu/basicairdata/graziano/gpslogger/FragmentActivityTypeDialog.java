@@ -38,6 +38,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 
 
@@ -81,6 +83,7 @@ public class FragmentActivityTypeDialog extends DialogFragment {
 
         final float SCALE = getContext().getResources().getDisplayMetrics().density;
         final int ICON_MARGIN = (int) (4 * SCALE + 0.5f);
+        int selectedTrackType = GPSApplication.getInstance().getTrackToEdit().getEstimatedTrackType();            // The track type selected by the user
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_activity_type_dialog, null);
@@ -164,6 +167,7 @@ public class FragmentActivityTypeDialog extends DialogFragment {
         acOtherSports.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_MAP));
         activityCategories.add(acOtherSports);
 
+
         // Method that works with Android 4.X
         // https://stackoverflow.com/questions/35915974/23-2-0-set-vector-drawable-as-background-in-4-x/35918375#35918375
         Resources resources = getContext().getResources();
@@ -179,11 +183,13 @@ public class FragmentActivityTypeDialog extends DialogFragment {
                 iv.setImageDrawable(drawable);
                 // For Android 5+
                 //iv.setImageResource(aType.drawableId);
-                iv.setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
+                iv.setColorFilter(getResources().getColor(aType.value == GPSApplication.getInstance().getSelectedTrackTypeOnDialog() ? R.color.textColorRecControlPrimary : R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
 
                 // set Layout Params
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 iv.setLayoutParams(lp);
+
+                iv.setTag(aType.value);
 
                 // set Margins
                 LinearLayout.LayoutParams marginParams = (LinearLayout.LayoutParams) iv.getLayoutParams();
@@ -191,6 +197,16 @@ public class FragmentActivityTypeDialog extends DialogFragment {
                 iv.setLayoutParams(marginParams);
 
                 ac.layout.addView(iv);
+
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        GPSApplication.getInstance().setSelectedTrackTypeOnDialog((Integer)view.getTag());
+                        EventBus.getDefault().post(EventBusMSG.REFRESH_TRACKTYPE);
+                        //((ImageView)view).setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
+                        dismiss();
+                    }
+                });
             }
         }
 

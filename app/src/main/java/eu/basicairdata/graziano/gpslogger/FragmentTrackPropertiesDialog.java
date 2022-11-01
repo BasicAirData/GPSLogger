@@ -33,6 +33,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
@@ -121,10 +123,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             }
         });
 
-        // Disable all images
         for (int i = 0; i < tracktypeImageView.length; i++) {
-            tracktypeImageView[i].setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[i]);
-            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
             tracktypeImageView[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -138,11 +137,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                 }
             });
         }
-        // Activate the right image
-        if (GPSApplication.getInstance().getSelectedTrackTypeOnDialog() != NOT_AVAILABLE)
-            tracktypeImageView[GPSApplication.getInstance().getSelectedTrackTypeOnDialog()].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
-        else if ((trackToEdit != null) && (trackToEdit.getEstimatedTrackType() != Track.TRACK_TYPE_ND))
-            tracktypeImageView[trackToEdit.getEstimatedTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
+
+        updateTrackTypeIcons();
 
         createPlacemarkAlert.setView(view)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -180,6 +176,60 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Workaround for Nokia Devices, Android 9
+        // https://github.com/BasicAirData/GPSLogger/issues/77
+        if (EventBus.getDefault().isRegistered(this)) {
+            //Log.w("myApp", "[#] FragmentGPSFix.java - EventBus: FragmentGPSFix already registered");
+            EventBus.getDefault().unregister(this);
+        }
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    /**
+     * The EventBus receiver for Short Messages.
+     */
+    @Subscribe
+    public void onEvent(Short msg) {
+        switch (msg) {
+            case EventBusMSG.REFRESH_TRACKTYPE:
+                updateTrackTypeIcons();
+                break;
+        }
+    }
+
+    /**
+     * Sets the right image for the TrackType icons, and enable/disable them
+     * depending on the track type.
+     */
+    void updateTrackTypeIcons() {
+        Log.w("myApp", "[#] FragentTrackPropertiesDialog - updateTrackTypeIcons()");
+        // Disable all images
+        for (int i = 0; i < tracktypeImageView.length; i++) {
+            tracktypeImageView[i].setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[i]);
+            tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
+        }
+        // Activate the right image
+        try {
+            if (GPSApplication.getInstance().getSelectedTrackTypeOnDialog() != NOT_AVAILABLE)
+                tracktypeImageView[GPSApplication.getInstance().getSelectedTrackTypeOnDialog()].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
+            else if ((trackToEdit != null) && (trackToEdit.getEstimatedTrackType() != Track.TRACK_TYPE_ND))
+                tracktypeImageView[trackToEdit.getEstimatedTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
+        } catch (IndexOutOfBoundsException e) {
+
+        }
     }
 
     /**
