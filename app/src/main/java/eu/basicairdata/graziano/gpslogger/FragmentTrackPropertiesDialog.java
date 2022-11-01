@@ -23,6 +23,7 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 
@@ -32,6 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -48,6 +50,10 @@ import org.greenrobot.eventbus.Subscribe;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.NOT_AVAILABLE;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 /**
  * The Dialog that shows the properties of a Track.
  * The user can use it to edit the description and the activity type.
@@ -55,16 +61,47 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_O
  */
 public class FragmentTrackPropertiesDialog extends DialogFragment {
 
+    private static final String KEY_TITLE = "_title";
+    private static final String KEY_ISFINALIZATION = "_isFinalization";
+
     private EditText etDescription;
-    private final ImageView[] tracktypeImageView = new ImageView[7];
+    private final ImageView[] tracktypeImageView = new ImageView[6];
     private ImageView tracktypeMore;
 
     private Track trackToEdit = null;                              // The track to edit
     private int title = 0;                                         // The resource id for the title
     private boolean finalizeTrackWithOk = false;                   // True if the "OK" button finalizes the track and creates a new one
+    private boolean isTrackTypeIconClicked = false;                // True if a Track Type icon has been clicked
 
-    private static final String KEY_TITLE = "_title";
-    private static final String KEY_ISFINALIZATION = "_isFinalization";
+    private static class LastUsedTrackType {                       // The last used Track Type
+        public int type;
+        public long date;
+    }
+
+    private ArrayList<LastUsedTrackType> lastUsedTrackTypeList = new ArrayList<>();         // The list of the last used Track Types
+
+    private final CustomDateComparator customDateComparator = new CustomDateComparator(); // The comparator for the LastUsedTrackType list sorting
+    private final CustomTypeComparator customTypeComparator = new CustomTypeComparator(); // The comparator for the LastUsedTrackType list sorting
+
+    /**
+     * The comparator used to orders the LastUsedTrackType items by date
+     */
+    static private class CustomDateComparator implements Comparator<LastUsedTrackType> {
+        @Override
+        public int compare(LastUsedTrackType o1, LastUsedTrackType o2) {
+            return (int)(o1.date - o2.date);
+        }
+    }
+
+    /**
+     * The comparator used to orders the LastUsedTrackType items by Type number
+     */
+    static private class CustomTypeComparator implements Comparator<LastUsedTrackType> {
+        @Override
+        public int compare(LastUsedTrackType o1, LastUsedTrackType o2) {
+            return (int)(o1.type - o2.type);
+        }
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -87,7 +124,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             title = savedInstanceState.getInt(KEY_TITLE, 0);
             finalizeTrackWithOk = savedInstanceState.getBoolean(KEY_ISFINALIZATION, false);
         } else {
-            GPSApplication.getInstance().setSelectedTrackTypeOnDialog(trackToEdit.getType());
+            GPSApplication.getInstance().setSelectedTrackTypeOnDialog(trackToEdit.getEstimatedTrackType());
         }
 
         if (title != 0) createPlacemarkAlert.setTitle(title);
@@ -110,7 +147,6 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         tracktypeImageView[3] = view.findViewById(R.id.tracktype_3);
         tracktypeImageView[4] = view.findViewById(R.id.tracktype_4);
         tracktypeImageView[5] = view.findViewById(R.id.tracktype_5);
-        tracktypeImageView[6] = view.findViewById(R.id.tracktype_6);
 
         tracktypeMore = view.findViewById(R.id.tracktype_more);
         tracktypeMore.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +159,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             }
         });
 
+        updateTrackTypeIcons();
+
         for (int i = 0; i < tracktypeImageView.length; i++) {
             tracktypeImageView[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -130,15 +168,14 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                     for (int i = 0; i < tracktypeImageView.length; i++) {
                         if (view == tracktypeImageView[i]) {
                             tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
-                            GPSApplication.getInstance().setSelectedTrackTypeOnDialog(i);
+                            GPSApplication.getInstance().setSelectedTrackTypeOnDialog((Integer)(tracktypeImageView[i].getTag()));
+                            isTrackTypeIconClicked = true;
                         } else
                             tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
                     }
                 }
             });
         }
-
-        updateTrackTypeIcons();
 
         createPlacemarkAlert.setView(view)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -160,6 +197,14 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                             } else {
                                 GPSApplication.getInstance().UpdateTrackList();
                                 EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+                            }
+
+                            if (isTrackTypeIconClicked || finalizeTrackWithOk) {
+                                // update the last used date of the current Track Type
+                                for (LastUsedTrackType lut : lastUsedTrackTypeList) {
+                                    if (lut.type == GPSApplication.getInstance().getSelectedTrackTypeOnDialog()) lut.date = System.currentTimeMillis();
+                                }
+                                savePreferences();
                             }
                         }
                     }
@@ -216,19 +261,22 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
      */
     void updateTrackTypeIcons() {
         Log.w("myApp", "[#] FragentTrackPropertiesDialog - updateTrackTypeIcons()");
+        loadPreferences();
         // Disable all images
         for (int i = 0; i < tracktypeImageView.length; i++) {
-            tracktypeImageView[i].setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[i]);
+            tracktypeImageView[i].setImageResource(Track.ACTIVITY_DRAWABLE_RESOURCE[lastUsedTrackTypeList.get(i).type]);
             tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
+            tracktypeImageView[i].setTag(lastUsedTrackTypeList.get(i).type);
         }
         // Activate the right image
-        try {
-            if (GPSApplication.getInstance().getSelectedTrackTypeOnDialog() != NOT_AVAILABLE)
-                tracktypeImageView[GPSApplication.getInstance().getSelectedTrackTypeOnDialog()].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
-            else if ((trackToEdit != null) && (trackToEdit.getEstimatedTrackType() != Track.TRACK_TYPE_ND))
-                tracktypeImageView[trackToEdit.getEstimatedTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
-        } catch (IndexOutOfBoundsException e) {
-
+        for (LastUsedTrackType lut : lastUsedTrackTypeList) {
+            if (lut.type == GPSApplication.getInstance().getSelectedTrackTypeOnDialog()) {
+                try {
+                    tracktypeImageView[lastUsedTrackTypeList.indexOf(lut)].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
+                } catch (IndexOutOfBoundsException e) {
+                    // Nothing to do
+                }
+            }
         }
     }
 
@@ -248,5 +296,70 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
      */
     public void setFinalizeTrackWithOk(boolean finalize) {
         finalizeTrackWithOk = finalize;
+    }
+
+    /**
+     * Saves the Preferences.
+     */
+    private void savePreferences() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPSApplication.getInstance().getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        for (int i = 0; i < 6; i++) {
+            editor.putInt("prefLastUsedTrackType" + i, lastUsedTrackTypeList.get(i).type);
+            editor.putLong("prefLastDateTrackType" + i, lastUsedTrackTypeList.get(i).date);
+        }
+        editor.commit();
+    }
+
+    /**
+     * (re-)Loads the Preferences.
+     */
+    private void loadPreferences() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPSApplication.getInstance().getApplicationContext());
+
+        // -----------------------
+        // TODO: Uncomment it to reset the last used Track Types (For Test Purpose)
+//        SharedPreferences.Editor editor = preferences.edit();
+//        for (int i = 0; i < 6; i++) {
+//            editor.remove("prefLastUsedTrackType" + i);
+//            editor.remove("prefLastDateTrackType" + i);
+//            editor.commit();
+//        }
+        // -----------------------
+
+        // Clear the list of Track Types
+        lastUsedTrackTypeList.clear();
+
+        // Load the list from preferences
+        for (int i = 0; i < 6; i++) {
+            LastUsedTrackType lut = new LastUsedTrackType();
+            lut.type = preferences.getInt("prefLastUsedTrackType" + i, i);
+            lut.date = (long)preferences.getLong("prefLastDateTrackType" + i, i * 10);
+            lastUsedTrackTypeList.add(lut);
+        }
+
+        // Order the list by Date
+        Collections.sort(lastUsedTrackTypeList, customDateComparator);
+
+        // Search if the selected Type is present into the list
+        boolean isTrackTypePresent = false;
+        for (LastUsedTrackType lut : lastUsedTrackTypeList) {
+            if (lut.type == GPSApplication.getInstance().getSelectedTrackTypeOnDialog()) isTrackTypePresent = true;
+        }
+
+        // If not, substitute the older used icon with the selected one
+        if (!isTrackTypePresent && (GPSApplication.getInstance().getSelectedTrackTypeOnDialog() != NOT_AVAILABLE)) {
+            lastUsedTrackTypeList.get(0).type = GPSApplication.getInstance().getSelectedTrackTypeOnDialog();
+            lastUsedTrackTypeList.get(0).date = System.currentTimeMillis();
+        }
+
+        // Order the list by Track Type, to keep a fixed order of the icons
+        // for user convenience
+        Collections.sort(lastUsedTrackTypeList, customTypeComparator);
+
+        // Write log, for debug purpose
+//        for (LastUsedTrackType lut : lastUsedTrackTypeList) {
+//            Log.w("myApp", "[#] FragentTrackPropertiesDialog - Last Used Track Type - " + lut.type + " - " + lut.date);
+//        }
     }
 }
