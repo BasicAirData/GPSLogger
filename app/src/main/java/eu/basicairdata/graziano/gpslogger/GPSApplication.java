@@ -214,6 +214,8 @@ public class GPSApplication extends Application implements LocationListener {
     private LocationExtended currentPlacemark = null;            // The location used to add the Placemark (Annotation)
     private Track currentTrack = null;                           // The current track. Used for adding Trackpoints and Annotations
     private Track trackToEdit = null;                            // The Track that the user selected to edit with the "Track Properties" Dialog
+    private int selectedTrackTypeOnDialog = NOT_AVAILABLE;       // The Activity type selected into the Edit Details dialog.
+                                                                 // It is a temporary variable, it is reset at every dialog opening
 
     private final List<Track> arrayListTracks
             = Collections.synchronizedList(new ArrayList<Track>());             // The list of Tracks
@@ -575,6 +577,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public boolean getPrefExportTXT() {
         return prefExportTXT;
+    }
+
+    public int getSelectedTrackTypeOnDialog() {
+        return selectedTrackTypeOnDialog;
+    }
+
+    public void setSelectedTrackTypeOnDialog(int selectedTrackTypeOnDialog) {
+        this.selectedTrackTypeOnDialog = selectedTrackTypeOnDialog;
     }
 
     public int getPrefUM() {

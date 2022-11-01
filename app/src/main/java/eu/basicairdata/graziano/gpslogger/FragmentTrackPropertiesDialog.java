@@ -57,12 +57,10 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
     private final ImageView[] tracktypeImageView = new ImageView[7];
     private ImageView tracktypeMore;
 
-    private int selectedTrackType = NOT_AVAILABLE;                 // The track type selected by the user
     private Track trackToEdit = null;                              // The track to edit
     private int title = 0;                                         // The resource id for the title
     private boolean finalizeTrackWithOk = false;                   // True if the "OK" button finalizes the track and creates a new one
 
-    private static final String KEY_SELTRACKTYPE = "selectedTrackType";
     private static final String KEY_TITLE = "_title";
     private static final String KEY_ISFINALIZATION = "_isFinalization";
 
@@ -70,7 +68,6 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(KEY_SELTRACKTYPE, selectedTrackType);
         outState.putInt(KEY_TITLE, title);
         outState.putBoolean(KEY_ISFINALIZATION, finalizeTrackWithOk);
     }
@@ -86,10 +83,9 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
 
         if (savedInstanceState != null) {
             title = savedInstanceState.getInt(KEY_TITLE, 0);
-            selectedTrackType = savedInstanceState.getInt(KEY_SELTRACKTYPE, NOT_AVAILABLE);
             finalizeTrackWithOk = savedInstanceState.getBoolean(KEY_ISFINALIZATION, false);
         } else {
-            selectedTrackType = trackToEdit.getType();
+            GPSApplication.getInstance().setSelectedTrackTypeOnDialog(trackToEdit.getType());
         }
 
         if (title != 0) createPlacemarkAlert.setTitle(title);
@@ -135,7 +131,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                     for (int i = 0; i < tracktypeImageView.length; i++) {
                         if (view == tracktypeImageView[i]) {
                             tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
-                            selectedTrackType = i;
+                            GPSApplication.getInstance().setSelectedTrackTypeOnDialog(i);
                         } else
                             tracktypeImageView[i].setColorFilter(getResources().getColor(R.color.colorIconDisabledOnDialog), PorterDuff.Mode.SRC_IN);
                     }
@@ -143,8 +139,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             });
         }
         // Activate the right image
-        if (selectedTrackType != NOT_AVAILABLE)
-            tracktypeImageView[selectedTrackType].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
+        if (GPSApplication.getInstance().getSelectedTrackTypeOnDialog() != NOT_AVAILABLE)
+            tracktypeImageView[GPSApplication.getInstance().getSelectedTrackTypeOnDialog()].setColorFilter(getResources().getColor(R.color.textColorRecControlPrimary), PorterDuff.Mode.SRC_IN);
         else if ((trackToEdit != null) && (trackToEdit.getEstimatedTrackType() != Track.TRACK_TYPE_ND))
             tracktypeImageView[trackToEdit.getEstimatedTrackType()].setColorFilter(getResources().getColor(R.color.textColorRecControlSecondary), PorterDuff.Mode.SRC_IN);
 
@@ -156,7 +152,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
                         if (isAdded()) {
                             String trackDescription = etDescription.getText().toString();
                             trackToEdit.setDescription (trackDescription.trim());
-                            if (selectedTrackType != NOT_AVAILABLE) trackToEdit.setType(selectedTrackType);  // the user selected a track type!
+                            if (GPSApplication.getInstance().getSelectedTrackTypeOnDialog() != NOT_AVAILABLE)
+                                trackToEdit.setType(GPSApplication.getInstance().getSelectedTrackTypeOnDialog());  // the user selected a track type!
                             GPSApplication.getInstance().gpsDataBase.updateTrack(trackToEdit);
                             if (finalizeTrackWithOk) {
                                 // a request to finalize a track
