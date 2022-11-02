@@ -250,6 +250,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
     public void onEvent(Short msg) {
         switch (msg) {
             case EventBusMSG.REFRESH_TRACKTYPE:
+                isTrackTypeIconClicked = true;
                 updateTrackTypeIcons();
                 break;
         }
@@ -309,6 +310,12 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             editor.putLong("prefLastDateTrackType" + i, lastUsedTrackTypeList.get(i).date);
         }
         editor.commit();
+
+        // Write log, for debug purpose
+//        Log.w("myApp", "[#] FragentTrackPropertiesDialog - SAVING the Last Used Track Type:");
+//        for (LastUsedTrackType lut : lastUsedTrackTypeList) {
+//            Log.w("myApp", "[#] FragentTrackPropertiesDialog - " + String.format("%2d", lut.type) + " = " + lut.date);
+//        }
     }
 
     /**
@@ -334,7 +341,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
         for (int i = 0; i < 6; i++) {
             LastUsedTrackType lut = new LastUsedTrackType();
             lut.type = preferences.getInt("prefLastUsedTrackType" + i, i);
-            lut.date = (long)preferences.getLong("prefLastDateTrackType" + i, i * 10);
+            lut.date = preferences.getLong("prefLastDateTrackType" + i, i * 10);
             lastUsedTrackTypeList.add(lut);
         }
 
@@ -359,7 +366,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
 
         // Write log, for debug purpose
 //        for (LastUsedTrackType lut : lastUsedTrackTypeList) {
-//            Log.w("myApp", "[#] FragentTrackPropertiesDialog - Last Used Track Type - " + lut.type + " - " + lut.date);
+//            Log.w("myApp", "[#] FragentTrackPropertiesDialog - " + String.format("%2d", lut.type) + " = " + lut.date);
 //        }
     }
 }
