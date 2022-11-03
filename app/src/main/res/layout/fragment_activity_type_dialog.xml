@@ -43,6 +43,9 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/category_fitness"
                 android:textSize="13sp"/>
@@ -57,6 +60,9 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/category_water_snow"
                 android:textSize="13sp"/>
@@ -78,6 +84,9 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/category_wheel"
                 android:textSize="13sp"/>
@@ -99,6 +108,9 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/category_air"
                 android:textSize="13sp"/>
@@ -113,6 +125,9 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/category_other"
                 android:textSize="13sp"/>
