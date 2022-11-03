@@ -25,6 +25,7 @@ import android.app.Dialog;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -83,11 +84,11 @@ public class FragmentActivityTypeDialog extends DialogFragment {
 
         final float SCALE = getContext().getResources().getDisplayMetrics().density;
         final int ICON_MARGIN = (int) (4 * SCALE + 0.5f);
-        int selectedTrackType = GPSApplication.getInstance().getTrackToEdit().getEstimatedTrackType();            // The track type selected by the user
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_activity_type_dialog, null);
         createPlacemarkAlert.setView(view);
+
 
         ArrayList <ActivityCategory> activityCategories = new ArrayList<>();
 
@@ -190,6 +191,9 @@ public class FragmentActivityTypeDialog extends DialogFragment {
                 // set Layout Params
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 iv.setLayoutParams(lp);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    iv.setTooltipText(Track.ACTIVITY_DESCRIPTION[aType.value]);
+                }
 
                 iv.setTag(aType.value);
 
