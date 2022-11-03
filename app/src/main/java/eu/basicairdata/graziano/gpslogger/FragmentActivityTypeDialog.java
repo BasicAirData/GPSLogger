@@ -124,6 +124,7 @@ public class FragmentActivityTypeDialog extends DialogFragment {
         // Air
         ActivityCategory acAir = new ActivityCategory(view.findViewById(R.id.tracktype_main_linearlayout_cat_air));
         acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_FLIGHT));
+        acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_HELICOPTER));
         acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_ROCKET));
         acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_PARAGLIDING));
         acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_AIRBALLOON));
