@@ -126,6 +126,7 @@ public class FragmentActivityTypeDialog extends DialogFragment {
         acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_FLIGHT));
         acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_ROCKET));
         acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_PARAGLIDING));
+        acAir.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_AIRBALLOON));
         activityCategories.add(acAir);
 
         // Wheel
