@@ -144,8 +144,8 @@ public class FragmentActivityTypeDialog extends DialogFragment {
         acMobility.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_CAR));
         acMobility.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_TRUCK));
         acMobility.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_BUS));
-        acMobility.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_TRAM));
         acMobility.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_TRAIN));
+        acMobility.activityTypeList.add(new ActivityType(Track.TRACK_TYPE_AGRICULTURE));
         activityCategories.add(acMobility);
 
         // Other

@@ -72,8 +72,8 @@ public class Track {
     public static final int TRACK_TYPE_MOTORCYCLE       = 30;
     public static final int TRACK_TYPE_TRUCK            = 31;
     public static final int TRACK_TYPE_BUS              = 32;
-    public static final int TRACK_TYPE_TRAM             = 33;
-    public static final int TRACK_TYPE_TRAIN            = 34;
+    public static final int TRACK_TYPE_TRAIN            = 33;
+    public static final int TRACK_TYPE_AGRICULTURE      = 34;
     public static final int TRACK_TYPE_CITY             = 35;
     public static final int TRACK_TYPE_FOREST           = 36;
     public static final int TRACK_TYPE_WORK             = 37;
@@ -119,8 +119,8 @@ public class Track {
             R.drawable.ic_tracktype_sports_motorsports_24,      // MOTORCYCLE       = 30
             R.drawable.ic_tracktype_truck_24,                   // TRUCK            = 31
             R.drawable.ic_tracktype_directions_bus_24,          // BUS              = 32
-            R.drawable.ic_tracktype_tram_24,                    // TRAM             = 33
-            R.drawable.ic_tracktype_train_24,                   // TRAIN            = 34
+            R.drawable.ic_tracktype_train_24,                   // TRAIN            = 33
+            R.drawable.ic_tracktype_agriculture_24,             // AGRICULTURE      = 34
             R.drawable.ic_tracktype_location_city_24,           // CITY             = 35
             R.drawable.ic_tracktype_forest_24,                  // FOREST           = 36
             R.drawable.ic_tracktype_work_24,                    // WORK             = 37
@@ -166,8 +166,8 @@ public class Track {
             "motorcycle",                                       // MOTORCYCLE       = 30
             "truck",                                            // TRUCK            = 31
             "bus",                                              // BUS              = 32
-            "tram",                                             // TRAM             = 33
-            "train",                                            // TRAIN            = 34
+            "train",                                            // TRAIN            = 33
+            "agriculture",                                      // AGRICULTURE      = 34
             "city",                                             // CITY             = 35
             "forest",                                           // FOREST           = 36
             "work",                                             // WORK             = 37
