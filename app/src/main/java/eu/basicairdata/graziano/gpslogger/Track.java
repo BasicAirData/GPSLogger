@@ -123,7 +123,7 @@ public class Track {
             R.drawable.ic_tracktype_directions_bus_24,          // BUS              = 33
             R.drawable.ic_tracktype_train_24,                   // TRAIN            = 34
             R.drawable.ic_tracktype_agriculture_24,             // AGRICULTURE      = 35
-            R.drawable.ic_tracktype_location_city_24,           // CITY             = 36
+            R.drawable.ic_tracktype_city_24,           // CITY             = 36
             R.drawable.ic_tracktype_forest_24,                  // FOREST           = 37
             R.drawable.ic_tracktype_work_24,                    // WORK             = 38
             R.drawable.ic_tracktype_camera_24,                  // PHOTOGRAPHY      = 39
