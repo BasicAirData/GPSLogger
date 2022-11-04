@@ -154,8 +154,8 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
             public void onClick(View view) {
                 // Shows the Tracktype Dialog
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentActivityTypeDialog fragmentActivityTypeDialog = new FragmentActivityTypeDialog();
-                fragmentActivityTypeDialog.show(fm, "");
+                FragmentTrackTypeDialog fragmentTrackTypeDialog = new FragmentTrackTypeDialog();
+                fragmentTrackTypeDialog.show(fm, "");
             }
         });
 

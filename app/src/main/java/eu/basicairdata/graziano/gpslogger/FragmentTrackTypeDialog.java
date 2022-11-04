@@ -1,5 +1,5 @@
 /*
- * FragmentActivityTypeDialog - Java Class for Android
+ * FragmentTrackTypeDialog - Java Class for Android
  * Created by G.Capelli on 18/10/2022
  * This file is part of BasicAirData GPS Logger
  *
@@ -48,7 +48,7 @@ import java.util.ArrayList;
  * The Dialog that shows the Activity Type list.
  * The user can choose the activity type he wants by clicking the icon.
  */
-public class FragmentActivityTypeDialog extends DialogFragment {
+public class FragmentTrackTypeDialog extends DialogFragment {
 
     /**
      * The class that defines a category of activities (a row)
@@ -86,7 +86,7 @@ public class FragmentActivityTypeDialog extends DialogFragment {
         final int ICON_MARGIN = (int) (4 * SCALE + 0.5f);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.fragment_activity_type_dialog, null);
+        final View view = inflater.inflate(R.layout.fragment_track_type_dialog, null);
         createPlacemarkAlert.setView(view);
 
 
