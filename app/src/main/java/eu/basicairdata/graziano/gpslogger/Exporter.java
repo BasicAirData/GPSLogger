@@ -371,6 +371,11 @@ class Exporter extends Thread {
                     if (track.getEstimatedTrackType() != NOT_AVAILABLE)
                         gpxBW.write("<!--  Activity = " + Track.ACTIVITY_DESCRIPTION[track.getEstimatedTrackType()] + " -->" + newLine);
 
+                    gpxBW.write("<!--  Altitudes = "
+                            + (egmAltitudeCorrection ? "Corrected using EGM96 grid (bilinear interpolation)" : "Raw")
+                            + (altitudeManualCorrection == 0 ? "" : (", " + (String.format(Locale.US, "%+.3f", altitudeManualCorrection) + "m of manual offset")))
+                            + " -->" + newLine);
+
                     gpxBW.write(newLine);
                 }
 
