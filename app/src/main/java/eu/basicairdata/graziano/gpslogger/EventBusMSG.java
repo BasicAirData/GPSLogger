@@ -40,6 +40,7 @@ public class EventBusMSG {
     static final short NOTIFY_TRACKS_DELETED            =  14;  // Notify that some tracks are deleted
     static final short UPDATE_ACTIONBAR                 =  15;  // Notify that the actionbar must be updated
     static final short REFRESH_TRACKLIST                =  16;  // Refresh the tracklist, without update it from DB
+    static final short REFRESH_TRACKTYPE                =  17;  // Refresh the track type on the Edit Details dialog
 
     static final short TRACKLIST_DESELECT               =  24;  // The user deselect (into the tracklist) the track with a given id
     static final short TRACKLIST_SELECT                 =  25;  // The user select (into the tracklist) the track with a given id
