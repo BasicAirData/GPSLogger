@@ -517,7 +517,7 @@ class Exporter extends Thread {
                                           dfdtTXT.format(loc.getLocation().getTime()))
                                         + "," + formattedLatitude + "," + formattedLongitude + ",");
                                 if (loc.getLocation().hasAccuracy())
-                                    txtBW.write(String.format(Locale.US, "%.0f", loc.getLocation().getAccuracy()));
+                                    txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getAccuracy()));
                                 txtBW.write(",");
                                 if (loc.getLocation().hasAltitude())
                                     txtBW.write(formattedAltitude);
@@ -675,7 +675,7 @@ class Exporter extends Thread {
                                   dfdtTXT.format(loc.getLocation().getTime()))
                                 + "," + formattedLatitude + "," + formattedLongitude + ",");
                         if (loc.getLocation().hasAccuracy())
-                            txtBW.write(String.format(Locale.US, "%.0f", loc.getLocation().getAccuracy()));
+                            txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getAccuracy()));
                         txtBW.write(",");
                         if (loc.getLocation().hasAltitude())
                             txtBW.write(formattedAltitude);
