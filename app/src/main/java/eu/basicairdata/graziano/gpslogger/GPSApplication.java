@@ -1049,6 +1049,7 @@ public class GPSApplication extends Application implements LocationListener {
                     if (loc.isFromMockProvider() != isMockProvider) {
                         numberOfSatellitesTotal = NOT_AVAILABLE;
                         numberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                        isAccuracyDecimalCounter = 0;
                     }
                     isMockProvider = loc.isFromMockProvider();
                     if (isMockProvider) Log.w("myApp", "[#] GPSApplication.java - Provider Type = MOCK PROVIDER");
@@ -1057,9 +1058,9 @@ public class GPSApplication extends Application implements LocationListener {
             }
 
             if (Math.round(loc.getAccuracy()) != loc.getAccuracy())
-                isAccuracyDecimalCounter = 10;                                                 // Sets the visualization of the accuracy in decimal mode (>0)
+                isAccuracyDecimalCounter = 10;                                          // Sets the visualization of the accuracy in decimal mode (>0)
             else
-                isAccuracyDecimalCounter -= isAccuracyDecimalCounter > 0 ? 1 : 0;                     // If the accuracy is integer for 10 samples, we start to show it rounded to the meter
+                isAccuracyDecimalCounter -= isAccuracyDecimalCounter > 0 ? 1 : 0;       // If the accuracy is integer for 10 samples, we start to show it rounded to the meter
 
             //Log.w("myApp", "[#] GPSApplication.java - onLocationChanged: provider=" + loc.getProvider());
             if (loc.hasSpeed() && (loc.getSpeed() == 0)) loc.removeBearing();           // Removes bearing if the speed is zero
