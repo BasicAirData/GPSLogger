@@ -134,7 +134,7 @@ class PhysicalDataFormatter {
             case FORMAT_ACCURACY:   // Accuracy
                 switch (gpsApp.getPrefUM()) {
                     case UM_METRIC:
-                        if (Math.rint(number) != number) {
+                        if (GPSApplication.getInstance().isAccuracyDecimal()) {
                             if (Math.round(number) >= 10)
                                 physicalData.value = String.valueOf(Math.round(number));
                             else if (Math.round(number * 10) >= 10)
@@ -148,7 +148,7 @@ class PhysicalDataFormatter {
                         return(physicalData);
                     case UM_IMPERIAL:
                     case UM_NAUTICAL:
-                        if (Math.rint(number) != number) {
+                        if (GPSApplication.getInstance().isAccuracyDecimal()) {
                             if (Math.round(number * M_TO_FT) >= 10)
                                 physicalData.value = String.valueOf(Math.round(number * M_TO_FT));
                             else if (Math.round(number * M_TO_FT * 10) >= 10)

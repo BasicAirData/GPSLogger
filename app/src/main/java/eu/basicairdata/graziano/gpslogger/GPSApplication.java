@@ -170,6 +170,7 @@ public class GPSApplication extends Application implements LocationListener {
     private LocationExtended prevRecordedFix    = null;          // The previous recorded fix
     private boolean isPrevFixRecorded;                           // true if the previous fix has been recorded
     private boolean isFirstFixFound;                             // True if at less one fix has been obtained
+    private int isAccuracyDecimalCounter        = 0;             // 0 = The GPS has accuracy rounded to the meter (not precise antennas)
 
     private MyGPSStatus gpsStatusListener;                       // The listener for the GPS Status changes events
 
@@ -585,6 +586,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setSelectedTrackTypeOnDialog(int selectedTrackTypeOnDialog) {
         this.selectedTrackTypeOnDialog = selectedTrackTypeOnDialog;
+    }
+
+    public boolean isAccuracyDecimal() {
+        return (isAccuracyDecimalCounter != 0);
     }
 
     public int getPrefUM() {
@@ -1050,6 +1055,11 @@ public class GPSApplication extends Application implements LocationListener {
                     else Log.w("myApp", "[#] GPSApplication.java - Provider Type = GPS PROVIDER");
                 }
             }
+
+            if (Math.round(loc.getAccuracy()) != loc.getAccuracy())
+                isAccuracyDecimalCounter = 10;                                                 // Sets the visualization of the accuracy in decimal mode (>0)
+            else
+                isAccuracyDecimalCounter -= isAccuracyDecimalCounter > 0 ? 1 : 0;                     // If the accuracy is integer for 10 samples, we start to show it rounded to the meter
 
             //Log.w("myApp", "[#] GPSApplication.java - onLocationChanged: provider=" + loc.getProvider());
             if (loc.hasSpeed() && (loc.getSpeed() == 0)) loc.removeBearing();           // Removes bearing if the speed is zero
