@@ -22,9 +22,12 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
 import static android.content.Context.POWER_SERVICE;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -37,16 +40,17 @@ import androidx.fragment.app.Fragment;
 
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -61,6 +65,7 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_TEMPORARYUNA
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_SEARCHING;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_STABILIZING;
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.GPS_OK;
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
 
 /**
  * The Fragment that displays the information of the Fix
@@ -102,6 +107,8 @@ public class FragmentGPSFix extends Fragment {
     private CardView cvWarningBatteryOptimised;
     private LinearLayout llTimeSatellites;
     private ImageView iwWarningBatteryOptimisedClose;
+    private ImageView iwCopyCoordinatesToClipboard;
+
 
     private PhysicalData phdLatitude;
     private PhysicalData phdLongitude;
@@ -208,6 +215,7 @@ public class FragmentGPSFix extends Fragment {
         // ImageViews
 
         iwWarningBatteryOptimisedClose = view.findViewById(R.id.id_warning_battery_optimised_close);
+        iwCopyCoordinatesToClipboard = view.findViewById(R.id.id_coordinates_copy);
 
         // LinearLayouts
         llTimeSatellites = view.findViewById(R.id.id_linearLayout_Time_Satellites);
@@ -236,6 +244,34 @@ public class FragmentGPSFix extends Fragment {
             public void onClick(View v) {
                 gpsApp.setBatteryOptimisedWarningVisible(false);
                 update();
+            }
+        });
+
+        iwCopyCoordinatesToClipboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                // Coordinates GG°MM'SS.SSSS"
+//                ClipData clip = ClipData.newPlainText("Coordinates",
+//                        Location.convert(Math.abs(location.getLatitude()), Location.FORMAT_SECONDS)
+//                                .replaceFirst(":", "°")
+//                                .replaceFirst(":", "'")
+//                                .concat(location.getLatitude() >= 0 ? "\"N " : "\"S ")
+//                           + Location.convert(Math.abs(location.getLongitude()), Location.FORMAT_SECONDS)
+//                                .replaceFirst(":", "°")
+//                                .replaceFirst(":", "'")
+//                                .concat(location.getLongitude() >= 0 ? "\"E" : "\"W"));
+                // Coordinates GG.GGGGGGGGG, to be preferred
+                ClipData clip = ClipData.newPlainText("Coordinates",
+                        String.format(Locale.getDefault(), "%.9f", Math.abs(location.getLatitude()))
+                                + ", "
+                                + String.format(Locale.getDefault(), "%.9f", Math.abs(location.getLongitude()))
+                );
+                clipboard.setPrimaryClip(clip);
+                Toast toast = Toast.makeText(gpsApp.getApplicationContext(),
+                        gpsApp.getString(R.string.toast_copied_to_clipboard), Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+                toast.show();
             }
         });
 

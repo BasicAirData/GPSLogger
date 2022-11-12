@@ -23,6 +23,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/id_fragmentgpsfixFrameLayout"
     tools:context=".FragmentGPSFix"
     android:layout_width="match_parent"
@@ -93,47 +94,66 @@
 
             </TableLayout>
 
-            <TableLayout
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/id_TableLayout_Longitude"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp">
+                android:layout_height="wrap_content">
 
-                <TableRow
+                <TableLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal">
+                    android:id="@+id/id_TableLayout_Longitude"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp">
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:id="@+id/id_textView_Longitude"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearanceLargeNumbers"
+                            android:textColor="@color/colorPrimaryLight" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearanceLargeUM"
+                            android:id="@+id/id_textView_LongitudeUM"
+                            android:layout_weight="0"
+                            android:layout_marginLeft="7dp"
+                            android:layout_marginStart="7dp" />
+
+                    </TableRow>
 
                     <TextView
-                        android:id="@+id/id_textView_Longitude"
-                        android:layout_width="wrap_content"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearanceLargeNumbers"
-                        android:textColor="@color/colorPrimaryLight" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/longitude"
+                        android:id="@+id/id_textView_LongitudeLabel"
+                        android:textSize="13sp"
+                        android:gravity="center_horizontal" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearanceLargeUM"
-                        android:id="@+id/id_textView_LongitudeUM"
-                        android:layout_weight="0"
-                        android:layout_marginLeft="7dp"
-                        android:layout_marginStart="7dp" />
+                </TableLayout>
 
-                </TableRow>
+                <ImageView
+                    android:id="@+id/id_coordinates_copy"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_content_copy_24"
+                    android:alpha="0.4"
+                    android:maxWidth="30dp"
+                    android:maxHeight="30dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="bottom|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/longitude"
-                    android:id="@+id/id_textView_LongitudeLabel"
-                    android:textSize="13sp"
-                    android:gravity="center_horizontal" />
-
-            </TableLayout>
+            </FrameLayout>
 
         </TableLayout>
             <LinearLayout
