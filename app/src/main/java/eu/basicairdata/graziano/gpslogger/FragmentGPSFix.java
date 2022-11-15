@@ -269,7 +269,7 @@ public class FragmentGPSFix extends Fragment {
                 );
                 clipboard.setPrimaryClip(clip);
                 Toast toast = Toast.makeText(gpsApp.getApplicationContext(),
-                        gpsApp.getString(R.string.toast_copied_to_clipboard), Toast.LENGTH_SHORT);
+                        gpsApp.getString(R.string.toast_coordinates_copied_to_clipboard), Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
                 toast.show();
             }
