@@ -95,6 +95,8 @@
     <string name="toast_recording_when_gps_found">The recording will begin when the GPS signal is found</string>
     <string name="toast_annotate_when_gps_found">The annotation will be taken when the GPS signal is found</string>
 
+    <string name="toast_coordinates_copied_to_clipboard">Coordinates copied to clipboard</string>
+
     <string name="ok">OK</string>
 
     <string name="annotations">Annotations</string>
