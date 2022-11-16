@@ -22,6 +22,7 @@
 package eu.basicairdata.graziano.gpslogger;
 
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.BufferedWriter;
@@ -430,7 +431,7 @@ class Exporter extends Thread {
 
             if (exportTXT) {
                 // Writing head of TXT file
-                txtBW.write("type,date time,latitude,longitude,accuracy(m),altitude(m),geoid_height(m),speed(m/s),bearing(deg),sat_used,sat_inview,name,desc" + newLine);
+                txtBW.write("type,date time,latitude,longitude,accuracy(m),altitude(m),vertical_accuracy(m),geoid_height(m),speed(m/s),speed_accuracy(m/s),bearing(deg),bearing_accuracy(deg),sat_used,sat_inview,name,desc" + newLine);
             }
 
             String formattedLatitude = "";
@@ -510,7 +511,6 @@ class Exporter extends Thread {
 
                             // TXT
                             if (exportTXT) {
-                                //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
                                 //txtBW.write("W," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
                                 txtBW.write("W," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
                                           dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
@@ -522,14 +522,23 @@ class Exporter extends Thread {
                                 if (loc.getLocation().hasAltitude())
                                     txtBW.write(formattedAltitude);
                                 txtBW.write(",");
+                                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.getLocation().hasVerticalAccuracy())
+                                    txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getVerticalAccuracyMeters()));
+                                txtBW.write(",");
                                 if ((loc.getAltitudeEGM96Correction() != NOT_AVAILABLE) && (egmAltitudeCorrection))
                                     txtBW.write(String.format(Locale.US, "%.3f",loc.getAltitudeEGM96Correction()));
                                 txtBW.write(",");
                                 if (loc.getLocation().hasSpeed())
                                     txtBW.write(formattedSpeed);
                                 txtBW.write(",");
+                                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.getLocation().hasSpeedAccuracy())
+                                    txtBW.write(String.format(Locale.US, "%.3f", loc.getLocation().getSpeedAccuracyMetersPerSecond()));
+                                txtBW.write(",");
                                 if (loc.getLocation().hasBearing())
-                                    txtBW.write(String.format(Locale.US, "%.0f", loc.getLocation().getBearing()));
+                                    txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getBearing()));
+                                txtBW.write(",");
+                                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.getLocation().hasBearingAccuracy())
+                                    txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getBearingAccuracyDegrees()));
                                 txtBW.write(",");
                                 if (loc.getNumberOfSatellitesUsedInFix() > 0)
                                     txtBW.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
@@ -668,7 +677,6 @@ class Exporter extends Thread {
 
                     // TXT
                     if (exportTXT) {
-                        //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
                         //txtBW.write("T," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
                         txtBW.write("T," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
                                   dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
@@ -680,14 +688,23 @@ class Exporter extends Thread {
                         if (loc.getLocation().hasAltitude())
                             txtBW.write(formattedAltitude);
                         txtBW.write(",");
+                        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.getLocation().hasVerticalAccuracy())
+                            txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getVerticalAccuracyMeters()));
+                        txtBW.write(",");
                         if ((loc.getAltitudeEGM96Correction() != NOT_AVAILABLE) && (egmAltitudeCorrection))
                             txtBW.write(String.format(Locale.US, "%.3f",loc.getAltitudeEGM96Correction()));
                         txtBW.write(",");
                         if (loc.getLocation().hasSpeed())
                             txtBW.write(formattedSpeed);
                         txtBW.write(",");
+                        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.getLocation().hasSpeedAccuracy())
+                            txtBW.write(String.format(Locale.US, "%.3f", loc.getLocation().getSpeedAccuracyMetersPerSecond()));
+                        txtBW.write(",");
                         if (loc.getLocation().hasBearing())
-                            txtBW.write(String.format(Locale.US, "%.0f", loc.getLocation().getBearing()));
+                            txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getBearing()));
+                        txtBW.write(",");
+                        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.getLocation().hasBearingAccuracy())
+                            txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getBearingAccuracyDegrees()));
                         txtBW.write(",");
                         if (loc.getNumberOfSatellitesUsedInFix() > 0)
                             txtBW.write(String.valueOf(loc.getNumberOfSatellitesUsedInFix()));
