@@ -27,6 +27,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.os.Build;
 import android.util.Log;
 
 import java.text.ParseException;
@@ -57,7 +58,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
     // Database Version
     // Updated to 2 in v2.1.3 (version code 14)
     // Updated to 3 in v3.0.0 (version code 38)
-    private static final int DATABASE_VERSION = 3;
+    // Updated to 4 in v3.2.0 (version code 49)
+    private static final int DATABASE_VERSION = 4;
 
     private static final int LOCATION_TYPE_LOCATION = 1;
     private static final int LOCATION_TYPE_PLACEMARK = 2;
@@ -86,6 +88,9 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LOCATION_NUMBEROFSATELLITES = "number_of_satellites";
     private static final String KEY_LOCATION_TYPE = "type";
     private static final String KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX = "number_of_satellites_used_in_fix";
+    private static final String KEY_LOCATION_VERTICAL_ACCURACY = "vertical_accuracy";
+    private static final String KEY_LOCATION_SPEED_ACCURACY = "speed_accuracy";
+    private static final String KEY_LOCATION_BEARING_ACCURACY = "bearing_accuracy";
 
     // ---------------------------------------------------------------------------- Placemarks adds
     private static final String KEY_LOCATION_NAME = "name";
@@ -214,7 +219,10 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_LOCATION_TIME + " REAL,"                                  // 9
                 + KEY_LOCATION_NUMBEROFSATELLITES + " INTEGER,"                 // 10
                 + KEY_LOCATION_TYPE + " INTEGER,"                               // 11
-                + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER" + ")";  // 12
+                + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER,"        // 12
+                + KEY_LOCATION_VERTICAL_ACCURACY + " REAL,"                     // 13
+                + KEY_LOCATION_SPEED_ACCURACY + " REAL,"                        // 14
+                + KEY_LOCATION_BEARING_ACCURACY + " REAL" + ")";                // 15
         db.execSQL(CREATE_LOCATIONS_TABLE);
 
         String CREATE_PLACEMARKS_TABLE = "CREATE TABLE " + TABLE_PLACEMARKS + "("
@@ -231,16 +239,35 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_LOCATION_NUMBEROFSATELLITES + " INTEGER,"                 // 10
                 + KEY_LOCATION_TYPE + " INTEGER,"                               // 11
                 + KEY_LOCATION_NAME + " TEXT,"                                  // 12
-                + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER" + ")";  // 13
+                + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER,"        // 13
+                + KEY_LOCATION_VERTICAL_ACCURACY + " REAL,"                     // 14
+                + KEY_LOCATION_SPEED_ACCURACY + " REAL,"                        // 15
+                + KEY_LOCATION_BEARING_ACCURACY + " REAL" + ")";                // 16
         db.execSQL(CREATE_PLACEMARKS_TABLE);
     }
 
-    private static final String DATABASE_ALTER_TABLE_LOCATIONS_TO_V2 = "ALTER TABLE "
-            + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";
-    private static final String DATABASE_ALTER_TABLE_PLACEMARKS_TO_V2 = "ALTER TABLE "
-            + TABLE_PLACEMARKS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";
-    private static final String DATABASE_ALTER_TABLE_TRACKS_TO_V3 = "ALTER TABLE "
-            + TABLE_TRACKS + " ADD COLUMN " + KEY_TRACK_DESCRIPTION + " TEXT DEFAULT \"\";";
+    private static final String DATABASE_ALTER_TABLE_LOCATIONS_TO_V2 =
+            "ALTER TABLE " + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";
+
+    private static final String DATABASE_ALTER_TABLE_PLACEMARKS_TO_V2 =
+            "ALTER TABLE " + TABLE_PLACEMARKS + " ADD COLUMN " + KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX + " INTEGER DEFAULT " +  NOT_AVAILABLE + ";";
+
+    private static final String DATABASE_ALTER_TABLE_TRACKS_TO_V3 =
+            "ALTER TABLE " + TABLE_TRACKS + " ADD COLUMN " + KEY_TRACK_DESCRIPTION + " TEXT DEFAULT \"\";";
+
+    private static final String DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_VERTICAL_ACCURACY =
+            "ALTER TABLE " + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_VERTICAL_ACCURACY + " REAL DEFAULT " + NOT_AVAILABLE + ";";
+    private static final String DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_SPEED_ACCURACY =
+            "ALTER TABLE " + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_SPEED_ACCURACY + " REAL DEFAULT " + NOT_AVAILABLE + ";";
+    private static final String DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_BEARING_ACCURACY =
+            "ALTER TABLE " + TABLE_LOCATIONS + " ADD COLUMN " + KEY_LOCATION_BEARING_ACCURACY + " REAL DEFAULT " + NOT_AVAILABLE + ";";
+
+    private static final String DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_VERTICAL_ACCURACY =
+            "ALTER TABLE " + TABLE_PLACEMARKS + " ADD COLUMN " + KEY_LOCATION_VERTICAL_ACCURACY + " REAL DEFAULT " + NOT_AVAILABLE + ";";
+    private static final String DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_SPEED_ACCURACY =
+            "ALTER TABLE " + TABLE_PLACEMARKS + " ADD COLUMN " + KEY_LOCATION_SPEED_ACCURACY + " REAL DEFAULT " + NOT_AVAILABLE + ";";
+    private static final String DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_BEARING_ACCURACY =
+            "ALTER TABLE " + TABLE_PLACEMARKS + " ADD COLUMN " + KEY_LOCATION_BEARING_ACCURACY + " REAL DEFAULT " + NOT_AVAILABLE + ";";
 
     /**
      * Upgrade the database version, altering the corresponding tables.
@@ -269,6 +296,17 @@ class DatabaseHandler extends SQLiteOpenHelper {
                 //upgrade from version 2 to 3
                 //Log.w("myApp", "[#] DatabaseHandler.java - onUpgrade: from version 2 to 3 ...");
                 db.execSQL(DATABASE_ALTER_TABLE_TRACKS_TO_V3);
+            case 3:
+                //upgrade from version 3 to 4
+                //Log.w("myApp", "[#] DatabaseHandler.java - onUpgrade: from version 3 to 4 ...");
+                db.beginTransaction();
+                db.execSQL(DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_VERTICAL_ACCURACY);
+                db.execSQL(DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_SPEED_ACCURACY);
+                db.execSQL(DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_BEARING_ACCURACY);
+                db.execSQL(DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_VERTICAL_ACCURACY);
+                db.execSQL(DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_SPEED_ACCURACY);
+                db.execSQL(DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_BEARING_ACCURACY);
+                db.endTransaction();
 
                 //and so on.. do not add breaks so that switch will
                 //start at oldVersion, and run straight through to the latest
@@ -379,6 +417,10 @@ class DatabaseHandler extends SQLiteOpenHelper {
         locvalues.put(KEY_LOCATION_NUMBEROFSATELLITES, location.getNumberOfSatellites());
         locvalues.put(KEY_LOCATION_TYPE, LOCATION_TYPE_LOCATION);
         locvalues.put(KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX, location.getNumberOfSatellitesUsedInFix());
+        locvalues.put(KEY_LOCATION_VERTICAL_ACCURACY, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.hasVerticalAccuracy() ? loc.getVerticalAccuracyMeters() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_SPEED_ACCURACY, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.hasSpeedAccuracy() ? loc.getSpeedAccuracyMetersPerSecond() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_BEARING_ACCURACY, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.hasBearingAccuracy() ? loc.getBearingAccuracyDegrees() : NOT_AVAILABLE);
+
 
         ContentValues trkvalues = new ContentValues();
         trkvalues.put(KEY_TRACK_NAME, track.getName());
@@ -475,6 +517,10 @@ class DatabaseHandler extends SQLiteOpenHelper {
         locvalues.put(KEY_LOCATION_TYPE, LOCATION_TYPE_PLACEMARK);
         locvalues.put(KEY_LOCATION_NAME, placemark.getDescription());
         locvalues.put(KEY_LOCATION_NUMBEROFSATELLITESUSEDINFIX, placemark.getNumberOfSatellitesUsedInFix());
+        locvalues.put(KEY_LOCATION_VERTICAL_ACCURACY, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.hasVerticalAccuracy() ? loc.getVerticalAccuracyMeters() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_SPEED_ACCURACY, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.hasSpeedAccuracy() ? loc.getSpeedAccuracyMetersPerSecond() : NOT_AVAILABLE);
+        locvalues.put(KEY_LOCATION_BEARING_ACCURACY, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && loc.hasBearingAccuracy() ? loc.getBearingAccuracyDegrees() : NOT_AVAILABLE);
+
 
         ContentValues trkvalues = new ContentValues();
         trkvalues.put(KEY_TRACK_NAME, track.getName());
@@ -657,6 +703,17 @@ class DatabaseHandler extends SQLiteOpenHelper {
                     extdloc.setNumberOfSatellites(cursor.getInt(10));
                     extdloc.setNumberOfSatellitesUsedInFix(cursor.getInt(12));
 
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        lcdata_float = cursor.getFloat(13);
+                        if (lcdata_float != NOT_AVAILABLE) lc.setVerticalAccuracyMeters(lcdata_float);
+
+                        lcdata_float = cursor.getFloat(14);
+                        if (lcdata_float != NOT_AVAILABLE) lc.setSpeedAccuracyMetersPerSecond(lcdata_float);
+
+                        lcdata_float = cursor.getFloat(15);
+                        if (lcdata_float != NOT_AVAILABLE) lc.setBearingAccuracyDegrees(lcdata_float);
+                    }
+
                     locationList.add(extdloc); // Add Location to list
                 } while (cursor.moveToNext());
             }
@@ -722,6 +779,17 @@ class DatabaseHandler extends SQLiteOpenHelper {
                     extdloc.setNumberOfSatellites(cursor.getInt(10));
                     extdloc.setNumberOfSatellitesUsedInFix(cursor.getInt(13));
                     extdloc.setDescription(cursor.getString(12));
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        lcdata_float = cursor.getFloat(14);
+                        if (lcdata_float != NOT_AVAILABLE) lc.setVerticalAccuracyMeters(lcdata_float);
+
+                        lcdata_float = cursor.getFloat(15);
+                        if (lcdata_float != NOT_AVAILABLE) lc.setSpeedAccuracyMetersPerSecond(lcdata_float);
+
+                        lcdata_float = cursor.getFloat(16);
+                        if (lcdata_float != NOT_AVAILABLE) lc.setBearingAccuracyDegrees(lcdata_float);
+                    }
 
                     placemarkList.add(extdloc); // Add Location to list
                 } while (cursor.moveToNext());
