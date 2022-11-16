@@ -299,14 +299,12 @@ class DatabaseHandler extends SQLiteOpenHelper {
             case 3:
                 //upgrade from version 3 to 4
                 //Log.w("myApp", "[#] DatabaseHandler.java - onUpgrade: from version 3 to 4 ...");
-                db.beginTransaction();
                 db.execSQL(DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_VERTICAL_ACCURACY);
                 db.execSQL(DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_SPEED_ACCURACY);
                 db.execSQL(DATABASE_ALTER_TABLE_LOCATIONS_TO_V4_BEARING_ACCURACY);
                 db.execSQL(DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_VERTICAL_ACCURACY);
                 db.execSQL(DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_SPEED_ACCURACY);
                 db.execSQL(DATABASE_ALTER_TABLE_PLACEMARKS_TO_V4_BEARING_ACCURACY);
-                db.endTransaction();
 
                 //and so on.. do not add breaks so that switch will
                 //start at oldVersion, and run straight through to the latest
