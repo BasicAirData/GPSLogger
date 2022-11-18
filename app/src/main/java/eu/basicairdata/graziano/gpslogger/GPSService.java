@@ -21,6 +21,8 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.ACTION_TOGGLE_RECORDING;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -132,6 +134,7 @@ public class GPSService extends Service {
         }
     }
 
+
     /**
      * Creates and gets the Notification.
      *
@@ -152,6 +155,12 @@ public class GPSService extends Service {
                 .setOngoing(true)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentText(composeContentText());
+
+        String actionString = GPSApplication.getInstance().isRecording() ? getString(R.string.pause) : getString(R.string.record);
+        Intent broadcastIntent = new Intent(this, ActionsBroadcastReceiver.class);
+        broadcastIntent.setAction(ACTION_TOGGLE_RECORDING);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, broadcastIntent, PendingIntent.FLAG_IMMUTABLE);
+        builder.addAction(R.drawable.ic_record_24, actionString, pendingIntent);
 
         final Intent startIntent = new Intent(getApplicationContext(), GPSActivity.class);
         startIntent.setAction(Intent.ACTION_MAIN);

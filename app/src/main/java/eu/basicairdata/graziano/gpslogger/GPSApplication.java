@@ -115,6 +115,8 @@ public class GPSApplication extends Application implements LocationListener {
     private static final String TASK_UPDATEFIX      = "TASK_UPDATEFIX";     // The AsyncTodo Type to update the current FIX
     private static final String TASK_DELETETRACKS   = "TASK_DELETETRACKS";  // The AsyncTodo Type to delete some tracks
 
+    public static final String ACTION_TOGGLE_RECORDING = "ACTION_TOGGLE_RECORDING";  // The action to be passed to BroadcastIntent using setAction. Used on Notification
+
     public static final String FLAG_RECORDING       = "flagRecording";      // The persistent Flag is set when the app is recording, in order to detect Background Crashes
     public static final String FILETYPE_KML         = ".kml";
     public static final String FILETYPE_GPX         = ".gpx";

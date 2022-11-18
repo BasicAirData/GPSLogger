@@ -21,9 +21,12 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import static eu.basicairdata.graziano.gpslogger.GPSApplication.ACTION_TOGGLE_RECORDING;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * The Broadcast Receiver that reacts when one of the following events occur:
@@ -37,6 +40,7 @@ public class ActionsBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, final Intent intent) {
         //Log.w("myApp", "[#] EVENT");
+        Log.w("myApp", "[#] ActionsBroadcastReceiver.java - ActionsBroadcastReceiver.onReceive");
         String broadcastedAction = intent.getAction();
         if (broadcastedAction != null) {  // https://github.com/BasicAirData/GPSLogger/issues/132
             switch (broadcastedAction) {
@@ -55,6 +59,11 @@ public class ActionsBroadcastReceiver extends BroadcastReceiver {
                         GPSApplication.getInstance().onShutdown();
                     }
                     break;
+                case ACTION_TOGGLE_RECORDING:
+                    if (GPSApplication.getInstance() != null) {  // https://github.com/BasicAirData/GPSLogger/issues/146
+                        if (!GPSApplication.getInstance().isStopButtonFlag())
+                            GPSApplication.getInstance().setRecording(!GPSApplication.getInstance().isRecording());
+                    }
             }
         }
     }
