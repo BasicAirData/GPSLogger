@@ -81,6 +81,7 @@
     <string name="toast_nothing_to_save">Nincs mit menteni</string>
     <string name="toast_recording_when_gps_found">Rögzítés akkor indul el, ha lesz GPS jel</string>
     <string name="toast_annotate_when_gps_found">Jegyzet akkor készül el, ha lesz GPS jel</string>
+    <string name="toast_coordinates_copied_to_clipboard">Koordináta vágólapra másolva</string>
     <string name="ok">OK</string>
     <string name="annotations">Jegyzetek</string>
     <string name="trackpoints">Útpontok</string>
@@ -117,6 +118,12 @@
     <string name="no">Nem</string>
     <string name="cancel">Mégse</string>
     <string name="export_unable_to_write_file">Fájl nem írható</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">Mozgás</string>
+    <string name="category_water_snow">Víz &amp; Hó</string>
+    <string name="category_air">Levegő</string>
+    <string name="category_wheel">Kerekek</string>
+    <string name="category_other">Egyéb</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">Az alkalmazás leállt miközben a háttérben rögzített</string>
     <string name="dlg_app_killed_description">Kérjük, ellenőrizze az Android beállításokat, hogy az alkalmazás nincs-e optimalizálva az akkumulátorhoz és nem korlátozott-e a háttérben futás.</string>

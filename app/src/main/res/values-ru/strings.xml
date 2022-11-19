@@ -81,6 +81,7 @@
     <string name="toast_nothing_to_save">Нечего сохранять</string>
     <string name="toast_recording_when_gps_found">Запись начнётся при обнаружении сигнала GPS</string>
     <string name="toast_annotate_when_gps_found">Метка будет установлена при обнаружении сигнала GPS</string>
+    <string name="toast_coordinates_copied_to_clipboard">Координаты скопированы в буфер обмена</string>
     <string name="ok">ОК</string>
     <string name="annotations">Метки</string>
     <string name="trackpoints">Точки GPS</string>
@@ -117,6 +118,12 @@
     <string name="no">Нет</string>
     <string name="cancel">Отмена</string>
     <string name="export_unable_to_write_file">Невозможно записать файл</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">Фитнес</string>
+    <string name="category_water_snow">Вода и Снег</string>
+    <string name="category_air">Воздух</string>
+    <string name="category_wheel">Колёса</string>
+    <string name="category_other">Другое</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">Приложение было закрыто во время фоновой записи.</string>
     <string name="dlg_app_killed_description">Пожалуйста, проверьте в настройках Android, что приложение не ограничено для использования батареи и для работы в фоне.</string>

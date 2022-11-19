@@ -56,7 +56,7 @@
     <string name="gps_searching">Acquisition GPS</string>
     <string name="gps_stabilizing">Stabilisation du signal</string>
     <string name="warning_location_denied">L\'application ne peut pas accéder à la localisation</string>
-    <string name="warning_background_restricted">L\'application ne peut pas fonctionner en arrière-plan.\nCliquez ici pour aller dans les paramètres du système où, dans la section Batterie, vous pouvez autoriser l\'activité d\'arrière-plan</string>
+    <string name="warning_background_restricted">L\'application ne peut pas fonctionner en arrière-plan.\nCliquez ici pour aller dans les paramètres système où, dans la section batterie, vous pouvez autoriser l\'activité d\'arrière-plan</string>
     <string name="warning_enable_location_service">Le capteur GPS est désactivé.\nCliquez ici pour accéder aux paramètres du système, où vous pouvez activer le service de localisation et définir une méthode de localisation qui utilise le capteur GPS</string>
     <!-- Track -->
     <string name="track_id">Tracé</string>
@@ -81,6 +81,7 @@
     <string name="toast_nothing_to_save">Rien à enregistrer</string>
     <string name="toast_recording_when_gps_found">L\'enregistrement commencera quand le signal GPS sera trouvé</string>
     <string name="toast_annotate_when_gps_found">L\'annotation sera prise en compte quand le signal GPS sera trouvé</string>
+    <string name="toast_coordinates_copied_to_clipboard">Coordonnées copiées dans le presse-papier</string>
     <string name="ok">OK</string>
     <string name="annotations">Annotations</string>
     <string name="trackpoints">Points de tracé</string>
@@ -117,6 +118,12 @@
     <string name="no">Non</string>
     <string name="cancel">Annuler</string>
     <string name="export_unable_to_write_file">Impossible d\'écrire le fichier</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">Fitness</string>
+    <string name="category_water_snow">Eau et Neige</string>
+    <string name="category_air">Air</string>
+    <string name="category_wheel">Roues</string>
+    <string name="category_other">Autre</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">L\'application a été tuée pendant l\'enregistrement en arrière-plan.</string>
     <string name="dlg_app_killed_description">Veuillez vérifier dans les paramètres Android que l\'application n\'est pas Optimisée pour la batterie ni Restreinte en arrière-plan.</string>
@@ -147,7 +154,7 @@
     <string name="pref_track_viewer_select_every_time">Demander à chaque fois</string>
     <string name="pref_category_tracking">TRAÇAGE</string>
     <string name="pref_GPS_distance_filter">Filtre de distance</string>
-    <string name="pref_GPS_interval_filter">Filtre d\'intervalles</string>
+    <string name="pref_GPS_interval_filter">Filtre d\'intervalle</string>
     <string name="pref_GPS_filter_disabled">Désactivé</string>
     <string name="pref_GPS_update_frequency">Intervalle de mise à jour du GPS</string>
     <string name="pref_GPS_update_frequency_max">Le plus court disponible</string>
