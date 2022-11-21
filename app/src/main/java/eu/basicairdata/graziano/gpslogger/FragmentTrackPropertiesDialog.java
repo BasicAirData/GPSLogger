@@ -89,7 +89,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
     static private class CustomDateComparator implements Comparator<LastUsedTrackType> {
         @Override
         public int compare(LastUsedTrackType o1, LastUsedTrackType o2) {
-            return (int)(o1.date - o2.date);
+            return Long.compare(o1.date, o2.date);
         }
     }
 
@@ -99,7 +99,7 @@ public class FragmentTrackPropertiesDialog extends DialogFragment {
     static private class CustomTypeComparator implements Comparator<LastUsedTrackType> {
         @Override
         public int compare(LastUsedTrackType o1, LastUsedTrackType o2) {
-            return (int)(o1.type - o2.type);
+            return (o1.type - o2.type);
         }
     }
 
