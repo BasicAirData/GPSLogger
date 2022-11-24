@@ -78,6 +78,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
@@ -875,6 +876,70 @@ public class GPSApplication extends Application implements LocationListener {
             String[] spathParts = spath.split(pathSeparator);
             return spathParts[spathParts.length - 1];
         } else return spath;
+    }
+
+    /**
+     * Deletes the old files from the app's Cache.
+     * It keeps clean the DIRECTORY_TEMP, that contains the tracks
+     * exported for the View and the Share feature.
+     *
+     * @param days The minimum age of the files that will be deleted
+     */
+    public void deleteOldFilesFromCache(int days) {
+        class AsyncClearOldCache extends Thread {
+
+            public AsyncClearOldCache() {
+            }
+
+            public void run() {
+                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+//                while (isJustStarted) {
+//                    try {
+//                        Log.w("myApp", "[#] GPSApplication.java - CACHE CLEANER - Lazy wait the GPSActivity");
+//                        sleep(500);                               // Lazy wait the GPSActivity
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+
+                try {
+                    sleep(500);                               // Wait 500ms
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Log.w("myApp", "[#] GPSApplication.java -  - CACHE CLEANER - Start DeleteOldFilesFromCache");
+                File cacheDir = new File(DIRECTORY_TEMP);
+                if (cacheDir.isDirectory()) {
+                    File[] files = cacheDir.listFiles();
+                    if (files == null || files.length == 0) return;
+                    for (File file : files) {
+                        if (null != file) {
+                            long lastModified = file.lastModified();
+                            if (0 < lastModified) {
+                                Date lastMDate = new Date(lastModified);
+                                Date today = new Date(System.currentTimeMillis());
+                                if (null != lastMDate && null != today) {
+                                    long diff = today.getTime() - lastMDate.getTime();
+                                    long diffDays = diff / (24 * 60 * 60 * 1000);
+                                    if (days <= diffDays) {
+                                        try {
+                                            file.delete();
+                                            Log.w("myApp", "[#] GPSApplication.java - CACHE CLEANER - Cached file " + file.getName() + " has " + diffDays + " days: DELETED");
+                                        } catch (Exception e) {
+                                            // it does nothing
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        AsyncClearOldCache asyncClearOldCache = new AsyncClearOldCache();
+        asyncClearOldCache.start();
     }
 
     // ---------------------------------------------------------------------- Preferences Excluded from Backup
