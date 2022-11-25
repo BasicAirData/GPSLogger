@@ -132,10 +132,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public static int TOAST_VERTICAL_OFFSET ;                    // The Y offset, in dp, for Toasts
 
-    public static String DIRECTORY_TEMP;                         // The directory to store temporary tracks. Currently /GPSLogger/AppData
-    public static String DIRECTORY_FILESDIR_TRACKS;              // The directory FilesDir/Tracks
-    public static String FILE_EMPTY_GPX;
-    public static String FILE_EMPTY_KML;
+    public static String DIRECTORY_TEMP;                         // The directory to store temporary tracks = getCacheDir() + "/Tracks"
+    public static String DIRECTORY_FILESDIR_TRACKS;              // The directory that contains the empty gpx and kml file = getFilesDir() + "/URI"
+    public static String FILE_EMPTY_GPX;                         // The full path of a empty GPX file
+    public static String FILE_EMPTY_KML;                         // The full path of a empty KML file
 
     // Preferences Variables
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
