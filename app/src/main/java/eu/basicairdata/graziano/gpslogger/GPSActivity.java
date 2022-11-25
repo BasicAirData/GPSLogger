@@ -212,6 +212,7 @@ public class GPSActivity extends AppCompatActivity {
             toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
             toast.show();
         }
+        if (gpsApp.isJustStarted()) gpsApp.deleteOldFilesFromCache(2);
         gpsApp.setJustStarted(false);
     }
 

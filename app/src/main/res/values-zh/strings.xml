@@ -81,6 +81,7 @@
     <string name="toast_nothing_to_save">没有要保存的数据</string>
     <string name="toast_recording_when_gps_found">当找到 GPS 信号时，记录将开始</string>
     <string name="toast_annotate_when_gps_found">当找到 GPS 信号时，将添加批注</string>
+    <string name="toast_coordinates_copied_to_clipboard">坐标已复制到剪贴板</string>
     <string name="ok">确定</string>
     <string name="annotations">批注</string>
     <string name="trackpoints">路点</string>
@@ -117,6 +118,12 @@
     <string name="no">否</string>
     <string name="cancel">取消</string>
     <string name="export_unable_to_write_file">无法写入到文件</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">健身</string>
+    <string name="category_water_snow">水上与雪上运动</string>
+    <string name="category_air">空中飞行</string>
+    <string name="category_wheel">陆上运输</string>
+    <string name="category_other">其它</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">本应用在后台记录过程中被终止。</string>
     <string name="dlg_app_killed_description">请检查安卓设置，确保本应用不被电量优化或后台限制。</string>

@@ -134,12 +134,30 @@ class PhysicalDataFormatter {
             case FORMAT_ACCURACY:   // Accuracy
                 switch (gpsApp.getPrefUM()) {
                     case UM_METRIC:
-                        physicalData.value = String.valueOf(Math.round(number));
+                        if (GPSApplication.getInstance().isAccuracyDecimal()) {
+                            if (Math.round(number) >= 10)
+                                physicalData.value = String.valueOf(Math.round(number));
+                            else if (Math.round(number * 10) >= 10)
+                                physicalData.value = String.format(Locale.getDefault(), "%.1f", (Math.round(number * 10.0)) / 10.0);
+                            else
+                                physicalData.value = String.format(Locale.getDefault(), "%.2f", (Math.floor(number * 100.0)) / 100.0);
+                        } else {
+                            physicalData.value = String.valueOf(Math.round(number));
+                        }
                         physicalData.um = gpsApp.getString(R.string.UM_m);
                         return(physicalData);
                     case UM_IMPERIAL:
                     case UM_NAUTICAL:
-                        physicalData.value = String.valueOf(Math.round(number * M_TO_FT));
+                        if (GPSApplication.getInstance().isAccuracyDecimal()) {
+                            if (Math.round(number * M_TO_FT) >= 10)
+                                physicalData.value = String.valueOf(Math.round(number * M_TO_FT));
+                            else if (Math.round(number * M_TO_FT * 10) >= 10)
+                                physicalData.value = String.format(Locale.getDefault(), "%.1f", (Math.round(number * M_TO_FT * 10.0)) / 10.0);
+                            else
+                                physicalData.value = String.format(Locale.getDefault(), "%.2f", (Math.floor(number * M_TO_FT * 100.0)) / 100.0);
+                        } else {
+                            physicalData.value = String.valueOf(Math.round(number * M_TO_FT));
+                        }
                         physicalData.um = gpsApp.getString(R.string.UM_ft);
                         return(physicalData);
                 }

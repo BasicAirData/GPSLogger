@@ -56,8 +56,8 @@
     <string name="gps_searching">Procurando pelo GPS</string>
     <string name="gps_stabilizing">Estabilizando o sinal</string>
     <string name="warning_location_denied">O App não pode acessar a Localização</string>
-    <string name="warning_background_restricted">O App não está funcionando em segundo plano.\nClique aqui para abrir as Configurações, onde, na sessão Bateria, você pode permitir a Atividade em Segundo Plano</string>
-    <string name="warning_enable_location_service">O sensor de GPS está desativado.\nClique aqui para abrir as Configurações, onde você pode ativar o Serviço de Localização e definir um Método de Localização que utilize o sensor de GPS</string>
+    <string name="warning_background_restricted">O App não está rodando em segundo plano.\nClique aqui para abrir as Configurações, onde, na sessão Bateria, você pode permitir a Atividade em Segundo Plano</string>
+    <string name="warning_enable_location_service">O sensor de GPS está desativado.\nClique aqui para abrir as Configurações do sistema, onde você pode ativar o Serviço de Localização e definir um Método de Localização que utilize o sensor de GPS</string>
     <!-- Track -->
     <string name="track_id">Trajeto</string>
     <string name="duration">Duração</string>
@@ -81,6 +81,7 @@
     <string name="toast_nothing_to_save">Nada para salvar</string>
     <string name="toast_recording_when_gps_found">A gravação começará quando o sinal de GPS for encontrado</string>
     <string name="toast_annotate_when_gps_found">A anotação será adicionada quando o sinal GPS for encontrado</string>
+    <string name="toast_coordinates_copied_to_clipboard">Coordenadas copiada para a área de transferência</string>
     <string name="ok">OK</string>
     <string name="annotations">Anotações</string>
     <string name="trackpoints">Pontos</string>
@@ -93,7 +94,7 @@
     <string name="menu_shutdown">Desligar</string>
     <!-- Annotation Creation dialog -->
     <string name="dlg_add_annotation">Adicionar anotação</string>
-    <string name="dlg_enter_the_description">Entre com a descrição</string>
+    <string name="dlg_enter_the_description">Digite a descrição</string>
     <string name="dlg_button_add">Adicionar</string>
     <!-- Tracklist -->
     <string name="tracklist_empty">Arquivo vazio</string>
@@ -117,6 +118,12 @@
     <string name="no">Não</string>
     <string name="cancel">Cancelar</string>
     <string name="export_unable_to_write_file">Não é possível gravar o arquivo</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">Fitness</string>
+    <string name="category_water_snow">Água &amp; Neve</string>
+    <string name="category_air">Aéreos</string>
+    <string name="category_wheel">Rodas</string>
+    <string name="category_other">Outros</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">O aplicativo foi finalizado durante uma gravação em segundo plano.</string>
     <string name="dlg_app_killed_description">Por favor, verifique nas configurações do Android que o app não está otimizado para bateria e não tenha restrição em segundo plano.</string>
@@ -140,13 +147,13 @@
     <string name="pref_unit_of_measurement_imperial">Imperial</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Aérea / Náutica</string>
     <string name="pref_unit_of_measurement_speed">Mostrar velocidades em</string>
-    <string name="pref_exportation_folder">Pasta de exportação local</string>
+    <string name="pref_exportation_folder">Pasta local de exportação</string>
     <string name="pref_not_set">Não definida</string>
     <string name="pref_track_viewer">Visualizador de Trajetos</string>
     <string name="pref_track_viewer_not_installed">Nenhum Visualizador de GPX/KML Instalado</string>
     <string name="pref_track_viewer_select_every_time">Requisitar toda vez</string>
     <string name="pref_category_tracking">RASTREAMENTO</string>
-    <string name="pref_GPS_distance_filter">Filtro de Distância</string>
+    <string name="pref_GPS_distance_filter">Filtro de distância</string>
     <string name="pref_GPS_interval_filter">Filtro de intervalos</string>
     <string name="pref_GPS_filter_disabled">Desativado</string>
     <string name="pref_GPS_update_frequency">Intervalo de atualizações do GPS</string>
@@ -185,7 +192,7 @@
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger grava seus percursos utilizando o GPS. Você pode visualizar eles no seu visualizador preferido, compartilhar e exportar eles para o seu dispositivo nos formatos KML, GPX e TXT.\n\nEste programa é um software livre, publicado sob os termos da GNU General Public License.\nPara mais detalhes ver: https://www.gnu.org/licenses/gpl.txt</string>
-    <string name="about_description_googleplaystore">Se gostar de usar este app, por favor, dedique um momento para avaliar o GPS Logger na Google Store.</string>
+    <string name="about_description_googleplaystore">Se estiver gostando de usar o app, por favor, dedique um momento para avaliar o GPS Logger na Google Store.</string>
     <string name="about_ok">Fechar</string>
     <string name="about_rate_this_app">Avalia este App</string>
     <string name="about_unable_to_rate">Incapaz de acessar a Loja</string>

@@ -1,0 +1,7 @@
+- New selector for the type of activity with a larger set of icons
+- You can copy current coordinates to clipboard
+- Accurate antennas now show the accuracy using one or two decimals
+- GPX files contain the information on how the altitudes are calculated (EGM Correction and/or offset)
+- Accuracies are exported with 2 decimals
+- A cache management for temporary files
+- Some fixes and improvements

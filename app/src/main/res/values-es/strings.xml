@@ -81,6 +81,7 @@
     <string name="toast_nothing_to_save">Nada que guardar</string>
     <string name="toast_recording_when_gps_found">La grabación empezará cuando se encuentre la señal de GPS</string>
     <string name="toast_annotate_when_gps_found">La anotación se tomará cuando se encuentre la señal de GPS</string>
+    <string name="toast_coordinates_copied_to_clipboard">Coordenadas copiadas al portapapeles</string>
     <string name="ok">OK</string>
     <string name="annotations">Anotaciones</string>
     <string name="trackpoints">Pos. GPS</string>
@@ -117,9 +118,15 @@
     <string name="no">No</string>
     <string name="cancel">Cancelar</string>
     <string name="export_unable_to_write_file">No se puede escribir en el archivo</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">Senderismo</string>
+    <string name="category_water_snow">Marítimo</string>
+    <string name="category_air">Aéreo</string>
+    <string name="category_wheel">Terrestre</string>
+    <string name="category_other">Otros</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">La app ha sido finalizada durante la grabación en segundo plano.</string>
-    <string name="dlg_app_killed_description">Comprueba en los ajustes de Android que la app no está optimizada para ahorro de batería y no tiene restricción en segundo plano.</string>
+    <string name="dlg_app_killed_description">Compruebe en los ajustes de Android que la app no está optimizada para ahorro de batería y no tiene restricción en segundo plano.</string>
     <string name="open_android_app_settings">Abrir ajustes</string>
     <!-- Preferences -->
     <string name="pref_category_interface">INTERFAZ</string>

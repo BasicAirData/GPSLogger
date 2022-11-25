@@ -78,6 +78,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
@@ -131,10 +132,10 @@ public class GPSApplication extends Application implements LocationListener {
 
     public static int TOAST_VERTICAL_OFFSET ;                    // The Y offset, in dp, for Toasts
 
-    public static String DIRECTORY_TEMP;                         // The directory to store temporary tracks. Currently /GPSLogger/AppData
-    public static String DIRECTORY_FILESDIR_TRACKS;              // The directory FilesDir/Tracks
-    public static String FILE_EMPTY_GPX;
-    public static String FILE_EMPTY_KML;
+    public static String DIRECTORY_TEMP;                         // The directory to store temporary tracks = getCacheDir() + "/Tracks"
+    public static String DIRECTORY_FILESDIR_TRACKS;              // The directory that contains the empty gpx and kml file = getFilesDir() + "/URI"
+    public static String FILE_EMPTY_GPX;                         // The full path of a empty GPX file
+    public static String FILE_EMPTY_KML;                         // The full path of a empty KML file
 
     // Preferences Variables
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
@@ -170,6 +171,7 @@ public class GPSApplication extends Application implements LocationListener {
     private LocationExtended prevRecordedFix    = null;          // The previous recorded fix
     private boolean isPrevFixRecorded;                           // true if the previous fix has been recorded
     private boolean isFirstFixFound;                             // True if at less one fix has been obtained
+    private int isAccuracyDecimalCounter        = 0;             // 0 = The GPS has accuracy rounded to the meter (not precise antennas)
 
     private MyGPSStatus gpsStatusListener;                       // The listener for the GPS Status changes events
 
@@ -214,6 +216,8 @@ public class GPSApplication extends Application implements LocationListener {
     private LocationExtended currentPlacemark = null;            // The location used to add the Placemark (Annotation)
     private Track currentTrack = null;                           // The current track. Used for adding Trackpoints and Annotations
     private Track trackToEdit = null;                            // The Track that the user selected to edit with the "Track Properties" Dialog
+    private int selectedTrackTypeOnDialog = NOT_AVAILABLE;       // The Activity type selected into the Edit Details dialog.
+                                                                 // It is a temporary variable, it is reset at every dialog opening
 
     private final List<Track> arrayListTracks
             = Collections.synchronizedList(new ArrayList<Track>());             // The list of Tracks
@@ -577,6 +581,18 @@ public class GPSApplication extends Application implements LocationListener {
         return prefExportTXT;
     }
 
+    public int getSelectedTrackTypeOnDialog() {
+        return selectedTrackTypeOnDialog;
+    }
+
+    public void setSelectedTrackTypeOnDialog(int selectedTrackTypeOnDialog) {
+        this.selectedTrackTypeOnDialog = selectedTrackTypeOnDialog;
+    }
+
+    public boolean isAccuracyDecimal() {
+        return (isAccuracyDecimalCounter != 0);
+    }
+
     public int getPrefUM() {
         return prefUM;
     }
@@ -862,6 +878,70 @@ public class GPSApplication extends Application implements LocationListener {
         } else return spath;
     }
 
+    /**
+     * Deletes the old files from the app's Cache.
+     * It keeps clean the DIRECTORY_TEMP, that contains the tracks
+     * exported for the View and the Share feature.
+     *
+     * @param days The minimum age of the files that will be deleted
+     */
+    public void deleteOldFilesFromCache(int days) {
+        class AsyncClearOldCache extends Thread {
+
+            public AsyncClearOldCache() {
+            }
+
+            public void run() {
+                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+//                while (isJustStarted) {
+//                    try {
+//                        Log.w("myApp", "[#] GPSApplication.java - CACHE CLEANER - Lazy wait the GPSActivity");
+//                        sleep(500);                               // Lazy wait the GPSActivity
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+
+                try {
+                    sleep(500);                               // Wait 500ms
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Log.w("myApp", "[#] GPSApplication.java -  - CACHE CLEANER - Start DeleteOldFilesFromCache");
+                File cacheDir = new File(DIRECTORY_TEMP);
+                if (cacheDir.isDirectory()) {
+                    File[] files = cacheDir.listFiles();
+                    if (files == null || files.length == 0) return;
+                    for (File file : files) {
+                        if (null != file) {
+                            long lastModified = file.lastModified();
+                            if (0 < lastModified) {
+                                Date lastMDate = new Date(lastModified);
+                                Date today = new Date(System.currentTimeMillis());
+                                if (null != lastMDate && null != today) {
+                                    long diff = today.getTime() - lastMDate.getTime();
+                                    long diffDays = diff / (24 * 60 * 60 * 1000);
+                                    if (days <= diffDays) {
+                                        try {
+                                            file.delete();
+                                            Log.w("myApp", "[#] GPSApplication.java - CACHE CLEANER - Cached file " + file.getName() + " has " + diffDays + " days: DELETED");
+                                        } catch (Exception e) {
+                                            // it does nothing
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        AsyncClearOldCache asyncClearOldCache = new AsyncClearOldCache();
+        asyncClearOldCache.start();
+    }
+
     // ---------------------------------------------------------------------- Preferences Excluded from Backup
     // These are Boolean SharedPreferences that are excluded by automatic Backups
 
@@ -1034,12 +1114,18 @@ public class GPSApplication extends Application implements LocationListener {
                     if (loc.isFromMockProvider() != isMockProvider) {
                         numberOfSatellitesTotal = NOT_AVAILABLE;
                         numberOfSatellitesUsedInFix = NOT_AVAILABLE;
+                        isAccuracyDecimalCounter = 0;
                     }
                     isMockProvider = loc.isFromMockProvider();
                     if (isMockProvider) Log.w("myApp", "[#] GPSApplication.java - Provider Type = MOCK PROVIDER");
                     else Log.w("myApp", "[#] GPSApplication.java - Provider Type = GPS PROVIDER");
                 }
             }
+
+            if (Math.round(loc.getAccuracy()) != loc.getAccuracy())
+                isAccuracyDecimalCounter = 10;                                          // Sets the visualization of the accuracy in decimal mode (>0)
+            else
+                isAccuracyDecimalCounter -= isAccuracyDecimalCounter > 0 ? 1 : 0;       // If the accuracy is integer for 10 samples, we start to show it rounded to the meter
 
             //Log.w("myApp", "[#] GPSApplication.java - onLocationChanged: provider=" + loc.getProvider());
             if (loc.hasSpeed() && (loc.getSpeed() == 0)) loc.removeBearing();           // Removes bearing if the speed is zero

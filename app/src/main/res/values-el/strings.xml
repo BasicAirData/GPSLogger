@@ -23,7 +23,7 @@
     <!-- Tabs -->
     <string name="tab_gpsfix">GPS Fix</string>
     <string name="tab_track">Ίχνος</string>
-    <string name="tab_tracklist">Ίχνη</string>
+    <string name="tab_tracklist">Λίστα Ιχνών</string>
     <!-- GPS Fix -->
     <string name="latitude">Γεωγρ. Πλάτος</string>
     <string name="longitude">Γεωγρ. Μήκος</string>
@@ -31,7 +31,7 @@
     <string name="speed">Ταχύτητα</string>
     <string name="direction">Κατεύθυνση</string>
     <string name="accuracy">Ακρίβεια</string>
-    <string name="time">Χρόνος</string>
+    <string name="time">Ώρα</string>
     <string name="satellites">Δορυφόροι</string>
     <string name="north">Β</string>
     <string name="north_northeast">ΒΒΑ</string>
@@ -81,6 +81,7 @@
     <string name="toast_nothing_to_save">Τίποτα για αποθήκευση</string>
     <string name="toast_recording_when_gps_found">Η εγγραφή θα ξεκινήσει όταν βρεθεί το σήμα GPS</string>
     <string name="toast_annotate_when_gps_found">Η εγγραφή θα ξεκινήσει όταν βρεθεί το σήμα GPS</string>
+    <string name="toast_coordinates_copied_to_clipboard">Συντεταγμένες αντιγράφτηκαν στο πρόχειρο</string>
     <string name="ok">ΟΚ</string>
     <string name="annotations">Σημειώσεις</string>
     <string name="trackpoints">Ιχνοσημεία</string>
@@ -117,6 +118,12 @@
     <string name="no">Όχι</string>
     <string name="cancel">Ακύρωση</string>
     <string name="export_unable_to_write_file">Δεν είναι δυνατή η εγγραφή του αρχείου</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">Φυσική Κατάσταση</string>
+    <string name="category_water_snow">Νερό &amp; Χιόνι</string>
+    <string name="category_air">Αέρας</string>
+    <string name="category_wheel">Τροχοί</string>
+    <string name="category_other">Άλλο</string>
     <!-- Notification App killed messagebox -->
     <string name="dlg_app_killed">Η εφαρμογή έχει τερματιστεί κατά την εγγραφή στο παρασκήνιο.</string>
     <string name="dlg_app_killed_description">Παρακαλώ ελέγξτε στις Ρυθμίσεις Android οτι δεν eίναι ενεργή η βελτιστοποίηση Μπαταρίας ούτε ο περιορισμός λειτουργίας στο Παρασκήνιο</string>
