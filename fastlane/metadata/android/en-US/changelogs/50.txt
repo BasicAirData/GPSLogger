@@ -1,0 +1,2 @@
+- Fixed format of coordinates copied to clipboard in some locales
+- Updated dependencies

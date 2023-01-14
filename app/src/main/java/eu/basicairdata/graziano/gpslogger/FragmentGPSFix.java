@@ -263,9 +263,9 @@ public class FragmentGPSFix extends Fragment {
 //                                .concat(location.getLongitude() >= 0 ? "\"E" : "\"W"));
                 // Coordinates GG.GGGGGGGGG, to be preferred
                 ClipData clip = ClipData.newPlainText("Coordinates",
-                        String.format(Locale.getDefault(), "%.9f", location.getLatitude())
+                        String.format(Locale.US, "%.9f", location.getLatitude())
                                 + ", "
-                                + String.format(Locale.getDefault(), "%.9f", location.getLongitude())
+                                + String.format(Locale.US, "%.9f", location.getLongitude())
                 );
                 clipboard.setPrimaryClip(clip);
                 Toast toast = Toast.makeText(gpsApp.getApplicationContext(),
