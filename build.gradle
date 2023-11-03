@@ -26,17 +26,6 @@ allprojects {
     }
 }
 
-//task clean(type: Delete) {
-//    delete rootProject.buildDir
-//}
-
-// https://codeberg.org/Bazsalanszky/Eternity/commit/05123c70682e5988ad5f0ff111f97b66a87d8806
-// Patch that solves the problem with EventBus and Reproducible Builds
-
-tasks.whenTaskAdded {
-    if (name.contains("ArtProfile")) {
-        enabled = false
-    }
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
-
-// end patch
