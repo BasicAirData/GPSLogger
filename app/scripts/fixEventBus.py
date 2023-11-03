@@ -1,3 +1,10 @@
+# This code is picked from:
+# https://codeberg.org/Bazsalanszky/Eternity/commit/05123c70682e5988ad5f0ff111f97b66a87d8806
+# This patch solves the problem with EventBus and Reproducible Builds
+#
+# This script has been released under the terms of the
+# GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
+
 import re
 import sys
 
