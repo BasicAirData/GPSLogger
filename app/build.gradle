@@ -73,7 +73,7 @@ android {
     // Patch that solves the problem with EventBus and Reproducible Builds
 
     task rearrangeClass(type: Exec) {
-        commandLine 'python', '../scripts/fixEventBus.py'
+        commandLine 'python', '../app/scripts/fixEventBus.py'
     }
 
     applicationVariants.all { variant ->

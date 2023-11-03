@@ -21,7 +21,7 @@ def rearrange(filename):
 
 
 # Project root relative to the script
-project_root = __file__[:-len('/scripts/fixEventBus.py')]
+project_root = __file__[:-len('/app/scripts/fixEventBus.py')]
 
 path = './build/generated/ap_generated_sources/release/out/eu/basicairdata/graziano/gpslogger/EventBusIndex.java'
 
