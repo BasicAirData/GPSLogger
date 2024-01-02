@@ -1169,6 +1169,8 @@ public class GPSApplication extends Application implements LocationListener {
                 forceRecord = true;                         // + Force to record the new
             }
 
+            if ((isRecording) && (isPlacemarkRequested)) forceRecord = true;                                    //  Adding an annotation while recording also adds a trackpoint (issue #213)
+
             if (gpsStatus == GPS_OK) {
                 AsyncTODO ast = new AsyncTODO();
 
