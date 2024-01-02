@@ -168,7 +168,7 @@ public class GPSActivity extends AppCompatActivity {
 
         // Check for Location runtime Permissions (for Android 23+)
         if (!gpsApp.isLocationPermissionChecked()) {
-            checkLocationPermission();
+            checkLocationAndNotificationPermission();
             gpsApp.setLocationPermissionChecked(true);
         }
 
@@ -635,9 +635,13 @@ public class GPSActivity extends AppCompatActivity {
 
     /**
      * Checks that the Location permission is granted.
+     * For Android 13+ checks also the permission to Post Notifications.
      * If not, requests it using the standard ActivityCompat.requestPermissions method.
      */
-    public void checkLocationPermission() {
+    public void checkLocationAndNotificationPermission() {
+        boolean requestPermission = false;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
         Log.w("myApp", "[#] GPSActivity.java - Check Location Permission...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission granted");
@@ -648,12 +652,31 @@ public class GPSActivity extends AppCompatActivity {
             if (showRationale || !gpsApp.isLocationPermissionChecked()
                     || (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
                 Log.w("myApp", "[#] GPSActivity.java - Precise Location Permission denied, need new check");
-                List<String> listPermissionsNeeded = new ArrayList<>();
                 listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
                 listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
-                ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
+                requestPermission = true;
             }
         }
+
+        // Checks the Post Notifications permission on Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Log.w("myApp", "[#] GPSActivity.java - Check Post Notifications Permission...");
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                Log.w("myApp", "[#] GPSActivity.java - Post Notifications Permission granted");
+                // Permission Granted
+            } else {
+                Log.w("myApp", "[#] GPSActivity.java - Post Notifications Permission denied");
+                boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS);
+                if (showRationale || !gpsApp.isLocationPermissionChecked()
+                        || (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED)) {
+                    Log.w("myApp", "[#] GPSActivity.java - Post Notifications Permission denied, need new check");
+                    listPermissionsNeeded.add(Manifest.permission.POST_NOTIFICATIONS);
+                    requestPermission = true;
+                }
+            }
+        }
+
+        if (requestPermission) ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]) , REQUEST_ID_MULTIPLE_PERMISSIONS);
     }
 
     /**
