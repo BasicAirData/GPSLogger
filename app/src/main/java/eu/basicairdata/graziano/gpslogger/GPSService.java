@@ -123,6 +123,7 @@ public class GPSService extends Service {
             String notificationText = composeContentText();
             if (!oldNotificationText.equals(notificationText)) {
                 builder.setContentText(notificationText);
+                builder.setOngoing(true);                   // https://developer.android.com/develop/background-work/services/foreground-services#user-dismiss-notification
                 if (isIconRecording() != recordingState) {
                     recordingState = isIconRecording();
                     builder.setSmallIcon(recordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp);
