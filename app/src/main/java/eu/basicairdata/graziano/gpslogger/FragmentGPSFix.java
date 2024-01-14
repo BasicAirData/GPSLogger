@@ -320,7 +320,7 @@ public class FragmentGPSFix extends Fragment {
                 if (!isAWarningClicked) {
                     //isAWarningClicked = true;
                     GPSActivity gpsActivity = (GPSActivity) getActivity();
-                    gpsActivity.checkLocationPermission();
+                    gpsActivity.checkLocationAndNotificationPermission();
                 }
             }
         });
