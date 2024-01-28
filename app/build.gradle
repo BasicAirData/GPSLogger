@@ -22,26 +22,26 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion '32.0.0'
-
+    namespace 'eu.basicairdata.graziano.gpslogger'
+    compileSdk 33
+    buildToolsVersion '33.0.1'
 
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
-        targetSdkVersion 32
+        targetSdkVersion 33
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-        versionName '3.2.1'
-        versionCode 50
+        versionName '3.2.2'
+        versionCode 51
         // -----------------------------------------------------------------------------------------
 
         vectorDrawables.useSupportLibrary = true
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [ eventBusIndex : 'eu.basicairdata.graziano.gpslogger.EventBusIndex' ]
+                arguments = [eventBusIndex: 'eu.basicairdata.graziano.gpslogger.EventBusIndex']
             }
         }
     }
@@ -83,6 +83,6 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:3.8.0'
 
-    implementation "org.greenrobot:eventbus:3.2.0"
-    annotationProcessor "org.greenrobot:eventbus-annotation-processor:3.2.0"
+    implementation "org.greenrobot:eventbus:3.3.1"
+    annotationProcessor "org.greenrobot:eventbus-annotation-processor:3.3.1"
 }

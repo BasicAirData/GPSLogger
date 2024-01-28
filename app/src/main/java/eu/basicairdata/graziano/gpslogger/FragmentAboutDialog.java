@@ -43,7 +43,7 @@ import android.widget.Toast;
  */
 public class FragmentAboutDialog extends DialogFragment {
 
-    private static final String COPYRIGHT_RANGE_END = "2022";           // The number that appears as end-year of the Copyright range
+    private static final String COPYRIGHT_RANGE_END = "2024";           // The number that appears as end-year of the Copyright range
 
     //@SuppressLint("InflateParams")
     @NonNull

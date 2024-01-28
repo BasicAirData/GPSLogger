@@ -28,6 +28,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import androidx.core.app.NotificationCompat;
@@ -117,10 +118,12 @@ public class GPSService extends Service {
      */
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onEvent(Short msg) {
-        if ((msg == EventBusMSG.UPDATE_FIX) && (builder != null)) {
+        if ((msg == EventBusMSG.UPDATE_FIX) && (builder != null)
+                && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.N) || (mNotificationManager.areNotificationsEnabled()))) {
             String notificationText = composeContentText();
             if (!oldNotificationText.equals(notificationText)) {
                 builder.setContentText(notificationText);
+                builder.setOngoing(true);                   // https://developer.android.com/develop/background-work/services/foreground-services#user-dismiss-notification
                 if (isIconRecording() != recordingState) {
                     recordingState = isIconRecording();
                     builder.setSmallIcon(recordingState ? R.mipmap.ic_notify_recording_24dp : R.mipmap.ic_notify_24dp);

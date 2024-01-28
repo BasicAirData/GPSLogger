@@ -1,0 +1,4 @@
+- The app asks the permission to show notifications accordingly to the new Android 13 specifications
+- Adding an annotation while recording adds also the corresponding trackpoint
+- Updated API and dependencies
+- Updated german translation
