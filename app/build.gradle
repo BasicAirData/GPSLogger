@@ -33,8 +33,8 @@ android {
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-        versionName '3.2.1'
-        versionCode 50
+        versionName '3.2.2'
+        versionCode 51
         // -----------------------------------------------------------------------------------------
 
         vectorDrawables.useSupportLibrary = true
