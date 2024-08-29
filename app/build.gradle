@@ -67,6 +67,37 @@ android {
     lint {
         abortOnError false
     }
+
+    // https://codeberg.org/Bazsalanszky/Eternity/commit/05123c70682e5988ad5f0ff111f97b66a87d8806
+    // Patch that solves the problem with EventBus and Reproducible Builds
+
+    task rearrangeClass(type: Exec) {
+        commandLine 'python', '../app/scripts/fixEventBus.py'
+    }
+
+    applicationVariants.all { variant ->
+        if (variant.name == 'release') {
+            task("compileSingleFile${variant.name.capitalize()}", type: JavaCompile, dependsOn: rearrangeClass) {
+                def filePath = project.rootDir.absolutePath + '/app/build/generated/ap_generated_sources/release/out/eu/basicairdata/graziano/gpslogger/'
+                source = files(filePath)
+                includes = ["**/EventBusIndex.java"]
+                classpath = variant.getCompileClasspath() + files(project.rootDir.absolutePath + '/app/build/intermediates/javac/release/classes')
+                destinationDir = file("$buildDir/intermediates/javac/release/classes")
+            }
+
+            tasks.withType(JavaCompile).all { task ->
+                if (task.name == 'compileReleaseJavaWithJavac') {
+                    task.finalizedBy "compileSingleFile${variant.name.capitalize()}"
+                }
+            }
+
+            tasks.named("lintVitalAnalyze${variant.name.capitalize()}") { dependsOn("compileSingleFileRelease") }
+            tasks.named("dexBuilder${variant.name.capitalize()}") { dependsOn("compileSingleFileRelease") }
+            tasks.named("process${variant.name.capitalize()}JavaRes") { dependsOn("compileSingleFileRelease") }
+        }
+    }
+
+    // end patch
 }
 
 dependencies {
