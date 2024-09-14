@@ -453,13 +453,18 @@ public class GPSApplication extends Application implements LocationListener {
     /**
      * Starts and Binds to the Foreground Service GPSService
      */
-    private void startAndBindGPSService() {
-        gpsServiceIntent = new Intent(GPSApplication.this, GPSService.class);
-        //Start the service
-        startService(gpsServiceIntent);
-        //Bind to the service
-        bindService(gpsServiceIntent, gpsServiceConnection, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
-        Log.w("myApp", "[#] GPSApplication.java - StartAndBindGPSService");
+    public void startAndBindGPSService() {
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) &&
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            gpsServiceIntent = new Intent(GPSApplication.this, GPSService.class);
+            //Start the service
+            startService(gpsServiceIntent);
+            //Bind to the service
+            bindService(gpsServiceIntent, gpsServiceConnection, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
+            Log.w("myApp", "[#] GPSApplication.java - StartAndBindGPSService - SERVICE STARTED");
+        } else {
+            Log.w("myApp", "[#] GPSApplication.java - StartAndBindGPSService - UNABLE TO START THE SERVICE");
+        }
     }
 
     /**
