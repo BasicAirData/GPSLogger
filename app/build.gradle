@@ -23,13 +23,12 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'eu.basicairdata.graziano.gpslogger'
-    compileSdk 33
-    buildToolsVersion '33.0.1'
+    compileSdk 34
 
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
-        targetSdkVersion 33
+        targetSdkVersion 34
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
