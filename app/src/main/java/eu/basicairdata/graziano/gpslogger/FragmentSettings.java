@@ -69,6 +69,8 @@ import java.util.ArrayList;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
+import eu.basicairdata.graziano.gpslogger.utils.AppUtils;
+
 /**
  * The Fragment that manages the Settings on the SettingsActivity
  */
@@ -89,7 +91,9 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getActivity() != null) {
+            AppUtils.updateNavigationBarColor(getActivity().getWindow(),getActivity().getApplicationContext());
+        }
         addPreferencesFromResource(R.xml.app_preferences);
 
         // TODO: check it!

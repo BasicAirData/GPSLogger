@@ -38,6 +38,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import eu.basicairdata.graziano.gpslogger.utils.AppUtils;
+
 /**
  * The About Dialog Fragment
  */
@@ -116,7 +118,9 @@ public class FragmentAboutDialog extends DialogFragment {
                 public void onClick(DialogInterface dialog, int id) {}
             });
 
-        return createAboutAlert.create();
+        AlertDialog alertDialog = createAboutAlert.create();
+        AppUtils.updateNavigationBarColor(alertDialog.getWindow(), getActivity().getApplicationContext());
+        return alertDialog;
     }
 
     @Override

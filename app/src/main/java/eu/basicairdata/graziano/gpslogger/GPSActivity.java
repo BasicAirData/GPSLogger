@@ -67,6 +67,8 @@ import java.util.Map;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.TOAST_VERTICAL_OFFSET;
 
+import eu.basicairdata.graziano.gpslogger.utils.AppUtils;
+
 /**
  * The main Activity.
  * Here you can view the status of GPS, of the current Track and the list
@@ -99,6 +101,7 @@ public class GPSActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppUtils.updateNavigationBarColor(getWindow(),getApplicationContext());
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Log.w("myApp", "[#] " + this + " - onCreate()");
         setTheme(R.style.MyMaterialTheme);
