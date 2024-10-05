@@ -23,6 +23,8 @@ package eu.basicairdata.graziano.gpslogger;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,12 +50,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
+
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -135,6 +140,7 @@ public class GPSActivity extends AppCompatActivity {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(false);
         bottomSheet.setFocusable(false);
+        updateNavigationBarColor(getWindow(),getApplicationContext());
     }
 
     @Override
@@ -830,5 +836,22 @@ public class GPSActivity extends AppCompatActivity {
             toast.show();
         }
         //Update();
+    }
+
+    /**
+     * Updates the navigation bar background and icon colors to match the bottom bar background based on the theme.
+     */
+    public void updateNavigationBarColor(Window window, Context applicationContext) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (window != null && applicationContext instanceof Application) {
+                // Retrieve the preferred color theme from shared preferences and check if it's "1"
+                if (TextUtils.equals("1", PreferenceManager.getDefaultSharedPreferences(applicationContext).getString("prefColorTheme", "2"))) {
+                    window.setNavigationBarColor(getResources().getColor(R.color.colorRecControlBackground,getTheme()));
+                    window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+                } else {
+                    window.setNavigationBarColor(getResources().getColor(R.color.colorRecControlBackground,getTheme()));
+                }
+            }
+        }
     }
 }
