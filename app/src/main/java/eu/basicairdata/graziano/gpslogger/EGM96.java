@@ -167,44 +167,30 @@ class EGM96 {
      * @param longitude the longitude of the location
      * @return the altitude correction in meters
      */
-    public double getEGMCorrection(double latitude, double longitude) {
-        if (isEGMGridLoaded) {
-            double Lat = 90.0 - latitude;
-            double Lon = longitude;
-            if (Lon < 0) Lon += 360.0;
 
-            int ilon = (int) (Lon / 0.25) + BOUNDARY;
-            int ilat = (int) (Lat / 0.25) + BOUNDARY;
+    public double getSplineEGMCorrection(double latitude, double longitude) {
+        if (!isEGMGridLoaded) return EGM96_VALUE_INVALID;
 
-            try {
-                // Creating points for interpolation
-                short hc11 = EGMGrid[ilon][ilat];
-                short hc12 = EGMGrid[ilon][ilat + 1];
-                short hc21 = EGMGrid[ilon + 1][ilat];
-                short hc22 = EGMGrid[ilon + 1][ilat + 1];
+        double Lat = 90.0 - latitude;
+        double Lon = longitude;
+        if (Lon < 0) Lon += 360.0;
 
-                // Bilinear Interpolation:
-                // Latitude
-                double hc1 = hc11 + (hc12 - hc11) * (Lat % 0.25) / 0.25;
-                double hc2 = hc21 + (hc22 - hc21) * (Lat % 0.25) / 0.25;
-                // Longitude
-                //double hc = (hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100;
-                //Log.w("myApp", "[#] EGM96.java - getEGMCorrection(" + latitude + ", " + longitude + ") = " + hc);
+        int ilon = (int) (Lon / 0.25) + BOUNDARY;
+        int ilat = (int) (Lat / 0.25) + BOUNDARY;
 
-                return ((hc1 + (hc2 - hc1) * (Lon % 0.25) / 0.25) / 100);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                return EGM96_VALUE_INVALID;
-            }
+        try {
+            // Prepare control points for spline interpolation
+            double[] x = {Lon, Lon + 0.25, Lon - 0.25};
+            double[] y = {EGMGrid[ilon][ilat], EGMGrid[ilon + 1][ilat], EGMGrid[ilon - 1][ilat]};
+
+            // Call a method to compute cubic spline coefficients and evaluate
+            double correctedAltitude = cubicSplineInterpolation(x, y, Lon);
+            return correctedAltitude / 100; // Adjust if necessary
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return EGM96_VALUE_INVALID;
         }
-        else return EGM96_VALUE_INVALID;
     }
 
-    /**
-     * Makes a copy of a file into a specified destination.
-     *
-     * @param in the source stream
-     * @param out the destination stream
-     */
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
