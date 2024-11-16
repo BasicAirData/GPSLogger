@@ -22,6 +22,7 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -33,7 +34,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -112,11 +115,36 @@ public class FragmentRecordingControls extends Fragment {
             }
         });
         tvRecordButton = view.findViewById(R.id.id_record);
+        tvRecordButton.setHapticFeedbackEnabled(false);
         tvRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isAdded())
                     ((GPSActivity) getActivity()).onToggleRecord();
+            }
+        });
+        tvRecordButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (isAdded()) {
+                    if (!gpsApp.isBottomBarLocked()) {
+                        Log.w("myApp", "[#] FragmentRecordingControls.java - ACTIVATE FORCED RECORDING OF TRACKPOINTS");
+                        gpsApp.setForcedTrackpointsRecording(true);
+                    }
+                }
+                return true;
+            }
+        });
+        tvRecordButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                    //Log.w("myApp", "[#] FragmentRecordingControls.java - (ACTION DOWN FOR FORCED RECORDING OF TRACKPOINTS)");
+                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP || event.getAction() == android.view.MotionEvent.ACTION_CANCEL) {
+                    Log.w("myApp", "[#] FragmentRecordingControls.java - DEACTIVATE FORCE RECORDING OF TRACKPOINTS");
+                    gpsApp.setForcedTrackpointsRecording(false);
+                }
+                return false;
             }
         });
         tvGeoPointsNumber = view.findViewById(R.id.id_textView_GeoPoints);

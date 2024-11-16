@@ -197,6 +197,7 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean isRecording;                                 // True if the recording is active
     private boolean isBottomBarLocked;                           // True if the bottom bar is locked
     private boolean isGPSLocationUpdatesActive;                  // True if the Location Manager is active (is requesting FIXes)
+    private boolean isForcedTrackpointsRecording = false;        // if True, the current fix is recorded into the track;
     private int gpsStatus = GPS_SEARCHING;                       // The status of the GPS: GPS_DISABLED, GPS_OUTOFSERVICE,
                                                                  // GPS_TEMPORARYUNAVAILABLE, GPS_SEARCHING, GPS_STABILIZING;
     private LocationManager locationManager = null;              // GPS LocationManager
@@ -693,6 +694,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void setCurrentTrackVisible(boolean currentTrackVisible) {
         isCurrentTrackVisible = currentTrackVisible;
+    }
+
+    public boolean isForcedTrackpointsRecording() {
+        return isForcedTrackpointsRecording;
+    }
+
+    public void setForcedTrackpointsRecording(boolean forcedTrackpointsRecording) {
+        isForcedTrackpointsRecording = forcedTrackpointsRecording;
     }
 
     public boolean isBackgroundActivityRestricted() {
