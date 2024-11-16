@@ -67,6 +67,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
+import android.os.Vibrator;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -1197,7 +1198,7 @@ public class GPSApplication extends Application implements LocationListener {
 
                 // Distance Filter and Interval Filter in OR
                 // The Trackpoint is recorded when at less one filter is True.
-                if ((isRecording) && ((prevRecordedFix == null)
+                if ((isRecording && ((prevRecordedFix == null)
                         || (forceRecord)                                                                        // Forced to record the point
                         || ((prefGPSinterval == 0) && (prefGPSdistance == 0))                                   // No filters enabled --> it records all the points
                         || ((prefGPSinterval > 0)
@@ -1210,7 +1211,14 @@ public class GPSApplication extends Application implements LocationListener {
                         || ((prefGPSinterval == 0)
                             && (prefGPSdistance > 0)                                                            // Only distance filter enabled
                             && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
-                        || (currentTrack.getNumberOfLocations() == 0))){                                        // It is the first point of a track
+                        || (currentTrack.getNumberOfLocations() == 0)))                                         // It is the first point of a track
+                        || (isForcedTrackpointsRecording)){                                                     // recording button is long pressed
+
+                    if (isForcedTrackpointsRecording) {
+                        Vibrator vibrator;
+                        vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        vibrator.vibrate(150);
+                    }
 
                     prevRecordedFix = eloc;
                     ast.taskType = TASK_ADDLOCATION;
