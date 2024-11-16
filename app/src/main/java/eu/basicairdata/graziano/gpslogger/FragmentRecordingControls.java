@@ -90,6 +90,7 @@ public class FragmentRecordingControls extends Fragment {
             }
         });
         tvAnnotateButton = view.findViewById(R.id.id_annotate);
+        tvAnnotateButton.setHapticFeedbackEnabled(false);
         tvAnnotateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
