@@ -22,7 +22,6 @@
 
 package eu.basicairdata.graziano.gpslogger;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -130,6 +129,7 @@ public class FragmentRecordingControls extends Fragment {
                     if (!gpsApp.isBottomBarLocked()) {
                         Log.w("myApp", "[#] FragmentRecordingControls.java - ACTIVATE FORCED RECORDING OF TRACKPOINTS");
                         gpsApp.setForcedTrackpointsRecording(true);
+                        Update();
                     }
                 }
                 return true;
@@ -143,6 +143,7 @@ public class FragmentRecordingControls extends Fragment {
                 } else if (event.getAction() == android.view.MotionEvent.ACTION_UP || event.getAction() == android.view.MotionEvent.ACTION_CANCEL) {
                     Log.w("myApp", "[#] FragmentRecordingControls.java - DEACTIVATE FORCE RECORDING OF TRACKPOINTS");
                     gpsApp.setForcedTrackpointsRecording(false);
+                    Update();
                 }
                 return false;
             }
@@ -263,7 +264,7 @@ public class FragmentRecordingControls extends Fragment {
     public void Update() {
         if (isAdded()) {
             final Track track = gpsApp.getCurrentTrack();
-            final boolean isRec = gpsApp.isRecording();
+            final boolean isRec = gpsApp.isRecording() || gpsApp.isForcedTrackpointsRecording();
             final boolean isAnnot = gpsApp.isPlacemarkRequested();
             final boolean isLck = gpsApp.isBottomBarLocked();
             if (track != null) {
