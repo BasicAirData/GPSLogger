@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ strings.xml
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <!-- Tabs -->
+    <string name="tab_gpsfix">Pos. GPS</string>
+    <string name="tab_track">Trazado</string>
+    <string name="tab_tracklist">Arquivo</string>
+    <!-- GPS Fix -->
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Lonxitude</string>
+    <string name="altitude">Altitude</string>
+    <string name="speed">Velocidade</string>
+    <string name="direction">Dirección</string>
+    <string name="accuracy">Precisión</string>
+    <string name="time">Tempo</string>
+    <string name="satellites">Satélites</string>
+    <string name="north">N</string>
+    <string name="north_northeast">NNL</string>
+    <string name="northeast">NL</string>
+    <string name="east_northeast">LNL</string>
+    <string name="east">L</string>
+    <string name="east_southeast">LSL</string>
+    <string name="southeast">SL</string>
+    <string name="south_southeast">SSL</string>
+    <string name="south">S</string>
+    <string name="south_southwest">SSO</string>
+    <string name="southwest">SO</string>
+    <string name="west_southwest">OSO</string>
+    <string name="west">O</string>
+    <string name="west_northwest">ONO</string>
+    <string name="northwest">NO</string>
+    <string name="north_northwest">NNO</string>
+    <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPS non accesíbel</string>
+    <string name="gps_disabled">GPS desactivado</string>
+    <string name="gps_out_of_service">GPS fora de servizo</string>
+    <string name="gps_searching">Buscando GPS</string>
+    <string name="gps_stabilizing">Estabilización do sinal</string>
+    <string name="warning_location_denied">A aplicación non pode acceder á localización</string>
+    <string name="warning_background_restricted">A aplicación non pode funcionar en segundo plano.\nPrema aquí para ir aos axustes do sistema onde, na sección de batería, pode permitir a actividade en segundo plano.</string>
+    <string name="warning_enable_location_service">O sensor GPS está desactivado.\nPrema aquí para ir aos axustes do sistema, onde pode activar o servizo de localización e estabelecer un método de localización que utilice o sensor GPS</string>
+    <!-- Track -->
+    <string name="track_id">Trazado</string>
+    <string name="duration">Duración</string>
+    <string name="max_speed">Vel. máxima</string>
+    <string name="average_speed">Vel. media</string>
+    <string name="distance">Distancia</string>
+    <string name="overall_direction">Rumbo</string>
+    <string name="altitude_gap">Dif. altitude</string>
+    <!-- Track Status message -->
+    <string name="track_empty">Novo trazado</string>
+    <string name="track_start_with_button_below">Comezar a gravar puntos de seguimento\nou engadir unha anotación\nutilizando un dos botóns de embaixo</string>
+    <!-- Recording buttons (bottom side) -->
+    <string name="record">Gravar</string>
+    <string name="pause">Pausar</string>
+    <string name="annotate">Anotar</string>
+    <string name="stop">Deter</string>
+    <string name="lock">Bloquear</string>
+    <string name="unlock">Desbloquear</string>
+    <string name="finalize_track">Rematar o trazado</string>
+    <string name="toast_bottom_bar_locked">A barra inferior está bloqueada</string>
+    <string name="toast_nothing_to_save">Non hai nada que gardar</string>
+    <string name="toast_recording_when_gps_found">A gravación comezará cando se atope o sinal de GPS</string>
+    <string name="toast_annotate_when_gps_found">A anotación tomarase cando se atope o sinal de GPS</string>
+    <string name="toast_coordinates_copied_to_clipboard">Coordenadas copiadas no portapapeis</string>
+    <string name="ok">Aceptar</string>
+    <string name="annotations">Anotacións</string>
+    <string name="trackpoints">Puntos GPS</string>
+    <!-- Main menu -->
+    <string name="menu_settings">Axustes</string>
+    <string name="toast_track_saved_into_tracklist">Trazado arquivado</string>
+    <string name="toast_track_exported">Trazados exportados ao cartafol \"%1$s\"</string>
+    <string name="menu_about">Sobre</string>
+    <string name="menu_online_help">Axuda en liña</string>
+    <string name="menu_shutdown">Apagar</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Engadir anotación</string>
+    <string name="dlg_enter_the_description">Introducir a descrición</string>
+    <string name="dlg_button_add">Engadir</string>
+    <!-- Tracklist -->
+    <string name="tracklist_empty">Arquivo baleiro</string>
+    <string name="card_trackinfo_length">Lonxitude</string>
+    <string name="card_trackinfo_duration">Duración</string>
+    <string name="card_trackinfo_altitude_gap">Dif. alt.</string>
+    <string name="card_trackinfo_max_speed">Vel. max.</string>
+    <string name="card_trackinfo_average_speed">Vel. media</string>
+    <string name="card_trackinfo_geopoints">Puntos</string>
+    <string name="card_trackinfo_annotations">Notacións</string>
+    <!-- Context menu of Tracklist -->
+    <string name="card_menu_export">Exportar</string>
+    <string name="card_menu_view_selector">Ver en…</string>
+    <string name="card_menu_view">Ver en %1$s</string>
+    <string name="card_menu_delete">Eliminar</string>
+    <string name="card_menu_share">Compartir con…</string>
+    <string name="card_menu_edit">Editar detalles</string>
+    <!-- Tracklist toasts and messagebox -->
+    <string name="card_message_delete_confirmation">Confirma que quere eliminar os trazados seleccionados?</string>
+    <string name="yes">Si</string>
+    <string name="no">Non</string>
+    <string name="cancel">Cancelar</string>
+    <string name="export_unable_to_write_file">Non é posíbel escribir o ficheiro</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">Camiñadas</string>
+    <string name="category_water_snow">Auga e neve</string>
+    <string name="category_air">Aéreo</string>
+    <string name="category_wheel">Sobre rodas</string>
+    <string name="category_other">Outros</string>
+    <!-- Notification App killed messagebox -->
+    <string name="dlg_app_killed">A aplicación foi derramada durante a gravación en segundo plano.</string>
+    <string name="dlg_app_killed_description">Comprobe nos axustes de Android que a aplicación non estea optimizada para a batería e tampouco estea restrinxida no segundo plano.</string>
+    <string name="open_android_app_settings">Abrir os axustes</string>
+    <!-- Preferences -->
+    <string name="pref_category_interface">INTERFACE</string>
+    <string name="pref_keep_screen_on">Manter a pantalla acesa</string>
+    <string name="pref_keep_screen_on_summary">A batería esgotase antes</string>
+    <string name="pref_color_theme">Cor do tema</string>
+    <string name="pref_color_theme_dark">Escuro</string>
+    <string name="pref_color_theme_light">Claro</string>
+    <string name="pref_show_decimal_coordinates">Amosar coordenadas decimais</string>
+    <string name="pref_show_decimal_coordinates_summary">Parte fraccionaria en notación decimal</string>
+    <string name="pref_show_gps_time_local">Amosar a hora do GPS no fuso horario local</string>
+    <string name="pref_show_gps_time_local_summary">no canto da hora global do GPS</string>
+    <string name="pref_show_directions">Amosar o rumbo con</string>
+    <string name="pref_show_directions_angle">Graos leste respecto do norte</string>
+    <string name="pref_show_directions_cardinal">Puntos cardinais</string>
+    <string name="pref_unit_of_measurement">Sistema de unidades</string>
+    <string name="pref_unit_of_measurement_metric">Métrico</string>
+    <string name="pref_unit_of_measurement_imperial">Imperial</string>
+    <string name="pref_unit_of_measurement_aerial_nautical">Aéreo / Náutico</string>
+    <string name="pref_unit_of_measurement_speed">Amosar as velocidades en</string>
+    <string name="pref_exportation_folder">Cartafol de exportación local</string>
+    <string name="pref_not_set">Non definido</string>
+    <string name="pref_track_viewer">Visor de trazados</string>
+    <string name="pref_track_viewer_not_installed">Non está instalado ningún visor GPX/KML</string>
+    <string name="pref_track_viewer_select_every_time">Preguntar sempre</string>
+    <string name="pref_category_tracking">SEGUIMENTO</string>
+    <string name="pref_GPS_distance_filter">Filtro de distancia</string>
+    <string name="pref_GPS_interval_filter">Filtro de intervalos</string>
+    <string name="pref_GPS_filter_disabled">Desactivado</string>
+    <string name="pref_GPS_update_frequency">Intervalo de actualización de GPS</string>
+    <string name="pref_GPS_update_frequency_max">O máis curto dispoñíbel</string>
+    <string name="pref_GPS_update_frequency_1s">1 segundo (alta precisión)</string>
+    <string name="pref_GPS_update_frequency_2s">2 segundos</string>
+    <string name="pref_GPS_update_frequency_3s">3 segundos (baixa precisión)</string>
+    <string name="pref_category_altitude_corrections">CORRECCIÓNS DE ALTITUDE</string>
+    <string name="pref_EGM96AltitudeCorrection">Corrección por EGM96</string>
+    <string name="pref_EGM96AltitudeCorrection_summary">Corrección automática da altitude, baseada no xeoide terrestre da NGA</string>
+    <string name="pref_EGM96AltitudeCorrection_download_progress">Descargando ficheiro de 2028 kB:\nAltitude do xeoide EGM96…</string>
+    <string name="pref_AltitudeCorrection">Corrección manual</string>
+    <string name="pref_AltitudeCorrection_summary_not_defined">Desprazamento sen definir</string>
+    <string name="pref_category_exporting">EXPORTACIÓN</string>
+    <string name="pref_export_TXT">Exportar os trazados a TXT</string>
+    <string name="pref_export_TXT_summary">Texto simple, valores separados por comas</string>
+    <string name="pref_export_KML">Exportar os trazados a KML</string>
+    <string name="pref_export_KML_summary">Keyhole Markup Language (v.2.2)</string>
+    <string name="pref_export_GPX">Exportar os trazados a GPX</string>
+    <string name="pref_export_GPX_summary">Estándar GPS eXchange Format</string>
+    <string name="pref_GPX_version">Versión do estándar GPX</string>
+    <string name="pref_GPX_version_1_0">GPX 1.0</string>
+    <string name="pref_GPX_version_1_1">GPX 1.1</string>
+    <string name="pref_KML_altitude_mode">Modo de altitude KML</string>
+    <string name="pref_KML_altitude_mode_absolute">Absoluta</string>
+    <string name="pref_KML_altitude_mode_projected">Proxectado ao chan</string>
+    <string name="pref_track_stats">Estatísticas de trazado baseadas en</string>
+    <string name="pref_track_stats_totaltime">Tempo total</string>
+    <string name="pref_track_stats_movingtime">Tempo en movemento</string>
+    <!-- Preferences toasts -->
+    <string name="toast_download_error">Produciuse un erro de descarga</string>
+    <string name="toast_download_completed">Descarga completada</string>
+    <string name="toast_download_failed">Produciuse un fallou na descarga. Ténteo de novo máis tarde</string>
+    <string name="toast_active_track_not_empty">O trazado actual non está baleiro</string>
+    <string name="toast_no_browser_installed">Non hai ningún navegador de Internet instalado</string>
+    <!-- About Dialog -->
+    <string name="about_version">ver.</string>
+    <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger rexistra trazados empregando a posición GPS. Pode velos na súa aplicación preferida, compartilos e exportalos ao seu dispositivo en formato KML, GPX e TXT.\n\nÉ software libre, publicado baixo os térmos da Licenza Pública Xertal de GNU.\nPara obter máis detalles consulte: https://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Se lle gusta usar esta aplicación, agradecémoslle que se tome un intre para valorar GPS Logger na Google Play Store.</string>
+    <string name="about_ok">Pechar</string>
+    <string name="about_rate_this_app">Avalía esta aplicación</string>
+    <string name="about_unable_to_rate">Non é posíbel acceder á tenda</string>
+    <!-- Notification icon -->
+    <string name="notification_contenttext">está activo</string>
+    <!-- Exit confirmation -->
+    <string name="message_exit_finalizing">Está a pechar a aplicación.\nQuere rematar agora o trazado?</string>
+    <!-- Units of Measurement -->
+    <string name="UM_m">m</string>
+    <string name="UM_km">km</string>
+    <string name="UM_m_s">m/s</string>
+    <string name="UM_km_h">km/h</string>
+    <string name="UM_ft">ft</string>
+    <string name="UM_mi">mi</string>
+    <string name="UM_fps">fps</string>
+    <string name="UM_mph">mph</string>
+    <string name="UM_nm">NM</string>
+    <string name="UM_kn">kn</string>
+    <string name="UM_s">s</string>
+</resources>
