@@ -65,7 +65,7 @@
     <string name="average_speed">Vel. média</string>
     <string name="distance">Distância</string>
     <string name="overall_direction">Orientação</string>
-    <string name="altitude_gap">Altitude Gap</string>
+    <string name="altitude_gap">Dif. de altitude</string>
     <!-- Track Status message -->
     <string name="track_empty">Nova gravação de percurso</string>
     <string name="track_start_with_button_below">Começar a gravação de Pontos\nou adicionar uma Anotação\nusando um dos botões abaixo</string>
