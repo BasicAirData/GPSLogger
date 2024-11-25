@@ -825,6 +825,25 @@ public class GPSActivity extends AppCompatActivity {
     }
 
     /**
+     * Process the request to to force recording the current trackpoint. It manages the button behaviour and
+     * the status of the request.
+     * It also displays some toasts to inform the user about some conditions.
+     */
+    public void onRequestForceRecord() {
+        if (!gpsApp.isBottomBarLocked()) {
+            //Log.w("myApp", "[#] GPSActivity.java - ACTIVATE FORCED RECORDING OF TRACKPOINTS");
+            gpsApp.setForcedTrackpointsRecording(true);
+            //Update();
+        } else {
+            //Log.w("myApp", "[#] GPSActivity.java - FORCED RECORDING OF TRACKPOINTS NOT POSSIBLE, BOTTOM BAR LOCKED");
+            if (toast != null) toast.cancel();
+            toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_bottom_bar_locked, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
+            toast.show();
+        }
+    }
+
+    /**
      * Manages the Lock button behaviour.
      */
     public void onToggleLock() {

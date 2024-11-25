@@ -126,11 +126,9 @@ public class FragmentRecordingControls extends Fragment {
             @Override
             public boolean onLongClick(View v) {
                 if (isAdded()) {
-                    if (!gpsApp.isBottomBarLocked()) {
-                        Log.w("myApp", "[#] FragmentRecordingControls.java - ACTIVATE FORCED RECORDING OF TRACKPOINTS");
-                        gpsApp.setForcedTrackpointsRecording(true);
-                        Update();
-                    }
+                    //Log.w("myApp", "[#] FragmentRecordingControls.java - REQUEST TO ACTIVATE FORCED RECORDING OF TRACKPOINTS");
+                    ((GPSActivity) getActivity()).onRequestForceRecord();
+                    Update();
                 }
                 return true;
             }
