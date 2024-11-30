@@ -33,7 +33,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -112,11 +114,36 @@ public class FragmentRecordingControls extends Fragment {
             }
         });
         tvRecordButton = view.findViewById(R.id.id_record);
+        tvRecordButton.setHapticFeedbackEnabled(false);
         tvRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isAdded())
                     ((GPSActivity) getActivity()).onToggleRecord();
+            }
+        });
+        tvRecordButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (isAdded()) {
+                    //Log.w("myApp", "[#] FragmentRecordingControls.java - REQUEST TO ACTIVATE FORCED RECORDING OF TRACKPOINTS");
+                    ((GPSActivity) getActivity()).onRequestForceRecord();
+                    Update();
+                }
+                return true;
+            }
+        });
+        tvRecordButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                    //Log.w("myApp", "[#] FragmentRecordingControls.java - (ACTION DOWN FOR FORCED RECORDING OF TRACKPOINTS)");
+                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP || event.getAction() == android.view.MotionEvent.ACTION_CANCEL) {
+                    Log.w("myApp", "[#] FragmentRecordingControls.java - DEACTIVATE FORCE RECORDING OF TRACKPOINTS");
+                    gpsApp.setForcedTrackpointsRecording(false);
+                    Update();
+                }
+                return false;
             }
         });
         tvGeoPointsNumber = view.findViewById(R.id.id_textView_GeoPoints);
@@ -235,7 +262,7 @@ public class FragmentRecordingControls extends Fragment {
     public void Update() {
         if (isAdded()) {
             final Track track = gpsApp.getCurrentTrack();
-            final boolean isRec = gpsApp.isRecording();
+            final boolean isRec = gpsApp.isRecording() || gpsApp.isForcedTrackpointsRecording();
             final boolean isAnnot = gpsApp.isPlacemarkRequested();
             final boolean isLck = gpsApp.isBottomBarLocked();
             if (track != null) {

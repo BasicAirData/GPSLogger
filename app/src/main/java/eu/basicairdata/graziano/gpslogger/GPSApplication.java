@@ -67,6 +67,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
+import android.os.Vibrator;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -197,6 +198,7 @@ public class GPSApplication extends Application implements LocationListener {
     private boolean isRecording;                                 // True if the recording is active
     private boolean isBottomBarLocked;                           // True if the bottom bar is locked
     private boolean isGPSLocationUpdatesActive;                  // True if the Location Manager is active (is requesting FIXes)
+    private boolean isForcedTrackpointsRecording = false;        // if True, the current fix is recorded into the track;
     private int gpsStatus = GPS_SEARCHING;                       // The status of the GPS: GPS_DISABLED, GPS_OUTOFSERVICE,
                                                                  // GPS_TEMPORARYUNAVAILABLE, GPS_SEARCHING, GPS_STABILIZING;
     private LocationManager locationManager = null;              // GPS LocationManager
@@ -695,6 +697,14 @@ public class GPSApplication extends Application implements LocationListener {
         isCurrentTrackVisible = currentTrackVisible;
     }
 
+    public boolean isForcedTrackpointsRecording() {
+        return isForcedTrackpointsRecording;
+    }
+
+    public void setForcedTrackpointsRecording(boolean forcedTrackpointsRecording) {
+        isForcedTrackpointsRecording = forcedTrackpointsRecording;
+    }
+
     public boolean isBackgroundActivityRestricted() {
         return isBackgroundActivityRestricted;
     }
@@ -1188,7 +1198,7 @@ public class GPSApplication extends Application implements LocationListener {
 
                 // Distance Filter and Interval Filter in OR
                 // The Trackpoint is recorded when at less one filter is True.
-                if ((isRecording) && ((prevRecordedFix == null)
+                if ((isRecording && ((prevRecordedFix == null)
                         || (forceRecord)                                                                        // Forced to record the point
                         || ((prefGPSinterval == 0) && (prefGPSdistance == 0))                                   // No filters enabled --> it records all the points
                         || ((prefGPSinterval > 0)
@@ -1201,7 +1211,14 @@ public class GPSApplication extends Application implements LocationListener {
                         || ((prefGPSinterval == 0)
                             && (prefGPSdistance > 0)                                                            // Only distance filter enabled
                             && ((loc.distanceTo(prevRecordedFix.getLocation()) >= prefGPSdistance)))
-                        || (currentTrack.getNumberOfLocations() == 0))){                                        // It is the first point of a track
+                        || (currentTrack.getNumberOfLocations() == 0)))                                         // It is the first point of a track
+                        || (isForcedTrackpointsRecording)){                                                     // recording button is long pressed
+
+                    if (isForcedTrackpointsRecording) {
+                        Vibrator vibrator;
+                        vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        vibrator.vibrate(150);
+                    }
 
                     prevRecordedFix = eloc;
                     ast.taskType = TASK_ADDLOCATION;
