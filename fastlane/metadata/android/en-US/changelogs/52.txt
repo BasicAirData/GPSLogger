@@ -1,0 +1,5 @@
+- Force recording the current trackpoint by holding down the Record button
+- Added galician language
+- Updated portuguese translation
+- Upgraded to API 34 and updated dependencies
+- Some UI refinements
