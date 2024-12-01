@@ -23,18 +23,17 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'eu.basicairdata.graziano.gpslogger'
-    compileSdk 33
-    buildToolsVersion '33.0.1'
+    compileSdk 34
 
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
-        targetSdkVersion 33
+        targetSdkVersion 34
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-        versionName '3.2.2'
-        versionCode 51
+        versionName '3.2.3'
+        versionCode 52
         // -----------------------------------------------------------------------------------------
 
         vectorDrawables.useSupportLibrary = true
@@ -76,7 +75,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference:1.2.1'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.5.1'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
