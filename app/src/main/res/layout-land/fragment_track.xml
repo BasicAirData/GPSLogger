@@ -23,6 +23,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/id_fragmenttrackFrameLayout"
     android:orientation="horizontal"
     tools:context=".FragmentTrack"
@@ -119,43 +120,60 @@
                         android:gravity="center_horizontal" />
 
                 </TableLayout>
-
-                <TableLayout
+                <FrameLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/id_TableLayout_Annotations"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp"
-                    android:background="@drawable/rounded_corner"
                     android:layout_margin="3dp"
-                    android:visibility="visible">
-
-                    <TableRow
+                    android:layout_height="wrap_content">
+                    <TableLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal">
+                        android:id="@+id/id_TableLayout_Annotations"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:background="@drawable/rounded_corner"
+                        android:visibility="visible">
 
-                        <TextView
-                            android:id="@+id/id_textView_Annotations"
-                            android:layout_width="wrap_content"
+                        <TableRow
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:textColor="@color/colorPrimaryLight"
-                            android:textAppearance="@style/TextAppearanceLargeNumbers" />
-                    </TableRow>
+                            android:gravity="center_horizontal">
 
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="@string/annotations"
-                        android:id="@+id/id_textView_AnnotationsLabel"
-                        android:textSize="13sp"
-                        android:gravity="center_horizontal" />
+                            <TextView
+                                android:id="@+id/id_textView_Annotations"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:textColor="@color/colorPrimaryLight"
+                                android:textAppearance="@style/TextAppearanceLargeNumbers" />
+                        </TableRow>
 
-                </TableLayout>
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="@string/annotations"
+                            android:id="@+id/id_textView_AnnotationsLabel"
+                            android:textSize="13sp"
+                            android:gravity="center_horizontal" />
+
+                    </TableLayout>
+
+                    <ImageView
+                        android:id="@+id/id_annotations_edit"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_edit_24"
+                        android:alpha="0.4"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </FrameLayout>
 
             </LinearLayout>
 
