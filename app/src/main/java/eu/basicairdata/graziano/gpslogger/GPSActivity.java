@@ -132,7 +132,7 @@ public class GPSActivity extends AppCompatActivity {
         View topbarView = findViewById(R.id.id_appbarlayout);
         ViewCompat.setOnApplyWindowInsetsListener(topbarView, (v, insets) -> {
             Insets innerPadding = insets.getInsets(
-                    WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars()
+                    WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.displayCutout()
             );
             topbarView.setPadding(
                     0,
