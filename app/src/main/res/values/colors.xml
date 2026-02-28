@@ -60,4 +60,9 @@
 
     <color name="colorThumbnailLineColor">#c9c9c9</color> <!-- DO NOT CHANGE THIS COLOR! -->
 
+    <!-- api 35 fix status bar color when action mode is active -->
+
+    <color name="abc_decor_view_status_guard" tools:override="true">#550000</color>
+    <color name="abc_decor_view_status_guard_light" tools:override="true">#550000</color>
+
 </resources>
