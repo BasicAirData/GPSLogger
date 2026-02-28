@@ -40,6 +40,9 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -111,6 +114,36 @@ public class GPSActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_gps);
+
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets innerPadding = insets.getInsets(
+                    WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.displayCutout()
+            );
+            rootView.setPadding(
+                    innerPadding.left,
+                    0,
+                    innerPadding.right,
+                    innerPadding.bottom
+            );
+            return insets;
+        });
+
+        View topbarView = findViewById(R.id.id_appbarlayout);
+        ViewCompat.setOnApplyWindowInsetsListener(topbarView, (v, insets) -> {
+            Insets innerPadding = insets.getInsets(
+                    WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars()
+            );
+            topbarView.setPadding(
+                    0,
+                    innerPadding.top,
+                    0,
+                    0
+            );
+            return insets;
+        });
+
+
         toolbar = findViewById(R.id.id_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
