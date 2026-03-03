@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -115,6 +116,9 @@ public class GPSActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_gps);
 
+
+        // Manage the edge-to-edge enforcement (API 35)
+
         View rootView = findViewById(android.R.id.content);
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
             Insets innerPadding = insets.getInsets(
@@ -143,6 +147,15 @@ public class GPSActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Set transparent navigation bar when the activity is in landscape orientation
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+                getWindow().setNavigationBarContrastEnforced(false);
+            else getWindow().setNavigationBarColor(getResources().getColor(R.color.colorRecControlBackground));
+        }
+
+        // --------------------------------------------
 
         toolbar = findViewById(R.id.id_toolbar);
         setSupportActionBar(toolbar);
