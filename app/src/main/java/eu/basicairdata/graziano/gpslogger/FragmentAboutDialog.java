@@ -29,6 +29,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 
@@ -116,11 +119,25 @@ public class FragmentAboutDialog extends DialogFragment {
                 public void onClick(DialogInterface dialog, int id) {}
             });
 
+        ViewCompat.setOnApplyWindowInsetsListener(view.getRootView(), (v, insets) -> {
+            Insets innerPadding = insets.getInsets(
+                    WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.displayCutout()
+            );
+            view.getRootView().setPadding(
+                    innerPadding.left,
+                    innerPadding.top,
+                    innerPadding.right,
+                    innerPadding.bottom
+            );
+            return insets;
+        });
+
         return createAboutAlert.create();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
     }
 }
