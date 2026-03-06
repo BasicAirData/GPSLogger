@@ -152,7 +152,6 @@ public class GPSActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                 getWindow().setNavigationBarContrastEnforced(false);
-            else getWindow().setNavigationBarColor(getResources().getColor(R.color.colorRecControlBackground));
         }
 
         // --------------------------------------------
