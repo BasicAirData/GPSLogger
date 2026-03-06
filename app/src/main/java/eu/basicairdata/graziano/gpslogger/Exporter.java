@@ -247,8 +247,8 @@ class Exporter extends Thread {
         dfdtGPX_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
         SimpleDateFormat dfdtTXT = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS", Locale.US);           // date and time formatter for TXT timestamp (with millis)
         dfdtTXT.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.US);      // date and time formatter for TXT timestamp (without millis)
-        dfdtTXT_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
+        //SimpleDateFormat dfdtTXT_NoMillis = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.US);      // date and time formatter for TXT timestamp (without millis)
+        //dfdtTXT_NoMillis.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         //final String newLine = System.getProperty("line.separator"); //\n\r
         final String newLine = "\r\n";
@@ -511,11 +511,11 @@ class Exporter extends Thread {
                             // TXT
                             if (exportTXT) {
                                 //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
-                                //txtBW.write("W," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
-                                txtBW.write("W," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
-                                          dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
-                                          dfdtTXT.format(loc.getLocation().getTime()))
-                                        + "," + formattedLatitude + "," + formattedLongitude + ",");
+                                txtBW.write("W," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
+                                //txtBW.write("W," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
+                                //          dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
+                                //            dfdtTXT.format(loc.getLocation().getTime()))
+                                //          + "," + formattedLatitude + "," + formattedLongitude + ",");
                                 if (loc.getLocation().hasAccuracy())
                                     txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getAccuracy()));
                                 txtBW.write(",");
@@ -669,11 +669,11 @@ class Exporter extends Thread {
                     // TXT
                     if (exportTXT) {
                         //type,time,latitude,longitude,altitude (m),geoid_height (m),speed (m/s),sat_used,sat_inview,name,desc
-                        //txtBW.write("T," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
-                        txtBW.write("T," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
-                                  dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
-                                  dfdtTXT.format(loc.getLocation().getTime()))
-                                + "," + formattedLatitude + "," + formattedLongitude + ",");
+                        txtBW.write("T," + dfdtTXT.format(loc.getLocation().getTime()) + "," + formattedLatitude + "," + formattedLongitude + ",");
+                        //txtBW.write("T," + (((loc.getLocation().getTime() % 1000L) == 0L) ?
+                        //          dfdtTXT_NoMillis.format(loc.getLocation().getTime()) :
+                        //          dfdtTXT.format(loc.getLocation().getTime()))
+                        //        + "," + formattedLatitude + "," + formattedLongitude + ",");
                         if (loc.getLocation().hasAccuracy())
                             txtBW.write(String.format(Locale.US, "%.2f", loc.getLocation().getAccuracy()));
                         txtBW.write(",");
