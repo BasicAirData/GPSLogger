@@ -544,15 +544,18 @@ public class GPSActivity extends AppCompatActivity {
      * Expands/Collapses the bottom bar, basing on the active tab.
      */
     private void updateBottomSheetPosition() {
+        bottomSheetBehavior.setHideable(true);
         gpsApp.setGPSActivityActiveTab(tabLayout.getSelectedTabPosition());
         if (gpsApp.getGPSActivityActiveTab() != 2) {
             bottomSheetBehavior.setPeekHeight(1);
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            //Log.w("myApp", "[#] GPSActivity.java - mBottomSheetBehavior.setPeekHeight(" + bottomSheet.getHeight() +");");
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             bottomSheetBehavior.setPeekHeight(bottomSheet.getHeight());
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            bottomSheetBehavior.setHideable(false);
+            //Log.w("myApp", "[#] GPSActivity.java - mBottomSheetBehavior.setPeekHeight(" + bottomSheet.getHeight() +");");
         } else {
             bottomSheetBehavior.setPeekHeight(1);
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED) ;
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN) ;
         }
     }
 
