@@ -43,7 +43,7 @@ import android.widget.Toast;
  */
 public class FragmentAboutDialog extends DialogFragment {
 
-    private static final String COPYRIGHT_RANGE_END = "2024";           // The number that appears as end-year of the Copyright range
+    private static final String COPYRIGHT_RANGE_END = "2026";           // The number that appears as end-year of the Copyright range
 
     //@SuppressLint("InflateParams")
     @NonNull
@@ -55,7 +55,7 @@ public class FragmentAboutDialog extends DialogFragment {
         TextView tvVersion;
         TextView tvDescription;
 
-        AlertDialog.Builder createAboutAlert = new AlertDialog.Builder(getActivity(), R.style.MyMaterialThemeAbout);
+        AlertDialog.Builder createAboutAlert = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.fragment_about_dialog, null);
@@ -121,6 +121,7 @@ public class FragmentAboutDialog extends DialogFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
     }
 }

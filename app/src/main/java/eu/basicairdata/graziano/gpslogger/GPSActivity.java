@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +41,9 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -111,6 +115,47 @@ public class GPSActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_gps);
+
+
+        // Manage the edge-to-edge enforcement (API 35)
+
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets innerPadding = insets.getInsets(
+                    WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.displayCutout()
+            );
+            rootView.setPadding(
+                    innerPadding.left,
+                    0,
+                    innerPadding.right,
+                    innerPadding.bottom
+            );
+            return insets;
+        });
+
+        View topbarView = findViewById(R.id.id_appbarlayout);
+        ViewCompat.setOnApplyWindowInsetsListener(topbarView, (v, insets) -> {
+            Insets innerPadding = insets.getInsets(
+                    WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.displayCutout()
+            );
+            topbarView.setPadding(
+                    0,
+                    innerPadding.top,
+                    0,
+                    0
+            );
+            return insets;
+        });
+
+        // Set transparent navigation bar when the activity is in landscape orientation
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+                getWindow().setNavigationBarContrastEnforced(false);
+        }
+
+        // --------------------------------------------
+
         toolbar = findViewById(R.id.id_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -213,6 +258,7 @@ public class GPSActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
+
         if (gpsApp.isJustStarted() && (gpsApp.getCurrentTrack().getNumberOfLocations() + gpsApp.getCurrentTrack().getNumberOfPlacemarks() > 0)) {
             Toast toast = Toast.makeText(gpsApp.getApplicationContext(), R.string.toast_active_track_not_empty, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.BOTTOM, 0, TOAST_VERTICAL_OFFSET);
@@ -498,15 +544,18 @@ public class GPSActivity extends AppCompatActivity {
      * Expands/Collapses the bottom bar, basing on the active tab.
      */
     private void updateBottomSheetPosition() {
+        bottomSheetBehavior.setHideable(true);
         gpsApp.setGPSActivityActiveTab(tabLayout.getSelectedTabPosition());
         if (gpsApp.getGPSActivityActiveTab() != 2) {
             bottomSheetBehavior.setPeekHeight(1);
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            //Log.w("myApp", "[#] GPSActivity.java - mBottomSheetBehavior.setPeekHeight(" + bottomSheet.getHeight() +");");
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             bottomSheetBehavior.setPeekHeight(bottomSheet.getHeight());
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            bottomSheetBehavior.setHideable(false);
+            //Log.w("myApp", "[#] GPSActivity.java - mBottomSheetBehavior.setPeekHeight(" + bottomSheet.getHeight() +");");
         } else {
             bottomSheetBehavior.setPeekHeight(1);
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED) ;
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN) ;
         }
     }
 
