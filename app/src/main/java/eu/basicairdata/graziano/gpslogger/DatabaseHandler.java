@@ -920,10 +920,15 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_DESCRIPTION, track.getDescription());
 
         long TrackID;
-        // Inserting Row
-        TrackID = (db.insert(TABLE_TRACKS, null, trkvalues));
-
-        //Log.w("myApp", "[#] DatabaseHandler.java - addTrack " + TrackID);
+        try {
+            db.beginTransaction();
+            // Inserting Row
+            TrackID = (db.insert(TABLE_TRACKS, null, trkvalues));
+            db.setTransactionSuccessful();
+            //Log.w("myApp", "[#] DatabaseHandler.java - addTrack " + TrackID);
+        } finally {
+            db.endTransaction();
+        }
 
         return TrackID; // Insert this in the track ID !!!
     }
