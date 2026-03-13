@@ -67,7 +67,7 @@
     <string name="overall_direction">Samlede Retning</string>
     <string name="altitude_gap">Højde forskel</string>
     <!-- Track Status message -->
-    <string name="track_empty">Nyt Spor\n\nStart optagelse af sporpunkte\neller tilføj stedmarkør\nbrug en af knapperne nedenfor</string>
+    <string name="track_empty">Nyt Spor</string>
     <string name="track_start_with_button_below">Start optagelse af sporpunkter\neller tilføj en annotation\nved hjælp af en af knapperne nedenfor</string>
     <!-- Recording buttons (bottom side) -->
     <string name="record">Optag</string>
