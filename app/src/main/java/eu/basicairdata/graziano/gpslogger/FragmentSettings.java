@@ -286,6 +286,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         Preference pExportFolder = findPreference("prefExportFolder");
         EditTextPreference pAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
         Preference pTracksViewer = findPreference("prefTracksViewer");
+        Preference pExportTracklist = findPreference("prefExportTracklist");
 
         // Adds the unit of measurement to EditTexts title
         pGPSDistance.setDialogTitle(getString(R.string.pref_GPS_distance_filter) + " ("
@@ -298,6 +299,23 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         // Keep Screen On Flag
         if (prefs.getBoolean("prefKeepScreenOn", true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // Backup and Restore - Export tracklist
+        pExportTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+
+                // TODO: ensure that there is no in-progress tracks and that the recording and placemark is not active
+                // TODO: check the exporting folder and, in case, let the user select it
+
+                Log.w("myApp", "[#] FragmentSettings.java - pExportTracklist");
+                AppDataManager appDataManager = new AppDataManager();
+                appDataManager.exportAppDataToZipFile();
+
+                // TODO: Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation
+
+                return true;
+            }
+        });
 
         // Track Viewer
         final ArrayList<ExternalViewer> evList = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getExternalViewersList());
