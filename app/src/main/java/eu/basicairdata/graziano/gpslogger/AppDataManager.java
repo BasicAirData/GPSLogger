@@ -136,6 +136,7 @@ public class AppDataManager {
         if (folder.isDirectory()) {
             addFolderToZip(path, srcFile, zip);
         } else {
+            Log.w("myApp", "[#] AppDataManager.java - Adding file " + path + "/" + folder.getName());
             byte[] buf = new byte[1024];
             int len;
             FileInputStream in = new FileInputStream(srcFile);
@@ -155,13 +156,17 @@ public class AppDataManager {
      */
     static private void addFolderToZip(String path, String srcFolder,
                                        ZipOutputStream zip) throws Exception {
-        File folder = new File(srcFolder);
-        for (String fileName : folder.list()) {
-            if (path.equals("")) {
-                addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
-            } else {
-                addFileToZip(path + "/" + folder.getName(), srcFolder + "/"
-                        + fileName, zip);
+        // java.lang.RuntimeException: java.io.FileNotFoundException:
+        // /data/data/eu.basicairdata.graziano.gpslogger/code_cache/.studio/.canary: open failed: EACCES (Permission denied)
+        if (!srcFolder.contains("code_cache")) {
+            File folder = new File(srcFolder);
+            for (String fileName : folder.list()) {
+                if (path.equals("")) {
+                    Log.w("myApp", "[#] AppDataManager.java - Adding folder " + path + "/" + folder.getName());
+                    addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
+                } else {
+                    addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + fileName, zip);
+                }
             }
         }
     }
