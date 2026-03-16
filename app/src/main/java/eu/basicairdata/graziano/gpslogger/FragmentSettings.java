@@ -311,7 +311,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 AppDataManager appDataManager = new AppDataManager();
                 appDataManager.exportAppDataToZipFile();
 
-                // TODO: Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation
+                // TODO: Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
+                // TODO: The dialog should have the possibility to dismiss and cancel the operation.
 
                 return true;
             }

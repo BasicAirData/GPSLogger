@@ -45,6 +45,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class AppDataManager {
 
+    String backupFileName = "GPSLogger_Tracklist_BACKUP.zip";
+
     /**
      * It exports the app data folder to a zip file into the exporting folder.
      * It creates a single zip file of the whole /data/data/eu.basicairdata.graziano.gpslogger folder.
@@ -65,10 +67,10 @@ public class AppDataManager {
             return;
         }
 
-        DocumentFile zipDocumentFile = pickedDir.findFile( "GPSLogger_DATA.zip");
+        DocumentFile zipDocumentFile = pickedDir.findFile( backupFileName);
 
         if ((zipDocumentFile != null) && (zipDocumentFile.exists())) zipDocumentFile.delete();
-        zipDocumentFile = pickedDir.createFile("", "GPSLogger_DATA.zip");
+        zipDocumentFile = pickedDir.createFile("", backupFileName);
 
         try {
             OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "rw");
@@ -158,11 +160,11 @@ public class AppDataManager {
                                        ZipOutputStream zip) throws Exception {
         // java.lang.RuntimeException: java.io.FileNotFoundException:
         // /data/data/eu.basicairdata.graziano.gpslogger/code_cache/.studio/.canary: open failed: EACCES (Permission denied)
-        if (!srcFolder.contains("code_cache")) {
+        if (!srcFolder.endsWith("code_cache")) {
+            Log.w("myApp", "[#] AppDataManager.java - Adding folder " + srcFolder);
             File folder = new File(srcFolder);
             for (String fileName : folder.list()) {
                 if (path.equals("")) {
-                    Log.w("myApp", "[#] AppDataManager.java - Adding folder " + path + "/" + folder.getName());
                     addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
                 } else {
                     addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + fileName, zip);

@@ -183,12 +183,12 @@
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
-        android:title="@string/pref_category_appdata">
+        android:title="@string/pref_category_backup_restore">
 
         <androidx.preference.Preference
             android:key="prefExportTracklist"
-            android:title="@string/pref_export_app_data"
-            android:summary="@string/pref_export_app_data_summary"
+            android:title="@string/pref_backup_tracklist"
+            android:summary="@string/pref_backup_tracklist_summary"
             android:defaultValue="" />
 
     </androidx.preference.PreferenceCategory>

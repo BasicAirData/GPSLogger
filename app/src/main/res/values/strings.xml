@@ -214,9 +214,9 @@
     <string name="pref_track_stats_totaltime">Total time</string>
     <string name="pref_track_stats_movingtime">Time in Movement</string>
 
-    <string name="pref_category_appdata">BACKUP AND RESTORE</string>
-    <string name="pref_export_app_data">Export Tracklist</string>
-    <string name="pref_export_app_data_summary">Save the Tracklist Database in a ZIP file</string>
+    <string name="pref_category_backup_restore">BACKUP AND RESTORE</string>
+    <string name="pref_backup_tracklist">Backup Tracklist</string>
+    <string name="pref_backup_tracklist_summary">Save the Tracklist Database in a ZIP file</string>
 
     <!-- Preferences toasts -->
     <string name="toast_download_error">Download error</string>
