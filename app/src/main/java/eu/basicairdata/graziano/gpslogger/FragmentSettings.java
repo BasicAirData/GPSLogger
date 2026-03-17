@@ -287,6 +287,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         EditTextPreference pAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
         Preference pTracksViewer = findPreference("prefTracksViewer");
         Preference pExportTracklist = findPreference("prefExportTracklist");
+        Preference pRestoreTracklist = findPreference("prefRestoreTracklist");
 
         // Adds the unit of measurement to EditTexts title
         pGPSDistance.setDialogTitle(getString(R.string.pref_GPS_distance_filter) + " ("
@@ -304,15 +305,41 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         pExportTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
 
-                // TODO: ensure that there is no in-progress tracks and that the recording and placemark is not active
-                // TODO: check the exporting folder and, in case, let the user select it
+                // TODO:
+                //  - ensure that there is no in-progress tracks and that the recording and placemark is not active
+                //  - check the exporting folder and, in case, let the user select it
+                //  - select the ZIP file name. It should be passed as parameter to AppDataManager's method
 
                 Log.w("myApp", "[#] FragmentSettings.java - pExportTracklist");
                 AppDataManager appDataManager = new AppDataManager();
                 appDataManager.exportAppDataToZipFile();
 
+                // TODO:
+                //  - Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
+                //  - The dialog should have the possibility to dismiss and cancel the operation.
+
+                return true;
+            }
+        });
+
+        // Backup and Restore - Restore tracklist
+        pRestoreTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+
+                // TODO:
+                //  - ensure that there is no in-progress tracks and that the recording and placemark is not active
+                //  - check the exporting folder
+                //  - let the user select the ZIP file, that should be passed as parameter to AppDataManager's method
+                //  - delete the old Thumbnails
+                //  - copy the Database and the Thumbnails from ZIP file to the app data folder
+                //  - restart the app, or maybe
+
+                Log.w("myApp", "[#] FragmentSettings.java - pRestoreTracklist");
+                //AppDataManager appDataManager = new AppDataManager();
+                //appDataManager.exportAppDataToZipFile();
+
                 // TODO: Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
-                // TODO: The dialog should have the possibility to dismiss and cancel the operation.
+                // TODO: The dialog should NOT have the possibility to dismiss and cancel the operation.
 
                 return true;
             }

@@ -216,7 +216,10 @@
 
     <string name="pref_category_backup_restore">BACKUP AND RESTORE</string>
     <string name="pref_backup_tracklist">Backup Tracklist</string>
-    <string name="pref_backup_tracklist_summary">Save the Tracklist Database in a ZIP file</string>
+    <string name="pref_backup_tracklist_summary">Save the Tracklist as ZIP archive</string>
+    <string name="pref_restore_tracklist">Restore Tracklist</string>
+    <string name="pref_restore_tracklist_summary">Load a Tracklist from ZIP archive</string>
+
 
     <!-- Preferences toasts -->
     <string name="toast_download_error">Download error</string>
