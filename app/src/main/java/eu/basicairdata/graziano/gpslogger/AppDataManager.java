@@ -191,15 +191,39 @@ public class AppDataManager {
             InputStream inputStream = GPSApplication.getInstance().getBaseContext().getContentResolver().openInputStream(zipDocumentFile.getUri());
             ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
 
-            ZipEntry ze;
+            ZipEntry ze = null;
+
+            // Check if the archive contains the database and the thumbnails folder
+            boolean isThumbnailsPresent = false;
+            boolean isDatabasePresent = false;
             while ((ze = zipInputStream.getNextEntry()) != null) {
-                if (ze.getName().startsWith("eu.basicairdata.graziano.gpslogger/files/Thumbnails/")) {
-                    Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName().substring(ze.getName().lastIndexOf("/")+1));
+                if (ze.getName().contains("/Thumbnails/") && !isThumbnailsPresent) {
+                    Log.w("myApp", "[#] AppDataManager.java - Thumbnails folder found");
+                    isThumbnailsPresent = true;
                 }
-                if (ze.getName().equals("eu.basicairdata.graziano.gpslogger/databases/GPSLogger")) {
-                    Log.w("myApp", "[#] AppDataManager.java - UNZIP Database: " + ze.getName().substring(ze.getName().lastIndexOf("/")+1));
+                if (ze.getName().endsWith("/GPSLogger") && !isDatabasePresent) {
+                    Log.w("myApp", "[#] AppDataManager.java - Database found");
+                    isDatabasePresent = true;
                 }
-                //create dir if required while unzipping
+            }
+            zipInputStream.close();
+            inputStream.close();
+
+            // If the ZIP file is valid, restore the Tracklist files
+            if (isDatabasePresent && isThumbnailsPresent) {
+                inputStream = GPSApplication.getInstance().getBaseContext().getContentResolver().openInputStream(zipDocumentFile.getUri());
+                zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
+                // the ZIP file is valid
+                Log.w("myApp", "[#] AppDataManager.java - The ZIP file is valid, Restoring...");
+
+                while ((ze = zipInputStream.getNextEntry()) != null) {
+                    if (ze.getName().contains("/Thumbnails/")) {
+                        Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                    }
+                    if (ze.getName().endsWith("/GPSLogger")) {
+                        Log.w("myApp", "[#] AppDataManager.java - UNZIP Database: " + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                    }
+                    //create dir if required while unzipping
 //                if (ze.isDirectory()) {
 //                    dirChecker(ze.getName());
 //                } else {
@@ -211,8 +235,10 @@ public class AppDataManager {
 //                    zin.closeEntry();
 //                    fout.close();
 //                }
+                }
+                zipInputStream.close();
+                inputStream.close();
             }
-            zipInputStream.close();
         } catch (Exception e) {
             System.out.println(e);
         }
