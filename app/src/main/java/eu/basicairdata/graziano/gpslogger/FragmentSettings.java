@@ -335,8 +335,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 //  - restart the app, or maybe
 
                 Log.w("myApp", "[#] FragmentSettings.java - pRestoreTracklist");
-                //AppDataManager appDataManager = new AppDataManager();
-                //appDataManager.exportAppDataToZipFile();
+                AppDataManager appDataManager = new AppDataManager();
+                appDataManager.importTracklistFromZipFile();
 
                 // TODO: Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
                 // TODO: The dialog should NOT have the possibility to dismiss and cancel the operation.

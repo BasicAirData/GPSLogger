@@ -28,10 +28,12 @@ import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -173,61 +175,30 @@ public class AppDataManager {
 //    }
 
 
-//    public void importTracklistFromZipFile() {
-//            try {
-//                DocumentFile pickedDir;
-//
-//                if (zipFileFolder.startsWith("content")) {
-//                    Uri uri = Uri.parse(zipFileFolder);
-//                    pickedDir = DocumentFile.fromTreeUri(getInstance(), uri);
-//                } else {
-//                    pickedDir = DocumentFile.fromFile(new File(zipFileFolder));
-//                }
-//                if (!pickedDir.exists()) {
-//                    Log.w("myApp", "[#] AppDataManager.java - UNABLE TO CREATE THE FOLDER");
-//                    return;
-//                }
-//
-//                DocumentFile zipDocumentFile = pickedDir.findFile( backupFileName);
-//
-//
-//                FileInputStream fin = new FileInputStream(_zipFile);
-//                ZipInputStream zin = new ZipInputStream(fin);
-//                ZipEntry ze = null;
-//                while ((ze = zin.getNextEntry()) != null) {
-//                    Log.w("myApp", "[#] AppDataManager.java - unzip " + ze.getName());
-//                    //create dir if required while unzipping
-////                if (ze.isDirectory()) {
-////                    dirChecker(ze.getName());
-////                } else {
-////                    FileOutputStream fout = new FileOutputStream(_targetLocation + ze.getName());
-////                    for (int c = zin.read(); c != -1; c = zin.read()) {
-////                        fout.write(c);
-////                    }
-////
-////                    zin.closeEntry();
-////                    fout.close();
-////                }
-//
-//                }
-//                zin.close();
-//            } catch (Exception e) {
-//                System.out.println(e);
-//            }
-//        }
-//    }
-
-    public void unzip(String _zipFile, String _targetLocation) {
-
-        //create target location folder if not exist
-        dirChecker(_targetLocation);
-
+    public void importTracklistFromZipFile() {
         try {
-            FileInputStream fin = new FileInputStream(_zipFile);
-            ZipInputStream zin = new ZipInputStream(fin);
-            ZipEntry ze = null;
-            while ((ze = zin.getNextEntry()) != null) {
-                Log.w("myApp", "[#] AppDataManager.java - unzip " + ze.getName());
+            DocumentFile zipDocumentFile;
+            DocumentFile zipDocumentFileFolder;
+
+            if (zipFileFolder.startsWith("content"))
+                zipDocumentFileFolder = DocumentFile.fromTreeUri(GPSApplication.getInstance(), Uri.parse(zipFileFolder));
+            else
+                zipDocumentFileFolder = DocumentFile.fromFile(new File(zipFileFolder));
+
+            zipDocumentFile = zipDocumentFileFolder.findFile(backupFileName);
+
+            // Open InputStream from the DocumentFile
+            InputStream inputStream = GPSApplication.getInstance().getBaseContext().getContentResolver().openInputStream(zipDocumentFile.getUri());
+            ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
+
+            ZipEntry ze;
+            while ((ze = zipInputStream.getNextEntry()) != null) {
+                if (ze.getName().startsWith("eu.basicairdata.graziano.gpslogger/files/Thumbnails/")) {
+                    Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName().substring(ze.getName().lastIndexOf("/")+1));
+                }
+                if (ze.getName().equals("eu.basicairdata.graziano.gpslogger/databases/GPSLogger")) {
+                    Log.w("myApp", "[#] AppDataManager.java - UNZIP Database: " + ze.getName().substring(ze.getName().lastIndexOf("/")+1));
+                }
                 //create dir if required while unzipping
 //                if (ze.isDirectory()) {
 //                    dirChecker(ze.getName());
@@ -240,19 +211,54 @@ public class AppDataManager {
 //                    zin.closeEntry();
 //                    fout.close();
 //                }
-
             }
-            zin.close();
+            zipInputStream.close();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
-    private void dirChecker(String dir) {
-        File f = new File(dir);
-        if (!f.isDirectory()) {
-            f.mkdirs();
-        }
-    }
+//    public void unzip(String _zipFile, String _targetLocation) {
+//
+//        //create target location folder if not exist
+//        dirChecker(_targetLocation);
+//
+//        try {
+//            FileInputStream fin = new FileInputStream(_zipFile);
+//            ZipInputStream zin = new ZipInputStream(fin);
+//            ZipEntry ze = null;
+//            while ((ze = zin.getNextEntry()) != null) {
+//                if (ze.getName().startsWith("eu.basicairdata.graziano.gpslogger/files/Thumbnails/")) {
+//                    Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName());
+//                }
+//                if (ze.getName().equals("eu.basicairdata.graziano.gpslogger/databases/GPSLogger")) {
+//                    Log.w("myApp", "[#] AppDataManager.java - UNZIP Database: " + ze.getName());
+//                }
+//                //create dir if required while unzipping
+////                if (ze.isDirectory()) {
+////                    dirChecker(ze.getName());
+////                } else {
+////                    FileOutputStream fout = new FileOutputStream(_targetLocation + ze.getName());
+////                    for (int c = zin.read(); c != -1; c = zin.read()) {
+////                        fout.write(c);
+////                    }
+////
+////                    zin.closeEntry();
+////                    fout.close();
+////                }
+//
+//            }
+//            zin.close();
+//        } catch (Exception e) {
+//            System.out.println(e);
+//        }
+//    }
+//
+//    private void dirChecker(String dir) {
+//        File f = new File(dir);
+//        if (!f.isDirectory()) {
+//            f.mkdirs();
+//        }
+//    }
 
 }
