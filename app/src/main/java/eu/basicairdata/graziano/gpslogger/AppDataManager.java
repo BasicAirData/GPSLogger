@@ -246,9 +246,12 @@ public class AppDataManager {
                     // Import a Thumbnail
                     if (ze.getName().contains("/Thumbnails/")) {
                         Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                        byte[] buffer = new byte[1024];
                         FileOutputStream fout = new FileOutputStream(folderThumbnails + "/" + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
-                        for (int c = zipInputStream.read(); c != -1; c = zipInputStream.read()) {
-                            fout.write(c);
+                        int i = 0;
+                        int len;
+                        while ((len = zipInputStream.read(buffer)) > 0) {
+                            fout.write(buffer, 0, len);
                         }
                         zipInputStream.closeEntry();
                         fout.close();
@@ -256,28 +259,16 @@ public class AppDataManager {
                     // Import the Database
                     if (ze.getName().endsWith("/GPSLogger")) {
                         Log.w("myApp", "[#] AppDataManager.java - UNZIP Database: " + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                        byte[] buffer = new byte[1024];
                         FileOutputStream fout = new FileOutputStream(folderDatabase + "/" + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
-                        int i=0;
-                        for (int c = zipInputStream.read(); c != -1; c = zipInputStream.read()) {
-                            fout.write(c);
-                            Log.w("myApp", "[#] AppDataManager.java - UNZIPPING: (" + i + ") " + c);
-                            i++;
+                        int i = 0;
+                        int len;
+                        while ((len = zipInputStream.read(buffer)) > 0) {
+                            fout.write(buffer, 0, len);
                         }
                         zipInputStream.closeEntry();
                         fout.close();
                     }
-                    //create dir if required while unzipping
-//                if (ze.isDirectory()) {
-//                    dirChecker(ze.getName());
-//                } else {
-//                    FileOutputStream fout = new FileOutputStream(_targetLocation + ze.getName());
-//                    for (int c = zin.read(); c != -1; c = zin.read()) {
-//                        fout.write(c);
-//                    }
-//
-//                    zin.closeEntry();
-//                    fout.close();
-//                }
                 }
                 zipInputStream.close();
                 inputStream.close();
@@ -286,48 +277,4 @@ public class AppDataManager {
             System.out.println(e);
         }
     }
-
-//    public void unzip(String _zipFile, String _targetLocation) {
-//
-//        //create target location folder if not exist
-//        dirChecker(_targetLocation);
-//
-//        try {
-//            FileInputStream fin = new FileInputStream(_zipFile);
-//            ZipInputStream zin = new ZipInputStream(fin);
-//            ZipEntry ze = null;
-//            while ((ze = zin.getNextEntry()) != null) {
-//                if (ze.getName().startsWith("eu.basicairdata.graziano.gpslogger/files/Thumbnails/")) {
-//                    Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName());
-//                }
-//                if (ze.getName().equals("eu.basicairdata.graziano.gpslogger/databases/GPSLogger")) {
-//                    Log.w("myApp", "[#] AppDataManager.java - UNZIP Database: " + ze.getName());
-//                }
-//                //create dir if required while unzipping
-////                if (ze.isDirectory()) {
-////                    dirChecker(ze.getName());
-////                } else {
-////                    FileOutputStream fout = new FileOutputStream(_targetLocation + ze.getName());
-////                    for (int c = zin.read(); c != -1; c = zin.read()) {
-////                        fout.write(c);
-////                    }
-////
-////                    zin.closeEntry();
-////                    fout.close();
-////                }
-//
-//            }
-//            zin.close();
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
-//    }
-//
-//    private void dirChecker(String dir) {
-//        File f = new File(dir);
-//        if (!f.isDirectory()) {
-//            f.mkdirs();
-//        }
-//    }
-
 }
