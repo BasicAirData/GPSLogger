@@ -213,6 +213,31 @@ public class AppDataManager {
             if (isDatabasePresent && isThumbnailsPresent) {
                 inputStream = GPSApplication.getInstance().getBaseContext().getContentResolver().openInputStream(zipDocumentFile.getUri());
                 zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
+
+                // Delete all the existing Thumbnails
+                File folderThumbnails = new File( GPSApplication.getInstance().getFilesDir() + "/Thumbnails");
+                Log.w("myApp", "[#] AppDataManager.java - Thumbnail Folder: " + folderThumbnails.getPath());
+                if (folderThumbnails.isDirectory())
+                {
+                    String[] children = folderThumbnails.list();
+                    for (int i = 0; i < children.length; i++)
+                    {
+                        new File(folderThumbnails, children[i]).delete();
+                    }
+                }
+
+                // Delete the existing Database
+                File folderDatabase = new File(GPSApplication.getInstance().getDatabasePath("GPSLogger").getParent());
+                Log.w("myApp", "[#] AppDataManager.java - Databases Folder: " + folderDatabase.getPath());
+                if (folderDatabase.isDirectory())
+                {
+                    String[] children = folderDatabase.list();
+                    for (int i = 0; i < children.length; i++)
+                    {
+                        new File(folderDatabase, children[i]).delete();
+                    }
+                }
+
                 // the ZIP file is valid
                 Log.w("myApp", "[#] AppDataManager.java - The ZIP file is valid, Restoring...");
 
