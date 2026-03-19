@@ -32,6 +32,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -242,11 +243,28 @@ public class AppDataManager {
                 Log.w("myApp", "[#] AppDataManager.java - The ZIP file is valid, Restoring...");
 
                 while ((ze = zipInputStream.getNextEntry()) != null) {
+                    // Import a Thumbnail
                     if (ze.getName().contains("/Thumbnails/")) {
                         Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                        FileOutputStream fout = new FileOutputStream(folderThumbnails + "/" + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                        for (int c = zipInputStream.read(); c != -1; c = zipInputStream.read()) {
+                            fout.write(c);
+                        }
+                        zipInputStream.closeEntry();
+                        fout.close();
                     }
+                    // Import the Database
                     if (ze.getName().endsWith("/GPSLogger")) {
                         Log.w("myApp", "[#] AppDataManager.java - UNZIP Database: " + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                        FileOutputStream fout = new FileOutputStream(folderDatabase + "/" + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                        int i=0;
+                        for (int c = zipInputStream.read(); c != -1; c = zipInputStream.read()) {
+                            fout.write(c);
+                            Log.w("myApp", "[#] AppDataManager.java - UNZIPPING: (" + i + ") " + c);
+                            i++;
+                        }
+                        zipInputStream.closeEntry();
+                        fout.close();
                     }
                     //create dir if required while unzipping
 //                if (ze.isDirectory()) {
