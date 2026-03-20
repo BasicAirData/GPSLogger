@@ -304,9 +304,12 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         // Backup and Restore - Export tracklist
         pExportTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-
+                //  Ensure that the app is not recording and is not annotating placemark
+                if (GPSApplication.getInstance().isRecording() || GPSApplication.getInstance().isPlacemarkRequested()) {
+                    Toast.makeText(getContext(), getString(R.string.toast_unable_to_perform_while_recording), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 // TODO:
-                //  - ensure that there is no in-progress tracks and that the recording and placemark is not active
                 //  - check the exporting folder and, in case, let the user select it
                 //  - select the ZIP file name. It should be passed as parameter to AppDataManager's method
 
@@ -325,9 +328,12 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         // Backup and Restore - Restore tracklist
         pRestoreTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-
+                //  Ensure that the app is not recording and is not annotating placemark
+                if (GPSApplication.getInstance().isRecording() || GPSApplication.getInstance().isPlacemarkRequested()) {
+                    Toast.makeText(getContext(), getString(R.string.toast_unable_to_perform_while_recording), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 // TODO:
-                //  - ensure that there is no in-progress tracks and that the recording and placemark is not active
                 //  - check the exporting folder
                 //  - let the user select the ZIP file, that should be passed as parameter to AppDataManager's method
                 //  - delete the old Thumbnails

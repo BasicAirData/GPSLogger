@@ -216,9 +216,9 @@
 
     <string name="pref_category_backup_restore">BACKUP AND RESTORE</string>
     <string name="pref_backup_tracklist">Backup Tracklist</string>
-    <string name="pref_backup_tracklist_summary">Save the Tracklist as ZIP archive</string>
+    <string name="pref_backup_tracklist_summary">Save the Tracklist as ZIP file</string>
     <string name="pref_restore_tracklist">Restore Tracklist</string>
-    <string name="pref_restore_tracklist_summary">Load a Tracklist from ZIP archive</string>
+    <string name="pref_restore_tracklist_summary">Load a Tracklist from ZIP file</string>
 
 
     <!-- Preferences toasts -->
@@ -227,6 +227,7 @@
     <string name="toast_download_failed">Download failed. Try again later</string>
     <string name="toast_active_track_not_empty">The active track is not empty</string>
     <string name="toast_no_browser_installed">No Internet browser installed</string>
+    <string name="toast_unable_to_perform_while_recording">Unable to perform operation while recording a track</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
