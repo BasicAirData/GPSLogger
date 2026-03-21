@@ -111,6 +111,7 @@ public class GPSApplication extends Application implements LocationListener {
     public static final int JOB_TYPE_DELETE     = 4;                // Bulk Delete
 
     private static final String TASK_SHUTDOWN       = "TASK_SHUTDOWN";      // The AsyncTodo Type to Shut down the DB connection
+    private static final String TASK_RELOADDB       = "TASK_RELOADDB";      // The AsyncTodo Type called when the user restores a DB from ZIP file
     private static final String TASK_NEWTRACK       = "TASK_NEWTRACK";      // The AsyncTodo Type to create a new track into DB
     private static final String TASK_ADDLOCATION    = "TASK_ADDLOCATION";   // The AsyncTodo Type to create a new track into DB
     private static final String TASK_ADDPLACEMARK   = "TASK_ADDPLACEMARK";  // The AsyncTodo Type to create a new placemark into DB
@@ -1082,15 +1083,7 @@ public class GPSApplication extends Application implements LocationListener {
             }
         }
 
-        // Initialize the connection with the Database
-        gpsDataBase = new DatabaseHandler(this);
-
-        // Prepare the current track
-        if (gpsDataBase.getLastTrackID() == 0) {
-            gpsDataBase.addTrack(new Track());                                          // Creation of the first track if the DB is empty
-            isFirstRun = true;
-        }
-        currentTrack = gpsDataBase.getLastTrack();                                      // Get the last track
+        loadDB();
 
         // Init Async operations
         asyncPrepareActionmodeToolbar = new AsyncPrepareActionmodeToolbar();
@@ -1107,6 +1100,29 @@ public class GPSApplication extends Application implements LocationListener {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
         registerReceiver(broadcastReceiver, filter);
+    }
+
+    public void closeDB() {
+        deselectAllTracks();
+        if (gpsDataBase != null) gpsDataBase.close();
+    }
+
+    public void loadDB() {
+        // Initialize the connection with the Database
+        gpsDataBase = new DatabaseHandler(this);
+
+        // Prepare the current track
+        if (gpsDataBase.getLastTrackID() == 0) {
+            gpsDataBase.addTrack(new Track());                                          // Creation of the first track if the DB is empty
+            isFirstRun = true;
+        }
+        currentTrack = gpsDataBase.getLastTrack();                                      // Get the last track
+
+        // Inform the asyncTODOQueue that the DB has been changed
+        AsyncTODO ast = new AsyncTODO();
+        ast.taskType = TASK_RELOADDB;
+        ast.location = null;
+        asyncTODOQueue.add(ast);
     }
 
     @Override
@@ -2048,6 +2064,12 @@ public class GPSApplication extends Application implements LocationListener {
                 } catch (InterruptedException e) {
                     Log.w("myApp", "[!] Buffer not available: " + e.getMessage());
                     break;
+                }
+
+                if (asyncTODO.taskType.equals(TASK_RELOADDB)) {
+                    track = currentTrack;
+                    EventBus.getDefault().post(EventBusMSG.UPDATE_TRACK);
+                    UpdateTrackList();
                 }
 
                 // Task: Safely Shutdown

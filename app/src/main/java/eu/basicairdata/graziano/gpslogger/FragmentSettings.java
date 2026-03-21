@@ -337,12 +337,17 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 //  - check the exporting folder
                 //  - let the user select the ZIP file, that should be passed as parameter to AppDataManager's method
                 //  - delete the old Thumbnails
-                //  - copy the Database and the Thumbnails from ZIP file to the app data folder
-                //  - restart the app, or maybe
 
+                // Close the Database in use
+                GPSApplication.getInstance().closeDB();
+
+                // Import the new Database
                 Log.w("myApp", "[#] FragmentSettings.java - pRestoreTracklist");
                 AppDataManager appDataManager = new AppDataManager();
                 appDataManager.importTracklistFromZipFile();
+
+                // Load the new Database
+                GPSApplication.getInstance().loadDB();
 
                 // TODO: Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
                 // TODO: The dialog should NOT have the possibility to dismiss and cancel the operation.
