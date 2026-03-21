@@ -77,6 +77,16 @@ public class AppDataManager {
 
         try {
             OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "rw");
+
+//            ZipOutputStream zip = null;
+//            OutputStream fileWriter = null;
+//            fileWriter = outputStream;
+//            zip = new ZipOutputStream(fileWriter);
+//            addFolderToZip("eu.basicairdata.graziano.gpslogger/files", appDataRootFolder + "/files/Thumbnails", zip);
+//            addFileToZip("eu.basicairdata.graziano.gpslogger/databases", appDataRootFolder + "/databases/GPSLogger", zip);
+//            zip.flush();
+//            zip.close();
+
             zipFolder(appDataRootFolder, outputStream);
 
         } catch (FileNotFoundException e) {
@@ -121,10 +131,14 @@ public class AppDataManager {
             Log.w("myApp", "[#] AppDataManager.java - Adding file " + path + "/" + folder.getName());
             byte[] buf = new byte[1024];
             int len;
-            FileInputStream in = new FileInputStream(srcFile);
-            zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
-            while ((len = in.read(buf)) > 0) {
-                zip.write(buf, 0, len);
+            try {
+                FileInputStream in = new FileInputStream(srcFile);
+                zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+                while ((len = in.read(buf)) > 0) {
+                    zip.write(buf, 0, len);
+                }
+            } catch (FileNotFoundException e) {
+
             }
         }
     }
