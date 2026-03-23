@@ -177,6 +177,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     private MyGPSStatus gpsStatusListener;                       // The listener for the GPS Status changes events
 
+    private boolean isTracklistEmpty = true;                     // true if the tracklist is showing "Tracklist empty". Used for tracklist importation.
     private boolean isCurrentTrackVisible;                       // If true the current track is visible in Tracklist
     private boolean isContextMenuShareVisible;                   // True if "Share with ..." menu is visible
     private boolean isContextMenuViewVisible;                    // True if "View in *" menu is visible
@@ -523,6 +524,14 @@ public class GPSApplication extends Application implements LocationListener {
 
     public boolean isLocationPermissionChecked() {
         return isLocationPermissionChecked;
+    }
+
+    public boolean isTracklistEmpty() {
+        return isTracklistEmpty;
+    }
+
+    public void setTracklistEmpty(boolean tracklistEmpty) {
+        isTracklistEmpty = tracklistEmpty;
     }
 
     public void setLocationPermissionChecked(boolean locationPermissionChecked) {

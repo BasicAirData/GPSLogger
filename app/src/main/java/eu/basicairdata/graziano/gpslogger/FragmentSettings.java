@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.EditTextPreference;
@@ -336,21 +337,36 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 // TODO:
                 //  - check the exporting folder
                 //  - let the user select the ZIP file, that should be passed as parameter to AppDataManager's method
-                //  - delete the old Thumbnails
 
-                // Close the Database in use
-                GPSApplication.getInstance().closeDB();
+                // If the tracklist is not empty, the app ask confirmation to overwrite previous tracks:
+                // This operation will replace your tracklist (that is not empty) with the imported one.
+                // Are you sure?
+                if (GPSApplication.getInstance().isTracklistEmpty()) {
+                    // The current tracklist is empty
+                    changeDB();
+                } else {
+                    // The current tracklist contains tracks (is NOT empty)
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(getResources().getString(R.string.dialog_restore_tracklist_confirmation));
+                    //builder.setIcon(android.R.drawable.ic_menu_info_details);
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                            changeDB();
+                        }
+                    });
+                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
 
-                // Import the new Database
-                Log.w("myApp", "[#] FragmentSettings.java - pRestoreTracklist");
-                AppDataManager appDataManager = new AppDataManager();
-                appDataManager.importTracklistFromZipFile();
-
-                // Load the new Database
-                GPSApplication.getInstance().loadDB();
-
-                // TODO: Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
-                // TODO: The dialog should NOT have the possibility to dismiss and cancel the operation.
+                // TODO:
+                //  - Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
+                //  - The dialog should NOT have the possibility to dismiss and cancel the operation.
 
                 return true;
             }
@@ -530,6 +546,22 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             else
                 pExportFolder.setSummary(getString(R.string.pref_not_set));
         }
+    }
+
+    /**
+     * It closes the current Database, change the file with another one, and loads it
+     */
+    private void changeDB() {
+        // Close the Database in use
+        GPSApplication.getInstance().closeDB();
+
+        // Import the new Database
+        Log.w("myApp", "[#] FragmentSettings.java - changeDB");
+        AppDataManager appDataManager = new AppDataManager();
+        appDataManager.importTracklistFromZipFile();
+
+        // Load the new Database
+        GPSApplication.getInstance().loadDB();
     }
 
     /**

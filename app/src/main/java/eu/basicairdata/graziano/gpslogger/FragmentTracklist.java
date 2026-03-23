@@ -454,6 +454,8 @@ public class FragmentTracklist extends Fragment {
                         public void run() {
                             tvTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
                             adapter.notifyDataSetChanged();
+                            GPSApplication.getInstance().setTracklistEmpty(data.isEmpty());
+                            Log.w("myApp", "[#] FragmentTracklist.java - Tracklist size = " + data.size());
                         }
                     });
                 } catch (NullPointerException e) {
@@ -481,6 +483,8 @@ public class FragmentTracklist extends Fragment {
                             }
                         }
                         tvTracklistEmpty.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
+                        GPSApplication.getInstance().setTracklistEmpty(data.isEmpty());
+                        Log.w("myApp", "[#] FragmentTracklist.java - Tracklist size = " + data.size());
                     }
                 }
             });
