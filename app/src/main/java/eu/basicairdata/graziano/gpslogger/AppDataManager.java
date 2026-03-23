@@ -190,17 +190,19 @@ public class AppDataManager {
 //    }
 
 
-    public void importTracklistFromZipFile() {
+    public void importTracklistFromZipFile(Uri zipDocumentUri) {
         try {
             DocumentFile zipDocumentFile;
-            DocumentFile zipDocumentFileFolder;
+//            DocumentFile zipDocumentFileFolder;
 
-            if (zipFileFolder.startsWith("content"))
-                zipDocumentFileFolder = DocumentFile.fromTreeUri(GPSApplication.getInstance(), Uri.parse(zipFileFolder));
-            else
-                zipDocumentFileFolder = DocumentFile.fromFile(new File(zipFileFolder));
+//            if (zipFileFolder.startsWith("content"))
+//                zipDocumentFileFolder = DocumentFile.fromTreeUri(GPSApplication.getInstance(), Uri.parse(zipFileFolder));
+//            else
+//                zipDocumentFileFolder = DocumentFile.fromFile(new File(zipFileFolder));
+//
+//            zipDocumentFile = zipDocumentFileFolder.findFile(backupFileName);
 
-            zipDocumentFile = zipDocumentFileFolder.findFile(backupFileName);
+            zipDocumentFile = DocumentFile.fromSingleUri(GPSApplication.getInstance(), zipDocumentUri);
 
             // Open InputStream from the DocumentFile
             InputStream inputStream = GPSApplication.getInstance().getBaseContext().getContentResolver().openInputStream(zipDocumentFile.getUri());

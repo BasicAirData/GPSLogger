@@ -75,6 +75,7 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
  */
 public class FragmentSettings extends PreferenceFragmentCompat {
 
+    private static final int PICK_ZIP_FILE = 2;
     private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
 
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
@@ -86,6 +87,18 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     public double altcorm;           // Manual offset in m
     private ProgressDialog progressDialog;
     public boolean isDownloaded = false;
+
+    private void pickZIPFile() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/zip");
+
+        // Optionally, specify a URI for the file that should appear in the
+        // system file picker when it loads.
+        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+        startActivityForResult(intent, PICK_ZIP_FILE);
+    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -343,7 +356,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 // Are you sure?
                 if (GPSApplication.getInstance().isTracklistEmpty()) {
                     // The current tracklist is empty
-                    changeDB();
+                    pickZIPFile();
                 } else {
                     // The current tracklist contains tracks (is NOT empty)
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -352,7 +365,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.dismiss();
-                            changeDB();
+                            pickZIPFile();
                         }
                     });
                     builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -551,14 +564,14 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     /**
      * It closes the current Database, change the file with another one, and loads it
      */
-    private void changeDB() {
+    private void changeDB(Uri uri) {
         // Close the Database in use
         GPSApplication.getInstance().closeDB();
 
         // Import the new Database
         Log.w("myApp", "[#] FragmentSettings.java - changeDB");
         AppDataManager appDataManager = new AppDataManager();
-        appDataManager.importTracklistFromZipFile();
+        appDataManager.importTracklistFromZipFile(uri);
 
         // Load the new Database
         GPSApplication.getInstance().loadDB();
@@ -573,6 +586,12 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     @Override
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == PICK_ZIP_FILE && resultCode == Activity.RESULT_OK) {
+            // ZIP file picked for restoring tracklist.
+            Uri treeUri = resultData.getData();
+            Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+            changeDB(treeUri);
+        }
         if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
             // the user selected.
