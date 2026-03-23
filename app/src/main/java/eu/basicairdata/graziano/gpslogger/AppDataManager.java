@@ -227,7 +227,7 @@ public class AppDataManager {
             inputStream.close();
 
             // If the ZIP file is valid, restore the Tracklist files
-            if (isDatabasePresent && isThumbnailsPresent) {
+            if (isDatabasePresent) {
                 inputStream = GPSApplication.getInstance().getBaseContext().getContentResolver().openInputStream(zipDocumentFile.getUri());
                 zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
 
