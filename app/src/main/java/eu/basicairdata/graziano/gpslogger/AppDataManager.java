@@ -154,7 +154,7 @@ public class AppDataManager {
                                        ZipOutputStream zip) throws Exception {
         // java.lang.RuntimeException: java.io.FileNotFoundException:
         // /data/data/eu.basicairdata.graziano.gpslogger/code_cache/.studio/.canary: open failed: EACCES (Permission denied)
-        if (!srcFolder.endsWith("code_cache")) {
+        if (!srcFolder.endsWith("/code_cache") && !srcFolder.endsWith("/cache")) {
             Log.w("myApp", "[#] AppDataManager.java - Adding folder " + srcFolder);
             File folder = new File(srcFolder);
             for (String fileName : folder.list()) {
