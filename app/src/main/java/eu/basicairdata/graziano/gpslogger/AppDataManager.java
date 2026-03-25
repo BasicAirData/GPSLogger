@@ -206,7 +206,7 @@ public class AppDataManager {
 
             //if ((zipDocumentFile != null) && (zipDocumentFile.exists())) zipDocumentFile.delete();
 
-            OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "rw");
+            OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "w");
 
 //            ZipOutputStream zip = null;
 //            OutputStream fileWriter = null;
