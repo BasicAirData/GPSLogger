@@ -28,6 +28,8 @@ import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,52 +53,7 @@ public class AppDataManager {
     private String appDataRootFolder = "/data/data/eu.basicairdata.graziano.gpslogger";
     private String zipFileFolder = GPSApplication.getInstance().getPrefExportFolder();
 
-    /**
-     * It exports the app data folder to a zip file into the exporting folder.
-     * It creates a single zip file of the whole /data/data/eu.basicairdata.graziano.gpslogger folder.
-     */
-    public void exportAppDataToZipFile() {
 
-        DocumentFile pickedDir;
-
-        if (zipFileFolder.startsWith("content")) {
-            Uri uri = Uri.parse(zipFileFolder);
-            pickedDir = DocumentFile.fromTreeUri(getInstance(), uri);
-        } else {
-            pickedDir = DocumentFile.fromFile(new File(zipFileFolder));
-        }
-        if (!pickedDir.exists()) {
-            Log.w("myApp", "[#] AppDataManager.java - UNABLE TO CREATE THE FOLDER");
-            return;
-        }
-
-        DocumentFile zipDocumentFile = pickedDir.findFile( backupFileName);
-
-        if ((zipDocumentFile != null) && (zipDocumentFile.exists())) zipDocumentFile.delete();
-        zipDocumentFile = pickedDir.createFile("", backupFileName);
-
-        try {
-            OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "rw");
-
-//            ZipOutputStream zip = null;
-//            OutputStream fileWriter = null;
-//            fileWriter = outputStream;
-//            zip = new ZipOutputStream(fileWriter);
-//            addFolderToZip("eu.basicairdata.graziano.gpslogger/files", appDataRootFolder + "/files/Thumbnails", zip);
-//            addFileToZip("eu.basicairdata.graziano.gpslogger/databases", appDataRootFolder + "/databases/GPSLogger", zip);
-//            zip.flush();
-//            zip.close();
-
-            zipFolder(appDataRootFolder, outputStream);
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * It adds a specific folder recursively to a zip file.
@@ -189,20 +146,96 @@ public class AppDataManager {
 //        out.close();
 //    }
 
+    /**
+     * It exports the app data folder to a zip file into the exporting folder.
+     * It creates a single zip file of the whole /data/data/eu.basicairdata.graziano.gpslogger folder.
+     */
+    public void exportAppDataToZipFile() {
+
+        DocumentFile pickedDir;
+
+        if (zipFileFolder.startsWith("content")) {
+            Uri uri = Uri.parse(zipFileFolder);
+            pickedDir = DocumentFile.fromTreeUri(getInstance(), uri);
+        } else {
+            pickedDir = DocumentFile.fromFile(new File(zipFileFolder));
+        }
+        if (!pickedDir.exists()) {
+            Log.w("myApp", "[#] AppDataManager.java - UNABLE TO CREATE THE FOLDER");
+            return;
+        }
+
+        DocumentFile zipDocumentFile = pickedDir.findFile( backupFileName);
+
+        if ((zipDocumentFile != null) && (zipDocumentFile.exists())) zipDocumentFile.delete();
+        zipDocumentFile = pickedDir.createFile("", backupFileName);
+
+        try {
+            OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "rw");
+
+//            ZipOutputStream zip = null;
+//            OutputStream fileWriter = null;
+//            fileWriter = outputStream;
+//            zip = new ZipOutputStream(fileWriter);
+//            addFolderToZip("eu.basicairdata.graziano.gpslogger/files", appDataRootFolder + "/files/Thumbnails", zip);
+//            addFileToZip("eu.basicairdata.graziano.gpslogger/databases", appDataRootFolder + "/databases/GPSLogger", zip);
+//            zip.flush();
+//            zip.close();
+
+            zipFolder(appDataRootFolder, outputStream);
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * It exports the app data folder to the zip file specified as parameter.
+     * It creates a single zip file of the whole /data/data/eu.basicairdata.graziano.gpslogger folder.
+     * * @param zipDocumentUri The Uri of the new ZIP file
+     */
+    public void exportAppDataToZipFile(Uri zipDocumentUri) {
+        try {
+            DocumentFile zipDocumentFile;
+
+            zipDocumentFile = DocumentFile.fromSingleUri(GPSApplication.getInstance(), zipDocumentUri);
+
+            //if ((zipDocumentFile != null) && (zipDocumentFile.exists())) zipDocumentFile.delete();
+
+            OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "rw");
+
+//            ZipOutputStream zip = null;
+//            OutputStream fileWriter = null;
+//            fileWriter = outputStream;
+//            zip = new ZipOutputStream(fileWriter);
+//            addFolderToZip("eu.basicairdata.graziano.gpslogger/files", appDataRootFolder + "/files/Thumbnails", zip);
+//            addFileToZip("eu.basicairdata.graziano.gpslogger/databases", appDataRootFolder + "/databases/GPSLogger", zip);
+//            zip.flush();
+//            zip.close();
+
+            zipFolder(appDataRootFolder, outputStream);
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            Log.w("myApp", "[#] AppDataManager.java - UNABLE TO CREATE THE ZIP FILE " + zipDocumentUri.toString());
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            Log.w("myApp", "[#] AppDataManager.java - UNABLE TO CREATE THE ZIP FILE " + zipDocumentUri.toString());
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public void importTracklistFromZipFile(Uri zipDocumentUri) {
         try {
-            DocumentFile zipDocumentFile;
-//            DocumentFile zipDocumentFileFolder;
-
-//            if (zipFileFolder.startsWith("content"))
-//                zipDocumentFileFolder = DocumentFile.fromTreeUri(GPSApplication.getInstance(), Uri.parse(zipFileFolder));
-//            else
-//                zipDocumentFileFolder = DocumentFile.fromFile(new File(zipFileFolder));
-//
-//            zipDocumentFile = zipDocumentFileFolder.findFile(backupFileName);
-
-            zipDocumentFile = DocumentFile.fromSingleUri(GPSApplication.getInstance(), zipDocumentUri);
+            DocumentFile zipDocumentFile = getDocumentFile(zipDocumentUri);
 
             // Open InputStream from the DocumentFile
             InputStream inputStream = GPSApplication.getInstance().getBaseContext().getContentResolver().openInputStream(zipDocumentFile.getUri());
@@ -292,5 +325,21 @@ public class AppDataManager {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    @Nullable
+    private static DocumentFile getDocumentFile(Uri zipDocumentUri) {
+        DocumentFile zipDocumentFile;
+//            DocumentFile zipDocumentFileFolder;
+
+//            if (zipFileFolder.startsWith("content"))
+//                zipDocumentFileFolder = DocumentFile.fromTreeUri(GPSApplication.getInstance(), Uri.parse(zipFileFolder));
+//            else
+//                zipDocumentFileFolder = DocumentFile.fromFile(new File(zipFileFolder));
+//
+//            zipDocumentFile = zipDocumentFileFolder.findFile(backupFileName);
+
+        zipDocumentFile = DocumentFile.fromSingleUri(GPSApplication.getInstance(), zipDocumentUri);
+        return zipDocumentFile;
     }
 }

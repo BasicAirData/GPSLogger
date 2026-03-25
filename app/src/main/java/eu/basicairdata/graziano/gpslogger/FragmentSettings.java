@@ -66,7 +66,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
@@ -75,6 +77,7 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
  */
 public class FragmentSettings extends PreferenceFragmentCompat {
 
+    private static final int CREATE_ZIP_FILE = 1;
     private static final int PICK_ZIP_FILE = 2;
     private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
 
@@ -88,6 +91,10 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     private ProgressDialog progressDialog;
     public boolean isDownloaded = false;
 
+    /**
+     * It opens the intent that performs the ACTION_OPEN_DOCUMENT.
+     * The user can choose the folder and the file ZIP containing the backup file to restore using the SAF dialog.
+     */
     private void pickZIPFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -98,6 +105,27 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
         startActivityForResult(intent, PICK_ZIP_FILE);
+    }
+
+    /**
+     * It opens the intent that performs the ACTION_CREATE_DOCUMENT.
+     * The user can choose the folder and the file name of the ZIP backup file using the SAF dialog.
+     */
+    private void createZIPFile() {
+
+        //SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
+        //String name = df2.format(time);
+
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/zip");
+        intent.putExtra(Intent.EXTRA_TITLE, "GPSLogger Tracklist Backup.zip");
+
+        // Optionally, specify a URI for the directory that should be opened in
+        // the system file picker when your app creates the document.
+        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+        startActivityForResult(intent, CREATE_ZIP_FILE);
     }
 
     @Override
@@ -327,9 +355,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 //  - check the exporting folder and, in case, let the user select it
                 //  - select the ZIP file name. It should be passed as parameter to AppDataManager's method
 
-                Log.w("myApp", "[#] FragmentSettings.java - pExportTracklist");
-                AppDataManager appDataManager = new AppDataManager();
-                appDataManager.exportAppDataToZipFile();
+                createZIPFile();
 
                 // TODO:
                 //  - Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
@@ -591,6 +617,13 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             Uri treeUri = resultData.getData();
             Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
             changeDB(treeUri);
+        }
+        if (requestCode == CREATE_ZIP_FILE && resultCode == Activity.RESULT_OK) {
+            // create a ZIP file with the backup of the tracklist.
+            Uri treeUri = resultData.getData();
+            Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+            AppDataManager appDataManager = new AppDataManager();
+            appDataManager.exportAppDataToZipFile(treeUri);
         }
         if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
