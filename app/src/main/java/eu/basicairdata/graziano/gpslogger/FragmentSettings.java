@@ -66,7 +66,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
@@ -111,13 +114,14 @@ public class FragmentSettings extends PreferenceFragmentCompat {
      */
     private void createZIPFile() {
 
-        //SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
-        //String name = df2.format(time);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
+        String currentTime = sdf.format(new Date());
+        String filename = currentTime + " - BACKUP - GPSLogger Tracklist.zip";
 
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/zip");
-        intent.putExtra(Intent.EXTRA_TITLE, "GPSLogger Tracklist Backup.zip");
+        intent.putExtra(Intent.EXTRA_TITLE, filename);
 
         // Optionally, specify a URI for the directory that should be opened in
         // the system file picker when your app creates the document.
