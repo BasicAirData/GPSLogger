@@ -220,7 +220,7 @@
     <string name="pref_restore_tracklist">Restore Tracklist</string>
     <string name="pref_restore_tracklist_summary">Load a Tracklist from ZIP file</string>
 
-    <string name="dialog_restore_tracklist_confirmation">Your tracklist is not empty.\n\nThis operation will replace your tracklist with the imported one.\n\nAre you sure?</string>
+    <string name="dialog_restore_tracklist_confirmation">Your tracklist is not empty.\nThis operation will replace your tracklist with the imported one.\n\nAre you sure?</string>
 
     <!-- Preferences toasts -->
     <string name="toast_download_error">Download error</string>
@@ -229,6 +229,8 @@
     <string name="toast_active_track_not_empty">The active track is not empty</string>
     <string name="toast_no_browser_installed">No Internet browser installed</string>
     <string name="toast_unable_to_perform_while_recording">Unable to perform operation while recording a track</string>
+    <string name="toast_error_occurred">An error occurred</string>
+    <string name="toast_operation_completed">Operation completed</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>

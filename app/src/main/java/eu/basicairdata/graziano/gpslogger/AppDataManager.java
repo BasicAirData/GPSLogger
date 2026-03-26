@@ -48,6 +48,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class AppDataManager {
 
+    public boolean isLastOperationSuccessful = false;                                        // The outcome of the last operation carried out
     String backupFileName = "BACKUP_GPSLogger_Tracklist.zip";
 
     private String appDataRootFolder = "/data/data/eu.basicairdata.graziano.gpslogger";
@@ -93,6 +94,10 @@ public class AppDataManager {
                 zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
                 while ((len = in.read(buf)) > 0) {
                     zip.write(buf, 0, len);
+                }
+                if (srcFile.endsWith("GPSLogger")) {
+                    isLastOperationSuccessful = true;
+                    Log.w("myApp", "[#] AppDataManager.java - The database \"GPSLogger\" has been successfully backupped");
                 }
             } catch (FileNotFoundException e) {
 
@@ -199,6 +204,7 @@ public class AppDataManager {
      * * @param zipDocumentUri The Uri of the new ZIP file
      */
     public void exportAppDataToZipFile(Uri zipDocumentUri) {
+        isLastOperationSuccessful = false;
         try {
             DocumentFile zipDocumentFile;
 
@@ -234,6 +240,7 @@ public class AppDataManager {
 
 
     public void importTracklistFromZipFile(Uri zipDocumentUri) {
+        isLastOperationSuccessful = false;
         try {
             DocumentFile zipDocumentFile = getDocumentFile(zipDocumentUri);
 
@@ -317,6 +324,7 @@ public class AppDataManager {
                         }
                         zipInputStream.closeEntry();
                         fout.close();
+                        isLastOperationSuccessful = true;
                     }
                 }
                 zipInputStream.close();

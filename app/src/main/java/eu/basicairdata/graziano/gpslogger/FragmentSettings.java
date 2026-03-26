@@ -66,9 +66,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
@@ -599,6 +597,11 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         AppDataManager appDataManager = new AppDataManager();
         appDataManager.importTracklistFromZipFile(uri);
 
+        if (appDataManager.isLastOperationSuccessful)
+            Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
+
         // Load the new Database
         GPSApplication.getInstance().loadDB();
     }
@@ -624,6 +627,10 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
             AppDataManager appDataManager = new AppDataManager();
             appDataManager.exportAppDataToZipFile(treeUri);
+            if (appDataManager.isLastOperationSuccessful)
+                Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
         }
         if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
