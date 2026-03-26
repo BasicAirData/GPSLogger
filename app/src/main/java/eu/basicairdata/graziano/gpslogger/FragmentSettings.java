@@ -114,7 +114,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
      */
     private void createZIPFile() {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
         String currentTime = sdf.format(new Date());
         String filename = currentTime + " - BACKUP - GPSLogger Tracklist.zip";
 
