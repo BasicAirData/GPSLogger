@@ -89,7 +89,10 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     public double distfilterm;       // distance filter in m
     public double altcor;            // manual offset
     public double altcorm;           // Manual offset in m
+
     private ProgressDialog progressDialog;
+    private ProgressDialog progressDialogSpin;
+
     public boolean isDownloaded = false;
 
     /**
@@ -590,27 +593,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     }
 
     /**
-     * It closes the current Database, change the file with another one, and loads it
-     */
-    private void changeDB(Uri uri) {
-        // Close the Database in use
-        GPSApplication.getInstance().closeDB();
-
-        // Import the new Database
-        Log.w("myApp", "[#] FragmentSettings.java - changeDB");
-        AppDataManager appDataManager = new AppDataManager();
-        appDataManager.importTracklistFromZipFile(uri);
-
-        if (appDataManager.isLastOperationSuccessful)
-            Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
-
-        // Load the new Database
-        GPSApplication.getInstance().loadDB();
-    }
-
-    /**
      * It manages the return code of the Intent.ACTION_OPEN_DOCUMENT_TREE
      * that returns the local exportation folder.
      *
@@ -623,18 +605,78 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             // ZIP file picked for restoring tracklist.
             Uri treeUri = resultData.getData();
             Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
-            changeDB(treeUri);
+
+            progressDialogSpin = new ProgressDialog(getActivity());
+            progressDialogSpin.setMessage(getResources().getString(R.string.pref_restore_tracklist));
+            progressDialogSpin.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialogSpin.setCanceledOnTouchOutside(false);
+            progressDialogSpin.setCancelable(false);
+            progressDialogSpin.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // Close the Database in use
+                    GPSApplication.getInstance().closeDB();
+                    // Import the new Database
+                    AppDataManager appDataManager = new AppDataManager();
+                    appDataManager.importTracklistFromZipFile(treeUri);
+                    // Load the new Database
+                    GPSApplication.getInstance().loadDB();
+                    if (appDataManager.isLastOperationSuccessful) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    else {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    progressDialogSpin.dismiss();
+                }
+            }).start();
         }
         if (requestCode == CREATE_ZIP_FILE && resultCode == Activity.RESULT_OK) {
             // create a ZIP file with the backup of the tracklist.
             Uri treeUri = resultData.getData();
             Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
-            AppDataManager appDataManager = new AppDataManager();
-            appDataManager.exportAppDataToZipFile(treeUri);
-            if (appDataManager.isLastOperationSuccessful)
-                Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
+
+            progressDialogSpin = new ProgressDialog(getActivity());
+            progressDialogSpin.setMessage(getResources().getString(R.string.pref_backup_tracklist));
+            progressDialogSpin.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialogSpin.setCanceledOnTouchOutside(false);
+            progressDialogSpin.setCancelable(false);
+            progressDialogSpin.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AppDataManager appDataManager = new AppDataManager();
+                    appDataManager.exportAppDataToZipFile(treeUri);
+                    if (appDataManager.isLastOperationSuccessful) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    else {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    progressDialogSpin.dismiss();
+                }
+            }).start();
         }
         if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
