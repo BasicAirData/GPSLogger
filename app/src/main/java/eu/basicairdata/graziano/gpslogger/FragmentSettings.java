@@ -35,7 +35,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
@@ -100,15 +99,18 @@ public class FragmentSettings extends PreferenceFragmentCompat {
      * The user can choose the folder and the file ZIP containing the backup file to restore using the SAF dialog.
      */
     private void pickZIPFile() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/zip");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // Android API 19 (Android 4.4)
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/zip");
 
-        // Optionally, specify a URI for the file that should appear in the
-        // system file picker when it loads.
-        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+            // Optionally, specify a URI for the file that should appear in the
+            // system file picker when it loads.
+            //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
-        startActivityForResult(intent, PICK_ZIP_FILE);
+            startActivityForResult(intent, PICK_ZIP_FILE);
+        }
     }
 
     /**
@@ -121,16 +123,31 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         String currentTime = sdf.format(new Date());
         String filename = currentTime + " - BACKUP - GPSLogger Tracklist.zip";
 
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/zip");
-        intent.putExtra(Intent.EXTRA_TITLE, filename);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // Android API 19 (Android 4.4)
+            Intent intent = null;
+            intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
 
-        // Optionally, specify a URI for the directory that should be opened in
-        // the system file picker when your app creates the document.
-        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/zip");
+            intent.putExtra(Intent.EXTRA_TITLE, filename);
 
-        startActivityForResult(intent, CREATE_ZIP_FILE);
+            // Optionally, specify a URI for the directory that should be opened in
+            // the system file picker when your app creates the document.
+            //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+            startActivityForResult(intent, CREATE_ZIP_FILE);
+        } else {
+            // Android API 14 to 18 (Android 4.0)
+            AppDataManager appDataManager = new AppDataManager();
+            appDataManager.exportAppDataToZipFile_API14();
+            if (appDataManager.isLastOperationSuccessful) {
+                Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -356,16 +373,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     Toast.makeText(getContext(), getString(R.string.toast_unable_to_perform_while_recording), Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                // TODO:
-                //  - check the exporting folder and, in case, let the user select it
-                //  - select the ZIP file name. It should be passed as parameter to AppDataManager's method
-
                 createZIPFile();
-
-                // TODO:
-                //  - Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
-                //  - The dialog should have the possibility to dismiss and cancel the operation.
-
                 return true;
             }
         });
@@ -378,10 +386,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     Toast.makeText(getContext(), getString(R.string.toast_unable_to_perform_while_recording), Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                // TODO:
-                //  - check the exporting folder
-                //  - let the user select the ZIP file, that should be passed as parameter to AppDataManager's method
-
                 // If the tracklist is not empty, the app ask confirmation to overwrite previous tracks:
                 // This operation will replace your tracklist (that is not empty) with the imported one.
                 // Are you sure?
@@ -407,11 +411,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
-
-                // TODO:
-                //  - Avoid to use the main thread to perform the operation. Use an async task and publish a feedback of the exportation.
-                //  - The dialog should NOT have the possibility to dismiss and cancel the operation.
-
                 return true;
             }
         });
@@ -599,7 +598,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
      * it Requires api >= Build.VERSION_CODES.LOLLIPOP
      */
     @Override
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == PICK_ZIP_FILE && resultCode == Activity.RESULT_OK) {
             // ZIP file picked for restoring tracklist.
@@ -686,9 +684,11 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 Uri treeUri = resultData.getData();
                 getActivity().grantUriPermission(getActivity().getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                GPSApplication.getInstance().getContentResolver().takePersistableUriPermission(treeUri, Intent
-                        .FLAG_GRANT_READ_URI_PERMISSION | Intent
-                        .FLAG_GRANT_WRITE_URI_PERMISSION);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    GPSApplication.getInstance().getContentResolver().takePersistableUriPermission(treeUri, Intent
+                            .FLAG_GRANT_READ_URI_PERMISSION | Intent
+                            .FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
                 //getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                 Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
