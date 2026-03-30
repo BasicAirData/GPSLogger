@@ -83,18 +83,20 @@ public class AppDataManager {
         if (folder.isDirectory()) {
             addFolderToZip(path, srcFile, zip);
         } else {
-            Log.w("myApp", "[#] AppDataManager.java - Adding file " + path + "/" + folder.getName());
             byte[] buf = new byte[1024];
             int len;
             try {
-                FileInputStream in = new FileInputStream(srcFile);
-                zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
-                while ((len = in.read(buf)) > 0) {
-                    zip.write(buf, 0, len);
-                }
-                if (srcFile.endsWith("GPSLogger")) {
-                    isLastOperationSuccessful = true;
-                    Log.w("myApp", "[#] AppDataManager.java - The database \"GPSLogger\" has been successfully backupped");
+                if ((srcFile.contains("/databases/") || srcFile.contains("/Thumbnails/")) && (!srcFile.endsWith("-journal"))) {
+                    FileInputStream in = new FileInputStream(srcFile);
+                    zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+                    Log.w("myApp", "[#] AppDataManager.java - Adding file " + path + "/" + folder.getName());
+                    while ((len = in.read(buf)) > 0) {
+                        zip.write(buf, 0, len);
+                    }
+                    if (srcFile.endsWith("GPSLogger")) {
+                        isLastOperationSuccessful = true;
+                        Log.w("myApp", "[#] AppDataManager.java - The database \"GPSLogger\" has been successfully backupped");
+                    }
                 }
             } catch (FileNotFoundException e) {
 
