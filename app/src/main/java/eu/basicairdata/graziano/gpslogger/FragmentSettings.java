@@ -378,42 +378,46 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             }
         });
 
-        // Backup and Restore - Restore tracklist
-        pRestoreTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                //  Ensure that the app is not recording and is not annotating placemark
-                if (GPSApplication.getInstance().isRecording() || GPSApplication.getInstance().isPlacemarkRequested()) {
-                    Toast.makeText(getContext(), getString(R.string.toast_unable_to_perform_while_recording), Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // Backup and Restore - Restore tracklist
+            pRestoreTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    //  Ensure that the app is not recording and is not annotating placemark
+                    if (GPSApplication.getInstance().isRecording() || GPSApplication.getInstance().isPlacemarkRequested()) {
+                        Toast.makeText(getContext(), getString(R.string.toast_unable_to_perform_while_recording), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    // If the tracklist is not empty, the app ask confirmation to overwrite previous tracks:
+                    // This operation will replace your tracklist (that is not empty) with the imported one.
+                    // Are you sure?
+                    if (GPSApplication.getInstance().isTracklistEmpty()) {
+                        // The current tracklist is empty
+                        pickZIPFile();
+                    } else {
+                        // The current tracklist contains tracks (is NOT empty)
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setMessage(getResources().getString(R.string.dialog_restore_tracklist_confirmation));
+                        //builder.setIcon(android.R.drawable.ic_menu_info_details);
+                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                pickZIPFile();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
                     return true;
                 }
-                // If the tracklist is not empty, the app ask confirmation to overwrite previous tracks:
-                // This operation will replace your tracklist (that is not empty) with the imported one.
-                // Are you sure?
-                if (GPSApplication.getInstance().isTracklistEmpty()) {
-                    // The current tracklist is empty
-                    pickZIPFile();
-                } else {
-                    // The current tracklist contains tracks (is NOT empty)
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage(getResources().getString(R.string.dialog_restore_tracklist_confirmation));
-                    //builder.setIcon(android.R.drawable.ic_menu_info_details);
-                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            pickZIPFile();
-                        }
-                    });
-                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
-                return true;
-            }
-        });
+            });
+        } else {
+            pRestoreTracklist.setEnabled(false);
+        }
 
         // Track Viewer
         final ArrayList<ExternalViewer> evList = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getExternalViewersList());
