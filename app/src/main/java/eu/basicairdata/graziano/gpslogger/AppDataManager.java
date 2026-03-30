@@ -126,28 +126,6 @@ public class AppDataManager {
         }
     }
 
-
-    //    // Example: Zipping a single file
-//    public void zipFile(String sourcePath, OutputStream zipPath) throws IOException {
-//        BufferedInputStream origin = null;
-//        OutputStream dest = zipPath;
-//        ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
-//
-//        byte[] data = new byte[2048];
-//        File file = new File(sourcePath);
-//        FileInputStream fi = new FileInputStream(file);
-//        origin = new BufferedInputStream(fi, 2048);
-//
-//        ZipEntry entry = new ZipEntry(file.getName());
-//        out.putNextEntry(entry);
-//        int count;
-//        while ((count = origin.read(data, 0, 2048)) != -1) {
-//            out.write(data, 0, count);
-//        }
-//        origin.close();
-//        out.close();
-//    }
-
     /**
      * It exports the app data folder to a zip file into the exporting folder.
      * It creates a single zip file of the whole /data/data/eu.basicairdata.graziano.gpslogger folder.
@@ -155,19 +133,17 @@ public class AppDataManager {
      * exportAppDataToZipFile(Uri zipDocumentUri)
      */
     public void exportAppDataToZipFile_API14() {
+        isLastOperationSuccessful = false;
         String backupFileName = "BACKUP GPSLogger Tracklist.zip";
-
         DocumentFile pickedDir;
         pickedDir = DocumentFile.fromFile(new File(zipFileFolder));
         DocumentFile zipDocumentFile = pickedDir.findFile(backupFileName);
-
         if ((zipDocumentFile != null) && (zipDocumentFile.exists())) zipDocumentFile.delete();
         zipDocumentFile = pickedDir.createFile("", backupFileName);
 
         try {
             OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "w");
             zipFolder(appDataRootFolder, outputStream);
-
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (NullPointerException e) {
@@ -188,26 +164,12 @@ public class AppDataManager {
      */
     public void exportAppDataToZipFile(Uri zipDocumentUri) {
         isLastOperationSuccessful = false;
+
         try {
             DocumentFile zipDocumentFile;
-
             zipDocumentFile = DocumentFile.fromSingleUri(GPSApplication.getInstance(), zipDocumentUri);
-
-            //if ((zipDocumentFile != null) && (zipDocumentFile.exists())) zipDocumentFile.delete();
-
             OutputStream outputStream = GPSApplication.getInstance().getContentResolver().openOutputStream(zipDocumentFile.getUri(), "w");
-
-//            ZipOutputStream zip = null;
-//            OutputStream fileWriter = null;
-//            fileWriter = outputStream;
-//            zip = new ZipOutputStream(fileWriter);
-//            addFolderToZip("eu.basicairdata.graziano.gpslogger/files", appDataRootFolder + "/files/Thumbnails", zip);
-//            addFileToZip("eu.basicairdata.graziano.gpslogger/databases", appDataRootFolder + "/databases/GPSLogger", zip);
-//            zip.flush();
-//            zip.close();
-
             zipFolder(appDataRootFolder, outputStream);
-
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (NullPointerException e) {
@@ -221,7 +183,10 @@ public class AppDataManager {
         }
     }
 
-
+    /**
+     * It imports the Database and the Thumbnails from the zip file specified as parameter into the private data folder of the app.
+     * * @param zipDocumentUri The Uri of the ZIP file
+     */
     public void importTracklistFromZipFile(Uri zipDocumentUri) {
         isLastOperationSuccessful = false;
         try {
@@ -280,7 +245,6 @@ public class AppDataManager {
 
                 // the ZIP file is valid
                 Log.w("myApp", "[#] AppDataManager.java - The ZIP file is valid, Restoring...");
-
                 while ((ze = zipInputStream.getNextEntry()) != null) {
                     // Import a Thumbnail
                     if (ze.getName().contains("/Thumbnails/")) {
@@ -321,15 +285,6 @@ public class AppDataManager {
     @Nullable
     private static DocumentFile getDocumentFile(Uri zipDocumentUri) {
         DocumentFile zipDocumentFile;
-//            DocumentFile zipDocumentFileFolder;
-
-//            if (zipFileFolder.startsWith("content"))
-//                zipDocumentFileFolder = DocumentFile.fromTreeUri(GPSApplication.getInstance(), Uri.parse(zipFileFolder));
-//            else
-//                zipDocumentFileFolder = DocumentFile.fromFile(new File(zipFileFolder));
-//
-//            zipDocumentFile = zipDocumentFileFolder.findFile(backupFileName);
-
         zipDocumentFile = DocumentFile.fromSingleUri(GPSApplication.getInstance(), zipDocumentUri);
         return zipDocumentFile;
     }
