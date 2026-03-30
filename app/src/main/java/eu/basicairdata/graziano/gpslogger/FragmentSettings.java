@@ -609,7 +609,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
 
             progressDialogSpin = new ProgressDialog(getActivity());
-            progressDialogSpin.setMessage(getResources().getString(R.string.pref_restore_tracklist));
+            progressDialogSpin.setMessage(getResources().getString(R.string.in_progress));
             progressDialogSpin.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialogSpin.setCanceledOnTouchOutside(false);
             progressDialogSpin.setCancelable(false);
@@ -650,7 +650,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
 
             progressDialogSpin = new ProgressDialog(getActivity());
-            progressDialogSpin.setMessage(getResources().getString(R.string.pref_backup_tracklist));
+            progressDialogSpin.setMessage(getResources().getString(R.string.in_progress));
             progressDialogSpin.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialogSpin.setCanceledOnTouchOutside(false);
             progressDialogSpin.setCancelable(false);
