@@ -214,12 +214,24 @@
     <string name="pref_track_stats_totaltime">Total time</string>
     <string name="pref_track_stats_movingtime">Time in Movement</string>
 
+    <string name="pref_category_backup_restore">BACKUP AND RESTORE</string>
+    <string name="pref_backup_tracklist">Backup Tracklist</string>
+    <string name="pref_backup_tracklist_summary">Save the Tracklist as ZIP file</string>
+    <string name="pref_restore_tracklist">Restore Tracklist</string>
+    <string name="pref_restore_tracklist_summary">Load a Tracklist from ZIP file</string>
+
+    <string name="dialog_restore_tracklist_confirmation">This operation will overwrite your current tracklist with the imported one.\nAll existing tracks will be lost.\n\nDo you want to proceed?</string>
+    <string name="in_progress">In progress...</string>
+
     <!-- Preferences toasts -->
     <string name="toast_download_error">Download error</string>
     <string name="toast_download_completed">Download completed</string>
     <string name="toast_download_failed">Download failed. Try again later</string>
     <string name="toast_active_track_not_empty">The active track is not empty</string>
     <string name="toast_no_browser_installed">No Internet browser installed</string>
+    <string name="toast_unable_to_perform_while_recording">Unable to perform operation while recording a track</string>
+    <string name="toast_error_occurred">An error occurred</string>
+    <string name="toast_operation_completed">Operation completed</string>
 
     <!-- About Dialog -->
     <string name="about_version">ver.</string>

@@ -182,4 +182,21 @@
 
     </androidx.preference.PreferenceCategory>
 
+    <androidx.preference.PreferenceCategory
+        android:title="@string/pref_category_backup_restore">
+
+        <androidx.preference.Preference
+            android:key="prefExportTracklist"
+            android:title="@string/pref_backup_tracklist"
+            android:summary="@string/pref_backup_tracklist_summary"
+            android:defaultValue="" />
+
+        <androidx.preference.Preference
+            android:key="prefRestoreTracklist"
+            android:title="@string/pref_restore_tracklist"
+            android:summary="@string/pref_restore_tracklist_summary"
+            android:defaultValue="" />
+
+    </androidx.preference.PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>
