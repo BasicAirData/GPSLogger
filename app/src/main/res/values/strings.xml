@@ -220,7 +220,7 @@
     <string name="pref_restore_tracklist">Restore Tracklist</string>
     <string name="pref_restore_tracklist_summary">Load a Tracklist from ZIP file</string>
 
-    <string name="dialog_restore_tracklist_confirmation">Your tracklist is not empty.\nThis operation will replace your tracklist with the imported one.\n\nAre you sure?</string>
+    <string name="dialog_restore_tracklist_confirmation">This operation will overwrite your current tracklist with the imported one.\nAll existing tracks will be lost.\n\nDo you want to proceed?</string>
     <string name="in_progress">In progress...</string>
 
     <!-- Preferences toasts -->
