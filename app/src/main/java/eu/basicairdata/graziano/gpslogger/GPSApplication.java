@@ -75,8 +75,13 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -138,6 +143,8 @@ public class GPSApplication extends Application implements LocationListener {
     public static String DIRECTORY_FILESDIR_TRACKS;              // The directory that contains the empty gpx and kml file = getFilesDir() + "/URI"
     public static String FILE_EMPTY_GPX;                         // The full path of a empty GPX file
     public static String FILE_EMPTY_KML;                         // The full path of a empty KML file
+
+    private String databaseName = "GPSLogger";                   // Database Name
 
     // Preferences Variables
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
@@ -785,6 +792,18 @@ public class GPSApplication extends Application implements LocationListener {
 
     // ----------------------------------------------------------------------  Utilities
 
+    public boolean createFolder(File folderName)
+    {
+        if (!folderName.exists()) {
+            if (folderName.mkdir()) {
+                Log.w("myApp", "[#] GPSApplication.java - Folder created: " + folderName.getAbsolutePath());
+                return true;
+            }
+            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + folderName.getAbsolutePath());
+        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + folderName.getAbsolutePath());
+        return false;
+    }
+
     /**
      * Creates the private application folders. No permission are needed to create them.
      * - DIRECTORY_TEMP = Where the app saves the tracks to be shared or viewed
@@ -792,23 +811,48 @@ public class GPSApplication extends Application implements LocationListener {
      * - DIRECTORY_FILESDIR_TRACKS = The folder that contains the empty kml and gpx
      */
     public void createPrivateFolders() {
-        File sd = new File(DIRECTORY_TEMP);
-        if (!sd.exists()) {
-            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
-        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+        createFolder(new File(DIRECTORY_TEMP));
+        createFolder(new File(getApplicationContext().getFilesDir() + "/Thumbnails"));
 
-        sd = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
-        if (!sd.exists()) {
-            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
-        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+        if (createFolder(new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName))) {
+            File dbThumbs = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
+            if (dbThumbs.isDirectory() && dbThumbs.exists()) {
+                File[] files = dbThumbs.listFiles();
+                if (files != null && files.length != 0) {
+                    for (File src : files) {
+                        if ((null != src) && !src.isDirectory()) {
+                            Log.w("myApp", "[#] TAAC");
+                            File dest = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/" + src.getName());
+                            try {
+                                if (!dest.exists()) dest.createNewFile();
+                                fileCopy(src, dest);
+                                src.delete();
+                                Log.w("myApp", "[#] GPSApplication.java: " + src + " moved into GPSLogger subdirectory");
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-        sd = new File(DIRECTORY_FILESDIR_TRACKS);
-        if (!sd.exists()) {
-            if (sd.mkdir()) Log.w("myApp", "[#] GPSApplication.java - Folder created: " + sd.getAbsolutePath());
-            else Log.w("myApp", "[#] GPSApplication.java - Unable to create the folder: " + sd.getAbsolutePath());
-        } else Log.w("myApp", "[#] GPSApplication.java - Folder exists: " + sd.getAbsolutePath());
+        createFolder(new File(DIRECTORY_FILESDIR_TRACKS));
+    }
+
+    // Copy the source file to target file.
+    // In case the dst file does not exist, it is created
+    void fileCopy(File source, File target) throws IOException {
+        InputStream in = new FileInputStream(source);
+        OutputStream out = new FileOutputStream(target);
+        // Copy the bits from instream to outstream
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
     }
 
     /**
@@ -846,6 +890,30 @@ public class GPSApplication extends Application implements LocationListener {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * Renames a file in a specific folder with the given filename.
+     * It works into the private app space.
+     * The new file must not exist, and the old one must exist.
+     * It returns the result of the operation.
+     *
+     * @param folder The folder that contains the file (full path)
+     * @param oldFilename The old name of the file, including the extension
+     * @param newFilename The new name of the file, including the extension
+     * @return if the operation succeeded or not
+     */
+    private boolean fileRename(File folder, String oldFilename, String newFilename) {
+        if (folder.exists()) {
+            File from = new File(folder, oldFilename);
+            File to = new File(folder, newFilename);
+            if (from.exists() && !to.exists()) {
+                boolean ret = from.renameTo(to);
+                Log.w("myApp", "[#] GPSApplication.java - fileRename: " + folder.getPath() + "/" + oldFilename + " renamed in " + newFilename);
+                return ret;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1118,7 +1186,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void loadDB() {
         // Initialize the connection with the Database
-        gpsDataBase = new DatabaseHandler(this);
+        gpsDataBase = new DatabaseHandler(this, databaseName);
 
         // Prepare the current track
         if (gpsDataBase.getLastTrackID() == 0) {
@@ -1588,7 +1656,7 @@ public class GPSApplication extends Application implements LocationListener {
                 arrayListTracks.addAll(gpsDataBase.getTracksList(0, ID - 1));
                 if ((ID > 1) && (gpsDataBase.getTrack(ID - 1) != null)) {
                     String fname = (ID - 1) + ".png";
-                    File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/", fname);
+                    File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/", fname);
                     if (!file.exists()) thumbnailer = new Thumbnailer(ID - 1);
                 }
                 if (currentTrack.getNumberOfLocations() + currentTrack.getNumberOfPlacemarks() > 0) {
@@ -2092,10 +2160,10 @@ public class GPSApplication extends Application implements LocationListener {
                     if ((track.getNumberOfLocations() != 0) || (track.getNumberOfPlacemarks() != 0)) {
                         // ---- Delete 2 thumbs files forward - in case of user deleted DB in App manager (pngs could be already presents for the new IDS)
                         String fname = (track.getId() + 1) +".png";
-                        File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/", fname);
+                        File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/", fname);
                         if (file.exists ()) file.delete ();
                         fname = (track.getId() + 2) +".png";
-                        file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/", fname);
+                        file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/", fname);
                         if (file.exists ()) file.delete ();
                         track = new Track();
                         // ----
@@ -2182,7 +2250,7 @@ public class GPSApplication extends Application implements LocationListener {
                                         }
                                     }
                                     // Delete thumbnail
-                                    fileDelete(getApplicationContext().getFilesDir() + "/Thumbnails/" + track.getId() + ".png");
+                                    fileDelete(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/" + track.getId() + ".png");
 
                                     tracksDeleted++;
                                     jobProgress = (int) Math.round(1000L * tracksDeleted / tracksToBeDeleted);
@@ -2303,7 +2371,7 @@ public class GPSApplication extends Application implements LocationListener {
                 Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
                 String fname = id + ".png";
-                File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/", fname);
+                File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/", fname);
                 if (file.exists()) file.delete();
 
                 if (drawScale > 0) {

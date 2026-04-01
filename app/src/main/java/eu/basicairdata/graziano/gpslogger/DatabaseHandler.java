@@ -62,9 +62,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final int LOCATION_TYPE_LOCATION = 1;
     private static final int LOCATION_TYPE_PLACEMARK = 2;
 
-    // Database Name
-    private static final String DATABASE_NAME = "GPSLogger";
-
     // -------------------------------------------------------------------------------- Table names
     private static final String TABLE_LOCATIONS = "locations";
     private static final String TABLE_TRACKS = "tracks";
@@ -147,8 +144,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_TRACK_DESCRIPTION = "description";
 
 
-    public DatabaseHandler(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public DatabaseHandler(Context context, String databaseName) {
+        super(context, databaseName, null, DATABASE_VERSION);
     }
 
     /**

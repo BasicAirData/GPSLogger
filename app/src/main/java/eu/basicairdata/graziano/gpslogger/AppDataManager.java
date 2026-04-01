@@ -252,7 +252,7 @@ public class AppDataManager {
                     if (ze.getName().contains("/Thumbnails/")) {
                         Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
                         byte[] buffer = new byte[1024];
-                        FileOutputStream fout = new FileOutputStream(folderThumbnails + "/" + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                        FileOutputStream fout = new FileOutputStream(folderThumbnails + "/GPSLogger/" + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
                         int i = 0;
                         int len;
                         while ((len = zipInputStream.read(buffer)) > 0) {
