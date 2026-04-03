@@ -80,8 +80,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -144,7 +142,9 @@ public class GPSApplication extends Application implements LocationListener {
     public static String FILE_EMPTY_GPX;                         // The full path of a empty GPX file
     public static String FILE_EMPTY_KML;                         // The full path of a empty KML file
 
-    private String databaseName = "GPSLogger";                   // Database Name
+    private String DATABASE_NAME;                                // Database Name
+    private String THUMBNAILS_FOLDER;                            // The Thumbnails folder
+    private String tracklistSignature = "";                      // The signature used for Thumbnails, update it to invalidate the Glide cache
 
     // Preferences Variables
     private boolean prefShowDecimalCoordinates;                  // If true the coordinates are shows in decimal notation
@@ -641,6 +641,14 @@ public class GPSApplication extends Application implements LocationListener {
         return prefExportFolder;
     }
 
+    public String getTracklistSignature() {
+        return tracklistSignature;
+    }
+
+    public void setTracklistSignature(String tracklistSignature) {
+        this.tracklistSignature = tracklistSignature;
+    }
+
     public void setPrefExportFolder(String folder) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
@@ -790,9 +798,13 @@ public class GPSApplication extends Application implements LocationListener {
         isSpaceForExtraTilesAvailable = spaceForExtraTilesAvailable;
     }
 
+    public String getTHUMBNAILS_FOLDER() {
+        return THUMBNAILS_FOLDER;
+    }
+
     // ----------------------------------------------------------------------  Utilities
 
-    public boolean createFolder(File folderName)
+    public boolean createPrivateFolder(File folderName)
     {
         if (!folderName.exists()) {
             if (folderName.mkdir()) {
@@ -804,6 +816,30 @@ public class GPSApplication extends Application implements LocationListener {
         return false;
     }
 
+
+
+    public void moveAllThumbnailsInGPSLoggerSubfolder() {
+        File dbThumbs = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
+        if (dbThumbs.isDirectory() && dbThumbs.exists()) {
+            File[] files = dbThumbs.listFiles();
+            if (files != null && files.length != 0) {
+                for (File src : files) {
+                    if ((null != src) && !src.isDirectory()) {
+                        File dest = new File(THUMBNAILS_FOLDER + "/" + src.getName());
+                        try {
+                            if (!dest.exists()) dest.createNewFile();
+                            fileCopy(src, dest);
+                            src.delete();
+                            Log.w("myApp", "[#] GPSApplication.java: " + src + " moved into GPSLogger subdirectory");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Creates the private application folders. No permission are needed to create them.
      * - DIRECTORY_TEMP = Where the app saves the tracks to be shared or viewed
@@ -811,33 +847,13 @@ public class GPSApplication extends Application implements LocationListener {
      * - DIRECTORY_FILESDIR_TRACKS = The folder that contains the empty kml and gpx
      */
     public void createPrivateFolders() {
-        createFolder(new File(DIRECTORY_TEMP));
-        createFolder(new File(getApplicationContext().getFilesDir() + "/Thumbnails"));
+        createPrivateFolder(new File(DIRECTORY_TEMP));
+        createPrivateFolder(new File(getApplicationContext().getFilesDir() + "/Thumbnails"));
+        createPrivateFolder(new File(DIRECTORY_FILESDIR_TRACKS));
 
-        if (createFolder(new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName))) {
-            File dbThumbs = new File(getApplicationContext().getFilesDir() + "/Thumbnails");
-            if (dbThumbs.isDirectory() && dbThumbs.exists()) {
-                File[] files = dbThumbs.listFiles();
-                if (files != null && files.length != 0) {
-                    for (File src : files) {
-                        if ((null != src) && !src.isDirectory()) {
-                            Log.w("myApp", "[#] TAAC");
-                            File dest = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/" + src.getName());
-                            try {
-                                if (!dest.exists()) dest.createNewFile();
-                                fileCopy(src, dest);
-                                src.delete();
-                                Log.w("myApp", "[#] GPSApplication.java: " + src + " moved into GPSLogger subdirectory");
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        createFolder(new File(DIRECTORY_FILESDIR_TRACKS));
+        boolean isThumbsFolderCreated = createPrivateFolder(new File(THUMBNAILS_FOLDER));
+        // in case move all the thumbnails inside the new Thumbs Folder /Thumbnails/GPSLogger
+        if (isThumbsFolderCreated) moveAllThumbnailsInGPSLoggerSubfolder();
     }
 
     // Copy the source file to target file.
@@ -1129,8 +1145,11 @@ public class GPSApplication extends Application implements LocationListener {
 
         TOAST_VERTICAL_OFFSET = (int)(75 * getResources().getDisplayMetrics().density);
 
-        DIRECTORY_TEMP = getApplicationContext().getCacheDir() + "/Tracks";
-        DIRECTORY_FILESDIR_TRACKS = getApplicationContext().getFilesDir() + "/URI";
+        DATABASE_NAME = "GPSLogger";
+        THUMBNAILS_FOLDER = getFilesDir() + "/Thumbnails/" + DATABASE_NAME;
+
+        DIRECTORY_TEMP = getCacheDir() + "/Tracks";
+        DIRECTORY_FILESDIR_TRACKS = getFilesDir() + "/URI";
         FILE_EMPTY_GPX = DIRECTORY_FILESDIR_TRACKS + "/empty.gpx";
         FILE_EMPTY_KML = DIRECTORY_FILESDIR_TRACKS + "/empty.kml";
 
@@ -1186,7 +1205,7 @@ public class GPSApplication extends Application implements LocationListener {
 
     public void loadDB() {
         // Initialize the connection with the Database
-        gpsDataBase = new DatabaseHandler(this, databaseName);
+        gpsDataBase = new DatabaseHandler(this, DATABASE_NAME);
 
         // Prepare the current track
         if (gpsDataBase.getLastTrackID() == 0) {
@@ -1656,7 +1675,7 @@ public class GPSApplication extends Application implements LocationListener {
                 arrayListTracks.addAll(gpsDataBase.getTracksList(0, ID - 1));
                 if ((ID > 1) && (gpsDataBase.getTrack(ID - 1) != null)) {
                     String fname = (ID - 1) + ".png";
-                    File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/", fname);
+                    File file = new File(THUMBNAILS_FOLDER + "/", fname);
                     if (!file.exists()) thumbnailer = new Thumbnailer(ID - 1);
                 }
                 if (currentTrack.getNumberOfLocations() + currentTrack.getNumberOfPlacemarks() > 0) {
@@ -2160,10 +2179,10 @@ public class GPSApplication extends Application implements LocationListener {
                     if ((track.getNumberOfLocations() != 0) || (track.getNumberOfPlacemarks() != 0)) {
                         // ---- Delete 2 thumbs files forward - in case of user deleted DB in App manager (pngs could be already presents for the new IDS)
                         String fname = (track.getId() + 1) +".png";
-                        File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/", fname);
+                        File file = new File(THUMBNAILS_FOLDER + "/", fname);
                         if (file.exists ()) file.delete ();
                         fname = (track.getId() + 2) +".png";
-                        file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/", fname);
+                        file = new File(THUMBNAILS_FOLDER + "/", fname);
                         if (file.exists ()) file.delete ();
                         track = new Track();
                         // ----
@@ -2250,7 +2269,7 @@ public class GPSApplication extends Application implements LocationListener {
                                         }
                                     }
                                     // Delete thumbnail
-                                    fileDelete(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/" + track.getId() + ".png");
+                                    fileDelete(THUMBNAILS_FOLDER + "/" + track.getId() + ".png");
 
                                     tracksDeleted++;
                                     jobProgress = (int) Math.round(1000L * tracksDeleted / tracksToBeDeleted);
@@ -2307,9 +2326,15 @@ public class GPSApplication extends Application implements LocationListener {
         public Thumbnailer(long id) {
 
             Track track = gpsDataBase.getTrack(id);
-            //Log.w("myApp", "[#] GPSApplication.java - Bitmap Size = " + Size);
+            Log.w("myApp", "[#] GPSApplication.java - Thumbnail creation starts...");
+            Log.w("myApp", "[#] GPSApplication.java - validmap = " + track.getValidMap());
+            Log.w("myApp", "[#] GPSApplication.java - track.getDistance() = " + track.getDistance());
+            Log.w("myApp", "[#] GPSApplication.java - track.getEstimatedDistance() = " + track.getEstimatedDistance());
 
-            if ((track.getNumberOfLocations() > 2) && (track.getDistance() >= 15) && (track.getValidMap() != 0)) {
+
+            if ((track.getNumberOfLocations() > 2) && (track.getEstimatedDistance() >= 10) && (track.getValidMap() != 0)) {
+                Log.w("myApp", "[#] GPSApplication.java - The track meets the conditions to create the thumb");
+
                 this.id = track.getId();
                 numberOfLocations = track.getNumberOfLocations();
 
@@ -2369,10 +2394,13 @@ public class GPSApplication extends Application implements LocationListener {
 
             public void run() {
                 Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+                Log.w("myApp", "[#] GPSApplication.java - AsyncThumbnailThreadClass running");
 
                 String fname = id + ".png";
-                File file = new File(getApplicationContext().getFilesDir() + "/Thumbnails/" + databaseName + "/", fname);
+                File file = new File(THUMBNAILS_FOLDER + "/", fname);
                 if (file.exists()) file.delete();
+
+                Log.w("myApp", "[#] GPSApplication.java - AsyncThumbnailThreadClass creating " + file.getPath());
 
                 if (drawScale > 0) {
                     int groupOfLocations = 200;

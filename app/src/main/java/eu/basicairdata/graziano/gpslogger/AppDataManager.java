@@ -36,6 +36,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -204,7 +207,7 @@ public class AppDataManager {
             boolean isThumbnailsPresent = false;
             boolean isDatabasePresent = false;
             while ((ze = zipInputStream.getNextEntry()) != null) {
-                if (ze.getName().contains("/Thumbnails/") && !isThumbnailsPresent) {
+                if (ze.getName().contains("/Thumbnails/GPSLogger/") && !isThumbnailsPresent) {
                     Log.w("myApp", "[#] AppDataManager.java - Thumbnails folder found");
                     isThumbnailsPresent = true;
                 }
@@ -222,7 +225,7 @@ public class AppDataManager {
                 zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
 
                 // Delete all the existing Thumbnails
-                File folderThumbnails = new File( GPSApplication.getInstance().getFilesDir() + "/Thumbnails");
+                File folderThumbnails = new File( GPSApplication.getInstance().getTHUMBNAILS_FOLDER());
                 Log.w("myApp", "[#] AppDataManager.java - Thumbnail Folder: " + folderThumbnails.getPath());
                 if (folderThumbnails.isDirectory())
                 {
@@ -249,10 +252,10 @@ public class AppDataManager {
                 Log.w("myApp", "[#] AppDataManager.java - The ZIP file is valid, Restoring...");
                 while ((ze = zipInputStream.getNextEntry()) != null) {
                     // Import a Thumbnail
-                    if (ze.getName().contains("/Thumbnails/")) {
+                    if (ze.getName().contains("/Thumbnails/GPSLogger")) {
                         Log.w("myApp", "[#] AppDataManager.java - UNZIP Thumbnail: " + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
                         byte[] buffer = new byte[1024];
-                        FileOutputStream fout = new FileOutputStream(folderThumbnails + "/GPSLogger/" + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
+                        FileOutputStream fout = new FileOutputStream(folderThumbnails + "/" + ze.getName().substring(ze.getName().lastIndexOf("/") + 1));
                         int i = 0;
                         int len;
                         while ((len = zipInputStream.read(buffer)) > 0) {
@@ -278,6 +281,11 @@ public class AppDataManager {
                 }
                 zipInputStream.close();
                 inputStream.close();
+
+                // Update the signature to invalidate the Glide cache
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
+                GPSApplication.getInstance().setTracklistSignature(sdf.format(new Date()));
+                Log.w("myApp", "[#] AppDataManager.java - New signature for Thumbnails: " + GPSApplication.getInstance().getTracklistSignature());
             }
         } catch (Exception e) {
             System.out.println(e);
