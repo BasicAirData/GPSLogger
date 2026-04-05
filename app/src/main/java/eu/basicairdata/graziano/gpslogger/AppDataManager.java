@@ -89,7 +89,8 @@ public class AppDataManager {
             byte[] buf = new byte[1024];
             int len;
             try {
-                if ((srcFile.contains("/databases/") || srcFile.contains("/Thumbnails/")) && (!srcFile.endsWith("-journal"))) {
+                if ((srcFile.contains("/databases/") || srcFile.contains("/Thumbnails/"))
+                        && !srcFile.endsWith("-journal") && !srcFile.endsWith("-shm")  && !srcFile.endsWith("-wal")) {
                     FileInputStream in = new FileInputStream(srcFile);
                     zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
                     Log.w("myApp", "[#] AppDataManager.java - Adding file " + path + "/" + folder.getName());
