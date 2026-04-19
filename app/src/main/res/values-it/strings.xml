@@ -183,12 +183,22 @@
     <string name="pref_track_stats">Statistiche itinerario basate su</string>
     <string name="pref_track_stats_totaltime">Tempo totale</string>
     <string name="pref_track_stats_movingtime">Tempo in movimento</string>
+    <string name="pref_category_backup_restore">BACKUP E RIPRISTINO</string>
+    <string name="pref_backup_tracklist">Backup Archivio</string>
+    <string name="pref_backup_tracklist_summary">Salva l\'archivio come file ZIP</string>
+    <string name="pref_restore_tracklist">Ripristino Archivio</string>
+    <string name="pref_restore_tracklist_summary">Carica un archivio da file ZIP</string>
+    <string name="dialog_restore_tracklist_confirmation">Questa operazione sovrascriverà l\'archivio attuale con quello importato.\nTutti gli itinerari esistenti andranno perduti.\n\nVuoi procedere?</string>
+    <string name="in_progress">In corso...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Errore durante il download</string>
     <string name="toast_download_completed">Download completato</string>
     <string name="toast_download_failed">Download non riuscito. Riprova più tardi</string>
     <string name="toast_active_track_not_empty">L\'itinerario attivo non è vuoto</string>
     <string name="toast_no_browser_installed">Nessun browser web installato</string>
+    <string name="toast_unable_to_perform_while_recording">Impossibile eseguire l\'operazione durante la registrazione di un itinerario</string>
+    <string name="toast_error_occurred">Si è verificato un errore</string>
+    <string name="toast_operation_completed">Operazione completata</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger registra i tuoi percorsi utilizzando il GPS. È possibile visualizzarli nel tuo visualizzatore preferito, condividerli ed esportarli nel tuo dispositivo in formato KML, GPX e TXT.\n\nQuesto programma è software libero, rilasciato sotto i termini della GNU General Public license.\nPer maggiori dettagli si veda: https://www.gnu.org/licenses/gpl.txt</string>

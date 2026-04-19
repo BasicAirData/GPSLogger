@@ -183,12 +183,22 @@
     <string name="pref_track_stats">Estatísticas de trazado baseadas en</string>
     <string name="pref_track_stats_totaltime">Tempo total</string>
     <string name="pref_track_stats_movingtime">Tempo en movemento</string>
+    <string name="pref_category_backup_restore">COPIA DE SEGURIDADE E RESTAURACIÓN</string>
+    <string name="pref_backup_tracklist">Copia de seguridade do arquivo</string>
+    <string name="pref_backup_tracklist_summary">Gardar o arquivo como ficheiro ZIP</string>
+    <string name="pref_restore_tracklist">Restaurar o arquivo</string>
+    <string name="pref_restore_tracklist_summary">Cargar o arquivo desde un ficheiro ZIP</string>
+    <string name="dialog_restore_tracklist_confirmation">Esta operación sobrescribirá o arquivo co importado.\nPerderanse todos os trazados existentes.\n\Confirma que quere continuar?</string>
+    <string name="in_progress">En curso...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Produciuse un erro de descarga</string>
     <string name="toast_download_completed">Descarga completada</string>
     <string name="toast_download_failed">Produciuse un fallou na descarga. Ténteo de novo máis tarde</string>
     <string name="toast_active_track_not_empty">O trazado actual non está baleiro</string>
     <string name="toast_no_browser_installed">Non hai ningún navegador de Internet instalado</string>
+    <string name="toast_unable_to_perform_while_recording">Non é posíbel realizar a operación mentres se grava un trazado</string>
+    <string name="toast_error_occurred">Produciuse un erro</string>
+    <string name="toast_operation_completed">Operación completada</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger rexistra trazados empregando a posición GPS. Pode velos na súa aplicación preferida, compartilos e exportalos ao seu dispositivo en formato KML, GPX e TXT.\n\nÉ software libre, publicado baixo os térmos da Licenza Pública Xertal de GNU.\nPara obter máis detalles consulte: https://www.gnu.org/licenses/gpl.txt</string>

@@ -183,12 +183,22 @@
     <string name="pref_track_stats">Stats de parcours basées sur</string>
     <string name="pref_track_stats_totaltime">Temps total</string>
     <string name="pref_track_stats_movingtime">Temps en mouvement</string>
+    <string name="pref_category_backup_restore">SAUVEGARDE ET RESTAURATION</string>
+    <string name="pref_backup_tracklist">Sauvegarde archive</string>
+    <string name="pref_backup_tracklist_summary">Enregistrer l\'archive au format ZIP</string>
+    <string name="pref_restore_tracklist">Restaure archive</string>
+    <string name="pref_restore_tracklist_summary">Charger une archive à partir d\'un fichier ZIP</string>
+    <string name="dialog_restore_tracklist_confirmation">Cette opération remplacera votre archive actuelle par celle importée.\nToutes les tracés existantes seront perdues.\n\nVoulez-vous continuer ?</string>
+    <string name="in_progress">En cours...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Erreur de téléchargement</string>
     <string name="toast_download_completed">Téléchargement terminé</string>
     <string name="toast_download_failed">Échec du téléchargement. Veuillez réessayer plus tard</string>
     <string name="toast_active_track_not_empty">Le tracé actif n\'est pas vide</string>
     <string name="toast_no_browser_installed">Aucun navigateur internet installé</string>
+    <string name="toast_unable_to_perform_while_recording">Cette opération ne peut pas être effectuée pendant l\'enregistrement d\'un tracé.</string>
+    <string name="toast_error_occurred">Une erreur est survenue</string>
+    <string name="toast_operation_completed">Opération effectuée</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger enregistre vos parcours en utilisant le GPS. Vous pouvez les afficher dans votre visualiseur préféré, les partager et les exporter dans votre appareil au format KML, GPX et TXT.\n\nCe programme est un logiciel libre, publié sous les termes de la GNU General Public License.\nPour plus de détails, voir : https://www.gnu.org/licenses/gpl.txt</string>

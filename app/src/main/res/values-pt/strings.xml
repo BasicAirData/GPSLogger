@@ -183,12 +183,22 @@
     <string name="pref_track_stats">Estatísticas de percurso com base em</string>
     <string name="pref_track_stats_totaltime">Tempo total</string>
     <string name="pref_track_stats_movingtime">Tempo em movimento</string>
+    <string name="pref_category_backup_restore">BACKUP E RESTAURAÇÃO</string>
+    <string name="pref_backup_tracklist">Backup do Arquivo</string>
+    <string name="pref_backup_tracklist_summary">Salvar o Arquivo como ZIP</string>
+    <string name="pref_restore_tracklist">Restaurar Arquivo</string>
+    <string name="pref_restore_tracklist_summary">Carregar o Arquivo de um ZIP</string>
+    <string name="dialog_restore_tracklist_confirmation">Esta operação substituirá seu Arquivo atual pelo importado.\nTodos os Percursos existentes serão perdidos.\n\nDeseja prosseguir?</string>
+    <string name="in_progress">Em andamento...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Erro na transferência</string>
     <string name="toast_download_completed">Transferência concluída</string>
     <string name="toast_download_failed">Falha na transferência. Tente novamente.</string>
     <string name="toast_active_track_not_empty">O percurso ativo não está vazio</string>
     <string name="toast_no_browser_installed">Nenhum navegador instalado</string>
+    <string name="toast_unable_to_perform_while_recording">Não é possível realizar a operação durante a gravação de um Percurso</string>
+    <string name="toast_error_occurred">Ocorreu um erro</string>
+    <string name="toast_operation_completed">Operação concluída</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nO BasicAirData GPS Logger regista os seus percursos utilizando GPS. Pode consultá-los no seu visualizador preferido, partilhá-los e exportá-los em seu dispositivo nos formatos KML, GPX e TXT.\n\nEste software é gratuito, sendo editado nos termos da GNU General Public License.\nPara mais informações, consulte: https://www.gnu.org/licenses/gpl.txt</string>

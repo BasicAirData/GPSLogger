@@ -183,12 +183,22 @@
     <string name="pref_track_stats">Útvonal statisztika alapja</string>
     <string name="pref_track_stats_totaltime">Teljes idő</string>
     <string name="pref_track_stats_movingtime">Mozgásban töltött idő</string>
+    <string name="pref_category_backup_restore">BIZTONSÁGI MENTÉS ÉS VISSZAÁLLÍTÁS</string>
+    <string name="pref_backup_tracklist">Útvonalak mentése</string>
+    <string name="pref_backup_tracklist_summary">ZIP fájlba menti az útvonalak listáját</string>
+    <string name="pref_restore_tracklist">Útvonalak visszaállítása</string>
+    <string name="pref_restore_tracklist_summary">Útvonalak listájának betöltése ZIP fájlból</string>
+    <string name="dialog_restore_tracklist_confirmation">Ez a művelet felülírja a jelenlegi útvonalak listáját az importálttal.\nA meglévő összes útvonal elveszik.\n\nSzeretné folytatni?</string>
+    <string name="in_progress">Folyamatban...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Letöltési hiba</string>
     <string name="toast_download_completed">Letöltés kész</string>
     <string name="toast_download_failed">Sikertelen letöltés. Kérjük, próbálja újra később</string>
     <string name="toast_active_track_not_empty">Aktív útvonal nem üres</string>
     <string name="toast_no_browser_installed">Nincs Internet böngésző telepítve</string>
+    <string name="toast_unable_to_perform_while_recording">Nem lehet műveletet végezni útvonal rögzítése közben</string>
+    <string name="toast_error_occurred">Hiba történt</string>
+    <string name="toast_operation_completed">Művelet befejezve</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger GPS segítségével rögzíti az útvonalakat. Megtekintheti őket az Ön által preferált megjelenítő programban, megoszthatja vagy exportálhatja őket KML, GPX és TXT formátumban.\n\nEz a program ingyenes szoftver, amelyet a GNU General Public License feltételei szerint adtak ki.\nTovábbi információ: https://www.gnu.org/licenses/gpl.txt</string>

@@ -183,12 +183,22 @@
     <string name="pref_track_stats">Spor statistik baseret på</string>
     <string name="pref_track_stats_totaltime">Tid i alt</string>
     <string name="pref_track_stats_movingtime">Bevægelsestid</string>
+    <string name="pref_category_backup_restore">BACKUP OG GENDANNELSE</string>
+    <string name="pref_backup_tracklist">Backup Arkiv</string>
+    <string name="pref_backup_tracklist_summary">Gem arkivet som ZIP-fil</string>
+    <string name="pref_restore_tracklist">Gendan Arkiv</string>
+    <string name="pref_restore_tracklist_summary">Indlæs arkiv fra ZIP-fil</string>
+    <string name="dialog_restore_tracklist_confirmation">Denne handling vil overskrive dit nuværende arkiv med det importerede.\nAlle eksisterende spor vil gå tabt.\n\nVil du fortsætte?</string>
+    <string name="in_progress">Udføres...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Download fejl</string>
     <string name="toast_download_completed">Download fuldført</string>
     <string name="toast_download_failed">Download mislykkedes. Prøv igen senere</string>
     <string name="toast_active_track_not_empty">Det aktive spor er ikke tomt</string>
     <string name="toast_no_browser_installed">Ingen browser installeret</string>
+    <string name="toast_unable_to_perform_while_recording">Kan ikke udføre handling under optagelse af spor</string>
+    <string name="toast_error_occurred">Der opstod en fejl</string>
+    <string name="toast_operation_completed">Handlinger fuldført</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger registrerer dine spor ved hjælp af GPS. Du kan se dem i din foretrukne fremviser, dele og eksportere dem til din enhed i KML, GPX og TXT format.\n\nDette program er fri software, udgivet under betingelserne i GNU General Public License.\nFor flere detaljer se: https://www.gnu.org/licenses/gpl.txt</string>

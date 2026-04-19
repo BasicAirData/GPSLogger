@@ -183,12 +183,22 @@
     <string name="pref_track_stats">Estadísticas basadas en</string>
     <string name="pref_track_stats_totaltime">Tiempo Total</string>
     <string name="pref_track_stats_movingtime">Tiempo en movimiento</string>
+    <string name="pref_category_backup_restore">BACKUP Y RESTAURACIÓN</string>
+    <string name="pref_backup_tracklist">Backup del archivo</string>
+    <string name="pref_backup_tracklist_summary">Guardar el archivo en formato ZIP</string>
+    <string name="pref_restore_tracklist">Restaurar archivo</string>
+    <string name="pref_restore_tracklist_summary">Cargar un archivo desde ZIP file</string>
+    <string name="dialog_restore_tracklist_confirmation">Esta operación sobrescribirá tu archivo actual con el importado.\nSe perderán todos los itinerarios existentes.\n\n¿Deseas continuar?</string>
+    <string name="in_progress">En curso...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Error de descarga</string>
     <string name="toast_download_completed">Descarga completada</string>
     <string name="toast_download_failed">No se pudo descargar. Inténtalo más tarde</string>
     <string name="toast_active_track_not_empty">El itinerario actual no está vacío</string>
     <string name="toast_no_browser_installed">No hay un navegador de internet instalado</string>
+    <string name="toast_unable_to_perform_while_recording">No se puede realizar la operación mientras se graba un itinerario</string>
+    <string name="toast_error_occurred">Un error ha ocurrido</string>
+    <string name="toast_operation_completed">Operación completada</string>
     <!-- About Dialog -->
     <string name="about_version">ver.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger registra itinerarios usando la posición GPS. El itinerario se puede visualizar en su app preferida, compartir y exportar a su dispositivo en formatos KML, GPX y TXT.\n\nEs un software libre, publicado bajo los términos de la licencia GNU General Public.\nMás detalles en el enlace: https://www.gnu.org/licenses/gpl.txt</string>
