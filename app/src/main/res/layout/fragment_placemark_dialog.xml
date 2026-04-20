@@ -23,7 +23,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,5 +45,153 @@
 
             <requestFocus />
         </EditText>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/placemark_description_tip1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/id_pin1"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_push_pin_24"
+
+                    android:maxWidth="30dp"
+                    android:maxHeight="30dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="bottom|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="This is a pinned description text"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/placemark_description_tip2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/id_pin2"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_push_pin_24"
+                    android:maxWidth="30dp"
+                    android:maxHeight="30dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="bottom|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Another pinned text"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/placemark_description_tip3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/id_pin3"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_push_pin_24"
+                    android:alpha="0.2"
+                    android:maxWidth="30dp"
+                    android:maxHeight="30dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="bottom|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="This is the latest entered description"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/placemark_description_tip4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/id_pin4"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_push_pin_24"
+                    android:alpha="0.2"
+                    android:maxWidth="30dp"
+                    android:maxHeight="30dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="bottom|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Used 1 time"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/placemark_description_tip5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/id_pin5"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_push_pin_24"
+                    android:alpha="0.2"
+                    android:maxWidth="30dp"
+                    android:maxHeight="30dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="bottom|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Max speed 50 km/h"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>
