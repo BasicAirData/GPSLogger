@@ -35,13 +35,26 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 
 /**
  * The dialog that appears when the user adds a new Annotation (Placemark).
  */
 public class FragmentPlacemarkDialog extends DialogFragment {
+
+    static class Tip {
+        TextView textviewTip;
+
+        public Tip(View view, int i) {
+            textviewTip = view.findViewWithTag("placemark_tv_tip" + i);
+        }
+    }
+
+    ArrayList<Tip> tipArrayList = new ArrayList<>();
 
     EditText etDescription;
 
@@ -68,6 +81,19 @@ public class FragmentPlacemarkDialog extends DialogFragment {
                 }
             }
         }, 200);
+
+        // Set tip list
+        for (int i = 0; i < 5; i++) {
+            Tip tip = new Tip(view, i);
+            tip.textviewTip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    etDescription.setText(tip.textviewTip.getText());
+                    etDescription.setSelection(etDescription.getText().length());
+                }
+            });
+            tipArrayList.add(tip);
+        }
 
         createPlacemarkAlert.setView(view)
                 .setPositiveButton(R.string.dlg_button_add, new DialogInterface.OnClickListener() {
