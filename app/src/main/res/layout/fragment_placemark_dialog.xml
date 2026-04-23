@@ -24,7 +24,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,17 +36,37 @@
         android:layout_marginBottom="4dp"
         android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/placemark_description"
-            android:inputType="textCapSentences"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/dlg_enter_the_description" >
+            android:orientation="horizontal">
 
-            <requestFocus />
-        </EditText>
+            <EditText
+                android:id="@+id/placemark_description"
+                android:inputType="textCapSentences"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/dlg_enter_the_description" >
+
+                <requestFocus />
+            </EditText>
+
+            <ImageView
+                android:id="@+id/placemark_pin"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:minWidth="28dp"
+                android:minHeight="28dp"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_push_pin_24" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,16 +77,27 @@
             <LinearLayout
                 android:id="@+id/placemark_ll_tip0"
                 android:tag="placemark_ll_tip0"
+                android:layout_marginTop="18dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+
                 android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/placemark_tv_tip0"
+                    android:tag="placemark_tv_tip0"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="This is a pinned description text"/>
 
                 <ImageView
                     android:id="@+id/placemark_pin_tip0"
                     android:tag="placemark_pin_tip0"
                     android:padding="8dp"
-                    app:srcCompat="@drawable/ic_push_pin_24"
+                    app:srcCompat="@drawable/ic_close_24"
+                    android:alpha="0.7"
                     android:maxWidth="30dp"
                     android:maxHeight="30dp"
                     android:scaleType="centerInside"
@@ -72,14 +105,6 @@
                     android:layout_gravity="bottom|end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/placemark_tv_tip0"
-                    android:tag="placemark_tv_tip0"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical"
-                    android:text="This is a pinned description text"/>
 
             </LinearLayout>
 
@@ -91,11 +116,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/placemark_tv_tip1"
+                    android:tag="placemark_tv_tip1"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Another pinned text"/>
+
                 <ImageView
                     android:id="@+id/placemark_pin_tip1"
                     android:tag="placemark_pin_tip1"
                     android:padding="8dp"
-                    app:srcCompat="@drawable/ic_push_pin_24"
+                    app:srcCompat="@drawable/ic_close_24"
+                    android:alpha="0.7"
                     android:maxWidth="30dp"
                     android:maxHeight="30dp"
                     android:scaleType="centerInside"
@@ -103,14 +138,6 @@
                     android:layout_gravity="bottom|end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/placemark_tv_tip1"
-                    android:tag="placemark_tv_tip1"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical"
-                    android:text="Another pinned text"/>
 
             </LinearLayout>
 
@@ -122,12 +149,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/placemark_tv_tip2"
+                    android:tag="placemark_tv_tip2"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="This is the latest entered description"/>
+
                 <ImageView
                     android:id="@+id/placemark_pin_tip2"
                     android:tag="placemark_pin_tip2"
                     android:padding="8dp"
-                    app:srcCompat="@drawable/ic_push_pin_24"
-                    android:alpha="0.2"
+                    app:srcCompat="@drawable/ic_close_24"
+                    android:alpha="0.7"
                     android:maxWidth="30dp"
                     android:maxHeight="30dp"
                     android:scaleType="centerInside"
@@ -135,14 +171,6 @@
                     android:layout_gravity="bottom|end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/placemark_tv_tip2"
-                    android:tag="placemark_tv_tip2"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical"
-                    android:text="This is the latest entered description"/>
 
             </LinearLayout>
 
@@ -154,12 +182,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/placemark_tv_tip3"
+                    android:tag="placemark_tv_tip3"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Used 1 time"/>
+
                 <ImageView
                     android:id="@+id/placemark_pin_tip3"
                     android:tag="placemark_pin_tip3"
                     android:padding="8dp"
-                    app:srcCompat="@drawable/ic_push_pin_24"
-                    android:alpha="0.2"
+                    app:srcCompat="@drawable/ic_close_24"
+                    android:alpha="0.7"
                     android:maxWidth="30dp"
                     android:maxHeight="30dp"
                     android:scaleType="centerInside"
@@ -167,14 +204,6 @@
                     android:layout_gravity="bottom|end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/placemark_tv_tip3"
-                    android:tag="placemark_tv_tip3"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical"
-                    android:text="Used 1 time"/>
 
             </LinearLayout>
 
@@ -186,12 +215,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/placemark_tv_tip4"
+                    android:tag="placemark_tv_tip4"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Max speed 50 km/h"/>
+
                 <ImageView
                     android:id="@+id/placemark_pin_tip4"
                     android:tag="placemark_pin_tip4"
                     android:padding="8dp"
-                    app:srcCompat="@drawable/ic_push_pin_24"
-                    android:alpha="0.2"
+                    app:srcCompat="@drawable/ic_close_24"
+                    android:alpha="0.7"
                     android:maxWidth="30dp"
                     android:maxHeight="30dp"
                     android:scaleType="centerInside"
@@ -200,17 +238,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/placemark_tv_tip4"
-                    android:tag="placemark_tv_tip4"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical"
-                    android:text="Max speed 50 km/h"/>
-
             </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
 </RelativeLayout>
