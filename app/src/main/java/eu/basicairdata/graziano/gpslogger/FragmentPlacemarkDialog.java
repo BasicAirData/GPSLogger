@@ -234,6 +234,14 @@ public class FragmentPlacemarkDialog extends DialogFragment {
                     etDescription.setSelection(etDescription.getText().length());
                 }
             });
+            tip.textviewTipUILine.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    etDescription.setText(etDescription.getText().toString() + tip.textviewTipUILine.getText().toString());
+                    etDescription.setSelection(etDescription.getText().length());
+                    return true;
+                }
+            });
             int finalI = i;
             tip.imageViewTipUILine.setOnClickListener(new View.OnClickListener() {
                 @Override
