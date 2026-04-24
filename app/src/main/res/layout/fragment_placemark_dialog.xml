@@ -46,7 +46,7 @@
                 android:inputType="textCapSentences"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/dlg_enter_the_description" >
@@ -68,179 +68,184 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/placemark_ll_tip0"
-                android:tag="placemark_ll_tip0"
-                android:layout_marginTop="18dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:paddingRight="0dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="0dp"
+                android:orientation="vertical">
 
-                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/placemark_tv_tip0"
-                    android:tag="placemark_tv_tip0"
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip0"
+                    android:tag="placemark_ll_tip0"
+                    android:layout_marginTop="18dp"
                     android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="This is a pinned description text"/>
+                    android:layout_height="wrap_content"
 
-                <ImageView
-                    android:id="@+id/placemark_pin_tip0"
-                    android:tag="placemark_pin_tip0"
-                    android:padding="8dp"
-                    app:srcCompat="@drawable/ic_close_24"
-                    android:alpha="0.7"
-                    android:maxWidth="30dp"
-                    android:maxHeight="30dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="bottom|end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip0"
+                        android:tag="placemark_tv_tip0"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip0"
+                        android:tag="placemark_pin_tip0"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip1"
+                    android:tag="placemark_ll_tip1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip1"
+                        android:tag="placemark_tv_tip1"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip1"
+                        android:tag="placemark_pin_tip1"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip2"
+                    android:tag="placemark_ll_tip2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip2"
+                        android:tag="placemark_tv_tip2"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip2"
+                        android:tag="placemark_pin_tip2"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip3"
+                    android:tag="placemark_ll_tip3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip3"
+                        android:tag="placemark_tv_tip3"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip3"
+                        android:tag="placemark_pin_tip3"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip4"
+                    android:tag="placemark_ll_tip4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip4"
+                        android:tag="placemark_tv_tip4"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip4"
+                        android:tag="placemark_pin_tip4"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-
-            <LinearLayout
-                android:id="@+id/placemark_ll_tip1"
-                android:tag="placemark_ll_tip1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/placemark_tv_tip1"
-                    android:tag="placemark_tv_tip1"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Another pinned text"/>
-
-                <ImageView
-                    android:id="@+id/placemark_pin_tip1"
-                    android:tag="placemark_pin_tip1"
-                    android:padding="8dp"
-                    app:srcCompat="@drawable/ic_close_24"
-                    android:alpha="0.7"
-                    android:maxWidth="30dp"
-                    android:maxHeight="30dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="bottom|end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/placemark_ll_tip2"
-                android:tag="placemark_ll_tip2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/placemark_tv_tip2"
-                    android:tag="placemark_tv_tip2"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="This is the latest entered description"/>
-
-                <ImageView
-                    android:id="@+id/placemark_pin_tip2"
-                    android:tag="placemark_pin_tip2"
-                    android:padding="8dp"
-                    app:srcCompat="@drawable/ic_close_24"
-                    android:alpha="0.7"
-                    android:maxWidth="30dp"
-                    android:maxHeight="30dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="bottom|end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/placemark_ll_tip3"
-                android:tag="placemark_ll_tip3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/placemark_tv_tip3"
-                    android:tag="placemark_tv_tip3"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Used 1 time"/>
-
-                <ImageView
-                    android:id="@+id/placemark_pin_tip3"
-                    android:tag="placemark_pin_tip3"
-                    android:padding="8dp"
-                    app:srcCompat="@drawable/ic_close_24"
-                    android:alpha="0.7"
-                    android:maxWidth="30dp"
-                    android:maxHeight="30dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="bottom|end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/placemark_ll_tip4"
-                android:tag="placemark_ll_tip4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/placemark_tv_tip4"
-                    android:tag="placemark_tv_tip4"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Max speed 50 km/h"/>
-
-                <ImageView
-                    android:id="@+id/placemark_pin_tip4"
-                    android:tag="placemark_pin_tip4"
-                    android:padding="8dp"
-                    app:srcCompat="@drawable/ic_close_24"
-                    android:alpha="0.7"
-                    android:maxWidth="30dp"
-                    android:maxHeight="30dp"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="bottom|end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
