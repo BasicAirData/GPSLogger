@@ -76,12 +76,7 @@
                 android:animateLayoutChanges="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="3dp"
-                android:paddingRight="0dp"
-                android:paddingStart="3dp"
-                android:paddingEnd="0dp"
                 android:orientation="vertical">
-
 
                 <LinearLayout
                     android:id="@+id/placemark_ll_tip0"
@@ -89,12 +84,19 @@
                     android:layout_marginTop="18dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/placemark_tv_tip0"
                         android:tag="placemark_tv_tip0"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
                         android:maxLines="1"
                         android:ellipsize="end"
                         android:layout_width="0dp"
@@ -129,6 +131,14 @@
                     <TextView
                         android:id="@+id/placemark_tv_tip1"
                         android:tag="placemark_tv_tip1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
                         android:maxLines="1"
                         android:ellipsize="end"
                         android:layout_width="0dp"
@@ -163,6 +173,14 @@
                     <TextView
                         android:id="@+id/placemark_tv_tip2"
                         android:tag="placemark_tv_tip2"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
                         android:maxLines="1"
                         android:ellipsize="end"
                         android:layout_width="0dp"
@@ -197,6 +215,14 @@
                     <TextView
                         android:id="@+id/placemark_tv_tip3"
                         android:tag="placemark_tv_tip3"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
                         android:maxLines="1"
                         android:ellipsize="end"
                         android:layout_width="0dp"
@@ -231,6 +257,14 @@
                     <TextView
                         android:id="@+id/placemark_tv_tip4"
                         android:tag="placemark_tv_tip4"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
                         android:maxLines="1"
                         android:ellipsize="end"
                         android:layout_width="0dp"
