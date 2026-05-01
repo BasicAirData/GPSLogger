@@ -23,7 +23,10 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,16 +36,262 @@
         android:layout_marginBottom="4dp"
         android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/placemark_description"
-            android:inputType="textCapSentences"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/dlg_enter_the_description" >
+            android:orientation="horizontal">
 
-            <requestFocus />
-        </EditText>
+            <EditText
+                android:id="@+id/placemark_description"
+                android:inputType="textCapSentences"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/dlg_enter_the_description" >
+
+                <requestFocus />
+            </EditText>
+
+            <ImageView
+                android:id="@+id/placemark_pin"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:minWidth="28dp"
+                android:minHeight="28dp"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_push_pin_24" />
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:animateLayoutChanges="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip0"
+                    android:tag="placemark_ll_tip0"
+                    android:layout_marginTop="18dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip0"
+                        android:tag="placemark_tv_tip0"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip0"
+                        android:tag="placemark_pin_tip0"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip1"
+                    android:tag="placemark_ll_tip1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip1"
+                        android:tag="placemark_tv_tip1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip1"
+                        android:tag="placemark_pin_tip1"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip2"
+                    android:tag="placemark_ll_tip2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip2"
+                        android:tag="placemark_tv_tip2"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip2"
+                        android:tag="placemark_pin_tip2"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip3"
+                    android:tag="placemark_ll_tip3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip3"
+                        android:tag="placemark_tv_tip3"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip3"
+                        android:tag="placemark_pin_tip3"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/placemark_ll_tip4"
+                    android:tag="placemark_ll_tip4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/placemark_tv_tip4"
+                        android:tag="placemark_tv_tip4"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClick"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/placemark_pin_tip4"
+                        android:tag="placemark_pin_tip4"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_close_24"
+                        android:alpha="0.7"
+                        android:maxWidth="30dp"
+                        android:maxHeight="30dp"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
     </LinearLayout>
+
 </RelativeLayout>
