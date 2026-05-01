@@ -36,7 +36,6 @@ import androidx.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -174,7 +173,9 @@ public class FragmentPlacemarkDialog extends DialogFragment {
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
-
+    /**
+     * It writes the pinned descriptions into the app's preferences
+     */
     public void writeTipPrefs() {
         for (int i = 0; i < 5; i++) {
             String str;
@@ -194,7 +195,12 @@ public class FragmentPlacemarkDialog extends DialogFragment {
         editor.commit();
     }
 
-
+    /**
+     * It sets the pin icon state basing on the text and the list of pinned descriptions.
+     * The pin button is enabled only when there is free space to add a pinned description,
+     * when the description is different to the ones already pinned, and when it is not empty.
+     * Leading and trailing spaces are removed.
+     */
     public void setPinButtonState() {
         if ((tipArrayList.size() >= 5) || (etDescription.getText().toString().trim().isEmpty())) {
             // Tip list full
@@ -217,6 +223,10 @@ public class FragmentPlacemarkDialog extends DialogFragment {
     }
 
 
+    /**
+     * This method initialize the widgets that manage the list of pinned descriptions.
+     * @param view The root view of the dialog
+     */
     public void initTipUIList(View view) {
         // Set TipUILine list
         for (int i = 0; i < 5; i++) {
