@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ strings.xml
+  ~ Created by G.Capelli on 8/5/2016
+  ~ This file is part of BasicAirData GPS Logger
+  ~
+  ~ Copyright (C) 2011 BasicAirData
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <!-- Tabs -->
+    <string name="tab_gpsfix">GPS Fiks</string>
+    <string name="tab_track">Spor</string>
+    <string name="tab_tracklist">Arkiv</string>
+    <!-- GPS Fix -->
+    <string name="latitude">Breddegrad</string>
+    <string name="longitude">Længdegrad</string>
+    <string name="altitude">Højde</string>
+    <string name="speed">Hastighed</string>
+    <string name="direction">Retning</string>
+    <string name="accuracy">Nøjagtighed</string>
+    <string name="time">Tid</string>
+    <string name="satellites">Satellitter</string>
+    <string name="north">N</string>
+    <string name="north_northeast">NNØ</string>
+    <string name="northeast">NØ</string>
+    <string name="east_northeast">ØNØ</string>
+    <string name="east">Ø</string>
+    <string name="east_southeast">ØSØ</string>
+    <string name="southeast">SØ</string>
+    <string name="south_southeast">SSØ</string>
+    <string name="south">S</string>
+    <string name="south_southwest">SSV</string>
+    <string name="southwest">SV</string>
+    <string name="west_southwest">VSV</string>
+    <string name="west">V</string>
+    <string name="west_northwest">VNV</string>
+    <string name="northwest">NV</string>
+    <string name="north_northwest">NNV</string>
+    <!-- GPS Status messages -->
+    <string name="gps_not_accessible">GPS ikke tilgængelig</string>
+    <string name="gps_disabled">GPS deaktiveret</string>
+    <string name="gps_out_of_service">GPS ude af drift</string>
+    <string name="gps_searching">Søger efter GPS signal</string>
+    <string name="gps_stabilizing">Stabilisere signal</string>
+    <string name="warning_location_denied">Appen kan ikke tilgå Placering</string>
+    <string name="warning_background_restricted">Appen kan ikke køre i Baggrunden.\nTillad appen at køre i Baggrunden ved at åbne Indstillingerne, gå til Batteribespareren for appen </string>
+    <string name="warning_enable_location_service">GPS sensor er deaktiveret.\nKlik her for at gå til system indstillinger, hvor lokalitets-tjeneste kan aktiveres og indstil lokaliserings-metode, der bruger GPS sensor</string>
+    <!-- Track -->
+    <string name="track_id">Spor</string>
+    <string name="duration">Varighed</string>
+    <string name="max_speed">Maks hastighed</string>
+    <string name="average_speed">Gns hastighed</string>
+    <string name="distance">Afstand</string>
+    <string name="overall_direction">Samlede Retning</string>
+    <string name="altitude_gap">Højde forskel</string>
+    <!-- Track Status message -->
+    <string name="track_empty">Nyt Spor</string>
+    <string name="track_start_with_button_below">Start optagelse af sporpunkter\neller tilføj en annotation\nved hjælp af en af knapperne nedenfor</string>
+    <!-- Recording buttons (bottom side) -->
+    <string name="record">Optag</string>
+    <string name="pause">Pause</string>
+    <string name="annotate">Annotér</string>
+    <string name="stop">Stop</string>
+    <string name="lock">Lås</string>
+    <string name="unlock">Låse op</string>
+    <string name="finalize_track">Afslut spor</string>
+    <string name="toast_bottom_bar_locked">Den nederste bjælke er låst</string>
+    <string name="toast_nothing_to_save">Intet at gemme</string>
+    <string name="toast_recording_when_gps_found">Optagelsen vil begynde, når GPS-signalet er fundet</string>
+    <string name="toast_annotate_when_gps_found">Optagelsen vil begynde, når GPS signalet er fundet</string>
+    <string name="toast_coordinates_copied_to_clipboard">Koordinater kopieret til udklipsholder</string>
+    <string name="ok">OK</string>
+    <string name="annotations">Annotationer</string>
+    <string name="trackpoints">Sporpunkter</string>
+    <!-- Main menu -->
+    <string name="menu_settings">Indstillinger</string>
+    <string name="toast_track_saved_into_tracklist">Spor arkiveret</string>
+    <string name="toast_track_exported">Spor eksporteret i \"%1$s\" mappe</string>
+    <string name="menu_about">Om</string>
+    <string name="menu_online_help">Online hjælp</string>
+    <string name="menu_shutdown">Luk ned</string>
+    <!-- Annotation Creation dialog -->
+    <string name="dlg_add_annotation">Tilføj notater</string>
+    <string name="dlg_enter_the_description">Indtast beskrivelsen</string>
+    <string name="dlg_button_add">Tilføj</string>
+    <!-- Tracklist -->
+    <string name="tracklist_empty">Arkiv tom</string>
+    <string name="card_trackinfo_length">Længde</string>
+    <string name="card_trackinfo_duration">Varighed</string>
+    <string name="card_trackinfo_altitude_gap">Høj for</string>
+    <string name="card_trackinfo_max_speed">Max spd</string>
+    <string name="card_trackinfo_average_speed">Gns spd</string>
+    <string name="card_trackinfo_geopoints">Point</string>
+    <string name="card_trackinfo_annotations">Notater</string>
+    <!-- Context menu of Tracklist -->
+    <string name="card_menu_export">Exporter</string>
+    <string name="card_menu_view_selector">Se i...</string>
+    <string name="card_menu_view">Se i %1$s</string>
+    <string name="card_menu_delete">Slet</string>
+    <string name="card_menu_share">Del med...</string>
+    <string name="card_menu_edit">Rediger detaljer</string>
+    <!-- Tracklist toasts and messagebox -->
+    <string name="card_message_delete_confirmation">Vil du virkelig slette de valgte spor?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
+    <string name="cancel">Annuller</string>
+    <string name="export_unable_to_write_file">Ikke i stand til at skrive filen</string>
+    <!-- Activity categories -->
+    <string name="category_fitness">Motion</string>
+    <string name="category_water_snow">Vand &amp; Sne</string>
+    <string name="category_air">Luft</string>
+    <string name="category_wheel">Hjul</string>
+    <string name="category_other">Andet</string>
+    <!-- Notification App killed messagebox -->
+    <string name="dlg_app_killed">Programmet blev stoppet under baggrunds-optagelse.</string>
+    <string name="dlg_app_killed_description">Kontrollere i Android indstillinger at programmet hverken er batterioptimeret eller baggrund begrænset.</string>
+    <string name="open_android_app_settings">Åbn Indstillinger</string>
+    <!-- Preferences -->
+    <string name="pref_category_interface">BRUGERFLADE</string>
+    <string name="pref_keep_screen_on">Hold skærmen tændt</string>
+    <string name="pref_keep_screen_on_summary">Batteri tømmes hurtigere</string>
+    <string name="pref_color_theme">Farve tema</string>
+    <string name="pref_color_theme_dark">Mørk</string>
+    <string name="pref_color_theme_light">Lys</string>
+    <string name="pref_show_decimal_coordinates">Vis decimal koordinater</string>
+    <string name="pref_show_decimal_coordinates_summary">Brøkdel i decimal notation</string>
+    <string name="pref_show_gps_time_local">Vis GPS tid i lokal tidszone</string>
+    <string name="pref_show_gps_time_local_summary">i stedet for global GPS tid</string>
+    <string name="pref_show_directions">Vis retninger ved hjælp af</string>
+    <string name="pref_show_directions_angle">Grader øst for nord</string>
+    <string name="pref_show_directions_cardinal">Kardinalpunkter</string>
+    <string name="pref_unit_of_measurement">Målesystem</string>
+    <string name="pref_unit_of_measurement_metric">Metrisk</string>
+    <string name="pref_unit_of_measurement_imperial">Imperial</string>
+    <string name="pref_unit_of_measurement_aerial_nautical">Antenne / Nautiske</string>
+    <string name="pref_unit_of_measurement_speed">Vis hastigheder i</string>
+    <string name="pref_exportation_folder">lokal mappe til export</string>
+    <string name="pref_not_set">Ikke angivet</string>
+    <string name="pref_track_viewer">Spor Fremviser</string>
+    <string name="pref_track_viewer_not_installed">Ingen GPX/KML fremviser installeret</string>
+    <string name="pref_track_viewer_select_every_time">Vælg hver gang</string>
+    <string name="pref_category_tracking">SPORING</string>
+    <string name="pref_GPS_distance_filter">Afstands filter</string>
+    <string name="pref_GPS_interval_filter">Interval filter</string>
+    <string name="pref_GPS_filter_disabled">Deaktiveret</string>
+    <string name="pref_GPS_update_frequency">GPS opdateringsinterval</string>
+    <string name="pref_GPS_update_frequency_max">Den korteste tilgængelige</string>
+    <string name="pref_GPS_update_frequency_1s">1 sekund (bedste nøjagtighed)</string>
+    <string name="pref_GPS_update_frequency_2s">2 sekunder</string>
+    <string name="pref_GPS_update_frequency_3s">3 sekunder (mindre nøjagtig)</string>
+    <string name="pref_category_altitude_corrections">HØJDE KORREKTIONER</string>
+    <string name="pref_EGM96AltitudeCorrection">EGM96 korrektion</string>
+    <string name="pref_EGM96AltitudeCorrection_summary">Automatisk højde korrektion, baseret på NGA jorden Geoid Model</string>
+    <string name="pref_EGM96AltitudeCorrection_download_progress">Downloader 2028kB file:\nEGM96 Geoid højder..</string>
+    <string name="pref_AltitudeCorrection">Manuel korrektion</string>
+    <string name="pref_AltitudeCorrection_summary_not_defined">Ingen forskydning defineret</string>
+    <string name="pref_category_exporting">EKSPORTERING</string>
+    <string name="pref_export_TXT">Eksportere spor i TXT</string>
+    <string name="pref_export_TXT_summary">Almindelig tekst, semikolonsepareret</string>
+    <string name="pref_export_KML">Eksportere spor i KML</string>
+    <string name="pref_export_KML_summary">Keyhole Markup Language (v.2.2)</string>
+    <string name="pref_export_GPX">Eksportere spor i GPX</string>
+    <string name="pref_export_GPX_summary">Standard GPS udvekslings format</string>
+    <string name="pref_GPX_version">Version af GPX standard</string>
+    <string name="pref_GPX_version_1_0">GPX 1.0</string>
+    <string name="pref_GPX_version_1_1">GPX 1.1</string>
+    <string name="pref_KML_altitude_mode">KML højde tilstand</string>
+    <string name="pref_KML_altitude_mode_absolute">Absolut</string>
+    <string name="pref_KML_altitude_mode_projected">Projiceret til jorden</string>
+    <string name="pref_track_stats">Spor statistik baseret på</string>
+    <string name="pref_track_stats_totaltime">Tid i alt</string>
+    <string name="pref_track_stats_movingtime">Bevægelsestid</string>
+    <string name="pref_category_backup_restore">BACKUP OG GENDANNELSE</string>
+    <string name="pref_backup_tracklist">Backup Arkiv</string>
+    <string name="pref_backup_tracklist_summary">Gem arkivet som ZIP-fil</string>
+    <string name="pref_restore_tracklist">Gendan Arkiv</string>
+    <string name="pref_restore_tracklist_summary">Indlæs arkiv fra ZIP-fil</string>
+    <string name="dialog_restore_tracklist_confirmation">Denne handling vil overskrive dit nuværende arkiv med det importerede.\nAlle eksisterende spor vil gå tabt.\n\nVil du fortsætte?</string>
+    <string name="in_progress">Udføres...</string>
+    <!-- Preferences toasts -->
+    <string name="toast_download_error">Download fejl</string>
+    <string name="toast_download_completed">Download fuldført</string>
+    <string name="toast_download_failed">Download mislykkedes. Prøv igen senere</string>
+    <string name="toast_active_track_not_empty">Det aktive spor er ikke tomt</string>
+    <string name="toast_no_browser_installed">Ingen browser installeret</string>
+    <string name="toast_unable_to_perform_while_recording">Kan ikke udføre handling under optagelse af spor</string>
+    <string name="toast_error_occurred">Der opstod en fejl</string>
+    <string name="toast_operation_completed">Handlinger fuldført</string>
+    <!-- About Dialog -->
+    <string name="about_version">ver.</string>
+    <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger registrerer dine spor ved hjælp af GPS. Du kan se dem i din foretrukne fremviser, dele og eksportere dem til din enhed i KML, GPX og TXT format.\n\nDette program er fri software, udgivet under betingelserne i GNU General Public License.\nFor flere detaljer se: https://www.gnu.org/licenses/gpl.txt</string>
+    <string name="about_description_googleplaystore">Hvis du nyder at bruge denne app, skal du bruge et øjeblik på at bedømme GPS Logger i Google Play Store.</string>
+    <string name="about_ok">Luk</string>
+    <string name="about_rate_this_app">Vurder denne App</string>
+    <string name="about_unable_to_rate">Kan ikke nå butikken</string>
+    <!-- Notification icon -->
+    <string name="notification_contenttext">er aktiv</string>
+    <!-- Exit confirmation -->
+    <string name="message_exit_finalizing">Du lukker appen.\nVil du færdiggøre det aktuelle spor nu?</string>
+    <!-- Units of Measurement -->
+    <string name="UM_m">m</string>
+    <string name="UM_km">km</string>
+    <string name="UM_m_s">m/s</string>
+    <string name="UM_km_h">km/h</string>
+    <string name="UM_ft">ft</string>
+    <string name="UM_mi">mi</string>
+    <string name="UM_fps">fps</string>
+    <string name="UM_mph">mph</string>
+    <string name="UM_nm">NM</string>
+    <string name="UM_kn">kn</string>
+    <string name="UM_s">s</string>
+</resources>

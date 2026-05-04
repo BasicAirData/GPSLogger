@@ -115,20 +115,6 @@
         <item name="colorAccent">@color/textColorPrimary</item>
     </style>
 
-
-    <!-- About Screen -->
-    <style name="MyMaterialThemeAbout" parent="MyMaterialTheme.Base">
-        <item name="android:windowBackground">@color/colorBackground</item>
-        <item name="colorAccent">@color/textColorPrimary</item>
-        <item name="android:windowAnimationStyle">@style/MyAboutAnimation.Window</item>
-    </style>
-
-    <style name="MyAboutAnimation.Window" parent="@android:style/Animation.Activity">
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
-    </style>
-
-
     <!-- Launch Screen -->
     <style name="LaunchScreenTheme" parent="Theme.AppCompat">
         <item name="android:windowBackground">@drawable/launch_screen</item>

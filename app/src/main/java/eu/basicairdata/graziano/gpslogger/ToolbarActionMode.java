@@ -172,6 +172,10 @@ public class ToolbarActionMode implements ActionMode.Callback {
             menuItemEdit.setVisible(gpsApp.getNumberOfSelectedTracks() <= 1);
             menuItemShare.setVisible(gpsApp.isContextMenuShareVisible() && (gpsApp.getPrefExportGPX() || gpsApp.getPrefExportKML() || gpsApp.getPrefExportTXT()));
             menuItemExport.setVisible(gpsApp.getPrefExportGPX() || gpsApp.getPrefExportKML() || gpsApp.getPrefExportTXT());
+            menuItemExport.setTitle(gpsApp.getString(R.string.card_menu_export) + "\n" +
+                    (gpsApp.getPrefExportKML() ? "KML" + (gpsApp.getPrefExportGPX() || gpsApp.getPrefExportTXT() ? " + " : "") : "") +
+                    (gpsApp.getPrefExportGPX() ? "GPX" + (gpsApp.getPrefExportTXT() ? " + " : "") : "") +
+                    (gpsApp.getPrefExportTXT() ? "TXT" : ""));
             menuItemDelete.setVisible(!gpsApp.getSelectedTracks().contains(gpsApp.getCurrentTrack()));
 
             if (menuItemView.isVisible()) {

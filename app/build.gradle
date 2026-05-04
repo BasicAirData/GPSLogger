@@ -23,17 +23,17 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'eu.basicairdata.graziano.gpslogger'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
-        targetSdkVersion 34
+        targetSdkVersion 35
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
-        versionName '3.2.3'
-        versionCode 52
+        versionName '3.3.0'
+        versionCode 53
         // -----------------------------------------------------------------------------------------
 
         vectorDrawables.useSupportLibrary = true

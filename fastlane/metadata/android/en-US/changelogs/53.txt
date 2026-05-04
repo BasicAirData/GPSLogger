@@ -1,0 +1,7 @@
+- Added the ability to backup/restore the tracklist as zip file. You can use a local folder or your cloud service
+- You can pin some quick descriptions to the Annotate dialog. Click a pinned item to set it as description, long click to add it to the current text
+- The tooltip of the export icon now shows which formats are exported/shared
+- In TXT files the timestamps are now saved in fixed format, with milliseconds
+- Added danish language
+- Upgraded to API 35
+- Some UI refinements and a couple of bugs fixed

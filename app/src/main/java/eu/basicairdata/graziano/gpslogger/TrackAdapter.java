@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -227,8 +228,9 @@ class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackHolder> {
                 Glide.clear(imageViewThumbnail);
                 Glide
                         .with(GPSApplication.getInstance().getApplicationContext())
-                        .load(GPSApplication.getInstance().getApplicationContext().getFilesDir().toString() + "/Thumbnails/" + track.getId() + ".png")
+                        .load(GPSApplication.getInstance().getTHUMBNAILS_FOLDER() + "/" + track.getId() + ".png")
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .signature(new StringSignature(GPSApplication.getInstance().getTracklistSignature()))
                         //.skipMemoryCache(true)
                         .error(null)
                         .dontAnimate()

@@ -183,12 +183,22 @@
     <string name="pref_track_stats">Считать Статистику за</string>
     <string name="pref_track_stats_totaltime">Общее время</string>
     <string name="pref_track_stats_movingtime">Время в движении</string>
+    <string name="pref_category_backup_restore">БЭКАП И ВОССТАНОВЛЕНИЕ</string>
+    <string name="pref_backup_tracklist">Создать бэкап треков</string>
+    <string name="pref_backup_tracklist_summary">Сохранить треки в ZIP файл</string>
+    <string name="pref_restore_tracklist">Восстановить треки</string>
+    <string name="pref_restore_tracklist_summary">Загрузить треки из ZIP файла</string>
+    <string name="dialog_restore_tracklist_confirmation">Эта операция перезапишет ваши текущие треки импортированными.\nВсе существующие треки будут потеряны.\n\nВы хотите продолжить?</string>
+    <string name="in_progress">Выполняется...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Ошибка загрузки</string>
     <string name="toast_download_completed">Загрузка завершена</string>
     <string name="toast_download_failed">Ошибка загрузки. Повторите попытку позже</string>
     <string name="toast_active_track_not_empty">Текущий трек не пуст</string>
     <string name="toast_no_browser_installed">Интернет-браузер не установлен</string>
+    <string name="toast_unable_to_perform_while_recording">Невозможно выполнить операцию во время записи трека</string>
+    <string name="toast_error_occurred">Произошла ошибка</string>
+    <string name="toast_operation_completed">Операция завершена</string>
     <!-- About Dialog -->
     <string name="about_version">вер.</string>
     <string name="about_description">Copyright © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger записывает ваши треки с помощью GPS. Вы можете просматривать их в выбранном приложении, делиться ими, и экспортировать на свое устройство в форматах KML, GPX и TXT.\n\nЭта программа является свободным программным обеспечением и опубликована на условиях Универсальной Общественной Лицензии GNU.\nПодробнее см.: https://www.gnu.org/licenses/gpl.txt</string>

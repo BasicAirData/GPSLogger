@@ -62,9 +62,6 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final int LOCATION_TYPE_LOCATION = 1;
     private static final int LOCATION_TYPE_PLACEMARK = 2;
 
-    // Database Name
-    private static final String DATABASE_NAME = "GPSLogger";
-
     // -------------------------------------------------------------------------------- Table names
     private static final String TABLE_LOCATIONS = "locations";
     private static final String TABLE_TRACKS = "tracks";
@@ -147,8 +144,8 @@ class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_TRACK_DESCRIPTION = "description";
 
 
-    public DatabaseHandler(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public DatabaseHandler(Context context, String databaseName) {
+        super(context, databaseName, null, DATABASE_VERSION);
     }
 
     /**
@@ -920,10 +917,15 @@ class DatabaseHandler extends SQLiteOpenHelper {
         trkvalues.put(KEY_TRACK_DESCRIPTION, track.getDescription());
 
         long TrackID;
-        // Inserting Row
-        TrackID = (db.insert(TABLE_TRACKS, null, trkvalues));
-
-        //Log.w("myApp", "[#] DatabaseHandler.java - addTrack " + TrackID);
+        try {
+            db.beginTransaction();
+            // Inserting Row
+            TrackID = (db.insert(TABLE_TRACKS, null, trkvalues));
+            db.setTransactionSuccessful();
+            //Log.w("myApp", "[#] DatabaseHandler.java - addTrack " + TrackID);
+        } finally {
+            db.endTransaction();
+        }
 
         return TrackID; // Insert this in the track ID !!!
     }

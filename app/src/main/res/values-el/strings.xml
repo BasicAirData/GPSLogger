@@ -55,9 +55,9 @@
     <string name="gps_out_of_service">GPS εκτός λειτουργίας</string>
     <string name="gps_searching">Αναζήτηση για GPS</string>
     <string name="gps_stabilizing">Σταθεροποίηση σήματος</string>
-    <string name="warning_location_denied">Η εφαρμογή δεν μπορεί να έχει πρόσβαση στην τοποθεσία</string>
-    <string name="warning_background_restricted">Η εφαρμογή δεν μπορεί να λειτουργήσει στο παρασκήνιο.\nΚάντε κλικ εδώ για να μεταβείτε στις ρυθμίσεις συστήματος όπου, στην ενότητα μπαταρίας, μπορείτε να επιτρέψετε τη δραστηριότητα στο παρασκήνιο</string>
-    <string name="warning_enable_location_service">Ο αισθητήρας GPS είναι απενεργοποιημένος.\nΚάντε κλικ εδώ για να μεταβείτε στις Ρυθμίσεις Συστήματος, όπου μπορείτε να ενεργοποιήσετε την Υπηρεσία Τοποθεσίας και να ορίσετε μια μέθοδο εντοπισμού που χρησιμοποιεί τον αισθητήρα GPS</string>
+    <string name="warning_location_denied">Η εφαρμογή δεν έχει πρόσβαση στην τοποθεσία</string>
+    <string name="warning_background_restricted">Η εφαρμογή δεν μπορεί να λειτουργήσει στο παρασκήνιο.\nΠατήστε εδώ για να μεταβείτε στις ρυθμίσεις συστήματος, όπου στην ενότητα μπαταρίας, μπορείτε να επιτρέψετε τη δραστηριότητα στο παρασκήνιο</string>
+    <string name="warning_enable_location_service">Ο αισθητήρας GPS είναι απενεργοποιημένος.\nΠατήστε εδώ για να μεταβείτε στις Ρυθμίσεις Συστήματος, όπου μπορείτε να ενεργοποιήσετε την Υπηρεσία Τοποθεσίας και να ορίσετε μια μέθοδο εντοπισμού που χρησιμοποιεί τον αισθητήρα GPS</string>
     <!-- Track -->
     <string name="track_id">Ίχνος</string>
     <string name="duration">Διάρκεια</string>
@@ -65,9 +65,9 @@
     <string name="average_speed">Μέση Ταχύτητα</string>
     <string name="distance">Απόσταση</string>
     <string name="overall_direction">Γεν. Κατ/νση</string>
-    <string name="altitude_gap">Κενά Ύψους</string>
+    <string name="altitude_gap">Υψομετρική Διαφορά</string>
     <!-- Track Status message -->
-    <string name="track_empty">Νέο ίχνος</string>
+    <string name="track_empty">Νέο Ίχνος</string>
     <string name="track_start_with_button_below">Ξεκινήστε την εγγραφή σημείων παρακολούθησης\nή προσθέστε μια ένδειξη\nχρησιμοποιώντας ένα από τα παρακάτω κουμπιά</string>
     <!-- Recording buttons (bottom side) -->
     <string name="record">Καταγραφή</string>
@@ -87,7 +87,7 @@
     <string name="trackpoints">Ιχνοσημεία</string>
     <!-- Main menu -->
     <string name="menu_settings">Ρυθμίσεις</string>
-    <string name="toast_track_saved_into_tracklist">ϊχνος αποθηκευμένο στη Λίστα</string>
+    <string name="toast_track_saved_into_tracklist">Ίχνος αποθηκευμένο στη Λίστα</string>
     <string name="toast_track_exported">Τα Ίχνη εξήχθησαν στο φάκελο \"%1$s\"</string>
     <string name="menu_about">Σχετικά με</string>
     <string name="menu_online_help">Online βοήθεια</string>
@@ -100,9 +100,9 @@
     <string name="tracklist_empty">Άδεια Λίστα</string>
     <string name="card_trackinfo_length">Μήκος</string>
     <string name="card_trackinfo_duration">Διάρκεια</string>
-    <string name="card_trackinfo_altitude_gap">Alt gap</string>
-    <string name="card_trackinfo_max_speed">Μεγ. ταχ.</string>
-    <string name="card_trackinfo_average_speed">Μεσ. ταχ.</string>
+    <string name="card_trackinfo_altitude_gap">Υψομ. Διαφ.</string>
+    <string name="card_trackinfo_max_speed">Μέγ. ταχ.</string>
+    <string name="card_trackinfo_average_speed">Μέση ταχ.</string>
     <string name="card_trackinfo_geopoints">Σημεία</string>
     <string name="card_trackinfo_annotations">Σημ.</string>
     <!-- Context menu of Tracklist -->
@@ -125,34 +125,34 @@
     <string name="category_wheel">Τροχοί</string>
     <string name="category_other">Άλλο</string>
     <!-- Notification App killed messagebox -->
-    <string name="dlg_app_killed">Η εφαρμογή έχει τερματιστεί κατά την εγγραφή στο παρασκήνιο.</string>
-    <string name="dlg_app_killed_description">Παρακαλώ ελέγξτε στις Ρυθμίσεις Android οτι δεν eίναι ενεργή η βελτιστοποίηση Μπαταρίας ούτε ο περιορισμός λειτουργίας στο Παρασκήνιο</string>
+    <string name="dlg_app_killed">Η εφαρμογή έχει τερματιστεί κατά την καταγραφή στο παρασκήνιο.</string>
+    <string name="dlg_app_killed_description">Παρακαλώ ελέγξτε στις Ρυθμίσεις ότι δεν είναι ενεργή η βελτιστοποίηση Μπαταρίας ούτε ο περιορισμός λειτουργίας στο Παρασκήνιο</string>
     <string name="open_android_app_settings">Άνοιγμα Ρυθμίσεων</string>
     <!-- Preferences -->
     <string name="pref_category_interface">ΔΙΕΠΑΦΗ</string>
-    <string name="pref_keep_screen_on">Διατήρηση Οθόνης Ενεργής</string>
+    <string name="pref_keep_screen_on">Διατήρηση της Οθόνης Ενεργή</string>
     <string name="pref_keep_screen_on_summary">Η μπαταρία εξαντλείται γρηγορότερα</string>
     <string name="pref_color_theme">Χρώμα Θέματος</string>
     <string name="pref_color_theme_dark">Σκοτεινό</string>
     <string name="pref_color_theme_light">Φωτεινό</string>
     <string name="pref_show_decimal_coordinates">Εμφάνιση Δεκαδικών Συντεταγμένων</string>
     <string name="pref_show_decimal_coordinates_summary">Κλασματικό μέρος με δεκαδική σημειογραφία</string>
-    <string name="pref_show_gps_time_local">Εμφάνιση ώρας GPS στην τοπική ζώνη ώρας</string>
-    <string name="pref_show_gps_time_local_summary">αντί για καθολική ώρα GPS</string>
-    <string name="pref_show_directions">Εμφάνιση κατεύθυνσης χρησιμοποιώντας</string>
-    <string name="pref_show_directions_angle">Βαθμοί Ανατολικά του Βορρά</string>
-    <string name="pref_show_directions_cardinal">Τεταρτημοριακοί Πόντοι</string>
+    <string name="pref_show_gps_time_local">Εμφάνιση ώρας GPS στην τοπική Ζώνη Ώρας</string>
+    <string name="pref_show_gps_time_local_summary">αντί καθολικής ώρας GPS</string>
+    <string name="pref_show_directions">Εμφάνιση Κατευθύνσεων χρησιμοποιώντας</string>
+    <string name="pref_show_directions_angle">Βαθμούς Ανατολικά του Βορρά</string>
+    <string name="pref_show_directions_cardinal">Τεταρτημοριακούς Πόντους</string>
     <string name="pref_unit_of_measurement">Σύστημα Μέτρησης</string>
     <string name="pref_unit_of_measurement_metric">Μετρικό</string>
     <string name="pref_unit_of_measurement_imperial">Αγγλοσαξωνικό</string>
     <string name="pref_unit_of_measurement_aerial_nautical">Αεροναυτικό / Ναυτικό</string>
     <string name="pref_unit_of_measurement_speed">Προβολή Ταχυτήτων σε</string>
-    <string name="pref_exportation_folder">Φάκελος Τοπικής Εξαγωγής</string>
-    <string name="pref_not_set">Μη ορισμένο</string>
+    <string name="pref_exportation_folder">Τοπικός Φάκελος Εξαγωγής</string>
+    <string name="pref_not_set">Μη ορισμένος</string>
     <string name="pref_track_viewer">Προβολέας Ίχνους</string>
     <string name="pref_track_viewer_not_installed">Δεν υπάρχει εγκατεστημένος προβολέας GPX/KML</string>
     <string name="pref_track_viewer_select_every_time">Ερώτηση κάθε φορά</string>
-    <string name="pref_category_tracking">ΚΑΤΑΓΡΑΦΗ</string>
+    <string name="pref_category_tracking">ΙΧΝΗΛΆΤΗΣΗ</string>
     <string name="pref_GPS_distance_filter">Φίλτρο Απόστασης</string>
     <string name="pref_GPS_interval_filter">Φίλτρο Διαστήματος</string>
     <string name="pref_GPS_filter_disabled">Απενεργοποιημένο</string>
@@ -173,33 +173,43 @@
     <string name="pref_export_KML">Εξαγωγή Ιχνών σε KML</string>
     <string name="pref_export_KML_summary">Keyhole Markup Language (v.2.2)</string>
     <string name="pref_export_GPX">Εξαγωγή Ιχνών σε GPX</string>
-    <string name="pref_export_GPX_summary">Πρότυπο Μορφής GPS eXchange</string>
-    <string name="pref_GPX_version">Έκδοση Προτύπου του GPX</string>
+    <string name="pref_export_GPX_summary">Standard GPS eXchange Format</string>
+    <string name="pref_GPX_version">Έκδοση Πρότυπου GPX</string>
     <string name="pref_GPX_version_1_0">GPX 1.0</string>
     <string name="pref_GPX_version_1_1">GPX 1.1</string>
-    <string name="pref_KML_altitude_mode">Λειτουργία υψομέτρου KML</string>
+    <string name="pref_KML_altitude_mode">Λειτουργία KML Υψομέτρου</string>
     <string name="pref_KML_altitude_mode_absolute">Απόλυτο</string>
     <string name="pref_KML_altitude_mode_projected">Προβεβλημένο στο Έδαφος</string>
-    <string name="pref_track_stats">Παρακολούθηση Στατιστικών με βάση</string>
-    <string name="pref_track_stats_totaltime">Συνολικός χρόνος</string>
-    <string name="pref_track_stats_movingtime">Χρόνος σε Κίνηση</string>
+    <string name="pref_track_stats">Στατιστικών Ιχνών βασισμένα σε</string>
+    <string name="pref_track_stats_totaltime">Συνολικό χρόνο</string>
+    <string name="pref_track_stats_movingtime">Χρόνο σε Κίνηση</string>
+    <string name="pref_category_backup_restore">ΑΝΤΙΚΕΙΜΕΝΟ ΚΑΙ ΕΠΑΝΑΦΟΡΑ</string>
+    <string name="pref_backup_tracklist">Αντίγραφο ασφαλείας λίστα ιχνών</string>
+    <string name="pref_backup_tracklist_summary">Αποθήκευση της λίστας ιχνών ως αρχείο ZIP</string>
+    <string name="pref_restore_tracklist">Επαναφορά λίστας ιχνών</string>
+    <string name="pref_restore_tracklist_summary">Φόρτωση λίστας ιχνών από το αρχείο ZIP</string>
+    <string name="dialog_restore_tracklist_confirmation">Αυτή η λειτουργία θα αντικαταστήσει την τρέχουσα λίστα Ιχνών σας με την εισαγόμενη.\nΌλα τα υπάρχοντα κομμάτια θα χαθούν.\n\nΘέλετε να συνεχίσετε;</string>
+    <string name="in_progress">Αναζήτηση...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">Σφάλμα λήψης</string>
     <string name="toast_download_completed">Λήψη ολοκληρώθηκε</string>
     <string name="toast_download_failed">Λήψη απέτυχε. Δοκιμάστε ξανά αργότερα</string>
     <string name="toast_active_track_not_empty">Το ενεργό ίχνος δεν είναι κενό</string>
-    <string name="toast_no_browser_installed">Δεν έχει εγκατασταθεί πρόγραμμα περιήγησης στο Internet</string>
+    <string name="toast_no_browser_installed">Δεν έχει εγκατασταθεί πρόγραμμα περιήγησης</string>
+    <string name="toast_unable_to_perform_while_recording">Δεν είναι δυνατή η εκτέλεση της ενέργειας κατά την εγγραφή ενός κομματιού</string>
+    <string name="toast_error_occurred">Συνέβη ένα σφάλμα</string>
+    <string name="toast_operation_completed">Η ενέργεια ολοκληρώθηκε</string>
     <!-- About Dialog -->
     <string name="about_version">έκδ.</string>
     <string name="about_description">Πνευματικά δικαιώματα © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger καταγράφει τα ίχνη σας χρησιμοποιώντας GPS. Μπορείτε να τα δείτε στον προβολέα που προτιμάτε, να τα μοιραστείτε και να τα εξάγετε στη συσκευή σας σε μορφή KML, GPX και TXT.\n\nΑυτό το πρόγραμμα είναι ελεύθερο λογισμικό, που διατίθεται σύμφωνα με τους όρους της Γενικής Άδειας Δημόσιας Χρήσης GNU.\nΓια περισσότερες λεπτομέρειες δείτε εδώ: https://www.gnu.org/licenses/gpl.txt</string>
     <string name="about_description_googleplaystore">Αν σας αρέσει να χρησιμοποιείτε αυτήν την εφαρμογή, παρακαλώ αφιερώστε λίγο χρόνο για να αξιολογήσετε το GPS Logger στο Google Play Store.</string>
     <string name="about_ok">Κλείσιμο</string>
-    <string name="about_rate_this_app">Αξιολόγηση Εφαρμ.</string>
+    <string name="about_rate_this_app">Αξιολόγηση Εφαρμογής</string>
     <string name="about_unable_to_rate">Δεν είναι δυνατή η πρόσβαση στο Κατάστημα</string>
     <!-- Notification icon -->
     <string name="notification_contenttext">είναι ενεργό</string>
     <!-- Exit confirmation -->
-    <string name="message_exit_finalizing">Κλείνετε την εφαρμογή.\nΘέλετε να οριστικοποιήσετε το τρέχον κομμάτι τώρα?</string>
+    <string name="message_exit_finalizing">Κλείνετε την εφαρμογή.\nΘέλετε να οριστικοποιήσετε το τρέχον ίχνος τώρα?</string>
     <!-- Units of Measurement -->
     <string name="UM_m">m</string>
     <string name="UM_km">km</string>

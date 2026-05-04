@@ -183,12 +183,22 @@
     <string name="pref_track_stats">轨迹统计数据基于</string>
     <string name="pref_track_stats_totaltime">总时长</string>
     <string name="pref_track_stats_movingtime">移动时间</string>
+    <string name="pref_category_backup_restore">备份和恢复</string>
+    <string name="pref_backup_tracklist">轨迹列表备份</string>
+    <string name="pref_backup_tracklist_summary">将轨迹列表保存为 ZIP 文件</string>
+    <string name="pref_restore_tracklist">恢复轨迹列表</string>
+    <string name="pref_restore_tracklist_summary">从 ZIP 文件加载轨迹列表</string>
+    <string name="dialog_restore_tracklist_confirmation">此操作将用导入的轨迹列表覆盖当前轨迹列表。\n所有现有轨迹将被删除。\n\n您要继续吗？</string>
+    <string name="in_progress">进行中...</string>
     <!-- Preferences toasts -->
     <string name="toast_download_error">下载错误</string>
     <string name="toast_download_completed">下载已完成</string>
     <string name="toast_download_failed">下载失败。请稍后再试</string>
     <string name="toast_active_track_not_empty">当前活动轨迹非空</string>
     <string name="toast_no_browser_installed">未安装互联网浏览器</string>
+    <string name="toast_unable_to_perform_while_recording">录制轨迹时无法执行操作</string>
+    <string name="toast_error_occurred">发生错误</string>
+    <string name="toast_operation_completed">操作完成</string>
     <!-- About Dialog -->
     <string name="about_version">版本</string>
     <string name="about_description">版权所有 © 2016–%1$s BasicAirData\nhttps://www.basicairdata.eu\n\nBasicAirData GPS Logger使用GPS记录您的轨迹。您可以在喜欢的查看器中查看它们，并以KML，GPX和TXT格式将它们分享，导出到设备的GPSLogger文件夹中。\n\n此程序是免费软件，根据GNU通用公共许可证条款发布。\n有关详细信息，请参阅：https://www.gnu.org/licenses/gpl.txt</string>

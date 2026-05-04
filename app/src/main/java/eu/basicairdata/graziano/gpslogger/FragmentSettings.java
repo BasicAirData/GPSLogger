@@ -35,7 +35,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.EditTextPreference;
@@ -65,7 +65,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
 
@@ -74,6 +77,8 @@ import static eu.basicairdata.graziano.gpslogger.GPSApplication.FILETYPE_GPX;
  */
 public class FragmentSettings extends PreferenceFragmentCompat {
 
+    private static final int CREATE_ZIP_FILE = 1;
+    private static final int PICK_ZIP_FILE = 2;
     private static final int REQUEST_ACTION_OPEN_DOCUMENT_TREE = 3;
 
     SharedPreferences.OnSharedPreferenceChangeListener prefListener;
@@ -83,8 +88,67 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     public double distfilterm;       // distance filter in m
     public double altcor;            // manual offset
     public double altcorm;           // Manual offset in m
+
     private ProgressDialog progressDialog;
+    private ProgressDialog progressDialogSpin;
+
     public boolean isDownloaded = false;
+
+    /**
+     * It opens the intent that performs the ACTION_OPEN_DOCUMENT.
+     * The user can choose the folder and the file ZIP containing the backup file to restore using the SAF dialog.
+     */
+    private void pickZIPFile() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // Android API 19 (Android 4.4)
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/zip");
+
+            // Optionally, specify a URI for the file that should appear in the
+            // system file picker when it loads.
+            //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+            startActivityForResult(intent, PICK_ZIP_FILE);
+        }
+    }
+
+    /**
+     * It opens the intent that performs the ACTION_CREATE_DOCUMENT.
+     * The user can choose the folder and the file name of the ZIP backup file using the SAF dialog.
+     */
+    private void createZIPFile() {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
+        String currentTime = sdf.format(new Date());
+        String filename = currentTime + " - BACKUP - GPSLogger Tracklist.zip";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // Android API 19 (Android 4.4)
+            Intent intent = null;
+            intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/zip");
+            intent.putExtra(Intent.EXTRA_TITLE, filename);
+
+            // Optionally, specify a URI for the directory that should be opened in
+            // the system file picker when your app creates the document.
+            //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+            startActivityForResult(intent, CREATE_ZIP_FILE);
+        } else {
+            // Android API 14 to 18 (Android 4.0)
+            AppDataManager appDataManager = new AppDataManager();
+            appDataManager.exportAppDataToZipFile_API14();
+            if (appDataManager.isLastOperationSuccessful) {
+                Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -286,6 +350,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         Preference pExportFolder = findPreference("prefExportFolder");
         EditTextPreference pAltitudeCorrection = findPreference("prefAltitudeCorrectionRaw");
         Preference pTracksViewer = findPreference("prefTracksViewer");
+        Preference pExportTracklist = findPreference("prefExportTracklist");
+        Preference pRestoreTracklist = findPreference("prefRestoreTracklist");
 
         // Adds the unit of measurement to EditTexts title
         pGPSDistance.setDialogTitle(getString(R.string.pref_GPS_distance_filter) + " ("
@@ -298,6 +364,60 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         // Keep Screen On Flag
         if (prefs.getBoolean("prefKeepScreenOn", true)) getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // Backup and Restore - Export tracklist
+        pExportTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                //  Ensure that the app is not recording and is not annotating placemark
+                if (GPSApplication.getInstance().isRecording() || GPSApplication.getInstance().isPlacemarkRequested()) {
+                    Toast.makeText(getContext(), getString(R.string.toast_unable_to_perform_while_recording), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                createZIPFile();
+                return true;
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // Backup and Restore - Restore tracklist
+            pRestoreTracklist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    //  Ensure that the app is not recording and is not annotating placemark
+                    if (GPSApplication.getInstance().isRecording() || GPSApplication.getInstance().isPlacemarkRequested()) {
+                        Toast.makeText(getContext(), getString(R.string.toast_unable_to_perform_while_recording), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    // If the tracklist is not empty, the app ask confirmation to overwrite previous tracks:
+                    // This operation will replace your tracklist (that is not empty) with the imported one.
+                    // Are you sure?
+                    if (GPSApplication.getInstance().isTracklistEmpty()) {
+                        // The current tracklist is empty
+                        pickZIPFile();
+                    } else {
+                        // The current tracklist contains tracks (is NOT empty)
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setMessage(getResources().getString(R.string.dialog_restore_tracklist_confirmation));
+                        //builder.setIcon(android.R.drawable.ic_menu_info_details);
+                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                pickZIPFile();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                    return true;
+                }
+            });
+        } else {
+            pRestoreTracklist.setEnabled(false);
+        }
 
         // Track Viewer
         final ArrayList<ExternalViewer> evList = new ArrayList<>(GPSApplication.getInstance().getExternalViewerChecker().getExternalViewersList());
@@ -482,8 +602,84 @@ public class FragmentSettings extends PreferenceFragmentCompat {
      * it Requires api >= Build.VERSION_CODES.LOLLIPOP
      */
     @Override
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == PICK_ZIP_FILE && resultCode == Activity.RESULT_OK) {
+            // ZIP file picked for restoring tracklist.
+            Uri treeUri = resultData.getData();
+            Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+
+            progressDialogSpin = new ProgressDialog(getActivity());
+            progressDialogSpin.setMessage(getResources().getString(R.string.in_progress));
+            progressDialogSpin.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialogSpin.setCanceledOnTouchOutside(false);
+            progressDialogSpin.setCancelable(false);
+            progressDialogSpin.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // Close the Database in use
+                    GPSApplication.getInstance().closeDB();
+                    // Import the new Database
+                    AppDataManager appDataManager = new AppDataManager();
+                    appDataManager.importTracklistFromZipFile(treeUri);
+                    // Load the new Database
+                    GPSApplication.getInstance().loadDB();
+                    if (appDataManager.isLastOperationSuccessful) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    else {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    progressDialogSpin.dismiss();
+                }
+            }).start();
+        }
+        if (requestCode == CREATE_ZIP_FILE && resultCode == Activity.RESULT_OK) {
+            // create a ZIP file with the backup of the tracklist.
+            Uri treeUri = resultData.getData();
+            Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
+
+            progressDialogSpin = new ProgressDialog(getActivity());
+            progressDialogSpin.setMessage(getResources().getString(R.string.in_progress));
+            progressDialogSpin.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialogSpin.setCanceledOnTouchOutside(false);
+            progressDialogSpin.setCancelable(false);
+            progressDialogSpin.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AppDataManager appDataManager = new AppDataManager();
+                    appDataManager.exportAppDataToZipFile(treeUri);
+                    if (appDataManager.isLastOperationSuccessful) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.toast_operation_completed), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    else {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.toast_error_occurred), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    progressDialogSpin.dismiss();
+                }
+            }).start();
+        }
         if (requestCode == REQUEST_ACTION_OPEN_DOCUMENT_TREE && resultCode == Activity.RESULT_OK) {
             // The result data contains a URI for the document or directory that
             // the user selected.
@@ -492,9 +688,11 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 Uri treeUri = resultData.getData();
                 getActivity().grantUriPermission(getActivity().getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                GPSApplication.getInstance().getContentResolver().takePersistableUriPermission(treeUri, Intent
-                        .FLAG_GRANT_READ_URI_PERMISSION | Intent
-                        .FLAG_GRANT_WRITE_URI_PERMISSION);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    GPSApplication.getInstance().getContentResolver().takePersistableUriPermission(treeUri, Intent
+                            .FLAG_GRANT_READ_URI_PERMISSION | Intent
+                            .FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
                 //getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                 Log.w("myApp", "[#] GPSActivity.java - onActivityResult URI: " + treeUri.toString());
