@@ -701,6 +701,10 @@ public class GPSApplication extends Application implements LocationListener {
         isQuickPlacemarkRequest = quickPlacemarkRequest;
     }
 
+    public LocationExtended getCurrentPlacemark() {
+        return currentPlacemark;
+    }
+
     public boolean isBottomBarLocked() {
         return isBottomBarLocked;
     }

@@ -54,6 +54,11 @@ import java.util.ArrayList;
  */
 public class FragmentPlacemarkDialog extends DialogFragment {
 
+    private final String START_PARAMETER_DELIMITER = "<";                   // The delimiter at the start of a parameter
+    private final String END_PARAMETER_DELIMITER = ">";                     // The delimiter at the end of a parameter
+    private final String PARAMETER_ANNOTATION_SPEED = "speed";              // The current speed
+    private final String PARAMETER_ANNOTATION_ID = "id";                    // The id of the annotation
+
     static class TipUILine {
         TextView textviewTipUILine;
         LinearLayout linearLayoutTipUILine;
@@ -240,14 +245,14 @@ public class FragmentPlacemarkDialog extends DialogFragment {
             tip.textviewTipUILine.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    etDescription.setText(tip.textviewTipUILine.getText());
+                    etDescription.setText(replaceParameters(tip.textviewTipUILine.getText().toString()));
                     etDescription.setSelection(etDescription.getText().length());
                 }
             });
             tip.textviewTipUILine.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    etDescription.setText(etDescription.getText().toString() + tip.textviewTipUILine.getText().toString());
+                    etDescription.setText(etDescription.getText().toString() + replaceParameters(tip.textviewTipUILine.getText().toString()));
                     etDescription.setSelection(etDescription.getText().length());
                     return true;
                 }
@@ -264,5 +269,32 @@ public class FragmentPlacemarkDialog extends DialogFragment {
             });
             uiLineArrayList.add(tip);
         }
+    }
+
+
+    private String replaceParameters(String text) {
+        String annotationText = text;
+        String param;
+        String replacement = "";
+
+        PhysicalData physData;
+        PhysicalDataFormatter phdformatter = new PhysicalDataFormatter();
+
+        // Placemark ID
+        param = PARAMETER_ANNOTATION_ID;
+        replacement = String.valueOf(GPSApplication.getInstance().getCurrentTrack().getNumberOfPlacemarks() + 1);
+        while (annotationText.contains(START_PARAMETER_DELIMITER + param + END_PARAMETER_DELIMITER)) {
+            annotationText = annotationText.replace(START_PARAMETER_DELIMITER + param + END_PARAMETER_DELIMITER, replacement);
+        }
+
+        // Current Speed
+        param = PARAMETER_ANNOTATION_SPEED;
+        physData = phdformatter.format(GPSApplication.getInstance().getCurrentPlacemark().getSpeed(), PhysicalDataFormatter.FORMAT_SPEED);
+        replacement = physData.value + " " + physData.um;
+        while (annotationText.contains(START_PARAMETER_DELIMITER + param + END_PARAMETER_DELIMITER)) {
+            annotationText = annotationText.replace(START_PARAMETER_DELIMITER + param + END_PARAMETER_DELIMITER, replacement);
+        }
+
+        return annotationText;
     }
 }
