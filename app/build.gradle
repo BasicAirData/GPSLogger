@@ -23,12 +23,12 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'eu.basicairdata.graziano.gpslogger'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "eu.basicairdata.graziano.gpslogger"
         minSdkVersion 14
-        targetSdkVersion 35
+        targetSdkVersion 36
 
         // -----------------------------------------------------------------------------------------
         // We use the Semantic Versioning (https://semver.org/):
@@ -63,6 +63,13 @@ android {
         }
     }
 
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
+
     lint {
         abortOnError false
     }
@@ -72,9 +79,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13.2'
 
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.5.1'
